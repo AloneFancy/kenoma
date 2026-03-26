@@ -1,0 +1,1 @@
+# Don't analyze this dumb, simple skills to help claude web ai
