@@ -4,3 +4,4 @@ env/
 desktop.ini
 Makefile
 test.*
+.claude/settings.json
