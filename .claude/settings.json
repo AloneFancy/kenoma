@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "claude-sonnet-4-6",
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(find . -name '*.cs' *)",
+      "Bash(find . -name '*.unity' *)",
+      "Bash(find . -name '*.md' *)",
+      "Bash(grep -r * Assets/Scripts/)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(mkdir -p *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(*.pem)",
+      "Read(*.key)"
+    ]
+  },
+  "env": {
+    "KENOMA_PROJECT": "true",
+    "UNITY_VERSION": "6000.0",
+    "RENDER_PIPELINE": "URP",
+    "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+    "ANTHROPIC_AUTH_TOKEN": "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",
+    "ANTHROPIC_API_KEY": "",
+    "ANTHROPIC_MODEL": "nvidia/nemotron-3-super-120b-a12b:free"
+  }
+}
