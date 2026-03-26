@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA · .claude Folder Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fire:#e8863a; --gold:#d4a843; --ash:#7a6a5a; --cold:#7aadcc;
+    --stone:#1e1a16; --deep:#141008; --hollow:#0b0906;
+    --text:#cfc3b0; --dim:#5a4a3a;
+    --b-fire:rgba(232,134,58,.22); --b-gold:rgba(212,168,.3,.16);
+    --b-cold:rgba(122,173,204,.18); --b-sys:rgba(90,90,90,.18);
+    --b-base:rgba(212,168,67,.09);
+    --agents:#4a7a5a; --commands:#6a5a8a; --skills:#8a6a2a; --rules:#7a3a3a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--hollow);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:15px;line-height:1.65;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:999}
+
+  .page{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+
+  header{padding:50px 0 32px;border-bottom:1px solid var(--b-base);margin-bottom:0;position:relative}
+  header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:80px;height:1px;background:var(--fire);opacity:.5}
+  .doc-id{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase;margin-bottom:12px;display:flex;gap:16px;flex-wrap:wrap}
+  .doc-id span{color:var(--fire)}
+  h1{font-family:'Cinzel',serif;font-size:clamp(20px,3vw,34px);font-weight:600;color:var(--gold);letter-spacing:.06em;margin-bottom:4px}
+  .h1-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ash);letter-spacing:.12em;margin-bottom:16px}
+  .lead{font-size:14px;font-style:italic;color:var(--dim);max-width:640px;border-left:2px solid var(--b-fire);padding-left:14px}
+
+  /* ─ divider ─ */
+  .div{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:12px;padding:24px 0 10px}
+  .div::before,.div::after{content:'';flex:1;height:1px;background:var(--b-base)}
+
+  /* ─ file tree ─ */
+  .tree{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.7;margin-bottom:2px;overflow-x:auto}
+  .tree .r{color:var(--fire)}
+  .tree .g{color:var(--agents)}
+  .tree .p{color:var(--commands)}
+  .tree .y{color:var(--skills)}
+  .tree .e{color:var(--rules)}
+  .tree .d{color:var(--ash)}
+  .tree .gold{color:var(--gold)}
+
+  /* ─ cards grid ─ */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:2px}
+  .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;margin-bottom:2px}
+
+  .card{background:var(--stone);border:1px solid var(--b-base);padding:14px 16px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+  .card.agent::before{background:var(--agents)}
+  .card.cmd::before{background:var(--commands)}
+  .card.skill::before{background:var(--skills)}
+  .card.rule::before{background:var(--rules)}
+  .card.core::before{background:var(--gold)}
+
+  .card-cat{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px;display:block}
+  .card.agent .card-cat{color:var(--agents)}
+  .card.cmd .card-cat{color:var(--commands)}
+  .card.skill .card-cat{color:var(--skills)}
+  .card.rule .card-cat{color:var(--rules)}
+  .card.core .card-cat{color:var(--gold)}
+
+  .card-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:block}
+  .card-invoke{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ash);background:rgba(0,0,0,.3);padding:3px 8px;border-radius:1px;display:inline-block;margin-bottom:8px}
+  .card-desc{font-size:12.5px;color:var(--text);line-height:1.5}
+  .card-desc em{color:var(--fire);font-style:italic}
+  .card-desc strong{color:var(--gold);font-weight:500}
+
+  .tag-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border:1px solid rgba(255,255,255,.07);color:var(--dim);border-radius:1px}
+
+  /* ─ flow ─ */
+  .flow{display:flex;flex-direction:column;gap:2px;margin:10px 0}
+  .fstep{display:grid;grid-template-columns:36px 1fr;gap:0 12px;background:rgba(0,0,0,.2);border:1px solid var(--b-base)}
+  .fn{background:rgba(212,168,67,.06);border-right:1px solid var(--b-base);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ash)}
+  .fc{padding:9px 13px;font-size:13px}
+  .fc strong{color:var(--gold);font-weight:500}
+  .fc em{color:var(--fire);font-style:italic}
+  .fc code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fire);background:rgba(0,0,0,.3);padding:1px 5px}
+
+  /* ─ alert ─ */
+  .alert{padding:11px 15px;margin:10px 0;font-size:13px;border-radius:1px}
+  .alert.warn{background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-left:3px solid var(--gold)}
+  .alert strong{color:var(--gold);font-weight:500}
+
+  /* ─ table ─ */
+  .t{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+  .t th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash);text-align:left;padding:6px 10px;border-bottom:1px solid var(--b-base);font-weight:400}
+  .t td{padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top}
+  .t tr:last-child td{border-bottom:none}
+  .t .hi{color:var(--gold)}
+  .t .fi{color:var(--fire)}
+  .t .cl{color:var(--cold)}
+  .t .gr{color:var(--agents)}
+  .t .pu{color:var(--commands)}
+  .t .ye{color:var(--skills)}
+  .t .re{color:var(--rules)}
+  .t .dm{color:var(--dim);font-size:12px}
+
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--b-base);font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim);letter-spacing:.1em;text-align:center}
+
+  @media(max-width:720px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="doc-id"><span>KENOMA</span>·<span>DOC-CLAUDE-001</span>· .claude Folder Reference · Claude Code</div>
+  <h1>KENOMA · .claude</h1>
+  <div class="h1-sub">4 Agents · 11 Commands · 3 Skills · 1 Rules File · 1 Settings</div>
+  <div class="lead">Everything in this folder is loaded by Claude Code when working on the KENOMA Unity project. Skills are loaded per-agent. Commands are invoked with <code style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--fire)">/command-name</code>. Agents are invoked by description.</div>
+</header>
+
+<!-- FILE TREE -->
+<div class="div">Complete File Tree</div>
+<div class="tree">
+<pre>
+<span class="gold">kenoma-project/</span>
+├── <span class="gold">CLAUDE.md</span>                     ← loaded into every session automatically
+└── <span class="gold">.claude/</span>
+    ├── <span class="d">settings.json</span>                 ← permissions, model, env vars
+    │
+    ├── <span class="g">agents/</span>                       ← autonomous sub-agents
+    │   ├── <span class="g">narrative-guardian.md</span>     ← story authority gatekeeper
+    │   ├── <span class="g">bms-architect.md</span>          ← BMS system specialist
+    │   ├── <span class="g">unity-systems.md</span>          ← 8 core systems implementer
+    │   └── <span class="g">playtester.md</span>             ← simulated fresh player
+    │
+    ├── <span class="p">commands/</span>                     ← /slash commands
+    │   ├── <span class="p">iron-check.md</span>             ← verify against four Iron Laws
+    │   ├── <span class="p">bms-event.md</span>              ← scaffold new BMS event type
+    │   ├── <span class="p">new-puzzle.md</span>             ← puzzle scaffold (Iron Law IV enforced)
+    │   ├── <span class="p">vanguard-dialogue.md</span>      ← write Vanguard lines by stage
+    │   ├── <span class="p">dark-voice.md</span>             ← write Dark Voice + binaural origin
+    │   ├── <span class="p">crossing-logic.md</span>         ← generate TFP crossing code
+    │   ├── <span class="p">consequence-table.md</span>      ← BMS consequence table for solution set
+    │   ├── <span class="p">scene-review.md</span>           ← full scene checklist
+    │   ├── <span class="p">creature-naming.md</span>        ← Naming combat tier sequence
+    │   ├── <span class="p">translate-tablet.md</span>       ← author-first tablet content
+    │   ├── <span class="p">scenario-write.md</span>         ← Child Phase scenario script
+    │   ├── <span class="p">sprint-plan.md</span>            ← engineering sprint plan
+    │   └── <span class="p">demo-check.md</span>             ← full demo gate checklist
+    │
+    ├── <span class="y">skills/</span>                       ← context loaded into agents
+    │   ├── <span class="y">kenoma-core/SKILL.md</span>      ← game identity, Iron Laws, characters, worlds
+    │   ├── <span class="y">unity-kenoma/SKILL.md</span>     ← Unity 6 patterns, system specs, conventions
+    │   └── <span class="y">vanguard-voice/SKILL.md</span>   ← VA + VB + Dark Voice writing guides
+    │
+    └── <span class="e">rules/</span>
+        └── <span class="e">project-rules.md</span>          ← 10 inviolable rules for every session
+</pre>
+</div>
+
+<!-- QUICK USAGE -->
+<div class="div">How To Use Each Layer</div>
+<div class="flow">
+  <div class="fstep"><div class="fn">1</div><div class="fc"><strong>CLAUDE.md</strong> — auto-loaded. Every Claude Code session in this folder starts with the full project context: game identity, system build order, Iron Laws, character rules, and command index. You never need to re-explain what KENOMA is.</div></div>
+  <div class="fstep"><div class="fn">2</div><div class="fc"><strong>Commands</strong> — invoke with <code>/iron-check</code>, <code>/new-puzzle</code>, etc. Each command is a structured prompt that enforces a specific workflow. They gate dangerous operations (like making puzzles without authors) and produce consistent output formats that feed back into the codebase.</div></div>
+  <div class="fstep"><div class="fn">3</div><div class="fc"><strong>Agents</strong> — invoked by telling Claude Code to "use the narrative-guardian agent" or "run the playtester on this scene." Each agent loads specific skills and operates with defined permissions. The <em>narrative-guardian</em> runs read-only; the <em>unity-systems</em> agent has write access.</div></div>
+  <div class="fstep"><div class="fn">4</div><div class="fc"><strong>Skills</strong> — loaded automatically by agents that list them. <code>kenoma-core</code> is the compact project context (game identity, Iron Laws, characters, worlds). <code>unity-kenoma</code> is the Unity-specific architecture. <code>vanguard-voice</code> is the dialogue writing guide. Skills reduce token cost by keeping agent context focused.</div></div>
+  <div class="fstep"><div class="fn">5</div><div class="fc"><strong>Rules</strong> — applied to every session. 10 inviolable rules derived from the Iron Laws and design principles. When Claude Code is about to do something that violates a rule, the rule stops it before it happens.</div></div>
+</div>
+
+<!-- AGENTS -->
+<div class="div">Agents · 4 Specialist Sub-Agents</div>
+<div class="grid-2">
+  <div class="card agent">
+    <span class="card-cat">Agent</span>
+    <span class="card-name">Narrative Guardian</span>
+    <code class="card-invoke">use the narrative-guardian agent</code>
+    <div class="card-desc">Read-only gatekeeper. Reviews any file against the five core ideas, Vanguard character consistency, and all four Iron Laws. Run before merging anything that touches Vanguard behavior, puzzle design, or BMS warmth logic. Produces a compliance report with PASS/FAIL per criterion.</div>
+    <div class="tag-row"><span class="tag">read-only</span><span class="tag">pre-merge</span><span class="tag">kenoma-core</span><span class="tag">vanguard-voice</span></div>
+  </div>
+  <div class="card agent">
+    <span class="card-cat">Agent</span>
+    <span class="card-name">BMS Architect</span>
+    <code class="card-invoke">use the bms-architect agent</code>
+    <div class="card-desc">Specialist for the Behavioral Model System — the spine of everything. Designs new event types, reviews warmth register logic, diagnoses surfacing failures. Knows the full 12 event type schema, both warmth registers, and why USS must be built last. Has write access to <em>Scripts/BMS/</em> and <em>Scripts/Vanguard/</em>.</div>
+    <div class="tag-row"><span class="tag">read/write</span><span class="tag">BMS only</span><span class="tag">kenoma-core</span><span class="tag">unity-kenoma</span></div>
+  </div>
+  <div class="card agent">
+    <span class="card-cat">Agent</span>
+    <span class="card-name">Unity Systems</span>
+    <code class="card-invoke">use the unity-systems agent</code>
+    <div class="card-desc">Implements all 8 core systems in Unity 6 URP. Knows the build order (BMS first, USS last), system contracts, FMOD patterns, and project coding conventions. Will refuse to build USS before RSS/TDS/TVS are stable. Enforces all 10 project rules during implementation.</div>
+    <div class="tag-row"><span class="tag">read/write</span><span class="tag">all systems</span><span class="tag">unity-kenoma</span><span class="tag">kenoma-core</span></div>
+  </div>
+  <div class="card agent">
+    <span class="card-cat">Agent</span>
+    <span class="card-name">Playtester</span>
+    <code class="card-invoke">use the playtester agent</code>
+    <div class="card-desc">Simulates a fresh player's first experience through a scene or puzzle. Writes a first-person session report describing what they understood, what confused them, and how the Vanguard seemed. Flags design failures: <em>[BMS_NOT_SURFACING]</em>, <em>[MECHANIC_VISIBLE]</em>, <em>[WARMTH_DELIVERED_NOT_EARNED]</em>, etc. Read-only.</div>
+    <div class="tag-row"><span class="tag">read-only</span><span class="tag">pre-build</span><span class="tag">kenoma-core</span></div>
+  </div>
+</div>
+
+<!-- COMMANDS -->
+<div class="div">Commands · 11 Slash Commands</div>
+<table class="t">
+  <tr><th>Command</th><th>Use When</th><th>Enforces</th></tr>
+  <tr><td class="pu">/iron-check</td><td>Before committing any puzzle, Vanguard behavior, crossing logic, or UI change</td><td class="dm">All four Iron Laws · PASS/FAIL per law with line numbers</td></tr>
+  <tr><td class="pu">/bms-event</td><td>Adding a new observable Scholar behavior that should feed the Vanguard's model</td><td class="dm">Tag constants · delta ranges · call site · no UI leaks</td></tr>
+  <tr><td class="pu">/new-puzzle</td><td>Designing any new puzzle or room mechanic</td><td class="dm">Iron Law IV · must answer who/why/what before code generates</td></tr>
+  <tr><td class="pu">/vanguard-dialogue</td><td>Writing any Vanguard line, scene, or overheard moment</td><td class="dm">VA military register · VB philosophical register · stage accuracy</td></tr>
+  <tr><td class="pu">/dark-voice</td><td>Writing Scholar internal monologue lines</td><td class="dm">Binaural origin per line · Eastern Zhou vocabulary · act register</td></tr>
+  <tr><td class="pu">/crossing-logic</td><td>Implementing a traversal focal point between a room pair</td><td class="dm">Iron Rule · debt increment · Boundary thresholds · 2.2s lock</td></tr>
+  <tr><td class="pu">/consequence-table</td><td>Designing the BMS outcome structure for a multi-path puzzle</td><td class="dm">No-correct-answer check · observable behavior descriptions only</td></tr>
+  <tr><td class="pu">/scene-review</td><td>Before marking any scene feature-complete</td><td class="dm">Camera · audio · BMS wiring · Vanguard AI · Iron Laws · traversal</td></tr>
+  <tr><td class="pu">/creature-naming</td><td>Implementing a Naming combat sequence for any creature type</td><td class="dm">TDS prerequisite · Avestan designation · permanent registry</td></tr>
+  <tr><td class="pu">/translate-tablet</td><td>Writing any deep-readable tablet content</td><td class="dm">Author-first · skim vs deep-read gap · BMS consequence · puzzle unlock</td></tr>
+  <tr><td class="pu">/scenario-write</td><td>Scripting any of the five Child Phase scenario archetypes</td><td class="dm">Genre consistency · three-second silence · Vanguard-only POV</td></tr>
+  <tr><td class="pu">/sprint-plan</td><td>Planning an engineering sprint for any system</td><td class="dm">Build order gate · acceptance criteria · integration contracts</td></tr>
+  <tr><td class="pu">/demo-check</td><td>Before any external showing of the demo build</td><td class="dm">Core mechanic proof · all Iron Laws · zero HUD · Path C gate</td></tr>
+</table>
+
+<!-- SKILLS -->
+<div class="div">Skills · Context Loaded Into Agents</div>
+<div class="grid-3">
+  <div class="card skill">
+    <span class="card-cat">Skill</span>
+    <span class="card-name">kenoma-core</span>
+    <div class="card-desc">The compact project master context. Loaded by all agents. Covers: game identity and thesis, the five core ideas, four Iron Laws, Scholar and both Vanguard character rules, world architecture (WA/WB), the Iron Rule, and the five Child Phase scenario registers.</div>
+    <div class="tag-row"><span class="tag">all agents</span><span class="tag">~2000 tokens</span></div>
+  </div>
+  <div class="card skill">
+    <span class="card-cat">Skill</span>
+    <span class="card-name">unity-kenoma</span>
+    <div class="card-desc">Unity 6 URP architecture for KENOMA. Covers: static event patterns, singleton conventions, no-magic-strings rule, SerializeField discipline, camera system (AitD fixed model), world switching (2.2s non-interruptable), FMOD binaural integration, Vanguard NavMesh prediction model, zero HUD physical status table, git branch conventions.</div>
+    <div class="tag-row"><span class="tag">unity-systems</span><span class="tag">bms-architect</span><span class="tag">~2500 tokens</span></div>
+  </div>
+  <div class="card skill">
+    <span class="card-cat">Skill</span>
+    <span class="card-name">vanguard-voice</span>
+    <div class="card-desc">Complete writing guide for both Vanguards and the Dark Voice. VA voice: military precision, logistics warmth, stage-by-stage register, Clause 18 delivery. VB voice: philosophical patience, intellectual intimacy, subordinate clause rhythm, measured register. Dark Voice: Eastern Zhou vocabulary, binaural spatial origins, brevity rules.</div>
+    <div class="tag-row"><span class="tag">narrative-guardian</span><span class="tag">playtester</span><span class="tag">~2000 tokens</span></div>
+  </div>
+</div>
+
+<!-- RULES SUMMARY -->
+<div class="div">10 Project Rules · Applied Every Session</div>
+<table class="t">
+  <tr><th>#</th><th>Rule</th><th>What It Prevents</th></tr>
+  <tr><td class="re">1</td><td>BMS data is never exposed to the player</td><td class="dm">Warmth registers visible in UI, logs, or player-facing feedback</td></tr>
+  <tr><td class="re">2</td><td>Never use inline strings for BMS tags</td><td class="dm">Magic strings in RecordEvent() calls</td></tr>
+  <tr><td class="re">3</td><td>No BMS events in Update loops</td><td class="dm">Per-frame event dispatch, continuous warmth accumulation</td></tr>
+  <tr><td class="re">4</td><td>The Iron Rule has no exceptions</td><td class="dm">Crossing logic that deviates — even once, even with good intent</td></tr>
+  <tr><td class="re">5</td><td>Vanguard adapts through prediction, not mirroring</td><td class="dm">Hello Neighbor failure mode: AI blocks last route instead of predicting next</td></tr>
+  <tr><td class="re">6</td><td>Every puzzle must have an author (4-field comment)</td><td class="dm">Puzzles that exist because "this room needed a puzzle"</td></tr>
+  <tr><td class="re">7</td><td>Dark Voice is binaural from day one</td><td class="dm">Reverb-based Dark Voice added in post-production</td></tr>
+  <tr><td class="re">8</td><td>All designer-tunable values are SerializeField</td><td class="dm">Hardcoded gameplay constants</td></tr>
+  <tr><td class="re">9</td><td>Debug code is always gated behind debugMode flag</td><td class="dm">Debug.Log in production builds, warmth values in console</td></tr>
+  <tr><td class="re">10</td><td>Story authority over system authority</td><td class="dm">System implementation contradicting the story hierarchy</td></tr>
+</table>
+
+<!-- WORKFLOW -->
+<div class="div">Recommended Workflow Per Sprint</div>
+<div class="flow">
+  <div class="fstep"><div class="fn">①</div><div class="fc"><strong>Planning:</strong> <code>/sprint-plan [system]</code> → check build order → get day-by-day tasks with acceptance criteria</div></div>
+  <div class="fstep"><div class="fn">②</div><div class="fc"><strong>Before design:</strong> <em>playtester agent</em> on the intended experience → catch design failures before building. For puzzle design: <code>/new-puzzle</code> enforces Iron Law IV authorship before any code.</div></div>
+  <div class="fstep"><div class="fn">③</div><div class="fc"><strong>During implementation:</strong> <em>unity-systems agent</em> or <em>bms-architect agent</em> for system work. <code>/bms-event</code> for any new Scholar behavior. <code>/crossing-logic</code> for new TFPs.</div></div>
+  <div class="fstep"><div class="fn">④</div><div class="fc"><strong>Dialogue & voice:</strong> <code>/vanguard-dialogue</code> with Vanguard + stage + context. <code>/dark-voice</code> with scene moment + what to surface. Both commands enforce character register.</div></div>
+  <div class="fstep"><div class="fn">⑤</div><div class="fc"><strong>Before merge to dev:</strong> <code>/iron-check</code> on all new files. <code>/scene-review</code> on any changed scene. <em>narrative-guardian agent</em> on any Vanguard behavior or puzzle design change.</div></div>
+  <div class="fstep"><div class="fn">⑥</div><div class="fc"><strong>Before external showing:</strong> <code>/demo-check</code> — the single gate. One verdict only. If not externally showable, one blocking issue. Fix that. Run again.</div></div>
+</div>
+
+<div class="alert warn">
+  <strong>The only verdict that matters for the demo:</strong> "The Vanguard treated me differently based on what I chose." If a playtester describes only their own actions and not the Vanguard's response — the BMS is running but not surfacing. That is a failure state.
+</div>
+
+<footer>
+  KENOMA · بایگانی دو راستی · .claude Folder Reference<br>
+  4 Agents · 11 Commands · 3 Skills · 10 Rules · Unity 6 URP<br>
+  <span style="color:var(--fire);margin-top:4px;display:block;">Authority flows inward. Story beats system. The rule does not bend.</span>
+</footer>
+
+</div>
+</body>
+</html>
