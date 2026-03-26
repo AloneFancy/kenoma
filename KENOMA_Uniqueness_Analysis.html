@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — Uniqueness Analysis · Dynamic Antagonist Endings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:   #090a08;
+  --g1:     #0e0f0c;
+  --g2:     #141510;
+  --g3:     #1a1b14;
+  --g4:     #202118;
+  --g5:     #282920;
+  --rule:   #2e3024;
+  --rule2:  #3a3c2e;
+
+  --ink:    #e0dcc8;
+  --ink2:   #b8b4a0;
+  --ink3:   #7a7868;
+  --ink4:   #484640;
+  --ink5:   #2e2c28;
+
+  /* KENOMA — amber fire */
+  --k:      #c88c18;
+  --k2:     #e8aa30;
+  --k3:     #906408;
+  --kbg:    rgba(200,140,24,0.09);
+  --kbdr:   rgba(200,140,24,0.22);
+
+  /* Comparisons */
+  --sh2:    #9048b0;
+  --ut:     #c04848;
+  --w3:     #4888b0;
+  --mgs:    #485848;
+  --ba:     #a87840;
+  --ai:     #5060a0;
+  --ts1:    #786830;
+
+  /* Verdict */
+  --yes:    #4a8840;
+  --yes2:   #68aa56;
+  --no:     #883030;
+  --no2:    #b05050;
+  --part:   #886830;
+  --part2:  #b09050;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  font-family:'Barlow',sans-serif;
+  color:var(--ink2);
+  line-height:1.72;
+}
+.page{max-width:1120px;margin:0 auto;padding-bottom:100px;}
+
+/* COVER */
+.cover{
+  padding:64px 64px 52px;
+  border-bottom:1px solid var(--rule);
+  position:relative;overflow:hidden;
+  background:var(--g1);
+}
+.cover::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--k),var(--k2),rgba(200,140,24,0.3));
+}
+.cv-meta{
+  font-family:'DM Mono',monospace;
+  font-size:9.5px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--ink4);
+  display:flex;justify-content:space-between;margin-bottom:36px;
+}
+.cv-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(38px,5vw,68px);
+  font-weight:900;
+  color:var(--ink);line-height:1.04;
+  letter-spacing:-1.5px;margin-bottom:14px;
+}
+.cv-title em{font-style:italic;color:var(--k2);}
+.cv-sub{
+  font-size:17px;font-weight:300;
+  color:var(--ink3);max-width:700px;
+  line-height:1.62;margin-bottom:28px;
+}
+.cv-verdict{
+  background:var(--kbg);
+  border:1px solid var(--kbdr);
+  border-left:4px solid var(--k);
+  padding:16px 22px;
+  max-width:760px;
+  font-family:'Playfair Display',serif;
+  font-size:18px;font-style:italic;
+  color:var(--ink);line-height:1.55;
+}
+.cv-verdict em{color:var(--k2);font-style:normal;}
+
+/* SECTION HEADS */
+.sh{
+  padding:22px 64px 18px;
+  background:var(--g2);
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:baseline;gap:14px;
+  position:sticky;top:0;z-index:10;
+}
+.sh-n{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:4px;color:var(--ink4);
+}
+.sh-t{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:700;color:var(--ink);
+}
+.sh-aside{
+  margin-left:auto;
+  font-family:'DM Mono',monospace;
+  font-size:9px;color:var(--ink5);
+  font-style:italic;white-space:nowrap;
+}
+
+.body{padding:28px 64px 36px;}
+
+/* PROSE */
+p{font-size:15px;color:var(--ink3);line-height:1.75;margin-bottom:11px;}
+p:last-child{margin:0;}
+p strong{color:var(--ink2);}
+p em{font-style:italic;color:var(--ink2);}
+h3{
+  font-family:'Playfair Display',serif;
+  font-size:17px;font-weight:700;
+  color:var(--ink);margin:24px 0 11px;
+  padding-bottom:6px;border-bottom:1px solid var(--rule2);
+}
+h3:first-child{margin-top:0;}
+
+/* CALLOUT */
+.call{
+  border-left:3px solid;padding:13px 18px;
+  margin:16px 0;font-size:14.5px;line-height:1.72;
+  color:var(--ink3);
+}
+.ck{border-color:var(--k);background:var(--kbg);}
+.cn{border-color:var(--rule2);background:var(--g3);}
+.call strong{color:var(--ink2);}
+.call em{font-style:italic;color:var(--ink);}
+.call-lbl{
+  font-family:'DM Mono',monospace;font-size:8.5px;
+  letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:5px;
+}
+.ck .call-lbl{color:var(--k);}
+.cn .call-lbl{color:var(--ink4);}
+
+/* THE DEFINITION BLOCK */
+.definition{
+  background:var(--g3);
+  border:1px solid var(--rule2);
+  border-top:3px solid var(--k);
+  padding:28px 32px;margin:24px 0;
+}
+.def-title{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:700;
+  color:var(--k2);margin-bottom:16px;
+}
+.def-criteria{display:flex;flex-direction:column;gap:2px;}
+.crit{
+  display:grid;grid-template-columns:28px 1fr;
+  gap:12px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid var(--rule);
+}
+.crit:last-child{border:none;}
+.crit-n{
+  font-family:'DM Mono',monospace;
+  font-size:11px;font-weight:700;
+  color:var(--k);padding-top:2px;
+}
+.crit-body{font-size:14.5px;color:var(--ink3);line-height:1.65;}
+.crit-body strong{color:var(--ink2);}
+
+/* GAME COMPARISON CARDS */
+.comp-grid{
+  display:grid;grid-template-columns:1fr;
+  gap:2px;margin:24px 0;
+}
+.gc{
+  background:var(--g2);
+  border:1px solid var(--rule);
+  border-left:4px solid;
+  overflow:hidden;
+}
+.gc-head{
+  padding:16px 22px;
+  display:grid;grid-template-columns:1fr auto;
+  align-items:center;gap:12px;
+  border-bottom:1px solid var(--rule);
+  cursor:pointer;
+}
+.gc-left{display:flex;align-items:center;gap:14px;}
+.gc-badge{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  padding:3px 9px;border:1px solid;flex-shrink:0;
+}
+.gc-name{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;color:var(--ink);
+}
+.gc-sub{font-size:13px;color:var(--ink4);font-style:italic;}
+.gc-scores{display:flex;gap:6px;flex-shrink:0;}
+.score{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:1px;
+  padding:3px 9px;border:1px solid;
+  display:flex;align-items:center;gap:5px;
+}
+.s-yes{border-color:rgba(74,136,64,0.45);color:var(--yes2);background:rgba(74,136,64,0.07);}
+.s-no {border-color:rgba(136,48,48,0.45);color:var(--no2); background:rgba(136,48,48,0.07);}
+.s-pt {border-color:rgba(136,104,48,0.45);color:var(--part2);background:rgba(136,104,48,0.07);}
+.s-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dot-yes{background:var(--yes2);}
+.dot-no {background:var(--no2);}
+.dot-pt {background:var(--part2);}
+
+.gc-body{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  border-top:1px solid var(--rule);
+}
+.gc-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.gc-col:last-child{border-right:none;}
+.gcc-lbl{
+  font-family:'DM Mono',monospace;font-size:8.5px;
+  letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:9px;padding-bottom:6px;
+  border-bottom:1px solid var(--rule);
+}
+.what .gcc-lbl{color:var(--ink4);}
+.diff .gcc-lbl{color:var(--no);}
+.kgap .gcc-lbl{color:var(--k3);}
+.gcc-body{font-size:13.5px;color:var(--ink3);line-height:1.65;}
+.gcc-body strong{color:var(--ink2);}
+.gcc-body em{font-style:italic;color:var(--ink);}
+
+/* Game color accents */
+.g-sh2{border-left-color:var(--sh2);}
+.g-sh2 .gc-badge{border-color:rgba(144,72,176,0.4);color:var(--sh2);}
+
+.g-ut{border-left-color:var(--ut);}
+.g-ut .gc-badge{border-color:rgba(192,72,72,0.4);color:var(--ut);}
+
+.g-w3{border-left-color:var(--w3);}
+.g-w3 .gc-badge{border-color:rgba(72,136,176,0.4);color:var(--w3);}
+
+.g-ba{border-left-color:var(--ba);}
+.g-ba .gc-badge{border-color:rgba(168,120,64,0.4);color:var(--ba);}
+
+.g-mgs{border-left-color:var(--mgs);}
+.g-mgs .gc-badge{border-color:rgba(72,88,72,0.4);color:var(--mgs);}
+
+.g-ai{border-left-color:var(--ai);}
+.g-ai .gc-badge{border-color:rgba(80,96,160,0.4);color:var(--ai);}
+
+.g-ts1{border-left-color:var(--ts1);}
+.g-ts1 .gc-badge{border-color:rgba(120,104,48,0.4);color:var(--ts1);}
+
+/* THE MATRIX */
+.matrix-wrap{overflow-x:auto;margin:20px 0;}
+.matrix{width:100%;border-collapse:collapse;font-size:13px;}
+.matrix th{
+  background:var(--g4);
+  font-family:'DM Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--ink4);padding:10px 14px;text-align:left;
+  border-bottom:1px solid var(--rule2);white-space:nowrap;
+}
+.matrix th:first-child{min-width:200px;}
+.matrix td{
+  padding:9px 14px;border-bottom:1px solid var(--rule);
+  vertical-align:middle;
+}
+.matrix td:first-child{
+  font-family:'Barlow',sans-serif;font-weight:600;color:var(--ink2);
+}
+.m-yes{color:var(--yes2);text-align:center;font-size:16px;}
+.m-no {color:var(--no2); text-align:center;font-size:16px;}
+.m-pt {color:var(--part2);text-align:center;font-size:14px;font-family:'DM Mono',monospace;}
+.m-k{background:rgba(200,140,24,0.06);}
+.matrix tr:hover td{background:var(--g3);}
+.matrix tr.m-k:hover td{background:rgba(200,140,24,0.1);}
+
+/* THE UNIQUE CLAIM */
+.claim{
+  background:var(--kbg);
+  border:1px solid var(--kbdr);
+  border-top:3px solid var(--k2);
+  padding:32px 36px;margin:24px 0;
+}
+.claim-title{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:700;
+  color:var(--k2);margin-bottom:16px;
+}
+.claim-body{font-size:15px;color:var(--ink3);line-height:1.78;}
+.claim-body strong{color:var(--ink);}
+.claim-body em{font-style:italic;color:var(--k2);}
+
+/* THE RISK ANALYSIS */
+.risk-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2px;margin:20px 0;
+}
+.risk-card{padding:20px 22px;background:var(--g3);}
+.risk-card.risk-threat{border-top:2px solid var(--no);}
+.risk-card.risk-shield{border-top:2px solid var(--yes);}
+.risk-type{
+  font-family:'DM Mono',monospace;font-size:8.5px;
+  letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:7px;
+}
+.risk-threat .risk-type{color:var(--no2);}
+.risk-shield .risk-type{color:var(--yes2);}
+.risk-title{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:700;
+  color:var(--ink);display:block;margin-bottom:7px;
+}
+.risk-body{font-size:14px;color:var(--ink3);line-height:1.65;}
+.risk-body strong{color:var(--ink2);}
+
+/* PITCH STATEMENT */
+.pitch{
+  background:var(--g1);
+  border-top:1px solid var(--rule);
+  padding:64px;
+  position:relative;overflow:hidden;
+}
+.pitch::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(200,140,24,0.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+.pitch-main{max-width:860px;position:relative;}
+.pitch-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--ink4);display:block;margin-bottom:20px;
+}
+.pitch-statement{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(20px,3vw,34px);
+  font-weight:700;color:var(--ink);
+  line-height:1.18;margin-bottom:24px;letter-spacing:-.5px;
+}
+.pitch-statement em{font-style:italic;color:var(--k2);}
+.pitch-sub{
+  font-family:'Barlow',sans-serif;
+  font-size:17px;font-weight:300;font-style:italic;
+  color:var(--ink3);line-height:1.65;max-width:720px;
+  margin-bottom:36px;
+}
+.pitch-line{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-style:italic;
+  color:var(--k3);
+  border-top:1px solid var(--rule2);
+  padding-top:20px;
+}
+
+/* foot */
+.foot{padding:20px 64px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.foot span{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink5);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cv-meta">
+    <span>KENOMA · Design Research · Uniqueness Analysis</span>
+    <span>Deep Research · Dynamic Antagonist Endings · Competitive Landscape</span>
+  </div>
+  <div class="cv-title">
+    Does Any Game Do<br>What <em>KENOMA</em> Does?
+  </div>
+  <div class="cv-sub">
+    A deep research survey of every comparable mechanism in the video game landscape — invisible behavioral tracking, antagonist-as-mirror, mentor-villain relationships, dynamic endings, adaptive AI — to determine exactly where KENOMA sits relative to the full history of the medium.
+  </div>
+  <div class="cv-verdict">
+    The short answer: <em>no game has built what KENOMA builds</em>. Several have reached toward it from adjacent angles — Silent Hill 2 from the psychology side, Undertale from the meta-memory side, The Witcher 3 from the mentorship side. None have combined these into the specific mechanism KENOMA uses: an antagonist whose <em>final capability spectrum is constructed entirely from what the protagonist invested in her</em>, across a full run, invisibly, irreversibly, and with ten granular outcomes per world.
+  </div>
+</div>
+
+
+<!-- §1 — DEFINING THE MECHANIC -->
+<div class="sh">
+  <span class="sh-n">§ 01</span>
+  <span class="sh-t">Defining the Mechanism Precisely</span>
+  <span class="sh-aside">Before comparison, clarity on what KENOMA actually does</span>
+</div>
+<div class="body">
+  <p>Most "dynamic endings" in games are binary: good or bad. Most "antagonist adaptation" systems are tactical: the enemy uses your patterns against you in combat. Most "behavioral tracking" systems reveal something about the protagonist. KENOMA does something different in nature, not degree. Before comparing it to anything else, the mechanism needs a precise definition.</p>
+
+  <div class="definition">
+    <div class="def-title">The KENOMA Mechanism — Five Criteria</div>
+    <div class="def-criteria">
+      <div class="crit">
+        <div class="crit-n">C1</div>
+        <div class="crit-body"><strong>The antagonist's specific final capability is built by the protagonist's investments throughout the run</strong> — not "does she win or lose" but "exactly how capable is she, in exactly which dimensions." The Scholar shares a translation → the Vanguard knows that administrative clause. The Scholar demonstrates a puzzle-solving method → the Vanguard uses that method in Act II. Every investment has a specific downstream capability.</div>
+      </div>
+      <div class="crit">
+        <div class="crit-n">C2</div>
+        <div class="crit-body"><strong>The tracking is invisible and continuous across the entire run</strong> — not a few explicit choice points, but the accumulated weight of every decision: how much oil the Scholar donated, every translation shared, every puzzle method demonstrated, every moment of working independently versus together. The player has no UI indication that these decisions are being logged.</div>
+      </div>
+      <div class="crit">
+        <div class="crit-n">C3</div>
+        <div class="crit-body"><strong>The antagonist is a companion, not a monster</strong> — the player spends the entire Camel Phase building genuine warmth with her. The three emotional resonance moments must land as real before the False Victory can destroy them. The shock is not "she was secretly evil." It is "she was exactly what she always was, and that was always going to require this conclusion."</div>
+      </div>
+      <div class="crit">
+        <div class="crit-n">C4</div>
+        <div class="crit-body"><strong>The antagonist never transforms</strong> — she does not power up, she does not become supernatural, she does not undergo a phase change. The quality of her ending is entirely a function of the quality of what the Scholar gave her. The worst ending is someone who received little. The best ending is someone who received everything — and the player's best work made their own best nemesis.</div>
+      </div>
+      <div class="crit">
+        <div class="crit-n">C5</div>
+        <div class="crit-body"><strong>Ten granular states across two worlds</strong> — not three endings (good, neutral, bad) but five capability levels per surviving world, each with specific tactical behavior, specific dialogue, and specific narrative meaning. Level 5 World A ends with "You were extraordinary. Past tense is not a judgment. It is a precision." Level 1 World A ends with something that looks like failure — not the antagonist's failure. The Scholar's.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="call ck">
+    <span class="call-lbl">The Core Question</span>
+    Has any game built a protagonist-antagonist dynamic where <strong>the antagonist's final capability spectrum is directly authored by what the protagonist invested in them</strong> — across a full run, invisibly, with granular rather than binary outcomes, and where the highest investment produces the most formidable adversary?
+  </div>
+</div>
+
+
+<!-- §2 — THE LANDSCAPE -->
+<div class="sh">
+  <span class="sh-n">§ 02</span>
+  <span class="sh-t">The Comparative Landscape — Every Relevant Game</span>
+  <span class="sh-aside">What each comes close to · where each falls short</span>
+</div>
+<div class="body">
+  <p>Seven categories of mechanism exist in the broader game landscape that approach KENOMA's design from different angles. Each is analyzed against the five criteria above.</p>
+
+  <!-- SH2 -->
+  <div class="comp-grid">
+    <div class="gc g-sh2">
+      <div class="gc-head">
+        <div class="gc-left">
+          <span class="gc-badge">SH2 · 2001 · Team Silent</span>
+          <div>
+            <div class="gc-name">Silent Hill 2</div>
+            <div class="gc-sub">Invisible behavioral spine determines ending through player psychology profiling</div>
+          </div>
+        </div>
+        <div class="gc-scores">
+          <span class="score s-yes"><span class="s-dot dot-yes"></span>C1 partial</span>
+          <span class="score s-yes"><span class="s-dot dot-yes"></span>C2 ✓</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C3 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C4 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C5 ✗</span>
+        </div>
+      </div>
+      <div class="gc-body">
+        <div class="gc-col what">
+          <span class="gcc-lbl">What it does</span>
+          <div class="gcc-body">Silent Hill 2 is the originator of invisible behavioral tracking in survival horror. The game secretly monitors James Sunderland's actions — how often he checks Angela's knife, whether he stays at low health, how many times he reads Mary's letter — and uses this as a psychological profile to determine which ending fires. <strong>Players only understand the tracking when the ending reveals it.</strong> This is genuinely unprecedented design that no prior game had achieved at this depth.</div>
+        </div>
+        <div class="gc-col diff">
+          <span class="gcc-lbl">Critical difference from KENOMA</span>
+          <div class="gcc-body">SH2's tracking profiles the <em>protagonist's psychology</em> to reveal who James is. It does not track what James gave to an antagonist. <strong>Pyramid Head does not grow more capable because James taught him things.</strong> The ending reflects the player's own psychological state as expressed through gameplay — a mirror of the protagonist. KENOMA's mechanism is a mirror of the protagonist <em>held by the antagonist</em> — the Vanguard reflects what the Scholar invested, not who the Scholar is.</div>
+        </div>
+        <div class="gc-col kgap">
+          <span class="gcc-lbl">What KENOMA inherits and extends</span>
+          <div class="gcc-body">KENOMA takes SH2's invisible tracking and extends it in one critical direction: <strong>the behavioral score is not read by the game to determine what ending fires — it is read by the Vanguard to determine how she behaves.</strong> The tracking is legible through her observable actions during the Camel Phase. Players who pay attention can see the model accumulating. They cannot do anything about it.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNDERTALE -->
+    <div class="gc g-ut">
+      <div class="gc-head">
+        <div class="gc-left">
+          <span class="gc-badge">UNDERTALE · 2015 · Toby Fox</span>
+          <div>
+            <div class="gc-name">Undertale</div>
+            <div class="gc-sub">Antagonists with meta-memory across playthroughs; Sans knows what you did in genocide</div>
+          </div>
+        </div>
+        <div class="gc-scores">
+          <span class="score s-no"><span class="s-dot dot-no"></span>C1 ✗</span>
+          <span class="score s-yes"><span class="s-dot dot-yes"></span>C2 ✓</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C3 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C4 ✗</span>
+          <span class="score s-pt"><span class="s-dot dot-pt"></span>C5 partial</span>
+        </div>
+      </div>
+      <div class="gc-body">
+        <div class="gc-col what">
+          <span class="gcc-lbl">What it does</span>
+          <div class="gcc-body">Undertale's most famous innovation: Flowey and Sans remember what you did in prior playthroughs. The genocide route's Sans fight is the hardest encounter in the game — not because he has grown stronger, but because he knows you are the kind of player who kills everything. Flowey breaks the fourth wall to acknowledge your save-file manipulation. The antagonist's behavior changes based on accumulated cross-session player history. <strong>This is genuine meta-memory implemented as narrative.</strong></div>
+        </div>
+        <div class="gc-col diff">
+          <span class="gcc-lbl">Critical difference from KENOMA</span>
+          <div class="gcc-body">Undertale's system is binary and cross-session: did you do genocide (yes/no) in a prior run? The route you take gates you into a specific antagonist mode — genocide Sans, pacifist Flowey, neutral Omega Flowey. <strong>Sans does not grow more powerful because the player taught him things during this run.</strong> The mechanism tracks what kind of player you are across sessions, not what you specifically invested in this antagonist within one run. Route-selection, not investment-accumulation.</div>
+        </div>
+        <div class="gc-col kgap">
+          <span class="gcc-lbl">What KENOMA inherits and extends</span>
+          <div class="gcc-body">Undertale proved that antagonists with narrative awareness of player behavior create emotional impacts that purely mechanical boss fights cannot. KENOMA applies this within a single run and makes it bidirectional: <strong>the Vanguard's awareness of the Scholar is built during the same run the player is experiencing</strong> — not accumulated across multiple sessions. The intimacy is greater because the antagonist learned from exactly this playthrough.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WITCHER 3 -->
+    <div class="gc g-w3">
+      <div class="gc-head">
+        <div class="gc-left">
+          <span class="gc-badge">Witcher 3 · 2015 · CD Projekt Red</span>
+          <div>
+            <div class="gc-name">The Witcher 3 — Ciri's Fate</div>
+            <div class="gc-sub">Mentorship choices across the run determine whether Ciri survives and what she becomes</div>
+          </div>
+        </div>
+        <div class="gc-scores">
+          <span class="score s-yes"><span class="s-dot dot-yes"></span>C1 ✓</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C2 ✗</span>
+          <span class="score s-pt"><span class="s-dot dot-pt"></span>C3 partial</span>
+          <span class="score s-yes"><span class="s-dot dot-yes"></span>C4 ✓</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C5 ✗</span>
+        </div>
+      </div>
+      <div class="gc-body">
+        <div class="gc-col what">
+          <span class="gcc-lbl">What it does</span>
+          <div class="gcc-body">The Witcher 3's Ciri ending system is the closest existing mechanic to KENOMA's design in terms of emotional architecture: <strong>how Geralt mentors, supports, and treats Ciri across 5 pivotal moments determines her fate in the game's climax</strong> — whether she survives, and what she becomes afterward (witcher, empress, or dead). The snowball fight counts. Visiting Skjall's grave counts. Refusing the Emperor's payment counts. These are investments in a person who matters emotionally.</div>
+        </div>
+        <div class="gc-col diff">
+          <span class="gcc-lbl">Critical difference from KENOMA</span>
+          <div class="gcc-body">Three problems: First, <strong>the choices are explicit and declared</strong> — 5 visible decision points, not invisible continuous behavioral accumulation. Second, <strong>Ciri is not the antagonist</strong> — Geralt's mentorship determines her survival as an ally, not the quality of an adversary who then uses those investments against him. Third, the outcomes are binary gates (3 endings: witcher, empress, dead) rather than ten granular capability states.</div>
+        </div>
+        <div class="gc-col kgap">
+          <span class="gcc-lbl">What KENOMA inherits and extends</span>
+          <div class="gcc-body">The Witcher 3 proved that <em>mentorship as a mechanical axis</em> produces emotional resonance that combat or dialogue choices cannot — the snowball fight is remembered because it is a relationship moment coded as a destiny-determination event. KENOMA applies this to <strong>an antagonist</strong> and makes every interaction across the entire run function as a mentorship moment, with no declared choice points. <em>Everything is the snowball fight.</em> The player never knows which moments are being counted.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAYONETTA -->
+    <div class="gc g-ba">
+      <div class="gc-head">
+        <div class="gc-left">
+          <span class="gc-badge">Bayonetta · 2009 · PlatinumGames</span>
+          <div>
+            <div class="gc-name">Bayonetta — Jeanne as Parallel Antagonist</div>
+            <div class="gc-sub">Recurring antagonist acquires new abilities that parallel the protagonist's own growth</div>
+          </div>
+        </div>
+        <div class="gc-scores">
+          <span class="score s-no"><span class="s-dot dot-no"></span>C1 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C2 ✗</span>
+          <span class="score s-pt"><span class="s-dot dot-pt"></span>C3 partial</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C4 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C5 ✗</span>
+        </div>
+      </div>
+      <div class="gc-body">
+        <div class="gc-col what">
+          <span class="gcc-lbl">What it does</span>
+          <div class="gcc-body">Bayonetta's Jeanne is fought multiple times across the game. Each encounter, she has learned new abilities — but these track Bayonetta's own development, so the challenge remains appropriate. Jeanne is a dark mirror: same abilities, same mastery, opposing allegiance. This is one of gaming's clearest examples of a <strong>deliberately designed parallel antagonist whose capability scales with the protagonist's growth</strong>. The pattern recognition in players: "she fights like me."</div>
+        </div>
+        <div class="gc-col diff">
+          <span class="gcc-lbl">Critical difference from KENOMA</span>
+          <div class="gcc-body"><strong>Jeanne's capability growth is scripted to mirror Bayonetta's unlocks, not derived from what Bayonetta specifically invested in her.</strong> The scaling is designer-authored: "Jeanne has the Witch Time ability at this encounter because the player unlocked it." It is not behavioral accumulation. Additionally, Jeanne is never presented as a companion — she is an adversary from the first encounter. The emotional investment is competitive, not collaborative. And the outcome has no granular states.</div>
+        </div>
+        <div class="gc-col kgap">
+          <span class="gcc-lbl">What KENOMA inherits and extends</span>
+          <div class="gcc-body">Bayonetta proved that <em>a parallel antagonist whose capabilities echo the protagonist's</em> creates the most emotionally resonant boss encounters — "she fights like me" is more disturbing than "she is more powerful than me." KENOMA's mechanism is the logical extreme: <strong>she fights like the Scholar because the Scholar taught her</strong>. Not a designer-authored parallel. A player-authored one.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MGS V -->
+    <div class="gc g-mgs">
+      <div class="gc-head">
+        <div class="gc-left">
+          <span class="gc-badge">MGSV · 2015 · Konami / Kojima</span>
+          <div>
+            <div class="gc-name">Metal Gear Solid V — Enemy Adaptation</div>
+            <div class="gc-sub">Enemy soldiers equip gear to counter the player's tactical preferences mid-campaign</div>
+          </div>
+        </div>
+        <div class="gc-scores">
+          <span class="score s-no"><span class="s-dot dot-no"></span>C1 ✗</span>
+          <span class="score s-yes"><span class="s-dot dot-yes"></span>C2 ✓</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C3 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C4 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C5 ✗</span>
+        </div>
+      </div>
+      <div class="gc-body">
+        <div class="gc-col what">
+          <span class="gcc-lbl">What it does</span>
+          <div class="gcc-body">MGSV tracks the player's tactical preferences — frequent headshots → soldiers equip helmets; frequent tranquilizer use → soldiers take stimulants. The enemy army as a whole adapts to counter the player's approach. <strong>This is the most sophisticated tactical behavioral tracking system in an AAA game to date.</strong> The adaptation is real, invisible, and consequential — players who stick to one approach are genuinely countered.</div>
+        </div>
+        <div class="gc-col diff">
+          <span class="gcc-lbl">Critical difference from KENOMA</span>
+          <div class="gcc-body">MGSV's adaptation is purely mechanical: gear and tactics, not capability or narrative. <strong>No antagonist in MGSV learns something specific that the player taught them</strong> — anonymous soldiers adapt as a collective, without narrative identity. There is no emotional investment in a specific antagonist. There is no companion relationship that becomes an adversarial one. The adaptation has no bearing on an ending.</div>
+        </div>
+        <div class="gc-col kgap">
+          <span class="gcc-lbl">What KENOMA inherits and extends</span>
+          <div class="gcc-body">MGSV proved that continuous invisible tactical tracking — without UI feedback — creates a sense that the world genuinely registers the player's presence. KENOMA applies this principle to narrative rather than tactics: <strong>the Vanguard tracking the Scholar's behavior creates the same "the world is watching" effect, but the outcome is not "soldiers wear helmets" — it is "she knows your crossbow range to the centimeter and has positioned herself accordingly."</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALIEN ISOLATION -->
+    <div class="gc g-ai">
+      <div class="gc-head">
+        <div class="gc-left">
+          <span class="gc-badge">Alien Isolation · 2014 · Creative Assembly</span>
+          <div>
+            <div class="gc-name">Alien: Isolation — The Xenomorph's Learning AI</div>
+            <div class="gc-sub">The Alien learns and counters the specific hiding patterns the player uses</div>
+          </div>
+        </div>
+        <div class="gc-scores">
+          <span class="score s-no"><span class="s-dot dot-no"></span>C1 ✗</span>
+          <span class="score s-yes"><span class="s-dot dot-yes"></span>C2 ✓</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C3 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C4 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C5 ✗</span>
+        </div>
+      </div>
+      <div class="gc-body">
+        <div class="gc-col what">
+          <span class="gcc-lbl">What it does</span>
+          <div class="gcc-body">Alien: Isolation uses a dual-AI system for the Xenomorph: one AI searches for Ripley based on logic and sound, while a second "director" AI secretly monitors the player's hiding patterns and steers the first AI toward behaviors that will disrupt them. <strong>If you always hide under desks, it learns to check under desks.</strong> This is the most implemented "learning antagonist" system in a survival horror game — the alien specifically counters your habits.</div>
+        </div>
+        <div class="gc-col diff">
+          <span class="gcc-lbl">Critical difference from KENOMA</span>
+          <div class="gcc-body">The Xenomorph is not a character. It has no narrative relationship with Ripley. It cannot be invested in. Its "learning" is a real-time tactical parameter adjustment, not accumulated knowledge of a person's specific capability investments. <strong>No ending of Alien: Isolation reflects what the player gave the Xenomorph.</strong> There is no emotional dimension — the learning creates dread, but the dread is combat dread, not relational dread.</div>
+        </div>
+        <div class="gc-col kgap">
+          <span class="gcc-lbl">What KENOMA inherits and extends</span>
+          <div class="gcc-body">Alien: Isolation proved that a monster that specifically counters the player's habits — rather than the same scripted patterns — produces a qualitatively different kind of fear. The player cannot master the encounter because the encounter has mastered them. KENOMA applies this at the <em>narrative level</em>: <strong>the Vanguard cannot be mastered because the Scholar built her capability — and the Scholar has no counter-strategy for knowledge they gave away.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TORMENTED SOULS 1 -->
+    <div class="gc g-ts1">
+      <div class="gc-head">
+        <div class="gc-left">
+          <span class="gc-badge">Tormented Souls 1 · 2021 · Dual Effect</span>
+          <div>
+            <div class="gc-name">Tormented Souls 1 — Behavioral Mirroring</div>
+            <div class="gc-sub">Investigation mechanics where the protagonist's actions reflect character psychology; puzzles as narrative scars</div>
+          </div>
+        </div>
+        <div class="gc-scores">
+          <span class="score s-no"><span class="s-dot dot-no"></span>C1 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C2 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C3 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C4 ✗</span>
+          <span class="score s-no"><span class="s-dot dot-no"></span>C5 ✗</span>
+        </div>
+      </div>
+      <div class="gc-body">
+        <div class="gc-col what">
+          <span class="gcc-lbl">What it does</span>
+          <div class="gcc-body">TS1 is included not as a direct parallel but as KENOMA's closest design ancestor. TS1 achieved something rare: <strong>the act of solving a puzzle IS the act of discovering the character who left it</strong>. The TV dial that reconstructs an abusive biography. The pocket watch stopped at the twins' birthday. Every puzzle exists because a real person made a real decision in that space. The investigation and the mechanics are the same act.</div>
+        </div>
+        <div class="gc-col diff">
+          <span class="gcc-lbl">Critical difference from KENOMA</span>
+          <div class="gcc-body">TS1 has no behavioral tracking of the player. No antagonist learns from Caroline. The puzzles reveal the <em>past's</em> characters, not a present antagonist who is growing in real-time. <strong>Bosses in TS1 are not dynamic.</strong> The narrative coherence is extraordinary, but it is backward-facing — archaeology of past decisions — not forward-building of a present capability.</div>
+        </div>
+        <div class="gc-col kgap">
+          <span class="gcc-lbl">What KENOMA inherits and extends</span>
+          <div class="gcc-body">TS1 provided the design law: every puzzle must be a scar of a specific person's specific decision. KENOMA extends this law in a new direction: <strong>the puzzle of the ending is also a scar — a scar of what the Scholar invested in the Vanguard.</strong> The same principle that makes TS1's investigation feel real makes KENOMA's ending feel inevitable.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- §3 — THE MATRIX -->
+<div class="sh">
+  <span class="sh-n">§ 03</span>
+  <span class="sh-t">Comparative Matrix — All Five Criteria Across All Games</span>
+  <span class="sh-aside">Green = meets criterion · Amber = partially · Red = does not</span>
+</div>
+<div class="body">
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <tr>
+        <th>Game</th>
+        <th>C1 · Antagonist built by investment</th>
+        <th>C2 · Invisible continuous tracking</th>
+        <th>C3 · Companion → Adversary</th>
+        <th>C4 · No transformation</th>
+        <th>C5 · 10 granular outcomes</th>
+      </tr>
+      <tr>
+        <td style="color:var(--sh2)">Silent Hill 2</td>
+        <td class="m-pt">~</td>
+        <td class="m-yes">✓</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+      </tr>
+      <tr>
+        <td style="color:var(--ut)">Undertale</td>
+        <td class="m-no">✗</td>
+        <td class="m-yes">✓</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-pt">~</td>
+      </tr>
+      <tr>
+        <td style="color:var(--w3)">Witcher 3 (Ciri)</td>
+        <td class="m-yes">✓</td>
+        <td class="m-no">✗</td>
+        <td class="m-pt">~</td>
+        <td class="m-yes">✓</td>
+        <td class="m-no">✗</td>
+      </tr>
+      <tr>
+        <td style="color:var(--ba)">Bayonetta (Jeanne)</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-pt">~</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+      </tr>
+      <tr>
+        <td style="color:var(--mgs)">Metal Gear Solid V</td>
+        <td class="m-no">✗</td>
+        <td class="m-yes">✓</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+      </tr>
+      <tr>
+        <td style="color:var(--ai)">Alien: Isolation</td>
+        <td class="m-no">✗</td>
+        <td class="m-yes">✓</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+      </tr>
+      <tr>
+        <td style="color:var(--ts1)">Tormented Souls 1</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+        <td class="m-no">✗</td>
+      </tr>
+      <tr class="m-k">
+        <td style="color:var(--k2);font-weight:700">KENOMA</td>
+        <td class="m-yes">✓</td>
+        <td class="m-yes">✓</td>
+        <td class="m-yes">✓</td>
+        <td class="m-yes">✓</td>
+        <td class="m-yes">✓</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="call ck">
+    <span class="call-lbl">What the Matrix Shows</span>
+    No existing game scores more than two criteria. <strong>Silent Hill 2 and MGSV score C2 (invisible tracking). Witcher 3 scores C1 and C4 (investment and no-transformation).</strong> No game scores C3 (companion-to-adversary) or C5 (ten granular states) at all. No game scores more than two simultaneously. KENOMA scores all five. The five criteria are not arbitrary — they map exactly to what makes the mechanism emotionally distinctive rather than just mechanically novel.
+  </div>
+</div>
+
+
+<!-- §4 — THE UNIQUE CLAIM -->
+<div class="sh">
+  <span class="sh-n">§ 04</span>
+  <span class="sh-t">The Unique Claim — Stated Precisely</span>
+  <span class="sh-aside">What KENOMA does that no game has done before</span>
+</div>
+<div class="body">
+  <div class="claim">
+    <div class="claim-title">The Mechanism That Does Not Exist Yet</div>
+    <div class="claim-body">
+      <p>KENOMA builds an antagonist the player genuinely loves during Act I — through accumulated emotional investment, shared work, genuine warmth. The three Camel Phase resonance moments (the Recognition, the Flask, the Admission of Hope) must land as real before the False Victory sequence can destroy them. <em>The companion relationship is not a trick. The warmth is not fake.</em> Both are true: the warmth is real, and it was calculated from the beginning.</p>
+      <br>
+      <p>Throughout Act I, everything the Scholar does — every translation shared, every puzzle method demonstrated, every oil flask donated, every piece of evidence about the Scholar's working patterns — accumulates in an invisible behavioral score that the Scholar cannot see, but the Vanguard can. She has been building a model of this specific Scholar since three years before they arrived. Now she is running the model on live data.</p>
+      <br>
+      <p>When Act III fires, the Vanguard's final capability is not determined by a phase trigger or a boss HP threshold. It is determined by <strong>exactly what the Scholar gave her</strong>. A Scholar who shared every translation produced an adversary who knows every administrative clause. A Scholar who demonstrated the three-tier combat system produced an adversary who has positioned herself specifically outside the crossbow's measured range. A Scholar who taught her the Naming Tongue produced an adversary who can Name the Scholar's own fire vessel out.</p>
+      <br>
+      <p><em>The highest-scored ending is the one where the Scholar gave her everything.</em> The Level 5 ending is the most formidable version of the Vanguard — because the Scholar's best work made their own best nemesis. The player who invested most deeply receives the most extraordinary adversary and the most devastating farewell: "You were extraordinary. Past tense is not a judgment. It is a precision."</p>
+      <br>
+      <p>This specific mechanism — <strong>where the protagonist's investments over a full run of invisible behavioral accumulation construct the antagonist's final capability spectrum, across ten granular states, without a single declared choice point, through a companion relationship that was always going to end in elimination</strong> — does not exist anywhere else in the medium. The research confirms this.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- §5 — WHY THIS HASN'T BEEN DONE -->
+<div class="sh">
+  <span class="sh-n">§ 05</span>
+  <span class="sh-t">Why This Hasn't Been Done — The Design Problems It Solves</span>
+  <span class="sh-aside">And the risks that remain</span>
+</div>
+<div class="body">
+  <h3>The Three Problems This Mechanism Solves</h3>
+  <p>KENOMA's mechanism is not just novel — it solves three unsolved problems that have plagued survival horror and narrative games for two decades.</p>
+
+  <div class="call ck">
+    <span class="call-lbl">Problem 1 — The Tragic Ending Problem</span>
+    Most games that want to produce a tragic ending have to withhold information from the player to do it: the twist requires that the player didn't know something. Bioshock's "Would you kindly" works because the player didn't know they were being controlled. The final twist lands, but it cannot be revisited with the same weight because <em>you now know it.</em> <strong>KENOMA's mechanism produces a tragic ending that lands harder on second playthrough.</strong> The player who knows the mechanism watches every Camel Phase interaction and understands exactly what is being built. The warmth is exactly as real the second time — and the knowledge of where it leads makes it devastating in a completely different way.
+  </div>
+
+  <div class="call ck">
+    <span class="call-lbl">Problem 2 — The Multiple Endings Problem</span>
+    Most multiple-ending systems produce endings that differ in outcome (alive/dead, good/evil) but not in quality of the antagonist encounter. KENOMA's ten-state ending system produces endings that differ in the <em>specific capability and eloquence of the adversary</em>. Level 1 World A is sad — someone who received little and became little because of it. Level 5 World A is devastating — someone who received everything the Scholar had to give and became exactly as extraordinary as what the Scholar put into them. <strong>The difference between endings is not "good versus bad" — it is "what did you build."</strong>
+  </div>
+
+  <div class="call ck">
+    <span class="call-lbl">Problem 3 — The Replay Value Problem</span>
+    Most games build replay value through branching choice: "what if I had chosen differently?" KENOMA builds replay value through investment calibration: "what if I had invested differently, and understood what I was investing in?" The player who reaches Level 5 on first playthrough has a different second playthrough from the player who reached Level 2. Both are replaying to understand the mechanism they were inside without knowing it. <strong>The replayability is not "see the other branch" — it is "see what you built differently."</strong>
+  </div>
+
+  <h3 style="margin-top:28px;">The Risks That Remain — Honest Assessment</h3>
+  <div class="risk-grid">
+    <div class="risk-card risk-threat">
+      <span class="risk-type">Risk · Execution</span>
+      <span class="risk-title">The Camel Phase emotional resonance must genuinely land</span>
+      <div class="risk-body">The entire mechanism depends on the player actually loving the Vanguard before Act II. If the three emotional resonance moments (Recognition, Flask, Admission of Hope) are too subtle, too easy to miss, or too easily read as manipulation from the start, the False Victory does not destroy anything. <strong>The mechanism has no power if the companion relationship has no power.</strong> This is a production risk, not a design flaw — it is solvable by iteration, but it cannot be designed in isolation from it.</div>
+    </div>
+    <div class="risk-card risk-threat">
+      <span class="risk-type">Risk · Comprehension</span>
+      <span class="risk-title">Players must understand the mechanism retroactively, not prospectively</span>
+      <div class="risk-body">The invisible tracking only works if players, after reaching the ending, can reconstruct what the tracking was watching. If the tracking feels arbitrary — "I got Level 3 but I don't understand why" — the mechanism is opaque rather than invisible. <strong>There is a design difference between a mechanism that cannot be seen and one that cannot be understood.</strong> KENOMA needs to be the first: invisible while running, fully legible in retrospect. The Vanguard's Act I behavior must, in hindsight, clearly show the model accumulating.</div>
+    </div>
+    <div class="risk-card risk-shield">
+      <span class="risk-type">Mitigation · Emotional</span>
+      <span class="risk-title">The Vanguard's sincerity is non-negotiable protection</span>
+      <div class="risk-body">The single design decision that protects all emotional risk: <strong>the Vanguard genuinely cares about the Scholar.</strong> The warmth is real AND calculated — both simultaneously. This means players who feel manipulated are not wrong, and players who feel the warmth was genuine are not wrong either. The mechanism cannot feel cynical if the character is not cynical. Kaileena from Prince of Persia: Warrior Within is the model — she uses the protagonist as a tool and genuinely cares about them in the same gesture. This is characterization, not game design. It is achievable.</div>
+    </div>
+    <div class="risk-card risk-shield">
+      <span class="risk-type">Mitigation · Design</span>
+      <span class="risk-title">The mechanism is self-revealing through the Vanguard's observable behavior</span>
+      <div class="risk-body">Unlike SH2's tracking (which is a complete black box until the credits), KENOMA's tracking is <strong>partially visible through the Vanguard's behavior changes.</strong> Act I players who pay attention will notice: she asks once per subject, never repeats it (Stage 1). She stops asking and acts directly (Stage 3). She pre-positions before the Scholar coordinates (Stage 5). The model's accumulation is legible to attentive players. This creates a double game: players who notice can feel dread building. Players who don't will be devastated. Both are correct experiences of the same mechanism.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- §6 — THE PITCH CONCLUSION -->
+<div class="pitch">
+  <div class="pitch-main">
+    <span class="pitch-eyebrow">06 · The Conclusion</span>
+    <div class="pitch-statement">
+      KENOMA does not have <em>a</em> novel mechanic.<br>
+      It has <em>the</em> novel mechanic — the one<br>
+      the medium has been building toward.
+    </div>
+    <div class="pitch-sub">
+      Silent Hill 2 proved the ending could be determined by invisible behavioral tracking. The Witcher 3 proved mentorship could be a mechanical axis. Bayonetta proved a parallel antagonist creates deeper impact than a static one. Alien: Isolation proved a learning adversary produces a qualitatively different kind of fear. Each proved one piece. No game combined all five pieces into one mechanism — because no game placed a genuine companion relationship at the center, made its antagonist the beneficiary of the protagonist's investments, and built ten granular endings out of the specific quality of what was given.
+    </div>
+    <div class="pitch-sub">
+      This is not a gap that went unnoticed. It is a gap that was too expensive to bridge before: you need a companion the player genuinely loves, a single run of invisible behavioral tracking, an antagonist who never transforms but whose quality reflects the protagonist's investment, and ten granular outcome states — all in one game. These requirements had never aligned until KENOMA's design made alignment the point.
+    </div>
+    <div class="pitch-line">
+      The player who reaches Level 5 in KENOMA built the thing that eliminated them. That is not a tragic ending. It is a tragic achievement — and no game in the history of the medium has produced one before.
+    </div>
+  </div>
+</div>
+
+<div class="foot">
+  <span>KENOMA · Uniqueness Analysis · Deep Research</span>
+  <span>SH2 · Undertale · Witcher 3 · Bayonetta · MGSV · Alien Isolation · TS1</span>
+  <span>For Product Presentation · GDD v6 · Storytelling Bible v8</span>
+</div>
+
+</div>
+</body>
+</html>

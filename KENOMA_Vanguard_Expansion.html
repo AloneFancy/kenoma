@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — The Vanguard · Character Expansion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:  #07080a;
+  --g1:    #0c0d10;
+  --g2:    #11121a;
+  --g3:    #161820;
+  --g4:    #1c1e28;
+  --g5:    #242632;
+  --rule:  #2a2c3a;
+  --rule2: #343648;
+
+  --ink:   #e0dcd0;
+  --ink2:  #b0ac9e;
+  --ink3:  #706c60;
+  --ink4:  #444040;
+  --ink5:  #282630;
+
+  /* Vanguard A — Sacred Fire, but cooler, more silver */
+  --a:     #c8a030;
+  --a2:    #e8c050;
+  --a3:    #886810;
+  --abg:   rgba(200,160,48,0.08);
+  --abdr:  rgba(200,160,48,0.2);
+
+  /* Vanguard B — Deep slate-blue */
+  --b:     #3860a8;
+  --b2:    #5080d0;
+  --b3:    #203870;
+  --bbg:   rgba(56,96,168,0.09);
+
+  /* Sequel — a new color: deep violet-green, something ancient and alive */
+  --sq:    #406858;
+  --sq2:   #58a880;
+  --sqbg:  rgba(64,104,88,0.09);
+
+  /* Film refs — warm sepia for cinema */
+  --film:  #a87840;
+  --film2: #d0a060;
+  --filmbg:rgba(168,120,64,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--ink3);
+  font-family:'Barlow',sans-serif;
+  line-height:1.75;
+}
+.page{max-width:1040px;margin:0 auto;padding-bottom:100px;}
+
+/* ── COVER ── */
+.cover{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  background:var(--void);
+  position:relative;overflow:hidden;
+}
+/* Film grain overlay */
+.cover::before{
+  content:'';
+  position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(
+    transparent, transparent 2px,
+    rgba(255,255,255,0.008) 2px, rgba(255,255,255,0.008) 3px
+  );
+}
+/* Dramatic side light */
+.cover::after{
+  content:'';
+  position:absolute;
+  top:0;right:0;bottom:0;width:40%;
+  background:linear-gradient(270deg,rgba(200,160,48,0.06) 0%,transparent 80%);
+  pointer-events:none;
+}
+.cv-top{
+  padding:40px 64px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  position:relative;z-index:1;
+}
+.cv-brand{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.2);
+  display:flex;flex-direction:column;gap:4px;
+}
+.cv-brand em{color:var(--a2);font-style:normal;opacity:.7;}
+.cv-doc{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;
+  color:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.07);
+  padding:5px 12px;
+}
+.cv-body{
+  flex:1;display:flex;flex-direction:column;
+  justify-content:center;
+  padding:80px 64px 60px;
+  position:relative;z-index:1;
+}
+.cv-kicker{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;letter-spacing:6px;text-transform:uppercase;
+  color:rgba(200,160,48,0.4);display:block;margin-bottom:22px;
+}
+.cv-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(50px,8vw,110px);
+  font-weight:900;color:#ffffff;
+  line-height:.92;letter-spacing:-3px;
+  margin-bottom:6px;
+}
+.cv-subtitle{
+  font-family:'Cinzel',serif;
+  font-size:clamp(14px,2vw,22px);
+  font-weight:400;
+  color:rgba(200,160,48,0.4);
+  letter-spacing:6px;
+  margin-bottom:32px;
+}
+.cv-rule-line{
+  width:48px;height:1px;
+  background:var(--a3);
+  margin-bottom:32px;
+}
+.cv-logline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,2.2vw,26px);
+  font-weight:300;font-style:italic;
+  color:rgba(255,255,255,0.3);
+  max-width:640px;line-height:1.55;
+  margin-bottom:48px;
+}
+.cv-refs{display:flex;gap:8px;flex-wrap:wrap;}
+.ref-pill{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 12px;border:1px solid rgba(168,120,64,0.3);
+  color:rgba(168,120,64,0.55);
+}
+.cv-bottom{
+  padding:22px 64px;
+  border-top:1px solid rgba(255,255,255,0.04);
+  position:relative;z-index:1;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.cv-bottom-txt{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.1);
+}
+
+/* ── SECTIONS ── */
+.sh{
+  padding:22px 64px 16px;
+  background:var(--g1);
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:baseline;gap:14px;
+}
+.sh-n{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--ink4);}
+.sh-t{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--ink);}
+.sh-aside{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink4);font-style:italic;white-space:nowrap;}
+.body{padding:28px 64px 32px;}
+
+/* ── PROSE ── */
+p{font-size:14.5px;color:var(--ink3);line-height:1.75;margin-bottom:11px;}
+p:last-child{margin:0;}
+p strong{color:var(--ink2);}
+p em{font-style:italic;color:var(--ink2);}
+h3{
+  font-family:'Cinzel',serif;font-size:15px;font-weight:700;
+  color:var(--ink2);margin:26px 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--rule2);
+}
+h3:first-child{margin-top:0;}
+
+/* ── FILM REFERENCE CARDS ── */
+.film-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2px;margin:20px 0;
+}
+.film-card{
+  background:var(--filmbg);
+  border:1px solid rgba(168,120,64,0.15);
+  border-left:4px solid;
+  padding:22px 24px;
+}
+.fc-a{border-left-color:var(--a2);}
+.fc-b{border-left-color:var(--b2);}
+.fc-both{border-left-color:var(--film2);grid-column:span 2;}
+.film-char{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:700;
+  color:var(--film2);display:block;margin-bottom:3px;
+}
+.film-from{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--ink4);display:block;margin-bottom:10px;
+}
+.film-what{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--a3);display:block;margin-bottom:5px;
+}
+.film-body{font-size:13.5px;color:var(--ink3);line-height:1.65;}
+.film-body strong{color:var(--ink2);}
+.film-body em{font-style:italic;color:var(--ink);}
+.film-apply{
+  margin-top:10px;padding-top:10px;
+  border-top:1px solid rgba(168,120,64,0.12);
+  font-size:13px;color:var(--ink4);line-height:1.6;
+  font-style:italic;
+}
+.film-apply strong{color:var(--ink3);font-style:normal;}
+
+/* ── SCENE SCRIPTS ── */
+.scene-block{
+  background:var(--g1);
+  border:1px solid var(--rule);
+  border-left:4px solid;
+  margin:20px 0;overflow:hidden;
+}
+.sb-a{border-left-color:var(--a);}
+.sb-b{border-left-color:var(--b);}
+.sb-both{border-left-color:var(--sq);}
+.sb-new{border-left-color:var(--film);}
+.scene-head{
+  background:var(--g3);
+  padding:12px 22px;
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sc-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;text-transform:uppercase;
+}
+.sb-a .sc-label{color:var(--a);}
+.sb-b .sc-label{color:var(--b);}
+.sb-both .sc-label{color:var(--sq2);}
+.sb-new .sc-label{color:var(--film2);}
+.sc-title{
+  font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--ink);
+}
+.sc-badge{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:3px 9px;border:1px solid var(--rule2);color:var(--ink4);
+}
+.sc-badge.new-badge{
+  border-color:rgba(168,120,64,0.3);color:var(--film2);
+}
+.scene-body{padding:20px 22px;}
+.sc-dir{
+  font-family:'Cormorant Garamond',serif;
+  font-size:14px;font-style:italic;
+  color:rgba(200,160,48,0.28);
+  display:block;margin:10px 0 6px;line-height:1.65;
+}
+.sc-spk{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:4px;text-transform:uppercase;
+  display:block;margin-top:16px;
+}
+.sb-a .sc-spk{color:rgba(200,160,48,0.55);}
+.sb-b .sc-spk{color:rgba(80,128,208,0.55);}
+.sb-both .sc-spk{color:rgba(88,168,128,0.55);}
+.sb-new .sc-spk{color:rgba(208,160,96,0.55);}
+.sc-line{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;font-style:italic;
+  color:rgba(224,210,165,0.65);
+  line-height:1.75;display:block;
+}
+.sc-note{
+  font-family:'Barlow',sans-serif;
+  font-size:12px;color:rgba(200,160,48,0.2);
+  display:block;margin-top:6px;font-style:normal;
+  line-height:1.55;
+}
+.sc-action{
+  font-family:'Barlow',sans-serif;
+  font-size:13.5px;
+  color:rgba(200,160,48,0.3);
+  font-style:italic;display:block;
+  margin:12px 0 0;line-height:1.6;
+}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:28px;margin:20px 0;}
+.timeline::before{
+  content:'';position:absolute;left:8px;top:0;bottom:0;
+  width:1px;background:var(--rule2);
+}
+.tl-item{
+  position:relative;margin-bottom:2px;
+  background:var(--g2);
+  padding:16px 18px;
+}
+.tl-item::before{
+  content:'';position:absolute;
+  left:-24px;top:22px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--a3);border:1px solid var(--a);
+}
+.tl-item.highlight::before{background:var(--a2);}
+.tl-item.dark-item::before{background:var(--b3);border-color:var(--b);}
+.tl-item.sequel-item::before{background:var(--sq);border-color:var(--sq2);}
+.tl-year{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:500;color:var(--a);
+  display:block;margin-bottom:4px;
+}
+.tl-item.dark-item .tl-year{color:var(--b);}
+.tl-item.sequel-item .tl-year{color:var(--sq2);}
+.tl-title{
+  font-family:'Cinzel',serif;font-size:14px;font-weight:700;
+  color:var(--ink);display:block;margin-bottom:6px;
+}
+.tl-body{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.tl-body strong{color:var(--ink2);}
+.tl-new{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:1px 7px;border:1px solid rgba(168,120,64,0.3);
+  color:var(--film2);margin-left:8px;
+}
+
+/* ── CALLOUT ── */
+.call{
+  border-left:3px solid;padding:13px 18px;margin:16px 0;
+  font-size:14.5px;line-height:1.72;color:var(--ink3);
+}
+.ca{border-color:var(--a);background:var(--abg);}
+.cb{border-color:var(--b);background:var(--bbg);}
+.cn{border-color:var(--rule2);background:var(--g3);}
+.csq{border-color:var(--sq);background:var(--sqbg);}
+.cf{border-color:var(--film2);background:var(--filmbg);}
+.call strong{color:var(--ink2);}
+.call em{font-style:italic;color:var(--ink);}
+.call-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;
+}
+.ca .call-lbl{color:var(--a);}
+.cb .call-lbl{color:var(--b);}
+.cn .call-lbl{color:var(--ink4);}
+.csq .call-lbl{color:var(--sq2);}
+.cf .call-lbl{color:var(--film2);}
+
+/* ── TRAIT TABLE ── */
+.trait-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:16px 0;
+}
+.trait-card{
+  background:var(--g2);padding:18px 20px;
+}
+.tr-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--rule);
+}
+.tr-a .tr-lbl{color:var(--a);}
+.tr-b .tr-lbl{color:var(--b);}
+.tr-body{font-size:13.5px;color:var(--ink3);line-height:1.65;}
+.tr-body strong{color:var(--ink2);}
+
+/* ── SEQUEL ARC ── */
+.sequel-box{
+  background:var(--sqbg);
+  border:1px solid rgba(64,104,88,0.2);
+  border-top:3px solid var(--sq2);
+  padding:24px 28px;margin:20px 0;
+}
+.sq-title{
+  font-family:'Cinzel',serif;font-size:20px;font-weight:700;
+  color:var(--sq2);margin-bottom:12px;
+}
+.sq-body{font-size:14.5px;color:var(--ink3);line-height:1.75;}
+.sq-body strong{color:var(--ink2);}
+.sq-body em{font-style:italic;color:var(--ink);}
+.sq-logline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-style:italic;
+  color:rgba(88,168,128,0.5);
+  margin:16px 0 12px;line-height:1.55;
+  border-left:3px solid var(--sq);
+  padding-left:16px;
+}
+
+/* ── FOOTER ── */
+.foot{padding:20px 64px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.foot span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cv-top">
+    <div class="cv-brand">
+      <span>KENOMA · Character Development</span>
+      <em>The Vanguard · Full Arc Expansion · Sequel Architecture</em>
+    </div>
+    <div class="cv-doc">CHR-VAN-001</div>
+  </div>
+
+  <div class="cv-body">
+    <span class="cv-kicker">She was never the antagonist. She was always the protagonist waiting.</span>
+    <div class="cv-title">The Vanguard</div>
+    <div class="cv-subtitle">300 Years · One Plan · Both Worlds</div>
+    <div class="cv-rule-line"></div>
+    <div class="cv-logline">
+      She entered the Archive as a commander. She will leave it as something the empire that made her doesn't have a word for yet.
+    </div>
+    <div class="cv-refs">
+      <span class="ref-pill">Marion Ravenwood · Raiders of the Lost Ark</span>
+      <span class="ref-pill">Furiosa · Mad Max: Fury Road</span>
+      <span class="ref-pill">Evelyn Carnahan · The Mummy</span>
+      <span class="ref-pill">Leia Organa · Star Wars</span>
+      <span class="ref-pill">Ellen Ripley · Alien</span>
+      <span class="ref-pill">Clarice Starling · Silence of the Lambs</span>
+    </div>
+  </div>
+
+  <div class="cv-bottom">
+    <span class="cv-bottom-txt">§1 Film Archetypes · §2 The 300-Year Journey · §3 New Scenes · §4 Expanded Dialogue · §5 Sequel Architecture</span>
+    <span class="cv-bottom-txt">Character Enhancement · v1</span>
+  </div>
+</div>
+
+
+<!-- §1 — FILM ARCHETYPES -->
+<div class="sh">
+  <span class="sh-n">§ 01</span>
+  <span class="sh-t">The Film Archetypes — What She Should Feel Like</span>
+  <span class="sh-aside">Each reference contributes one specific quality</span>
+</div>
+<div class="body">
+
+  <p>The Vanguard's current design has the right architecture — warmth that is real AND calculated, military precision, 300 years of patience — but she needs more texture in the <em>how</em> of her personality. These six characters each contribute one specific quality that, combined, produce a woman the player wants to follow into the sequel.</p>
+
+  <div class="call cf">
+    <span class="call-lbl">The Design Principle for This Section</span>
+    <strong>She should never feel like a fantasy of competence.</strong> Marion Ravenwood doesn't announce she's capable — she's just already dealing with the snake before you've finished worrying about it. The Vanguard's impressiveness must always arrive this way: the audience catches up to what she's already done.
+  </div>
+
+  <div class="film-grid">
+    <div class="film-card fc-a">
+      <span class="film-char">Marion Ravenwood</span>
+      <span class="film-from">Raiders of the Lost Ark · Karen Allen · 1981</span>
+      <span class="film-what">What she contributes: Irreverent warmth that refuses to be performed</span>
+      <div class="film-body">Marion wins her drinking contest without announcing she's going to win. She is already unconscious everyone else in the room before the audience fully registers what happened. Then she collects her winnings, and she's already onto the next thing. <strong>Competence as a baseline, not a flex.</strong> She laughs at things that would terrify other characters — not because she's fearless, but because she's already calculated the odds and decided the fear isn't worth her energy. Her warmth toward Indy is absolutely genuine and completely unsentimental at the same time. She will help you. She will also remind you it costs her nothing to not help you.</div>
+      <div class="film-apply"><strong>For the Vanguard:</strong> The oil flask scene should feel like Marion's drinking contest — not a tender moment, a logistics decision executed with warmth. She doesn't pause to be kind. She's kind while moving. The kindness is real. It's also just how she operates.</div>
+    </div>
+
+    <div class="film-card fc-b">
+      <span class="film-char">Furiosa</span>
+      <span class="film-from">Mad Max: Fury Road · Charlize Theron · 2015</span>
+      <span class="film-what">What she contributes: Economy of expression that makes one line devastating</span>
+      <div class="film-body">Furiosa says very little. What she says is always the thing that needed to be said. The audience learns to pay attention to her silences because <strong>the silences are doing more work than most characters' speeches.</strong> When she does break — the scene where she drops to her knees in the salt flat, having reached the place she came from and found it gone — it lands precisely because she has never performed vulnerability before it. The devastation is proportional to everything she's been containing. Her one moment of grief is enormous because she earned it by not having it before.</div>
+      <div class="film-apply"><strong>For the Vanguard:</strong> Her 300-year journals should be Furiosa journals — military, precise, no editorializing. Until one entry. One entry that breaks pattern. Players who find it feel exactly what the salt flat scene produces.</div>
+    </div>
+
+    <div class="film-card fc-a">
+      <span class="film-char">Evelyn Carnahan</span>
+      <span class="film-from">The Mummy · Rachel Weisz · 1999</span>
+      <span class="film-what">What she contributes: The scholar who becomes the warrior without announcing the transition</span>
+      <div class="film-body">Evelyn begins as the bumbling librarian who knocks over the shelves — and by the end is reading ancient spells from memory under direct threat of death, calm enough to enunciate correctly, understanding that the pronunciation matters more than the adrenaline. <strong>She is always a scholar. She is increasingly a warrior. These two things never conflict.</strong> The library scene at the beginning (the shelves falling like dominoes) is not embarrassing character setup — it's establishing that she's the kind of person who pursues knowledge so hard she sometimes forgets where her body is. The same quality that knocks over the shelves is the one that saves everyone at the end.</div>
+      <div class="film-apply"><strong>For the Vanguard:</strong> Show her scholarly depth more visibly in Act I. She taught herself Babylonian over 300 years for apparently no reason. She has been annotating the Archive's tablets — improving existing translations for a reader she hasn't met yet. The scholar and the commander are the same person and always were.</div>
+    </div>
+
+    <div class="film-card fc-b">
+      <span class="film-char">Princess Leia Organa</span>
+      <span class="film-from">Star Wars · Carrie Fisher · 1977–2019</span>
+      <span class="film-what">What she contributes: Authority that was never given to her — she simply had it</span>
+      <div class="film-body">Leia is the first person in Star Wars to give orders — to the stormtroopers who have just captured her. She doesn't wait to be rescued. She doesn't perform dignity under pressure. She simply has it, and operates from it, and the audience understands immediately that this is someone whose authority comes from inside her rather than from any title or institution. <strong>She is also capable of a tenderness so fierce it reads as ferocity.</strong> Her grief over Alderaan is not expressed in tears — it is expressed in the complete stillness of someone who has decided that grief is a thing that will be processed after the mission. She never gets that moment. She keeps moving anyway.</div>
+      <div class="film-apply"><strong>For the Vanguard:</strong> Her regiment died one by one over a decade. She never got to stop and grieve. She kept making the Archive safe for a Scholar who hadn't arrived yet. The grief is in there. It surfaces once, in one specific scene, and then is contained again. Like Leia. Always moving.</div>
+    </div>
+
+    <div class="film-card fc-a">
+      <span class="film-char">Ellen Ripley</span>
+      <span class="film-from">Alien · Sigourney Weaver · 1979</span>
+      <span class="film-what">What she contributes: She doesn't explain herself. You learn who she is by watching her act.</span>
+      <div class="film-body">Ripley doesn't monologue. She doesn't narrate her fear or her courage. She checks the ship's systems. She enforces quarantine. She goes back for the cat. Each action tells you something about her that no speech could — and the cumulative picture is extraordinary. <strong>The audience builds the portrait themselves from behavioral evidence.</strong> She is the character who proves that showing is not just better than telling — it is a completely different kind of trust between creator and audience. Ripley trusts you to understand. You do. You remember her forever.</div>
+      <div class="film-apply"><strong>For the Vanguard:</strong> The Camel Phase should contain at least three Ripley moments — things she does that reveal something massive without commenting on it. She goes back for the supply route her regiment mapped before they died. She corrects a translation error in the Archive that wasn't hers to begin with. She maintained the fire altars cold and unlit for 300 years because she was saving the lighting for the Scholar. These three acts together paint a portrait no monologue could.</div>
+    </div>
+
+    <div class="film-card fc-b">
+      <span class="film-char">Clarice Starling</span>
+      <span class="film-from">The Silence of the Lambs · Jodie Foster · 1991</span>
+      <span class="film-what">What she contributes: The courage that is specifically intellectual — not physical, not dramatic</span>
+      <div class="film-body">Clarice's bravery is not conventional. It is the bravery of someone who walks into a room knowing the person in it will try to dismantle her, and does it anyway, and pays attention, and comes back. She takes notes. She gives up something true about herself every time she visits Lecter — a genuine sacrifice for information — and she does this because the mission matters more than her comfort. <strong>The most admirable quality: she is always, always paying attention.</strong> She is not the most physically capable person in any room. She is always the most alert. That alertness is her weapon and her gift.</div>
+      <div class="film-apply"><strong>For the Vanguard:</strong> Her behavioral model of the Scholar — built across three years of academic records — is Clarice's attention applied over three years at a distance and then refined against live contact. She doesn't have Clarice's vulnerability. But she has exactly Clarice's quality of sustained, relentless, respectful attention. The Scholar is worth understanding. She intends to understand them completely.</div>
+    </div>
+  </div>
+
+  <div class="film-card fc-both" style="margin-top:2px;">
+    <span class="film-char">The Synthesis — What All Six Build Together</span>
+    <span class="film-from">The Complete Archetype for the Vanguard</span>
+    <div class="film-body">
+      Marion's warmth without performance. Furiosa's economy with one enormous contained grief. Evelyn's scholar-warrior fusion. Leia's self-sourced authority and deferred mourning. Ripley's actions-as-portrait. Clarice's sustained, respectful, total attention.
+      <br><br>
+      <strong>The character that emerges:</strong> A woman who has been paying complete attention for 300 years, who earned every quality she has through choices made when there was no one watching, whose warmth is real and whose calculation is simultaneous, who carries grief she has never had time to process, and who — at the end of the first game — finally does the thing she has been building toward since before the Scholar's grandparents were born. And then has to figure out what she does next. That is the sequel.
+    </div>
+  </div>
+</div>
+
+
+<!-- §2 — THE 300-YEAR JOURNEY -->
+<div class="sh">
+  <span class="sh-n">§ 02</span>
+  <span class="sh-t">The 300-Year Journey — Making the Wait Visible</span>
+  <span class="sh-aside">Her tenure as an active life, not patient endurance</span>
+</div>
+<div class="body">
+
+  <p>The current design mentions that her regiment died one by one, that she managed the Archive's degradation for 300 years, and that she has been refining the Scholar's behavioral profile for three centuries. These are stated as backstory. They should be <em>felt</em> as history. The difference is specific scenes, specific objects, and a timeline that the Scholar pieces together through the Archive's evidence — the way Clarice builds a portrait from behavioral residue.</p>
+
+  <div class="timeline">
+
+    <div class="tl-item highlight">
+      <span class="tl-year">Year 0 — Entry</span>
+      <span class="tl-title">She arrives with twelve soldiers and a mission of weeks<span class="tl-new">EXPAND</span></span>
+      <div class="tl-body">The existing lore establishes this. <strong>New addition:</strong> The Scholar finds her original mission briefing tablet in WA-003 — the only document she brought with her, now so often re-read that the cuneiform is worn almost smooth on certain characters. The mission was three objectives, each with an estimated completion time. The third objective — "compile full cosmological index" — has no completion date. She knew when she wrote it that she didn't know how long it would take. She did not know it would take the rest of her life.</div>
+    </div>
+
+    <div class="tl-item">
+      <span class="tl-year">Year 4</span>
+      <span class="tl-title">The last soldier<span class="tl-new">NEW SCENE</span></span>
+      <div class="tl-body">The Scholar finds a weapons rack in a maintenance alcove near WA-002. Twelve slots. Eleven swords present, cleaned, oiled, maintained. The twelfth slot is empty — but the rack has been maintained too. She cleaned the empty slot the same as the full ones. <strong>She did not remove the rack. She did not stop maintaining it.</strong> No scene of grief. Just the empty slot, kept clean, for 296 years.</div>
+    </div>
+
+    <div class="tl-item dark-item">
+      <span class="tl-year">Year 12 · First World B Contact</span>
+      <span class="tl-title">She finds the Inverted Gate<span class="tl-new">EXPAND</span></span>
+      <div class="tl-body">Her journal entry (found in WA-003): <em>"Found the crossing mechanism. Peered through. The other side is the same building. Spent four hours reading the gate inscription from the inside — it is the surface gate's inscription reversed, which changes the meaning in a way I will need to think about. Did not cross. Not yet. Something down there will know I am here before I know it is there."</em> She waited six more months before her first crossing. The caution that kept her alive for 300 years was already fully formed in year 12.</div>
+    </div>
+
+    <div class="tl-item highlight">
+      <span class="tl-year">Year 28 · The Scholar Profile Begins</span>
+      <span class="tl-title">She starts building the behavioral model<span class="tl-new">NEW EVIDENCE</span></span>
+      <div class="tl-body">In WA-003's northwest alcove, behind the Grand Armillary manual: a locked wooden box, small, officer-issue. The Scholar can open it with the key they find in the eastern maintenance room. Inside: twenty-eight sheets of pressed papyrus, each covered in small, precise handwriting — character assessments of hypothetical scholars, each with strengths, weaknesses, and what they would need to complete the Archive's translation. Year 28's entry is the most detailed. She has been building a picture of the person she needs. <strong>The entry for year 28 ends: "I do not know yet if someone like this exists. I will find out."</strong> She spent the next 284 years verifying that they did.</div>
+    </div>
+
+    <div class="tl-item">
+      <span class="tl-year">Year 100 · The Centennial Entry</span>
+      <span class="tl-title">The administrative log she wrote to no one<span class="tl-new">NEW SCENE</span></span>
+      <div class="tl-body">In the deepest administrative alcove of WA-003: a formal military after-action report, complete with appropriate headers, filed as if she expected it to be read by a superior. It covers the Archive's status across all major systems, creature population (reduced by 34% through strategic Naming), the Grand Armillary's calibration drift (within acceptable parameters), and projected completion timeline for the Scholar profile (minimum two generations). The final field is labeled "Commanding Officer's Remarks." It contains one line: <em>"Still here."</em> The document is dated precisely to one hundred years after her entry. She wrote it because she was a soldier and soldiers file reports. The superior who would have read it died 96 years ago.</div>
+    </div>
+
+    <div class="tl-item dark-item">
+      <span class="tl-year">Year 180 · The Language</span>
+      <span class="tl-title">She teaches herself Babylonian<span class="tl-new">NEW DETAIL</span></span>
+      <div class="tl-body">The gate inscription runs in three languages. She could read the first two on arrival. The third — Babylonian — she could not. For 180 years this was acceptable. Then, between year 178 and 186, something changed. The Scholar finds her Babylonian practice tablets scattered through a low-traffic storage room: hundreds of them, spanning eight years of learning, annotated with her own corrections, cross-referenced with the other two scripts. When the Scholar translates the third language of the gate inscription on Day One, Vanguard A says: <em>"I know that inscription. You read the third script faster than I did."</em> She learned it in eight years, starting from nothing, because at some point the incomplete knowledge became intolerable. <strong>She learned Babylonian so that when the Scholar arrived, she would be able to understand everything they said.</strong></div>
+    </div>
+
+    <div class="tl-item">
+      <span class="tl-year">Year 267 · The Scholar is Identified</span>
+      <span class="tl-title">She finds the academic dossier<span class="tl-new">EXPAND</span></span>
+      <div class="tl-body">A trader's route passes near enough to the Archive for her to send and receive messages — a system she has maintained for 200 years, quietly, without anyone knowing why she sends intelligence reports from an address labeled "Archive Administrative Outpost 7." She receives the Scholar's published monograph — a copy that was delivered with a standard academic distribution to her outpost address. She reads it in one sitting. Her journal entry that night is three words: <em>"This is the one."</em> Then, below, in smaller letters: <em>"Three more years to monitor. Then I write the invitation."</em> The invitation that brought the Scholar here looks, from the outside, like a research opportunity. She wrote seventeen drafts.</div>
+    </div>
+
+    <div class="tl-item highlight">
+      <span class="tl-year">Year 312 — Present Day</span>
+      <span class="tl-title">The Scholar arrives<span class="tl-new">REFRAME</span></span>
+      <div class="tl-body">Everything is ready. Has been ready for three years. The fire altars are staged for lighting in the order that will reveal the Apadana most beautifully. The creature patrol schedules have been adjusted to create specific safe corridors without appearing managed. The Grand Armillary's calibration is at its best in a century. The Archive has never been more prepared to receive someone. <strong>She has been setting a stage for 312 years.</strong> She is waiting at the gate when the Scholar arrives, as if she happened to be passing. She was not passing. She has been at the gate for four hours.</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- §3 — NEW SCENES -->
+<div class="sh">
+  <span class="sh-n">§ 03</span>
+  <span class="sh-t">New Scenes — Five Moments That Reframe Everything</span>
+  <span class="sh-aside">Each one reveals something the player didn't know they were missing</span>
+</div>
+<div class="body">
+
+  <!-- Scene 1 -->
+  <div class="scene-block sb-new">
+    <div class="scene-head">
+      <span class="sc-label">New Scene 1 · Early Camel · WA-003 East Alcove</span>
+      <span class="sc-title">The Map</span>
+      <span class="sc-badge new-badge">NEW · Missable</span>
+    </div>
+    <div class="scene-body">
+      <p>The Scholar enters the eastern alcove of the Treasury looking for a classification reference. They find Vanguard A standing in front of the bare stone wall — not a tablet, not a document. Just wall. She is not looking at it. She is adding to it. With a small clay stylus, in characters so fine they are almost invisible, she is writing on the wall.</p>
+      <span class="sc-dir">[Scholar approaches. She does not acknowledge them. She finishes the line she is writing, steps back slightly.]</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"What is that?"</span>
+      <span class="sc-dir">[A pause. She does not look at the Scholar — she looks at the wall.]</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"Your route. From this morning."</span>
+      <span class="sc-dir">[Scholar examines the wall more carefully. The writing is a map — not of rooms, but of paths taken through rooms. Movement records. The Scholar's movement records. Today's, visible near the bottom. Below it, 20 years of entries. Above it, nothing. She started this the day they arrived.]</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"You've been tracking where I go."</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"I track where everyone goes. It's a small building. There is currently only you." [A moment.] "Previously I tracked myself. To maintain the habit."</span>
+      <span class="sc-note">She tracked her own movements for 312 years so she would still know how when someone else arrived to track. This line should land in silence. The Scholar turns back to the map and sees, for the first time, 312 years of her alone in this building — one set of footprints going the same routes, day after day. Then one day: two sets.</span>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="scene-block sb-b">
+    <div class="scene-head">
+      <span class="sc-label">New Scene 2 · Mid Camel · WB-004 Northwest Alcove</span>
+      <span class="sc-title">What She Did With the Grief</span>
+      <span class="sc-badge new-badge">NEW · Deep Library</span>
+    </div>
+    <div class="scene-body">
+      <p>The Scholar finds a tablet in the Dark Library's most restricted alcove — harder to reach than anything else in World B. It is not a cosmological text. It is a soldier's funeral record. Twelve entries. Written in the military notation of the Achaemenid Immortals. The format is regulation: name, rank, date, cause, disposition of effects. All twelve. All written in the same handwriting. All in the same ink. <em>Written on the same day.</em></p>
+      <p>She wrote all twelve records on the day the last one died. She held the grief for however long it took the last soldier to go, then sat down and wrote twelve records simultaneously — properly formatted, with the correct headers, in the correct script — and then sealed them in the Hollow's most protected vault.</p>
+      <span class="sc-dir">[If the Scholar translates the tablet in the Dark Library with Vanguard B present, she says nothing for a long time. Then:]</span>
+      <span class="sc-spk">Vanguard B</span>
+      <span class="sc-line">"I filed those. Immediately after. Before I slept. I knew if I slept first I would not file them at all."</span>
+      <span class="sc-dir">[A pause that is somehow both very long and very short.]</span>
+      <span class="sc-spk">Vanguard B</span>
+      <span class="sc-line">"The regulation requires a report within 72 hours. I was 70 hours late. I have been thinking about that for 300 years."</span>
+      <span class="sc-note">She is not performing grief. She is reporting a failure of protocol that she has not forgiven herself for. The grief itself is in the gap — the two hours she was unable to write. She has counted those hours every year since. The Scholar holds the tablet for a moment. Then files it back correctly. Vanguard B watches this and says nothing.</span>
+    </div>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="scene-block sb-a">
+    <div class="scene-head">
+      <span class="sc-label">New Scene 3 · Late Camel · WA-007 Grand Armillary Gallery · Night</span>
+      <span class="sc-title">The Calculation</span>
+      <span class="sc-badge new-badge">NEW · Observation</span>
+    </div>
+    <div class="scene-body">
+      <p>The Scholar arrives at the Grand Armillary Gallery unexpectedly late — they were working and lost track of time. The gallery is dark except for the Armillary's faint luminescence. Vanguard A is there. She is not doing maintenance. She is standing in the center of the seven rings, looking up at the stars through the oculus, and speaking quietly to herself — numbers, pauses, more numbers. The Scholar has enough astronomical training to follow: she is calculating the Armillary's calibration drift for the next century, manually, from star positions, with nothing to write on.</p>
+      <span class="sc-dir">[She does not pause when the Scholar enters. She completes the calculation — four minutes of sustained mental arithmetic — and then is still for a moment. Then:]</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"Eleven seconds of drift. Correctable in the next calibration cycle." [She turns to the Scholar, as if she'd known they were there the whole time.] "You should sleep."</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"How long have you been doing that without instruments?"</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"The instruments were lost in year forty-three. I recalibrated my method. The margin of error is acceptable." [A pause.] "I would have preferred the instruments."</span>
+      <span class="sc-note">She recalibrated a century-spanning astronomical instrument to within eleven seconds of accuracy using only her memory and the night sky, and describes this as a method with an acceptable margin of error. The thing she regrets is the lost instruments. This scene does more for the player's understanding of who she is than any dialogue about her competence ever could. Ripley goes back for the cat. She recalibrates the Armillary in the dark, from memory, for 270 years. Both choices reveal everything.</span>
+    </div>
+  </div>
+
+  <!-- Scene 4 — THE ALTARS -->
+  <div class="scene-block sb-a">
+    <div class="scene-head">
+      <span class="sc-label">New Scene 4 · Very Early Camel · WA-002 Hypostyle Forest · Day One</span>
+      <span class="sc-title">The Fire She Saved</span>
+      <span class="sc-badge new-badge">NEW · Day One Discovery</span>
+    </div>
+    <div class="scene-body">
+      <p>The Scholar enters the Hypostyle Forest and finds the fire altars cold. This is established — they've been unlit for 300 years. The Scholar begins lighting them with the fire vessel. The first one takes oil. The flame catches. The second one catches faster — the Scholar thinks this is odd, checks it. The altar has fresh wick material, carefully prepared, ready to light.</p>
+      <p>All 72 altars have been prepared. Fresh wicking, clean oil channels, debris cleared from the catch plates. <strong>She has been preparing these altars for the Scholar's arrival.</strong> She didn't light them herself — they're for the Scholar to light. She just made sure they would be ready when the Scholar arrived. She did this for 312 years. Every few decades, she re-prepared them as the materials degraded.</p>
+      <span class="sc-dir">[The Scholar can examine one altar carefully. They will find, stamped into the catch plate's underside, a small clay marker — not a symbol, just a number. The altars are numbered. In the order she calculated the Scholar would most likely light them, based on the standard approach routes through the Hypostyle.]</span>
+      <span class="sc-spk">Scholar — Private Journal</span>
+      <span class="sc-line">"The altars were prepared. All 72. I checked the catch plate markings. She numbered them in the order I lit them. The margin was off by three. She expected me to take the south approach first. I came in from the east."</span>
+      <span class="sc-note">The three she got wrong are the three Scholar lights last. She had a contingency for each variant approach. The order only diverged because the Scholar came from the east. Everything else matched. This is her competence expressed as care — she prepared a room for someone she'd never met so that when they arrived, the room would be beautiful. She could not know if they would notice. She prepared it anyway.</span>
+    </div>
+  </div>
+
+  <!-- Scene 5 — THE MOMENT BEFORE -->
+  <div class="scene-block sb-both">
+    <div class="scene-head">
+      <span class="sc-label">New Scene 5 · Act II Threshold · WA-001 Gate · Private</span>
+      <span class="sc-title">The Moment Before She Begins</span>
+      <span class="sc-badge new-badge">NEW · Missable · Act II Opening</span>
+    </div>
+    <div class="scene-body">
+      <p>The Lion Phase begins when the Scholar picks up the crossbow. But before this — if the Scholar goes to WA-001 at the precise moment between the resonance instrument delivering the position report and the Scholar's hand reaching for the crossbow — they witness something through the Gate's crack.</p>
+      <p>Vanguard A is standing at the Gate's exterior. Facing the mountain, facing away from the Archive. She does something the Scholar has never seen her do: she removes her officer's marking — the small bronze disc that identifies her rank in the Immortals, worn every day for 312 years — and places it against the Gate's stone. She does not drop it or leave it. She places it, flat, and holds her hand against it for approximately three seconds. Then she replaces it. Turns. Walks back into the Archive.</p>
+      <span class="sc-dir">[The Scholar backs away from the crack before she can see them.]</span>
+      <span class="sc-spk">Scholar — Private Journal</span>
+      <span class="sc-line">"I don't know what she was doing. A soldier's ritual, perhaps. Or a farewell to something. Or both. She has been carrying that disc for 312 years. She put it down for three seconds and picked it back up. I think she was saying goodbye to the person she was before she came here. I think she does this every time she begins something irreversible."</span>
+      <span class="sc-note">This is her Furiosa salt-flat moment — but much smaller, and earlier, and missable, and she does not know the Scholar saw it. When the Scholar faces her in Act II, they carry this. She was saying goodbye to something. So are they.</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- §4 — EXPANDED KEY DIALOGUES -->
+<div class="sh">
+  <span class="sh-n">§ 04</span>
+  <span class="sh-t">Expanded Key Dialogues — Making Her Remarkable in Conversation</span>
+  <span class="sh-aside">The wit, the warmth, the weight — all three must be present</span>
+</div>
+<div class="body">
+
+  <div class="call cf">
+    <span class="call-lbl">Writing Principle</span>
+    Her dialogue should always be doing two things simultaneously. The first thing is what the line says. The second thing is what the line reveals about who she is. Marion Ravenwood in every scene. <strong>Never one layer. Always two.</strong>
+  </div>
+
+  <div class="scene-block sb-a">
+    <div class="scene-head">
+      <span class="sc-label">Enhanced · Early Camel · Day Two</span>
+      <span class="sc-title">The First Real Conversation</span>
+      <span class="sc-badge">REVISED</span>
+    </div>
+    <div class="scene-body">
+      <span class="sc-dir">[Scholar has just solved the first significant puzzle alone. They are examining the result — a newly accessible corridor. Vanguard A arrives from the east and surveys it.]</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"I could have used help with that one."</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"You didn't need it."</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"You couldn't have known that."</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"I read your published work on administrative archive systems. Fourteen papers. The fourth one described an almost identical mechanism in the Eastern Satrap records. You solved this in eight minutes. Your paper suggests you would have estimated twelve." [Beat.] "I was watching to see if you were better than your writing. You are slightly better than your writing."</span>
+      <span class="sc-note">This line does three things: (1) reveals she studied the Scholar for years, (2) shows she has been timing and evaluating from Day One, (3) delivers a genuine compliment while simultaneously revealing that the compliment is data. She is like Clarice: she pays complete attention. She tells you that she's paying complete attention. It's not intimidating — it's disarming, because you realize the attention is also respectful.</span>
+    </div>
+  </div>
+
+  <div class="scene-block sb-b">
+    <div class="scene-head">
+      <span class="sc-label">Enhanced · Mid Camel · WB-004</span>
+      <span class="sc-title">On Why She Stayed</span>
+      <span class="sc-badge">REVISED + NEW</span>
+    </div>
+    <div class="scene-body">
+      <span class="sc-dir">[Scholar, late in their Dark Library work session, asks the question they've been avoiding.]</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"You could have left. Any time in 300 years. The Archive would have degraded, but — you could have left."</span>
+      <span class="sc-spk">Vanguard B</span>
+      <span class="sc-line">"Yes."</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"Why didn't you?"</span>
+      <span class="sc-dir">[A very long pause. She closes the tablet she's been working on.]</span>
+      <span class="sc-spk">Vanguard B</span>
+      <span class="sc-line">"In the first year, because the mission wasn't complete. In the next decade, because my soldiers were still alive and I would not leave them. In the years after: because I had built something here. Not the archive — myself. The person I became in this building cannot exist outside it. She was made from 300 years of specific problems in a specific place. If I left, I would be someone else. Someone smaller." [A moment.] "I chose the larger version."</span>
+      <span class="sc-note">This is the Marion Ravenwood answer — she didn't stay out of duty or fear or inability to leave. She stayed because she liked who she became here better than who she would have been anywhere else. This is not a tragic revelation. It is a proud one. She is someone who made herself deliberately over 300 years. The tragedy is only visible later — when the Scholar understands that the self she built here was built for exactly this purpose.</span>
+    </div>
+  </div>
+
+  <div class="scene-block sb-a">
+    <div class="scene-head">
+      <span class="sc-label">Enhanced · Late Camel · After a Major Puzzle Success</span>
+      <span class="sc-title">What She Says Instead of "Well Done"</span>
+      <span class="sc-badge">REVISED</span>
+    </div>
+    <div class="scene-body">
+      <span class="sc-dir">[Scholar has just completed the Armillary puzzle chain — the most complex sequence in the Camel Phase. Vanguard A has been watching from the Gallery's north alcove.]</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"Fourteen minutes, thirty-two seconds."</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"Is that good?"</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"It's the fastest I've seen." [Scholar looks at her.] "I worked out the sequence myself in year sixty-eight. It took me four months. I want you to understand how long I've been thinking about what you just did." [A pause.] "Four months."</span>
+      <span class="sc-note">The compliment is structured backwards — she establishes her baseline first (four months, year sixty-eight) before revealing what the Scholar accomplished against it (fourteen minutes). The four months is not embarrassing — she worked it out from scratch with no training in the relevant systems. But the Scholar's fourteen minutes makes her year sixty-eight feel like a different epoch. She is saying: you are remarkable. She is saying it in the language of someone who measures everything in time and finds time very revealing.</span>
+    </div>
+  </div>
+
+  <div class="scene-block sb-both">
+    <div class="scene-head">
+      <span class="sc-label">New Scene · Act II Threshold · The Only Warning She Gives</span>
+      <span class="sc-title">The Last Honest Conversation</span>
+      <span class="sc-badge new-badge">NEW</span>
+    </div>
+    <div class="scene-body">
+      <span class="sc-dir">[The resonance instrument has just delivered the position report. The Scholar has not yet picked up the crossbow. Vanguard A finds them in the corridor — not looking for them, or perhaps exactly looking for them — and stops.]</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"You received the report."</span>
+      <span class="sc-dir">[Not a question. She knows. Of course she knows.]</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"Yes."</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">"Then you know what comes next."</span>
+      <span class="sc-spk">Scholar</span>
+      <span class="sc-line">"I think so."</span>
+      <span class="sc-spk">Vanguard A</span>
+      <span class="sc-line">[A moment — the longest pause she has ever taken in the Scholar's presence.] "You have been exceptional at this work. I want you to know that I know that. I need you to know that I know that before — " [She stops. Then:] "The Archive is lucky to have had you."</span>
+      <span class="sc-dir">[She turns and walks east. She does not look back. She has never, in 312 years, told anyone they were exceptional before eliminating them. She has never had the opportunity. She has been waiting to say that for a long time.]</span>
+      <span class="sc-note">Past tense. The Scholar catches it. "Has had." Not "has." She is already speaking of them in completed time. This is her one moment of honesty, spoken as kindness, that is also her Lion Phase commencing. Both things true at once. Always.</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- §5 — SEQUEL ARCHITECTURE -->
+<div class="sh">
+  <span class="sh-n">§ 05</span>
+  <span class="sh-t">The Sequel — "The Archive of One Truth"</span>
+  <span class="sh-aside">What she does when there's nothing left to wait for</span>
+</div>
+<div class="body">
+
+  <div class="sequel-box">
+    <div class="sq-title">The Central Question of the Sequel</div>
+    <div class="sq-logline">
+      She has spent 300 years executing a plan. The plan is complete. The Archive is hers. What does a woman who has been waiting for her whole life do when she stops waiting?
+    </div>
+    <div class="sq-body">
+      <p>The first game ends with the Scholar gone and the Vanguard in possession of a complete Archive — both worlds, all knowledge, operational for the first time since the civilization sealed it. She has what she came for. She is, for the first time in 312 years, not waiting for anything. <strong>This is the most dangerous moment in the sequel premise.</strong> A person who has been defined by purpose and finds themselves without one is the most interesting protagonist in fiction.</p>
+      <p>The Third Record — the document describing the civilization that integrated both worlds — becomes the sequel's engine. She read it in KENOMA. She said: <em>"That civilization would not have needed me."</em> And left the room. But she kept thinking about it. That civilization figured out something the civilization that made her couldn't. She has the complete Archive. She has both worlds. She has 300 years of expertise in a building designed to study exactly this question. <strong>She is now the only person alive who could find out what that civilization knew.</strong></p>
+      <p>She leaves the Archive. For the first time in 312 years. The doors close behind her. The fire altars she lit for the Scholar are still burning.</p>
+    </div>
+  </div>
+
+  <h3>Seeds Planted in Game One — What She Leaves Behind</h3>
+
+  <div class="scene-block sb-both">
+    <div class="scene-head">
+      <span class="sc-label">Sequel Seed · WB-∞ · After the True Ending</span>
+      <span class="sc-title">What the Scholar Never Read</span>
+      <span class="sc-badge new-badge">POST-CREDITS DISCOVERY</span>
+    </div>
+    <div class="scene-body">
+      <p>In WB-∞, after the final credits roll, a camera holds on the Chamber of Convergence. The Scholar is gone. The chamber is quiet for the first time. Then: a sound. Not creature-sound. The sound of a stylus on clay.</p>
+      <p>Vanguard B is in the chamber — the Hollow-side version. She is sitting cross-legged on the floor, writing. A complete formal report, administrative Elamite, with all appropriate headers. She writes for a moment. The camera angle shifts to show the report's heading:</p>
+      <p style="text-align:center;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(200,160,48,0.4);margin:16px 0;">
+        <em>FINAL STATUS REPORT · ARCHIVE OF TWO TRUTHS<br>
+        FILED BY: FIRST KEEPER, DARK ARCHIVE<br>
+        FILING ON BEHALF OF: FIRST KEEPER, SACRED FIRE ARCHIVE (DECEASED)<br>
+        SUBJECT: COMPLETION OF MISSION · FOLLOW-ON OPERATIONS</em>
+      </p>
+      <p>The stylus moves. The camera cannot see what she writes. It holds on her face as she writes. She is not sad. She is not celebratory. She is working. There is a specific expression that soldiers have when they are beginning a new mission: clarity, focus, the future already present in their face. She has that expression.</p>
+      <p>She finishes. Looks up. Looks at the wall where both Vanguards saw each other through the chamber glass. The glass is dark — World A's side is empty. She looks at it for a long time.</p>
+      <p>Then she stands, takes her report, and walks toward the archive's exit. The camera stays in the chamber as her footsteps recede. The last thing visible: the report's final line, now readable on the abandoned stone floor where she was sitting. The characters are too small to read from this angle. Except the last word. Three characters. <em>North.</em></p>
+      <span class="sc-note">She is going north. That's all the sequel needs. One direction. Three hundred years of waiting, and then: north.</span>
+    </div>
+  </div>
+
+  <h3>The Sequel's Three-Act Shape</h3>
+
+  <div class="trait-grid">
+    <div class="trait-card tr-a">
+      <span class="tr-lbl">Act I — The Vanguard Outside</span>
+      <div class="tr-body">She has not been in the world for 312 years. The world has changed enormously. She knows this academically — the Archive's trader network kept her informed — but knowing and experiencing are different things. <strong>She is, in the outside world, nobody.</strong> Her rank is ancient. Her empire is gone. Her regiment is dust. She is an extraordinarily competent person with no institutional affiliation and a mission she invented for herself. This is the most interesting version of her yet: someone who was the most capable person in a building, now in a world where nobody knows that.</div>
+    </div>
+    <div class="trait-card tr-b">
+      <span class="tr-lbl">Act II — The Third Record's Trail</span>
+      <div class="tr-body">The Third Record describes in precise architectural detail a civilization that built something north of the Archive's mountain range. She finds it. Or finds what is left of it. Or finds the people who descended from it, who have been living with the integrated knowledge of both worlds for 300 years and have therefore evolved in a direction neither Sacred Fire nor Hollow anticipated. <strong>She is now the outside force encountering a world that doesn't need her the way the Archive did.</strong> This is the sequel's central tension: she built herself around being necessary. What is she when she isn't?</div>
+    </div>
+    <div class="trait-card tr-a">
+      <span class="tr-lbl">The Sequel's Promise to Players of Game One</span>
+      <div class="tr-body">Players who completed KENOMA at the highest level — who gave the Scholar everything, who built the most formidable version of her — receive a specific moment in the sequel's opening: a record of the Scholar, in the successor civilization's archives, written by her. She documented them. Formally. Filed it properly. <strong>Past tense is not a judgment. It is a precision.</strong> She wrote the Scholar into the record. In the sequel she is still carrying that. And north is far enough that she cannot see the Archive anymore. She goes anyway.</div>
+    </div>
+    <div class="trait-card tr-b">
+      <span class="tr-lbl">The New Protagonist Thesis</span>
+      <div class="tr-body">In KENOMA, she is the force that shapes. In the sequel, she is the person who is shaped. The most compelling sequel premise: someone who spent 300 years being the most planned person in any room, now in a world that was not planned for and will not cooperate with any plan she makes. Marion Ravenwood leaving Nepal. Furiosa past the salt flat. <strong>Both characters become more interesting when the plan runs out.</strong> So does she.</div>
+    </div>
+  </div>
+
+  <div class="call csq">
+    <span class="call-lbl">What the Sequel Must Never Do</span>
+    She cannot be softened for the sequel. She used the Scholar and she knew it and she did it anyway and she was right. That cannot be revised or apologized for — in the sequel or in a post-credits scene of Game One. <strong>She is exactly who she was.</strong> The sequel doesn't undo KENOMA. It follows the same person into a new question. Players who hated her in Game One and players who understood her will both find exactly the version of her they expect. Then the world north of the Archive will do something neither expected. That's the sequel.
+  </div>
+
+  <div class="scene-block sb-both">
+    <div class="scene-head">
+      <span class="sc-label">Sequel Opening Scene — Day One Outside</span>
+      <span class="sc-title">312 Years Later, She Sees a Market</span>
+      <span class="sc-badge new-badge">SEQUEL · GAME TWO</span>
+    </div>
+    <div class="scene-body">
+      <span class="sc-dir">[A mountain market town. Merchants, animals, textiles, noise. She stands at the edge of it. She has been in an empty building for 312 years. She is looking at the market the way a general surveys terrain before advance: systematically, from left to right, identifying exits, supplies, threat vectors. It takes her approximately 40 seconds to complete the survey. Then she looks at the goods for the first time. Bread. Fresh. She hasn't had fresh bread in 312 years. She looks at it for a moment with an expression that is not describable with a single word.]</span>
+      <span class="sc-dir">[A merchant approaches her, trying to sell something. She listens to his pitch. He finishes. She asks him, in the regional dialect she learned from the trade reports she's been reading for 250 years, three questions: what's the shortest route north that avoids the mountain passes, what language do they speak in the first settlement beyond the range, and how much for the bread.]</span>
+      <span class="sc-dir">[The merchant is slightly frightened by the first two questions and very pleased by the third. He tells her the price. She pays the exact amount without negotiation — she has been studying regional trade rates from her position reports and knows the bread is fairly priced. She walks north, eating it. The camera stays on the market as she disappears into the crowd. The bread was good. She doesn't look back.]</span>
+      <span class="sc-note">This is who she is. Not diminished, not softened, not broken by KENOMA's ending. She walked out of the Archive and immediately began working. The bread is the one human thing — the one indulgence, the one acknowledgment that 312 years is long enough that fresh bread is worth a moment of attention. Then: north. Always north.</span>
+    </div>
+  </div>
+</div>
+
+
+<div class="foot">
+  <span>KENOMA · CHR-VAN-001 · The Vanguard · Character Expansion</span>
+  <span>Film archetypes · New scenes · Sequel architecture · v1</span>
+  <span>For Storytelling Bible v9 · GDD Production</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA · Compact Context Cluster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fire: #e8863a;
+    --ember: #c45c1a;
+    --gold: #d4a843;
+    --ash: #8a7a6a;
+    --stone: #2a2420;
+    --deep: #1a1410;
+    --hollow: #0d0b09;
+    --hollow-blue: #1a2030;
+    --cold: #4a6a8a;
+    --cold-light: #7aadcc;
+    --text: #d4c8b8;
+    --text-dim: #7a6a5a;
+    --border: rgba(212,168,67,0.15);
+    --border-bright: rgba(232,134,58,0.4);
+    --strength: #4a8a5a;
+    --weakness: #8a3a3a;
+    --ref: #5a4a8a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--hollow);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+    position: relative;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 1px;
+    background: var(--fire);
+    opacity: 0.6;
+  }
+
+  .title-persian {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ash);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    color: var(--ash);
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--fire);
+    border: 1px solid var(--border-bright);
+    padding: 4px 12px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION GRID ── */
+  .cluster-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+  .cluster-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .cluster-grid.full { grid-template-columns: 1fr; }
+
+  /* ── NODE ── */
+  .node {
+    background: var(--stone);
+    border: 1px solid var(--border);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .node:hover { border-color: var(--border-bright); }
+  .node.world-a { border-left: 3px solid var(--fire); }
+  .node.world-b { border-left: 3px solid var(--cold); }
+  .node.strength { border-left: 3px solid var(--strength); }
+  .node.weakness { border-left: 3px solid var(--weakness); }
+  .node.reference { border-left: 3px solid var(--ref); }
+  .node.core { border-left: 3px solid var(--gold); }
+  .node.system { border-left: 3px solid var(--ash); }
+
+  .node-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px 12px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .node-header:hover { background: rgba(255,255,255,0.03); }
+  .node.open .node-header { border-bottom-color: var(--border); }
+
+  .node-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    width: 22px;
+    text-align: center;
+  }
+
+  .node-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    flex: 1;
+  }
+
+  .node-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .node-toggle {
+    font-size: 10px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .node.open .node-toggle { transform: rotate(90deg); }
+
+  .node-body {
+    display: none;
+    padding: 16px 18px 18px;
+  }
+  .node.open .node-body { display: block; }
+
+  /* ── CONTENT TYPES ── */
+  .kv-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 6px 12px;
+    margin-bottom: 8px;
+    align-items: start;
+  }
+  .kv-row:last-child { margin-bottom: 0; }
+  .k {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--ash);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .v { color: var(--text); font-size: 13.5px; }
+  .v em { color: var(--fire); font-style: normal; }
+  .v strong { color: var(--gold); font-weight: 500; }
+
+  .prose {
+    font-size: 13.5px;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .prose:last-child { margin-bottom: 0; }
+  .prose em { color: var(--fire); font-style: italic; }
+  .prose strong { color: var(--gold); font-weight: 500; }
+  .prose .cold { color: var(--cold-light); }
+
+  .rule-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rule-list li {
+    font-size: 13px;
+    padding-left: 14px;
+    position: relative;
+    color: var(--text);
+  }
+  .rule-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--ash);
+    font-size: 11px;
+  }
+  .rule-list li strong { color: var(--gold); font-weight: 500; }
+  .rule-list li em { color: var(--fire); font-style: italic; }
+
+  .act-row {
+    display: grid;
+    grid-template-columns: 28px 80px 1fr;
+    gap: 8px 12px;
+    align-items: start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .act-row:last-child { border-bottom: none; }
+  .act-icon { font-size: 18px; line-height: 1; padding-top: 2px; }
+  .act-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ash); padding-top: 3px; }
+  .act-desc { font-size: 13px; color: var(--text); }
+  .act-desc strong { color: var(--gold); font-weight: 500; }
+
+  .sys-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .sys-item {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.2);
+  }
+  .sys-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--fire);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .sys-name {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .sys-desc { font-size: 12px; color: var(--text-dim); }
+  .sys-priority {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ash);
+    margin-top: 4px;
+  }
+
+  .sw-item {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .sw-item:last-child { border-bottom: none; }
+  .sw-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .sw-item.s .sw-label { color: var(--strength); }
+  .sw-item.w .sw-label { color: var(--weakness); }
+  .sw-item.r .sw-label { color: var(--ref); }
+
+  .ref-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 6px 12px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    align-items: start;
+  }
+  .ref-row:last-child { border-bottom: none; }
+  .ref-source { color: var(--cold-light); font-style: italic; font-size: 12.5px; }
+  .ref-contribution { color: var(--text); }
+
+  .scenario-row {
+    display: grid;
+    grid-template-columns: 24px 80px 1fr;
+    gap: 6px 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    align-items: start;
+  }
+  .scenario-row:last-child { border-bottom: none; }
+  .scen-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ash); }
+  .scen-type { color: var(--gold); font-size: 12px; }
+  .scen-desc { color: var(--text); }
+
+  .combat-row {
+    display: grid;
+    grid-template-columns: 20px 90px 1fr;
+    gap: 6px 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    align-items: start;
+  }
+  .combat-row:last-child { border-bottom: none; }
+  .tier-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ash); }
+  .tier-name { color: var(--fire); }
+  .tier-rule { color: var(--text); }
+  .tier-rule em { color: var(--gold); font-style: normal; }
+
+  /* ── DIVIDER LABEL ── */
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 20px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before, .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── IRON LAWS BANNER ── */
+  .laws-banner {
+    background: linear-gradient(135deg, rgba(212,168,67,0.06), rgba(232,134,58,0.04));
+    border: 1px solid rgba(212,168,67,0.25);
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    margin: 2px 0;
+  }
+  .laws-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .law-item {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 6px 10px;
+    padding: 5px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(212,168,67,0.08);
+    align-items: start;
+  }
+  .law-item:last-child { border-bottom: none; }
+  .law-n { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ash); }
+  .law-text strong { color: var(--gold); font-weight: 500; }
+  .law-text { color: var(--text); }
+
+  /* ── THESIS BLOCK ── */
+  .thesis-block {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border-bright);
+    border-left: 3px solid var(--fire);
+    padding: 20px 24px;
+    margin: 2px 0;
+    position: relative;
+  }
+  .thesis-quote {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+  .thesis-attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ash);
+    letter-spacing: 0.08em;
+  }
+  .thesis-block .thesis-note {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .thesis-block .thesis-note strong { color: var(--fire); font-weight: 500; }
+
+  /* ── WORLD SPLIT ── */
+  .world-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 2px 0;
+  }
+  .world-panel {
+    padding: 16px 18px;
+  }
+  .world-panel.wa {
+    background: linear-gradient(135deg, rgba(232,134,58,0.08), rgba(26,20,16,1));
+    border: 1px solid rgba(232,134,58,0.2);
+    border-left: 3px solid var(--fire);
+  }
+  .world-panel.wb {
+    background: linear-gradient(135deg, rgba(74,106,138,0.1), rgba(13,11,9,1));
+    border: 1px solid rgba(74,106,138,0.2);
+    border-left: 3px solid var(--cold);
+  }
+  .world-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .world-panel.wa .world-title { color: var(--fire); }
+  .world-panel.wb .world-title { color: var(--cold-light); }
+  .world-row { display: flex; gap: 8px; margin-bottom: 5px; font-size: 12.5px; }
+  .world-row .wk { color: var(--ash); font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; min-width: 80px; padding-top: 2px; }
+
+  /* ── CHARACTER PANEL ── */
+  .char-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  /* ── STAGE BAR ── */
+  .stage-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    margin: 8px 0;
+  }
+  .stage {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    padding: 5px 6px;
+    font-size: 11px;
+    text-align: center;
+  }
+  .stage .sn { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ash); display: block; }
+  .stage .sl { color: var(--text); display: block; margin-top: 2px; font-size: 11px; }
+  .stage.final { border-color: rgba(138,58,58,0.5); background: rgba(138,58,58,0.08); }
+  .stage.final .sl { color: var(--weakness); }
+
+  /* ── COMPACT TABLE ── */
+  .c-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .c-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ash);
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+  .c-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text);
+    vertical-align: top;
+  }
+  .c-table tr:last-child td { border-bottom: none; }
+  .c-table .hi { color: var(--gold); }
+  .c-table .lo { color: var(--text-dim); }
+  .c-table .fire { color: var(--fire); }
+  .c-table .cold { color: var(--cold-light); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .cluster-grid, .cluster-grid.three, .char-panel, .world-split { grid-template-columns: 1fr; }
+    .sys-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <span class="title-persian">بایگانی دو راستی · Compact Context Cluster · v1</span>
+    <h1>KENOMA</h1>
+    <div class="subtitle">The Archive of Two Truths · Psychological Horror Tragedy</div>
+    <div class="meta-row">
+      <span class="meta-pill">PC / Console</span>
+      <span class="meta-pill">Fixed Camera</span>
+      <span class="meta-pill">28–32 Months</span>
+      <span class="meta-pill">Phase 1 · $250–350K</span>
+      <span class="meta-pill">Achaemenid Persian Setting</span>
+    </div>
+  </header>
+
+  <!-- ───────────────────────── THESIS ───────────────────────── -->
+  <div class="thesis-block">
+    <div class="thesis-quote">"When the birds are gone, the good bow is put away. When the hare is dead, the hunting dog is cooked."</div>
+    <div class="thesis-attr">FAN LI · Eastern Zhou Chronicles · The Scholar knows this text. Teaches it. Thinks it warns against bad rulers. It warns against anyone who serves at all.</div>
+    <div class="thesis-note">
+      <strong>The game in one sentence:</strong> A scholar is exactly good enough to be used completely — not despite their brilliance, but because of it. Every correct professional decision is a step toward the conclusion. The ending is not a betrayal. It is a completion.
+    </div>
+  </div>
+
+  <!-- ───────────────────────── TWO WORLDS ───────────────────────── -->
+  <div class="section-label">Two Worlds · One Building</div>
+  <div class="world-split">
+    <div class="world-panel wa">
+      <div class="world-title">🔥 World A · Sacred Fire · The Apadana</div>
+      <div class="world-row"><span class="wk">Architecture</span><span>Persepolis-scale, 72 stone columns, processional friezes, fire altars at every junction</span></div>
+      <div class="world-row"><span class="wk">Philosophy</span><span>Asha — visible truth, order, light. Not "good." Chosen path.</span></div>
+      <div class="world-row"><span class="wk">Crossing</span><span>Bronze armillary TFPs (Traversal Focal Points) set into limestone pillars</span></div>
+      <div class="world-row"><span class="wk">Accumulation</span><span>Scholar lights fire altars with oil. The Apadana becomes beautiful corridor by corridor. The player should love this place before Act II takes it.</span></div>
+      <div class="world-row"><span class="wk">Key rooms</span><span>WA-001 Gate · WA-003 Eastern Treasury (30,000 tablets) · WA-007 Grand Armillary (summit)</span></div>
+    </div>
+    <div class="world-panel wb">
+      <div class="world-title" style="color:var(--cold-light)">❄ World B · The Hollow · Dark Archive</div>
+      <div class="world-row"><span class="wk">Architecture</span><span>Same column grid — inverted underground. Friezes show the same tribute procession, gone wrong. The tributaries' faces are slowly turning.</span></div>
+      <div class="world-row"><span class="wk">Philosophy</span><span>Druj — hidden truth, shadow, cold. Not "evil." The alternate path. Equally real.</span></div>
+      <div class="world-row"><span class="wk">Crossing</span><span>Jade armillary TFPs, colder, resonance felt in the Scholar's chest before visible</span></div>
+      <div class="world-row"><span class="wk">Vulnerability</span><span>Scholar's fire vessel = only warm light in 300 years. Everything that lives here sees the Scholar's exact location at all times.</span></div>
+      <div class="world-row"><span class="wk">Key rooms</span><span>WB-001 Inverted Gate · WB-004 Dark Library (Previous Scholar's journal) · WB-∞ Chamber of Convergence</span></div>
+    </div>
+  </div>
+
+  <div class="node core" style="margin-bottom:2px;">
+    <div class="node-header" onclick="toggle(this)">
+      <span class="node-icon">⚖</span>
+      <span class="node-title">The Iron Rule — Crossing Logic</span>
+      <span class="node-tag">NEVER BEND</span>
+      <span class="node-toggle">▶</span>
+    </div>
+    <div class="node-body">
+      <div class="prose"><strong>Knowledge from World B enables action in World A.</strong> Material from World A produces physical change in World B. One rule. Taught at PZ-002. Consistent everywhere, always.</div>
+      <div class="prose">Every crossing increments a hidden <em>Traversal Debt</em> counter. Higher debt = more frequent Boundary appearances. <strong>The Vanguard has zero crossing debt.</strong> She does not cross. She waits. The Scholar pays all costs. This asymmetry is visible from minute one. Its meaning is not visible until Act III.</div>
+      <div class="prose">TS2 had six different crossing logics across seven zones — it destroyed player intuition. KENOMA has one. <em>If a puzzle requires bending the rule, the puzzle changes, not the rule.</em></div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── THREE ACTS ───────────────────────── -->
+  <div class="section-label">Three-Act Structure · Nietzsche's Three Metamorphoses</div>
+
+  <div class="node core">
+    <div class="node-header" onclick="toggle(this)">
+      <span class="node-icon">◎</span>
+      <span class="node-title">Camel · Lion · Child</span>
+      <span class="node-tag">STRUCTURAL LAW</span>
+      <span class="node-toggle">▶</span>
+    </div>
+    <div class="node-body">
+      <div class="act-row">
+        <div class="act-icon">🐪</div>
+        <div class="act-label">Act I · Camel</div>
+        <div class="act-desc"><strong>Scholar.</strong> Says yes to every burden. Professional delight shading into dread. The warmth must be genuine before the turn can devastate. The Vanguard is efficient, strange, familiar in a way the Scholar cannot place. Both things feel like gifts.<br><em>Design test: if the player isn't warm and comfortable here, Act II cannot land.</em></div>
+      </div>
+      <div class="act-row">
+        <div class="act-icon">🦁</div>
+        <div class="act-label">Act II · Lion</div>
+        <div class="act-desc"><strong>Scholar.</strong> "I will." Environmental chess. Not a horror chase — two brilliant people in the same building, both doing everything correctly, one finishing before the other finishes first.<br><em>The sadness is that neither of them is wrong.</em><br><strong>The Turn:</strong> Scholar pauses. Sets down the tablet. Picks up the crossbow. Does not cut away.<br><em>Playtest verdict: "I knew it was coming and it still landed."</em> If "I didn't see it coming" — the Camel Phase failed.</div>
+      </div>
+      <div class="act-row">
+        <div class="act-icon">◎</div>
+        <div class="act-label">Act III · Child</div>
+        <div class="act-desc"><strong>The Vanguard — not the Scholar.</strong> Player watches rather than acts. She moves through rooms the Scholar worked in, reading the residue. Three-second silence: same gesture in every scenario, different weight. In Scenario I: emptiness. In Scenario V: prayer.<br>She straightens her tunic. She goes north. The fire altars stay lit behind her. <em>The Nietzschean Child: not innocent, but new.</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── CHARACTERS ───────────────────────── -->
+  <div class="section-label">Characters</div>
+
+  <div class="char-panel">
+    <div class="node world-a">
+      <div class="node-header" onclick="toggle(this)">
+        <span class="node-icon">🎓</span>
+        <span class="node-title">The Scholar</span>
+        <span class="node-tag">士 ARCHETYPE</span>
+        <span class="node-toggle">▶</span>
+      </div>
+      <div class="node-body">
+        <div class="prose">The <em>士</em> (Eastern Zhou wandering intellectual-servant) cannot stop serving. Not weakness — character. They find the problem matching their exact skills and apply them without reservation. Fan Li left. The Scholar stays. <strong>This is not ignorance. This is who they are.</strong></div>
+        <div class="prose" style="margin-top:8px;"><strong>Combat — Three Tiers (Aline Cedrac / AitD:TNN model):</strong></div>
+        <div class="combat-row"><span class="tier-num">T1</span><span class="tier-name">Environmental</span><span class="tier-rule">Set during Camel, used in Lion. Only at locations where placed, only if Vanguard didn't observe arming.</span></div>
+        <div class="combat-row"><span class="tier-num">T2</span><span class="tier-name">Fire / Crossbow / Bell</span><span class="tier-rule">Fire vessel: damages Hollow creatures, lights altars, navigates Dark Archive — <em>three competing demands on one oil supply.</em> Crossbow: 12 bolts, 3-sec reload, fully exposed. Bell: 2 bolts + 1 stone = 3 bells max, stun on correct 3-strike pattern.</span></div>
+        <div class="combat-row"><span class="tier-num">T3</span><span class="tier-name">Naming (highest)</span><span class="tier-rule"><em>After full deep-read of creature's origin inscription, Scholar speaks its designation in the Naming Tongue. Permanent. No ammo. No oil. Costs only prior knowledge.</em> Most powerful action is cheapest in resources.</span></div>
+        <div class="prose" style="margin-top:10px;"><strong>Zero HUD</strong> — all status is physical: robe tears/darkens, posture degrades, hands tremble on puzzles when badly hurt. Fire vessel flame size = oil. Astrolabe resonance = creature proximity.</div>
+      </div>
+    </div>
+
+    <div class="node world-b">
+      <div class="node-header" onclick="toggle(this)">
+        <span class="node-icon">⚔</span>
+        <span class="node-title">The Vanguard</span>
+        <span class="node-tag">DUAL INSTANCE</span>
+        <span class="node-toggle">▶</span>
+      </div>
+      <div class="node-body">
+        <div class="prose"><strong>She is not tracking the Scholar to eliminate them. She is tracking them to understand them.</strong> Elimination is the consequence of understanding, not the goal. A complete model is a Vanguard who knows exactly when the Scholar's work is done.</div>
+        <div class="prose" style="margin-top:8px;"><strong>Vanguard A (Sacred Fire) — Military model:</strong> Measures efficiency and completion. Warmth = professional trust. She placed an oil flask in the Scholar's hands with exactly the amount calculated by tracking consumption since Day One. This is care. The calculation is also real. <em>Threshold: ~80% Archive completion.</em></div>
+        <div class="prose"><strong>Vanguard B (The Hollow) — Philosophical model:</strong> Measures intellectual depth and novelty. Warmth = intimacy. Spent 8 years learning Babylonian so she could understand her Scholar when they arrived. Has been counting 70 hours for 300 years. <em>Threshold: when the Scholar stops surprising her.</em></div>
+        <div class="prose" style="margin-top:8px;"><strong>Five Recognition Stages (both Vanguards):</strong></div>
+        <div class="stage-bar">
+          <div class="stage"><span class="sn">S1</span><span class="sl">Asks questions</span></div>
+          <div class="stage"><span class="sn">S2</span><span class="sl">Stops asking method</span></div>
+          <div class="stage"><span class="sn">S3</span><span class="sl">Anticipates needs</span></div>
+          <div class="stage"><span class="sn">S4</span><span class="sl">Answers before asked</span></div>
+          <div class="stage final"><span class="sn">S5 ⚠</span><span class="sl">Already knows. Observing.</span></div>
+        </div>
+        <div class="prose"><em>Stage 5 is the most dangerous moment in Act I — it happens while the Scholar is still safe.</em></div>
+        <div class="prose" style="margin-top:8px;"><strong>Never show the BMS.</strong> No UI, no notifications. Read only through Vanguard behavior changes. The moment tracking is visible, every prior warmth retroactively becomes a checkbox.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── SYSTEMS ───────────────────────── -->
+  <div class="section-label">8 Core Systems · Build Order Matters</div>
+
+  <div class="node system">
+    <div class="node-header" onclick="toggle(this)">
+      <span class="node-icon">⚙</span>
+      <span class="node-title">Systems Architecture</span>
+      <span class="node-tag">BMS FIRST · USS LAST</span>
+      <span class="node-toggle">▶</span>
+    </div>
+    <div class="node-body">
+      <div class="sys-grid">
+        <div class="sys-item">
+          <span class="sys-code">SYS-01</span>
+          <span class="sys-name">BMS · Behavioral Model System</span>
+          <div class="sys-desc">The spine. 12 event types, batched per room-session. WarmthRegister per Vanguard. Feeds every other system.</div>
+          <div class="sys-priority">⚠ BUILD FIRST — nothing works without this</div>
+        </div>
+        <div class="sys-item">
+          <span class="sys-code">SYS-02</span>
+          <span class="sys-name">RSS · Recognition Stage System</span>
+          <div class="sys-desc">5 stages per Vanguard. Observable behavioral shifts. Drives the three resonance moments. Requires BMS.</div>
+          <div class="sys-priority">Build after BMS is stable</div>
+        </div>
+        <div class="sys-item">
+          <span class="sys-code">SYS-03</span>
+          <span class="sys-name">TDS · Translation Depth System</span>
+          <div class="sys-desc">Deep-read vs skim per tablet. Feeds BMS. Determines puzzle unlocks, Vanguard responses, ending variants. If deep-read feels slow — everything collapses.</div>
+          <div class="sys-priority">Art + audio must prioritize this above all else in vertical slice</div>
+        </div>
+        <div class="sys-item">
+          <span class="sys-code">SYS-04</span>
+          <span class="sys-name">TVS · Traversal System</span>
+          <div class="sys-desc">Crossing management. Traversal Debt counter. Boundary frequency. Asymmetry: Vanguard never crosses, pays zero debt.</div>
+          <div class="sys-priority">One rule. Always. No exceptions.</div>
+        </div>
+        <div class="sys-item">
+          <span class="sys-code">SYS-05</span>
+          <span class="sys-name">RES · Resource Economy System</span>
+          <div class="sys-desc">Oil / crossbow bolts / sacred stones. No abundance. Three competing demands on the fire vessel simultaneously.</div>
+          <div class="sys-priority">Metro 2033 bullets-as-currency model</div>
+        </div>
+        <div class="sys-item">
+          <span class="sys-code">SYS-06 ⚠</span>
+          <span class="sys-name">USS · Utility Score System</span>
+          <div class="sys-desc">Lion Phase engine. Independent per Vanguard. Gap between thresholds = strategic window. VA: 80% completion. VB: novelty depletion.</div>
+          <div class="sys-priority">Build LAST — requires RSS, TDS, TVS stable</div>
+        </div>
+        <div class="sys-item">
+          <span class="sys-code">SYS-07</span>
+          <span class="sys-name">TCS · Terrain Control System</span>
+          <div class="sys-desc">Scholar-controlled / Contested / Vanguard-controlled rooms. The Scholar's route through Act II is a strategy, not navigation.</div>
+          <div class="sys-priority">Vanguard adapts through prediction, not reaction (Hello Neighbor failure mode: avoid)</div>
+        </div>
+        <div class="sys-item">
+          <span class="sys-code">SYS-08</span>
+          <span class="sys-name">SRS · Scenario Resolution System</span>
+          <div class="sys-desc">Reads BMS totals at Act III. Outputs one of 5 scenario archetypes. Never 10 score buckets — 5 dramatically distinct genres.</div>
+          <div class="sys-priority">Reads from BMS. No other data source.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── IRON LAWS ───────────────────────── -->
+  <div class="section-label">Iron Laws · Break Any One and the Game Becomes Something That Already Exists</div>
+
+  <div class="laws-banner">
+    <div class="laws-title">The Four Unbreakable Rules</div>
+    <div class="law-item"><span class="law-n">I</span><span class="law-text"><strong>Never make the turn a betrayal.</strong> VA tells the Scholar exactly what is about to happen — Clause 18 — and walks away to execute it. She told them. They stayed. The turn is the final gift of the Camel Phase and the opening move of Act II simultaneously.</span></div>
+    <div class="law-item"><span class="law-n">II</span><span class="law-text"><strong>Never break the Iron Rule.</strong> One crossing logic everywhere, always. If a puzzle requires bending it, the puzzle changes. The rule does not.</span></div>
+    <div class="law-item"><span class="law-n">III</span><span class="law-text"><strong>Never show the Behavioral Model.</strong> No UI, no "your choice has been remembered." The player reads the model through the Vanguard's observed behavior. Stage 5 arrives through noticing she stopped asking questions she used to ask.</span></div>
+    <div class="law-item"><span class="law-n">IV</span><span class="law-text"><strong>Never make a puzzle without an author.</strong> Every puzzle exists because a real person made a real decision in that space. "This room needs a puzzle" is never valid. Question: who was here, what did they need, what did they leave?</span></div>
+  </div>
+
+  <!-- ───────────────────────── CHILD PHASE SCENARIOS ───────────────────────── -->
+  <div class="section-label">Five Child Phase Scenarios · Five Different Stories</div>
+
+  <div class="node core">
+    <div class="node-header" onclick="toggle(this)">
+      <span class="node-icon">◎</span>
+      <span class="node-title">Scenario Archetypes</span>
+      <span class="node-tag">NOT A DIFFICULTY SCALE · FIVE GENRES</span>
+      <span class="node-toggle">▶</span>
+    </div>
+    <div class="node-body">
+      <div class="prose" style="margin-bottom:10px;">Each scenario covers a BMS score range and has its own dramatic identity. A player replaying at a different bracket should feel like they played a genuinely different story. <strong>Scenario V is not "the good ending."</strong> It is the ending where both became fully what they were — at the same moment — through each other.</div>
+      <div class="scenario-row"><span class="scen-num">I</span><span class="scen-type">Emptiness</span><span class="scen-desc">The three-second silence is hollow. She straightens her tunic. No residue. The Archive registers completion with no warmth attached.</span></div>
+      <div class="scenario-row"><span class="scen-num">II</span><span class="scen-type">Grief</span><span class="scen-desc">She pauses at one room longer than the others. Does not mark it. Continues north.</span></div>
+      <div class="scenario-row"><span class="scen-num">III</span><span class="scen-type">Respect</span><span class="scen-desc">What was owed, given. She returns the Scholar's journal to its original position before leaving.</span></div>
+      <div class="scenario-row"><span class="scen-num">IV</span><span class="scen-type">Completion</span><span class="scen-desc">"The birds are gone now." — Fan Li's aphorism, completed. By her. Not the Scholar.</span></div>
+      <div class="scenario-row"><span class="scen-num">V</span><span class="scen-type">Transcendence</span><span class="scen-desc">The three-second silence feels like prayer. The player who reaches this ending built the thing that eliminated them. <em>No game has made this the primary mechanic. This is why KENOMA exists.</em></span></div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── STRENGTHS / WEAKNESSES ───────────────────────── -->
+  <div class="section-label">Strengths · Weaknesses · Known Risks</div>
+
+  <div class="cluster-grid">
+    <div class="node strength">
+      <div class="node-header" onclick="toggle(this)">
+        <span class="node-icon">✦</span>
+        <span class="node-title">Strengths</span>
+        <span class="node-tag">CONFIRMED BY RESEARCH</span>
+        <span class="node-toggle">▶</span>
+      </div>
+      <div class="node-body">
+        <div class="sw-item s"><span class="sw-label">Mechanic Originality</span>No game scores all 5 uniqueness criteria. SH2: C2 only (invisible tracking). Witcher 3: C1+C4. Undertale: C2 partial. KENOMA: all 5. The protagonist-built antagonist who simultaneously delivers genuine warmth AND uses it as strategic intelligence for elimination is a documented first.</div>
+        <div class="sw-item s"><span class="sw-label">Market Position</span>Horror = #1 indie genre on Steam 3 consecutive years. Narrative games: 17 hits (2022) → 51 hits (2025). KENOMA sits at their intersection with the least competitive overlap. Horror that succeeds disproportionately outperforms ($9.8B → $22.4B by 2032).</div>
+        <div class="sw-item s"><span class="sw-label">Cultural Specificity</span>Achaemenid, not broadly "Middle Eastern." Zoroastrian, not Islamic. Persepolis, not generic Persian fantasy. This specificity is both ethical protection and market differentiation. Assassin's Creed Mirage proved academic praise follows specificity. KENOMA is the first horror game to take this civilization seriously.</div>
+        <div class="sw-item s"><span class="sw-label">Structural Elegance</span>The oil flask scene: exact measure of oil placed in the Scholar's hands — calculated from consumption tracking since Day One. This is care. The data behind it is also real. Both true in the same gesture. The game does not resolve this. The oil flask is the game.</div>
+        <div class="sw-item s"><span class="sw-label">Demo as Product</span>Vertical slice (WA-001→WA-003, VA Stages 1–3, one resonance moment) proves the core in 30–45 min. Kept permanently live on Steam/itch.io, it functions as a continuous discovery mechanism. Only 5/65 hit games kept demos live — strong positive signal.</div>
+      </div>
+    </div>
+
+    <div class="node weakness">
+      <div class="node-header" onclick="toggle(this)">
+        <span class="node-icon">⚠</span>
+        <span class="node-title">Weaknesses & Risks</span>
+        <span class="node-tag">EXPOSED BY RESEARCH</span>
+        <span class="node-toggle">▶</span>
+      </div>
+      <div class="node-body">
+        <div class="sw-item w"><span class="sw-label">Audio Gap (Critical)</span>Dark Voice specified as "Scholar's voice + reverb" — adequate but wrong. Hellblade uses binaural recording: the voice emerges from inside the listener's skull, from behind them, from a specific spatial location. Reverb = echo. Binaural = presence. For the Scholar's own strategic intelligence surfacing against their will, presence is the correct sensation. FMOD/Wwise support binaural HRTF at indie budgets. Must be a design intent from day one, not post-production treatment.</div>
+        <div class="sw-item w"><span class="sw-label">Pacing Gap (Act I mid-section)</span>Three resonance moments are well-placed, but between them there is no pacing system. Week 3 of Act I risks feeling like "more translation, more warmth." Dead Space Remake's "Intensity Director" model (dynamically adjusts lighting/audio/creature timing based on player stress state) is absent from the design. Recommend Archive Tension System (ATS): lightweight, diegetically motivated environmental micro-events to maintain engagement without triggering the BMS.</div>
+        <div class="sw-item w"><span class="sw-label">Adaptive AI Calibration</span>Hello Neighbor failure mode: players found AI either too predictable (always blocks the last route used) or too opaque (blocks routes not planned). Vanguard faces identical risk. Protection: she adapts through prediction, not mirroring. She acts on what she predicts the Scholar will do next — not on what they just did. One move ahead, never one move behind. This distinction is what makes her feel intelligent rather than mechanical.</div>
+        <div class="sw-item w"><span class="sw-label">Localization Blindspot</span>Farsi localization was flagged. Chinese was missed entirely. Chinese is now the most common Steam language. Narrative games without Simplified Chinese translation are functionally invisible to a significant audience. Cultural resonance exists: Achaemenid Persia / Silk Road connection. Chinese localization should be Tier 1, not deferred.</div>
+        <div class="sw-item w"><span class="sw-label">Orientalism Risk</span>Design documents are specific and protected. Marketing materials must carry this specificity publicly — or the game risks being seen as "Persian aesthetic horror." Steam description and press materials must name Achaemenid, Persepolis, Zoroastrian, and pre-Islamic explicitly. Cultural specificity not in external materials is not cultural specificity.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── REFERENCES ───────────────────────── -->
+  <div class="section-label">Design DNA · Eight Source References</div>
+
+  <div class="node reference">
+    <div class="node-header" onclick="toggle(this)">
+      <span class="node-icon">📚</span>
+      <span class="node-title">Reference Map</span>
+      <span class="node-tag">WHAT EACH SOURCE CONTRIBUTES</span>
+      <span class="node-toggle">▶</span>
+    </div>
+    <div class="node-body">
+      <div class="ref-row"><span class="ref-source">Eastern Zhou Chronicles</span><span class="ref-contribution">Scholar psychology (士 archetype). Fan Li's aphorism as game thesis. Dark Voice vocabulary. Does not shape the world — shapes the person inside it.</span></div>
+      <div class="ref-row"><span class="ref-source">Thus Spoke Zarathustra</span><span class="ref-contribution">Three-act structural law (Camel/Lion/Child). Nietzsche named Zarathustra after the Persian prophet who first taught the two-force cosmology. The rope-over-abyss as Scholar's opening V.O. — spoken as pride, received retroactively as epitaph.</span></div>
+      <div class="ref-row"><span class="ref-source">Man in the High Castle</span><span class="ref-contribution">Two equally real parallel worlds (neither is "the real one"). The Third Record as the book-within-the-book — describes the civilization that didn't happen, too internally consistent to be fiction.</span></div>
+      <div class="ref-row"><span class="ref-source">AitD Trilogy + TNN</span><span class="ref-contribution">Fixed-camera horror architecture. Aline Cedrac three-tier combat (environment → light → intellectual kill). Deep reading as the mechanic that unlocks. The Grand Armillary kill = the Hybrid Elder kill: facility's own infrastructure, no weapon spent.</span></div>
+      <div class="ref-row"><span class="ref-source">Silent Hill 1–4</span><span class="ref-contribution">SH1: fog-as-navigation (Dark Archive darkness model). SH2: invisible behavioral tracking — the space responds to what the visitor carries. SH3: world-shift mid-level. SH4: safe room corruption (Observatory starts safe, becomes haunted).</span></div>
+      <div class="ref-row"><span class="ref-source">Prince of Persia (WW/SoT/TT)</span><span class="ref-contribution">Shadow & Flame = the two Vanguards. The Dahaka = The Boundary (pursues because of rule violation, not malice). Kaileena = sympathetic antagonist. Dark Prince = the Scholar's internal voice.</span></div>
+      <div class="ref-row"><span class="ref-source">Tormented Souls 1 &amp; 2</span><span class="ref-contribution">Physical 3D inventory (open satchel, hold items). Candle/oil-save model. Multi-step cross-environment chains (solving WA-003 requires information from WB-004). TS2 failure: six crossing logics = destroyed intuition. KENOMA has one.</span></div>
+      <div class="ref-row"><span class="ref-source">Metro 2033</span><span class="ref-contribution">Zero HUD — all status physical. Bullets-as-currency (applied to oil and bolts). Overheard Metro moments: more character in a private scene than any scripted cutscene. The Eastern Treasury scene (Vanguard issuing patrol schedules to dormant Fire-Wardens in Elamite) is a Metro moment.</span></div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── MARKET COMPS ───────────────────────── -->
+  <div class="section-label">Business Comparables</div>
+
+  <div class="node reference">
+    <div class="node-header" onclick="toggle(this)">
+      <span class="node-icon">📊</span>
+      <span class="node-title">Market Context</span>
+      <span class="node-tag">INVESTOR-FACING</span>
+      <span class="node-toggle">▶</span>
+    </div>
+    <div class="node-body">
+      <table class="c-table">
+        <tr><th>Comparable</th><th>Scale</th><th>Why It's Relevant</th></tr>
+        <tr><td class="hi">Disco Elysium</td><td>$205M revenue</td><td>Narrative horror adjacent, literary ambition, deep-read as primary mechanic</td></tr>
+        <tr><td class="hi">Balatro</td><td>$100M · 1 developer</td><td>Proves small team + original core mechanic outperforms genre-safe production</td></tr>
+        <tr><td class="hi">Signalis</td><td>2-person · 500K+ copies</td><td>Fixed-camera survival horror with narrative depth — KENOMA's nearest genre peer</td></tr>
+        <tr><td class="hi">Where Winds Meet</td><td>$100.5M · 87.6% positive</td><td>Chinese cultural content now reaches global Steam audiences — validates Simplified Chinese priority</td></tr>
+        <tr><td class="cold">Assassin's Creed Mirage</td><td>AAA reference</td><td>Academic praise for cultural specificity in an adjacent setting — confirms that specificity is both ethical and commercial</td></tr>
+        <tr><td class="lo">Hello Neighbor</td><td>Cautionary</td><td>Adaptive AI antagonist that learned routes — reviews mixed because adaptation felt predictable or arbitrary, not intelligent. KENOMA's Vanguard must adapt through prediction, not mirroring.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── DOCUMENT AUTHORITY ───────────────────────── -->
+  <div class="section-label">Document Authority · Outer Contradicts Inner → Outer Changes</div>
+
+  <div class="node system">
+    <div class="node-header" onclick="toggle(this)">
+      <span class="node-icon">🗂</span>
+      <span class="node-title">Hierarchy & Active Files</span>
+      <span class="node-tag">22 FILES · 11 ACTIVE</span>
+      <span class="node-toggle">▶</span>
+    </div>
+    <div class="node-body">
+      <table class="c-table">
+        <tr><th>Ring</th><th>File</th><th>Authority / Purpose</th></tr>
+        <tr><td class="fire">CENTER</td><td class="hi">Storytelling Bible v8</td><td>Source of truth. All rooms, creatures, dialogue, 10-ending structure. If something feels wrong — come here first.</td></tr>
+        <tr><td class="fire">CENTER</td><td class="hi">Complete Narrative</td><td>Philosophical architecture. Six Scholar archetypes. Nietzsche as structural bones. Tribute inventory.</td></tr>
+        <tr><td class="fire">CENTER</td><td class="hi">Phase Design Doc</td><td>How the three acts work mechanically. Warmth architecture. Five recognition stages. Utility Score system. Five Child Phase scenarios.</td></tr>
+        <tr><td style="color:var(--gold)">CHAR</td><td>Vanguard Expansion</td><td>Six film archetypes. Five new fully-written scenes. Sequel architecture. Open when writing any Vanguard dialogue.</td></tr>
+        <tr><td style="color:var(--gold)">CHAR</td><td>Interference Puzzles</td><td>Four puzzles where both Vanguards have been failing each other for 300 years. Translation Obelisk: ±10 pts highest single weight.</td></tr>
+        <tr><td class="cold">WORLD</td><td>KENOMA Maps</td><td>SVG maps World A + B. Every WA-/WB- room ID. Every TFP crossing point. Pin this up — level designers need it constantly.</td></tr>
+        <tr><td class="cold">WORLD</td><td>Calibration Channel</td><td>The puzzle template. Every subsequent puzzle reviewed against it. Build this room first.</td></tr>
+        <tr><td class="cold">WORLD</td><td>GDD v5 Production</td><td>Combat rules, creature ecology, save system, inventory. Superseded by Phase Design for act structure.</td></tr>
+        <tr><td style="color:var(--ash)">PROD</td><td>Game Loop &amp; Systems</td><td>8 systems with data structures. Build order. Team matrix. 12 risk flags. Open at start of every engineering sprint.</td></tr>
+        <tr><td style="color:var(--ash)">PROD</td><td>Team Presentation</td><td>Visual reference. Both maps. All 4 interference puzzles. For onboarding and meetings.</td></tr>
+        <tr><td style="color:var(--text-dim)">PITCH</td><td>Investor Presentation</td><td>Non-gaming investors. Market data. Phase 1 scenarios. Pivot map. Risk table.</td></tr>
+        <tr><td style="color:var(--text-dim)">ARCHIVE</td><td>GDD v1–v4 / Bible Persian</td><td>Read-only history. Do not revise. Open only to understand why a decision was made.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ───────────────────────── FOOTER ───────────────────────── -->
+  <footer>
+    KENOMA · بایگانی دو راستی · Compact Context v1 · 23 source documents → 1 working cluster<br>
+    <span style="color:var(--fire);margin-top:4px;display:block;">Authority flows inward. If outer contradicts inner, outer changes.</span>
+  </footer>
+
+</div>
+
+<script>
+  function toggle(header) {
+    const node = header.closest('.node');
+    node.classList.toggle('open');
+  }
+
+  // Auto-open the core nodes on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const autoOpen = ['The Archive of Two Truths', 'Camel · Lion · Child'];
+    document.querySelectorAll('.node-title').forEach(el => {
+      if (autoOpen.some(t => el.textContent.includes(t.split(' ')[0]))) {
+        // keep closed by default — user opens what they need
+      }
+    });
+  });
+</script>
+</body>
+</html>

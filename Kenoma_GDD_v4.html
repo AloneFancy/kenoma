@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KENOMA — GDD v4.0 · Scholar Combat + Metro Integration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;500;600;700;900&family=Noto+Serif+SC:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void:      #05040a;
+  --black:     #080610;
+  --deep:      #0d0b16;
+  --pane:      #f4edd8;
+  --pane-mid:  #ece4c8;
+  --pane-dk:   #dfd5b0;
+  --ink:       #1c1408;
+  --text:      #2e2214;
+  --muted:     #7a6848;
+  --ash:       #b8a880;
+  --gold:      #c8a030;
+  --gold-lt:   #e0c050;
+  --gold-dk:   #907020;
+  --crimson:   #b82010;
+  --blood:     #7a1008;
+  --ember:     #d05818;
+  --iron:      #405060;
+  --iron-lt:   #688090;
+  --jade:      #1a5030;
+  --jade-lt:   #2a7048;
+  --jade-glow: #48b880;
+  --metro-r:   #8a0010;   /* Metro accent — deep Soviet red */
+  --metro-g:   #203828;   /* Metro accent — tunnel green */
+  --metro-b:   #c8d0c0;   /* Metro text on dark */
+  --aline-b:   #1a3050;   /* Aline blue-grey */
+  --aline-lt:  #4a80b0;   /* Aline light */
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--void);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17px; line-height: 1.9;
+}
+
+.page { max-width: 1020px; margin: 0 auto; background: var(--pane); }
+
+/* ══ COVER ══════════════════════════════ */
+.cover {
+  min-height: 100vh;
+  background: var(--black);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 56px 64px; position: relative;
+  overflow: hidden;
+}
+
+.cover::before {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 140% 60% at 50% 0%, #160a22 0%, transparent 55%),
+    radial-gradient(ellipse 50% 90% at 5% 50%,  #0a1018 0%, transparent 50%),
+    radial-gradient(ellipse 50% 90% at 95% 50%, #0e0808 0%, transparent 50%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, #08120e 0%, transparent 70%);
+}
+
+.cover-frame {
+  position:absolute; inset:32px;
+  border:1px solid rgba(200,160,48,0.07);
+  pointer-events:none;
+}
+.cover-frame::before {
+  content:''; position:absolute; inset:6px;
+  border:1px solid rgba(200,160,48,0.04);
+}
+
+.cv-eyebrow {
+  position:relative; z-index:2;
+  font-family:'Noto Serif SC', serif;
+  font-size:11px; letter-spacing:10px;
+  color:rgba(200,160,48,0.3); margin-bottom:24px;
+}
+
+.cv-title {
+  position:relative; z-index:2;
+  font-family:'Cinzel', serif;
+  font-size:96px; font-weight:900;
+  letter-spacing:30px; line-height:1;
+  color:transparent;
+  background:linear-gradient(170deg, var(--gold-lt) 0%, var(--gold) 45%, #7a5818 100%);
+  -webkit-background-clip:text; background-clip:text;
+  filter:drop-shadow(0 0 50px rgba(200,160,48,0.15));
+  margin-bottom:8px;
+}
+
+.cv-subtitle {
+  position:relative; z-index:2;
+  font-family:'Cinzel', serif;
+  font-size:11px; letter-spacing:7px;
+  color:rgba(200,160,48,0.35); margin-bottom:36px;
+}
+
+.cv-rule {
+  position:relative; z-index:2;
+  display:flex; align-items:center; gap:16px;
+  width:100%; max-width:540px; margin-bottom:36px;
+}
+.cv-rule-line { flex:1; height:1px;
+  background:linear-gradient(to right,transparent,rgba(200,160,48,0.35),transparent); }
+.cv-rule-dot { color:var(--crimson); font-size:7px; }
+
+.cv-alert-band {
+  position:relative; z-index:2;
+  background:rgba(184,32,16,0.12);
+  border:1px solid rgba(184,32,16,0.3);
+  border-left:3px solid var(--crimson);
+  padding:14px 24px; max-width:680px;
+  margin-bottom:32px;
+}
+.cv-alert-tag {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--crimson);
+  display:block; margin-bottom:6px;
+}
+.cv-alert-text {
+  font-size:15px; color:rgba(220,190,150,0.7);
+  font-style:italic; line-height:1.6;
+}
+
+.cv-ref-row {
+  position:relative; z-index:2;
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  width:100%; max-width:760px;
+  border:1px solid rgba(200,160,48,0.12);
+}
+.cv-ref-cell {
+  padding:12px 10px; text-align:center;
+  border-right:1px solid rgba(200,160,48,0.1);
+}
+.cv-ref-cell:last-child { border-right:none; }
+.cv-ref-type {
+  font-family:'Space Mono', monospace;
+  font-size:7px; letter-spacing:2px;
+  text-transform:uppercase; display:block;
+  margin-bottom:4px;
+}
+.cv-ref-type.lit  { color:var(--crimson); }
+.cv-ref-type.game { color:var(--iron-lt); }
+.cv-ref-type.metro { color:var(--metro-r); }
+.cv-ref-name {
+  font-family:'Cormorant Garamond', serif;
+  font-size:12px; line-height:1.4;
+  color:rgba(200,180,140,0.5);
+}
+.cv-ref-new { position:relative; }
+.cv-ref-new::after {
+  content:'NEW';
+  position:absolute; top:-6px; right:4px;
+  font-family:'Space Mono', monospace;
+  font-size:7px; letter-spacing:1px;
+  color:var(--gold); background:rgba(200,160,48,0.1);
+  padding:1px 4px; border:1px solid rgba(200,160,48,0.3);
+}
+
+.cv-footer {
+  position:relative; z-index:2;
+  display:flex; justify-content:space-between;
+  width:100%; max-width:760px;
+  margin-top:20px; padding-top:14px;
+  border-top:1px solid rgba(200,160,48,0.1);
+}
+.cv-footer span {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  text-transform:uppercase; color:rgba(200,160,48,0.22);
+}
+
+/* ══ NAV ══════════════════════════════ */
+.toc {
+  background:var(--deep);
+  padding:48px 72px;
+}
+.toc-title {
+  font-family:'Cinzel', serif;
+  font-size:9px; letter-spacing:7px;
+  text-transform:uppercase; color:var(--gold);
+  margin-bottom:28px; display:flex;
+  align-items:center; gap:16px;
+}
+.toc-title::after { content:''; flex:1; height:1px;
+  background:rgba(200,160,48,0.2); }
+
+.toc-section { margin-bottom:20px; }
+.toc-section-hd {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--crimson);
+  margin-bottom:8px; opacity:.8;
+}
+.toc-item {
+  display:grid;
+  grid-template-columns:52px 1fr auto;
+  align-items:baseline; gap:8px;
+  padding:7px 0;
+  border-bottom:1px solid rgba(200,160,48,0.07);
+}
+.toc-n {
+  font-family:'Space Mono', monospace;
+  font-size:10px; color:var(--crimson);
+}
+.toc-t {
+  font-family:'Cormorant Garamond', serif;
+  font-size:16px; color:var(--ash);
+}
+.toc-tag {
+  font-family:'Space Mono', monospace;
+  font-size:7px; letter-spacing:2px;
+  color:rgba(200,160,48,0.28); text-transform:uppercase;
+}
+.toc-item.new .toc-t { color:var(--gold-lt); }
+.toc-item.updated .toc-t { color:#b0c890; }
+
+/* ══ CHAPTER HEADERS ══════════════════════════ */
+.ch {
+  padding:42px 72px 28px;
+  position:relative;
+}
+.ch-void  { background:var(--black); }
+.ch-metro { background:#0a0e0c; }
+.ch-aline { background:#0a0c14; }
+.ch-rating { background:#100808; }
+
+.ch::before {
+  content:''; position:absolute;
+  top:0; left:0; right:0; height:2px;
+}
+.ch-void::before  { background:linear-gradient(to right, var(--crimson), var(--gold), transparent); }
+.ch-metro::before { background:linear-gradient(to right, var(--metro-r), var(--jade-lt), transparent); }
+.ch-aline::before { background:linear-gradient(to right, var(--aline-b), var(--aline-lt), transparent); }
+.ch-rating::before { background:linear-gradient(to right, var(--gold), var(--ember), transparent); }
+
+.ch-label {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:5px;
+  text-transform:uppercase; color:var(--crimson);
+  opacity:.7; margin-bottom:5px;
+}
+.ch-title {
+  font-family:'Cinzel', serif;
+  font-size:22px; font-weight:700;
+  color:var(--gold-lt); letter-spacing:2px;
+}
+.ch-cn {
+  font-family:'Noto Serif SC', serif;
+  font-size:11px; font-weight:300;
+  color:rgba(200,160,48,0.3);
+  margin-top:4px; letter-spacing:5px;
+}
+.ch-new {
+  display:inline-block; margin-left:12px;
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  color:var(--gold); border:1px solid var(--gold);
+  padding:2px 8px; vertical-align:middle;
+}
+.ch-updated {
+  display:inline-block; margin-left:12px;
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  color:#90b870; border:1px solid #90b870;
+  padding:2px 8px; vertical-align:middle;
+}
+
+/* ══ SECTION BODIES ══════════════════════════ */
+.sec {
+  padding:34px 72px;
+  border-bottom:1px solid var(--pane-dk);
+  background:var(--pane);
+}
+.sec:last-of-type { border-bottom:none; }
+
+h3 {
+  font-family:'Cinzel', serif;
+  font-size:11px; font-weight:600;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--crimson); margin-bottom:16px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--pane-dk);
+}
+
+h4 {
+  font-family:'Cormorant Garamond', serif;
+  font-size:21px; font-weight:600;
+  color:var(--ink); margin:20px 0 7px;
+}
+
+p { margin-bottom:14px; color:var(--text); }
+em { font-style:italic; }
+strong { font-weight:700; color:var(--ink); }
+
+/* ══ CORRECTION BANNER ══════════════════ */
+.correction {
+  background:#0e0604;
+  border:1px solid rgba(184,32,16,0.4);
+  border-left:4px solid var(--crimson);
+  padding:20px 24px; margin:20px 0;
+}
+.correction-tag {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:4px;
+  text-transform:uppercase; color:var(--crimson);
+  display:block; margin-bottom:8px;
+}
+.correction p { color:#d0a890; font-size:15px; margin-bottom:8px; }
+.correction p:last-child { margin-bottom:0; }
+
+/* ══ ALINE WEAPON TABLE ══════════════════ */
+.weapon-grid {
+  display:grid;
+  grid-template-columns:200px 1fr 80px 1fr;
+  margin:18px 0; font-size:14px;
+}
+
+.wg-head { display:contents; }
+.wg-head div {
+  padding:9px 14px;
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:3px;
+  text-transform:uppercase; background:var(--black);
+  border-bottom:1px solid rgba(200,160,48,0.2);
+}
+.wg-head .h-name { color:var(--aline-lt); }
+.wg-head .h-type { color:var(--gold); }
+.wg-head .h-prim { color:var(--jade-glow); }
+.wg-head .h-use  { color:var(--iron-lt); }
+
+.wg-row { display:contents; }
+.wg-cell {
+  padding:11px 14px;
+  border-bottom:1px solid var(--pane-dk);
+  vertical-align:top;
+}
+.wg-name {
+  background:var(--pane-mid);
+  font-weight:600; color:var(--ink);
+  border-left:3px solid var(--aline-lt);
+}
+.wg-type { background:var(--pane); color:var(--muted); font-style:italic; }
+.wg-prim { background:var(--pane); text-align:center; }
+.wg-use  { background:var(--pane); color:var(--text); }
+.prim-y { color:var(--jade-glow); font-weight:700; }
+.prim-n { color:var(--crimson); }
+
+/* The Scholar's arsenal adaptation */
+.scholar-weapons {
+  display:grid;
+  grid-template-columns:220px 1fr 1fr;
+  margin:18px 0; font-size:14px;
+}
+.sw-head { display:contents; }
+.sw-head div {
+  padding:9px 14px;
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:3px;
+  text-transform:uppercase; background:var(--black);
+  border-bottom:1px solid rgba(200,160,48,0.2);
+}
+.sw-head .h-tool  { color:var(--gold); }
+.sw-head .h-aline { color:var(--aline-lt); }
+.sw-head .h-role  { color:var(--jade-glow); }
+
+.sw-row { display:contents; }
+.sw-cell { padding:11px 14px; border-bottom:1px solid var(--pane-dk); }
+.sw-tool {
+  background:var(--pane-mid);
+  font-weight:600; color:var(--ink);
+  border-left:3px solid var(--gold);
+}
+.sw-aline { background:var(--pane); color:var(--muted); font-size:13px; }
+.sw-role  { background:var(--pane); color:var(--text); }
+
+/* ══ COMPARISON DIAL ══════════════════════ */
+.rating-block {
+  display:grid;
+  grid-template-columns:1fr 80px 1fr;
+  gap:0; margin:24px 0;
+  border:1px solid var(--pane-dk);
+  overflow:hidden;
+}
+.rb-metro { background:var(--metro-g); padding:22px 24px; }
+.rb-vs    {
+  background:var(--black);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cinzel', serif; font-size:13px;
+  color:var(--gold); letter-spacing:2px;
+}
+.rb-kenoma { background:#080410; padding:22px 24px; }
+
+.rb-game-name {
+  font-family:'Cinzel', serif;
+  font-size:12px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  margin-bottom:14px;
+}
+.rb-metro .rb-game-name  { color:var(--metro-b); }
+.rb-kenoma .rb-game-name { color:var(--gold-lt); }
+
+.rb-item { margin-bottom:10px; }
+.rb-label {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  text-transform:uppercase; display:block; margin-bottom:3px;
+}
+.rb-metro  .rb-label { color:rgba(200,208,192,0.5); }
+.rb-kenoma .rb-label { color:rgba(200,160,48,0.5); }
+
+.rb-bar-wrap { height:4px; background:rgba(255,255,255,0.08); }
+.rb-bar { height:100%; }
+.rb-metro  .rb-bar { background:var(--jade-glow); }
+.rb-kenoma .rb-bar { background:var(--gold); }
+.rb-bar.superior { background:var(--ember); }
+
+.rb-score {
+  font-family:'Space Mono', monospace;
+  font-size:10px; float:right; margin-top:2px;
+}
+.rb-metro  .rb-score { color:var(--metro-b); }
+.rb-kenoma .rb-score { color:var(--gold-lt); }
+
+/* ══ METRO INTEGRATION CARDS ══════════════ */
+.metro-card {
+  border:1px solid rgba(138,0,16,0.25);
+  border-left:4px solid var(--metro-r);
+  margin-bottom:18px;
+  overflow:hidden;
+}
+.metro-card-head {
+  background:#0e0c0a;
+  padding:12px 18px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.metro-card-title {
+  font-family:'Cinzel', serif;
+  font-size:13px; font-weight:600;
+  color:var(--metro-b); letter-spacing:1px;
+}
+.metro-card-src {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--metro-r);
+}
+.metro-card-body {
+  padding:16px 18px 18px 22px;
+  background:var(--pane);
+}
+.metro-card-body p { font-size:14.5px; margin-bottom:10px; }
+
+.metro-sub {
+  margin-top:10px; padding-top:10px;
+  border-top:1px solid var(--pane-dk);
+  display:grid; grid-template-columns:160px 1fr;
+  gap:0;
+}
+.ms-from {
+  background:var(--pane-mid);
+  padding:9px 14px;
+  font-style:italic; font-size:13.5px;
+  color:var(--muted);
+  border-right:1px solid var(--pane-dk);
+}
+.ms-to {
+  background:var(--pane);
+  padding:9px 14px;
+  font-size:13.5px; color:var(--text);
+}
+
+/* ══ CALLOUT VARIANTS ══════════════════════ */
+.callout {
+  border-left:3px solid var(--gold);
+  background:var(--pane-mid);
+  padding:14px 18px; margin:16px 0;
+  font-style:italic; font-size:15px;
+  color:var(--muted); line-height:1.7;
+}
+
+.callout-dark {
+  background:#0e0a08;
+  border-left:3px solid var(--crimson);
+  padding:16px 20px; margin:16px 0;
+  font-style:italic; font-size:15px;
+  color:#c8a880; line-height:1.7;
+}
+
+.callout-metro {
+  background:#090d0b;
+  border-left:3px solid var(--metro-r);
+  padding:16px 20px; margin:16px 0;
+  font-size:14.5px; color:var(--metro-b);
+  line-height:1.7;
+}
+.callout-metro .cm-tag {
+  font-family:'Space Mono', monospace;
+  font-size:7px; letter-spacing:3px;
+  text-transform:uppercase; color:var(--metro-r);
+  display:block; margin-bottom:6px;
+}
+
+.callout-cn {
+  background:#100a08;
+  border:1px solid rgba(184,32,16,0.25);
+  border-left:3px solid var(--crimson);
+  padding:18px 22px; margin:18px 0;
+}
+.callout-cn .cn-line {
+  font-family:'Noto Serif SC', serif;
+  font-size:20px; color:rgba(220,180,90,0.65);
+  display:block; letter-spacing:4px; margin-bottom:7px;
+}
+.callout-cn .cn-tr {
+  font-style:italic; font-size:15px;
+  color:rgba(200,175,145,0.55);
+  display:block; margin-bottom:5px;
+}
+.callout-cn .cn-src {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  color:rgba(184,32,16,0.45); text-transform:uppercase;
+  display:block; margin-top:4px;
+}
+
+/* ══ MATRIX ══════════════════════════════ */
+.matrix-wrap {
+  border:1px solid var(--pane-dk); margin:18px 0;
+}
+.matrix-head {
+  display:grid;
+  grid-template-columns:180px 1fr 1fr;
+  background:var(--black);
+  border-bottom:1px solid rgba(200,160,48,0.2);
+}
+.matrix-head div {
+  padding:9px 14px;
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:3px;
+  text-transform:uppercase; color:var(--gold);
+}
+.mx-row {
+  display:grid;
+  grid-template-columns:180px 1fr 1fr;
+  margin-bottom:2px;
+}
+.mx-src {
+  background:var(--pane-dk);
+  padding:10px 12px;
+  font-family:'Space Mono', monospace;
+  font-size:11px; color:var(--ink);
+  border-left:3px solid var(--metro-r);
+  display:flex; align-items:center;
+}
+.mx-metro {
+  background:var(--pane-mid); padding:10px 12px;
+  font-size:13.5px; color:var(--text);
+  border-left:1px solid var(--pane-dk);
+}
+.mx-kenoma {
+  background:var(--pane); padding:10px 12px;
+  font-size:13.5px; color:var(--muted);
+  border-left:1px solid var(--pane-dk);
+}
+
+/* ══ DIEGETIC DESIGN ══════════════════════ */
+.diegetic-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:2px; margin:18px 0;
+}
+.dg-cell {
+  padding:18px 20px; background:var(--pane-mid);
+  position:relative;
+}
+.dg-cell::before {
+  content:''; position:absolute;
+  top:0; left:0; width:3px; height:100%;
+}
+.dg-metro::before  { background:var(--metro-r); }
+.dg-kenoma::before { background:var(--gold); }
+
+.dg-label {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:3px;
+  text-transform:uppercase; margin-bottom:6px; display:block;
+}
+.dg-metro  .dg-label { color:var(--metro-r); }
+.dg-kenoma .dg-label { color:var(--gold-dk); }
+
+.dg-item {
+  font-family:'Cormorant Garamond', serif;
+  font-size:14.5px; color:var(--text);
+  margin-bottom:6px; display:flex; gap:8px;
+}
+.dg-item::before { content:'→'; color:var(--muted); flex-shrink:0; }
+
+/* ══ PILLAR GRID ══════════════════════════ */
+.pillars-2col {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:2px; margin:18px 0;
+}
+.pillar {
+  padding:20px 22px; background:var(--pane-mid);
+  position:relative;
+}
+.pillar::before {
+  content:''; position:absolute;
+  top:0; left:0; width:3px; height:100%;
+  background:var(--gold);
+}
+.pillar.metro::before { background:var(--metro-r); }
+.pillar-num {
+  font-family:'Cinzel', serif; font-size:40px;
+  font-weight:900; color:rgba(200,160,48,0.08);
+  position:absolute; top:8px; right:12px; line-height:1;
+}
+.pillar.metro .pillar-num { color:rgba(138,0,16,0.08); }
+.pillar-title {
+  font-family:'Cinzel', serif; font-size:11px;
+  font-weight:600; letter-spacing:2px;
+  text-transform:uppercase; color:var(--crimson);
+  margin-bottom:7px; position:relative; z-index:1;
+}
+.pillar.metro .pillar-title { color:var(--metro-r); }
+.pillar p { font-size:14px; color:var(--muted); margin:0; position:relative; z-index:1; }
+
+/* ══ PHASE CARDS ══════════════════════════ */
+.phase-row {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:0; margin:18px 0; border:1px solid var(--pane-dk);
+}
+.phase-card {
+  padding:22px 18px; text-align:center;
+  border-right:1px solid var(--pane-dk);
+}
+.phase-card:last-child { border-right:none; }
+.phase-cn {
+  font-family:'Noto Serif SC', serif;
+  font-size:34px; color:var(--gold); display:block;
+  margin-bottom:6px; opacity:.65;
+}
+.phase-en {
+  font-family:'Cinzel', serif; font-size:11px;
+  font-weight:600; letter-spacing:2px;
+  text-transform:uppercase; color:var(--crimson);
+  margin-bottom:3px;
+}
+.phase-src {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:1px;
+  color:var(--muted); display:block; margin-bottom:9px;
+}
+.phase-card p { font-size:13px; color:var(--muted); margin:0; }
+
+/* ══ COMBAT COMPARISON ══════════════════════ */
+.combat-split {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:0; margin:20px 0; border:1px solid var(--pane-dk);
+}
+.cs-aline { background:#0c0e18; padding:22px 24px; }
+.cs-scholar { background:#100e06; padding:22px 24px; }
+
+.cs-head {
+  font-family:'Cinzel', serif; font-size:13px;
+  font-weight:700; letter-spacing:2px; margin-bottom:16px;
+  padding-bottom:10px; border-bottom:1px solid;
+}
+.cs-aline   .cs-head { color:var(--aline-lt); border-color:rgba(74,128,176,0.3); }
+.cs-scholar .cs-head { color:var(--gold-lt);  border-color:rgba(200,160,48,0.3); }
+
+.cs-item {
+  display:grid; grid-template-columns:14px 1fr;
+  gap:10px; margin-bottom:12px; align-items:flex-start;
+}
+.cs-bullet { font-size:10px; margin-top:5px; }
+.cs-aline   .cs-bullet { color:var(--aline-lt); }
+.cs-scholar .cs-bullet { color:var(--gold); }
+
+.cs-lbl {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  text-transform:uppercase; display:block; margin-bottom:2px;
+}
+.cs-aline   .cs-lbl { color:rgba(74,128,176,0.6); }
+.cs-scholar .cs-lbl { color:rgba(200,160,48,0.6); }
+
+.cs-txt { font-size:13.5px; line-height:1.6; }
+.cs-aline   .cs-txt { color:#8ab0d0; }
+.cs-scholar .cs-txt { color:#c8a870; }
+
+/* ══ SCRIPT ══════════════════════════════ */
+.script {
+  background:#0c0a06; color:#d0bea0;
+  padding:28px 34px; margin:20px 0;
+  font-family:'Cormorant Garamond', serif;
+  font-size:16px; line-height:2;
+  border:1px solid rgba(200,160,48,0.12);
+  border-left:3px solid var(--gold);
+}
+.s-dir { color:#685840; font-style:italic; font-size:13px; display:block; margin:12px 0 4px; }
+.s-spk {
+  font-family:'Space Mono', monospace;
+  font-size:9px; letter-spacing:3px;
+  color:var(--gold); text-transform:uppercase;
+  margin-top:14px; display:block;
+}
+.s-line { color:#d0bea0; }
+
+/* ══ BADGE ══════════════════════════════ */
+.ref-badge {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:1px;
+  text-transform:uppercase; padding:2px 6px;
+  border:1px solid; border-radius:1px;
+  white-space:nowrap; display:inline-block;
+  margin:0 2px; vertical-align:middle;
+}
+.rb-aitd  { border-color:var(--iron); color:var(--iron-lt); }
+.rb-sh    { border-color:#5050a0; color:#8888c0; }
+.rb-pop   { border-color:var(--ember); color:#d89050; }
+.rb-ts    { border-color:#806040; color:#b09060; }
+.rb-zh    { border-color:var(--crimson); color:#d06050; }
+.rb-nz    { border-color:#404870; color:#7080a0; }
+.rb-metro { border-color:var(--metro-r); color:#d04040; }
+
+/* ══ DIVIDERS & FOOTER ══════════════════ */
+.div-gold  { height:2px; background:linear-gradient(to right, var(--crimson), var(--gold), var(--jade-lt), transparent); }
+.div-metro { height:2px; background:linear-gradient(to right, var(--metro-r), var(--jade), transparent); }
+.div-thin  { height:1px; background:var(--pane-dk); }
+
+.doc-footer {
+  background:var(--black); padding:18px 72px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.doc-footer span {
+  font-family:'Space Mono', monospace;
+  font-size:8px; letter-spacing:2px;
+  text-transform:uppercase; color:rgba(200,160,48,0.18);
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ╔══════════ COVER ══════════╗ -->
+<div class="cover">
+  <div class="cover-frame"></div>
+  <div class="cv-eyebrow">東周凱諾瑪 · 雙淵之書</div>
+  <div class="cv-title">KENOMA</div>
+  <div class="cv-subtitle">Chronicle of the Twin Abyss &nbsp;·&nbsp; Game Design Document v4.0</div>
+
+  <div class="cv-rule">
+    <div class="cv-rule-line"></div>
+    <span class="cv-rule-dot">◆ ◆ ◆</span>
+    <div class="cv-rule-line"></div>
+  </div>
+
+  <div class="cv-alert-band">
+    <span class="cv-alert-tag">v4.0 — Two Critical Amendments</span>
+    <span class="cv-alert-text">
+      Amendment I: Scholar combat system corrected per Aline Cedrac's full AitD:TNN design — puzzle-primary, combat-secondary, light-as-dominant-weapon. The Scholar can and does fight. Pillar II is retired and redesigned.<br>
+      Amendment II: Metro series (2033 · Last Light · Exodus) fully analyzed. Rating vs. Kenoma delivered. Four Metro-superior systems integrated into Kenoma's design where consistent with the game's core.
+    </span>
+  </div>
+
+  <div class="cv-ref-row">
+    <div class="cv-ref-cell">
+      <span class="cv-ref-type lit">Literature</span>
+      <span class="cv-ref-name">Eastern Zhou<br>Chronicles</span>
+    </div>
+    <div class="cv-ref-cell">
+      <span class="cv-ref-type lit">Literature</span>
+      <span class="cv-ref-name">Thus Spoke<br>Zarathustra</span>
+    </div>
+    <div class="cv-ref-cell">
+      <span class="cv-ref-type game">Game</span>
+      <span class="cv-ref-name">Alone in the Dark<br>Trilogy + TNN</span>
+    </div>
+    <div class="cv-ref-cell">
+      <span class="cv-ref-type game">Game</span>
+      <span class="cv-ref-name">Silent Hill<br>1 · 2 · 3 · 4</span>
+    </div>
+    <div class="cv-ref-cell">
+      <span class="cv-ref-type game">Game</span>
+      <span class="cv-ref-name">Prince of Persia<br>II · SoT · WW · TT</span>
+    </div>
+    <div class="cv-ref-cell">
+      <span class="cv-ref-type game">Game</span>
+      <span class="cv-ref-name">Tormented<br>Souls 1 &amp; 2</span>
+    </div>
+    <div class="cv-ref-cell cv-ref-new">
+      <span class="cv-ref-type metro">Game</span>
+      <span class="cv-ref-name">Metro<br>2033 · LL · Ex</span>
+    </div>
+  </div>
+
+  <div class="cv-footer">
+    <span>Expert Game Director · Lead Game Designer</span>
+    <span>Kenoma Studio — Confidential</span>
+    <span>Rev. 4.0 — Two Amendments Applied</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Table of Contents — v4.0</div>
+
+  <div class="toc-section">
+    <div class="toc-section-hd">Amendment I — Scholar Combat</div>
+    <div class="toc-item updated">
+      <span class="toc-n">A.I</span>
+      <span class="toc-t">Aline Cedrac's True Combat Design — Deep Dive</span>
+      <span class="toc-tag">Correcting the Record</span>
+    </div>
+    <div class="toc-item updated">
+      <span class="toc-n">A.II</span>
+      <span class="toc-t">Scholar Combat System — Revised & Complete</span>
+      <span class="toc-tag">Redesigned Mechanic</span>
+    </div>
+    <div class="toc-item updated">
+      <span class="toc-n">A.III</span>
+      <span class="toc-t">Revised Design Pillars — Pillar II Replaced</span>
+      <span class="toc-tag">Core Rules Updated</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-hd">Amendment II — Metro Series</div>
+    <div class="toc-item new">
+      <span class="toc-n">B.I</span>
+      <span class="toc-t">Metro Series Analysis — What It Does & Where It Excels</span>
+      <span class="toc-tag">2033 · Last Light · Exodus</span>
+    </div>
+    <div class="toc-item new">
+      <span class="toc-n">B.II</span>
+      <span class="toc-t">Kenoma vs. Metro — Expert Comparative Rating</span>
+      <span class="toc-tag">Category-by-Category</span>
+    </div>
+    <div class="toc-item new">
+      <span class="toc-n">B.III</span>
+      <span class="toc-t">Metro Integration — Four Systems Adopted into Kenoma</span>
+      <span class="toc-tag">Design Additions</span>
+    </div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-section-hd">Full GDD — v4.0 (Amended)</div>
+    <div class="toc-item">
+      <span class="toc-n">01–12</span>
+      <span class="toc-t">Complete GDD remains from v3.0 — amendments supersede where noted</span>
+      <span class="toc-tag">See v3.0 for base</span>
+    </div>
+  </div>
+</div>
+
+<div class="div-gold"></div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  AMENDMENT I · ALINE'S COMBAT           ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="ch ch-aline">
+  <div class="ch-label">Amendment I · Section A.I</div>
+  <div class="ch-title">Aline Cedrac's True Combat Design <span class="ch-updated">CORRECTED</span></div>
+  <div class="ch-cn">艾琳·塞德拉克的真實戰鬥設計</div>
+</div>
+
+<div class="sec">
+  <div class="correction">
+    <span class="correction-tag">v3.0 Error — Pillar II Was Wrong</span>
+    <p>v3.0 stated: "The Scholar NEVER fights." This was a mis-reading of Aline's design based on surface-level analysis. A thorough examination of AitD: The New Nightmare reveals that Aline fights extensively — she wields five distinct weapons, engages a boss enemy three separate times, and in her climactic encounter resolves a final combat entirely through environmental intellect (timing lightning to electrocute the Hybrid Elder). The correct model is not no-combat — it is <strong>puzzle-primary, combat-secondary, light-as-dominant-weapon, intellect-as-final-argument</strong>.</p>
+  </div>
+
+  <h3>Aline Cedrac — Complete Combat Inventory (AitD: The New Nightmare)</h3>
+
+  <div class="weapon-grid">
+    <div class="wg-head">
+      <div class="h-name">Weapon / Tool</div>
+      <div class="h-type">Type & Source</div>
+      <div class="h-prim">Primary?</div>
+      <div class="h-use">Combat Role in Aline's Run</div>
+    </div>
+    <div class="wg-row">
+      <div class="wg-cell wg-name">Flashlight / Torch</div>
+      <div class="wg-cell wg-type">Light source, offensive tool<br><em>Battery-powered</em></div>
+      <div class="wg-cell wg-prim"><span class="prim-y">YES</span></div>
+      <div class="wg-cell wg-use">Damages shadow/darkness creatures directly. Her most effective offensive tool against the game's majority creature type. Battery management is a core survival pressure.</div>
+    </div>
+    <div class="wg-row">
+      <div class="wg-cell wg-name">Basic Revolver</div>
+      <div class="wg-cell wg-type">Conventional firearm<br><em>Standard ammo — 6 shots</em></div>
+      <div class="wg-cell wg-prim"><span class="prim-n">No</span></div>
+      <div class="wg-cell wg-use">Starting weapon. Weaker than Carnby's (6 bullets vs. 12, single barrel). Used for conventional enemies and emergencies. Ammo is scarce — spending bullets is a deliberate survival trade-off.</div>
+    </div>
+    <div class="wg-row">
+      <div class="wg-cell wg-name">Grenade Launcher</div>
+      <div class="wg-cell wg-type">Explosive heavy weapon<br><em>Gas cartridges</em></div>
+      <div class="wg-cell wg-prim"><span class="prim-n">No</span></div>
+      <div class="wg-cell wg-use">Required for the Hybrid Elder boss fights (5–6 grenades to defeat). Explosions stagger the boss and create space. The game's most demanding combat encounter — Aline is forced to fight aggressively with heavy weaponry.</div>
+    </div>
+    <div class="wg-row">
+      <div class="wg-cell wg-name">Plasma Cannon</div>
+      <div class="wg-cell wg-type">Energy weapon (Jeremy Morton's)<br><em>Battery Charger powered</em></div>
+      <div class="wg-cell wg-prim"><span class="prim-n">No</span></div>
+      <div class="wg-cell wg-use">Powerful AoE — hits multiple enemies simultaneously. Drains battery fast. Effective against the Hybrid Elder at close range. Found in Jeremy Morton's laboratory complex.</div>
+    </div>
+    <div class="wg-row">
+      <div class="wg-cell wg-name">Lightning Gun</div>
+      <div class="wg-cell wg-type">Energy weapon (Morton's)<br><em>Battery Charger / Luminescent Crystals</em></div>
+      <div class="wg-cell wg-prim"><span class="prim-n">No</span></div>
+      <div class="wg-cell wg-use">Extreme power but slow charge-up. Effective but risky. In the Hybrid Elder's final encounter, Aline cannot use it effectively — instead she weaponizes the laboratory's actual lightning rod, timing the monster's jump to the discharge. Intellect over firepower.</div>
+    </div>
+    <div class="wg-row">
+      <div class="wg-cell wg-name">Language / Intellect</div>
+      <div class="wg-cell wg-type">Non-weapon offensive tool<br><em>Academic expertise</em></div>
+      <div class="wg-cell wg-prim"><span class="prim-y">YES</span></div>
+      <div class="wg-cell wg-use">Aline uses her linguistic expertise to deceive demons using spoken language. She convinces the Mi-Go through argument rather than combat. Direct equivalence with the Scholar's academic toolkit as an offensive resource.</div>
+    </div>
+  </div>
+
+  <h4>The Hybrid Elder — The Boss That Proves Aline Fights</h4>
+  <p>The Hybrid Elder is the Frankenstein-creation of Howard Morton — a 230cm creature that pursues Aline through multiple areas of Shadow Island. It rises after seemingly being defeated, reappears in subsequent zones, and cannot be permanently stopped by conventional weapons alone. This creature <strong>forces Aline into sustained combat three separate times</strong>:</p>
+  <p><strong>Encounter 1 (Library):</strong> Aline must use the grenade launcher or plasma cannon — 5–6 explosive hits to suppress it. Aggressive, resource-expensive, unavoidable combat.<br>
+  <strong>Encounter 2 (Fort Exterior):</strong> Evasion recommended — the creature is too dangerous at this stage for direct combat. Run-based encounter where combat is the wrong choice.<br>
+  <strong>Encounter 3 (Morton's Laboratory — Final):</strong> Conventional weapons cannot defeat it here. Aline must use her observational intelligence to time the laboratory's lightning rod discharge — baiting the monster to jump as the lightning fires, electrocuting it. The final combat is won entirely by reading the environment, not by firing a weapon. This is the Aline design principle made explicit: <em>intellect as ultimate weapon</em>.</p>
+
+  <div class="callout-dark">
+    The Hybrid Elder's design is the template for Kenoma's Archive Guardian — a recurring pursuer that cannot be permanently stopped by conventional means, forces the Scholar into varied combat approaches across multiple encounters, and whose final defeat requires environmental intelligence rather than superior firepower. Aline doesn't out-shoot the monster. She out-thinks it.
+  </div>
+
+  <h3>The Correct Aline Model — What the Scholar's Combat Must Be</h3>
+
+  <div class="combat-split">
+    <div class="cs-aline">
+      <div class="cs-head">Aline Cedrac (AitD:TNN)</div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Primary Weapon</span>
+          <span class="cs-txt">Light / Torch. Battery management is a constant pressure. Most creatures are harmed primarily by light.</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Secondary Weapons</span>
+          <span class="cs-txt">Revolver (weak), Grenade Launcher (situational), Plasma Cannon (energy-expensive), Lightning Gun (slow).</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Combat Philosophy</span>
+          <span class="cs-txt">Avoid when possible. Fight when cornered or boss-required. Use intellect when conventional weapons fail.</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Final Boss Method</span>
+          <span class="cs-txt">Environmental puzzle — timing lightning to kill the Hybrid Elder. No weapon fired in the killing blow.</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Unique Offensive Tool</span>
+          <span class="cs-txt">Language/academic expertise — deceives demons, convinces Mi-Go. Combat through intellect and speech.</span>
+        </div>
+      </div>
+    </div>
+    <div class="cs-scholar">
+      <div class="cs-head">The Scholar (Kenoma — Revised)</div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Primary Weapon</span>
+          <span class="cs-txt">The Jade Lamp. Oil-burning — limited supply. Shadow-class creatures (World B manifestations in World A) are harmed directly. Also functions as the save tool and puzzle light source.</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Secondary Weapons</span>
+          <span class="cs-txt">A bronze spring-pistol (single-shot, manual recharge — slow, accurate, precious ammo). Crafted at Archive workbenches. A second tool slot can hold a concussive device (bronze resonance grenade — stuns mechanoid-class creatures).</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Combat Philosophy</span>
+          <span class="cs-txt">Identical to Aline's model. Avoid first. Environmental solution second. Fight only when cornered or boss-required. Intellectual resolution as the final, highest-tier option.</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Archive Guardian Method</span>
+          <span class="cs-txt">Three encounters. First: environmental suppression (trigger an Archive mechanism to briefly halt it). Second: evasion-only. Third (final): an Archive puzzle that collapses the dimensional aperture the Guardian uses — intellect as killing blow.</span>
+        </div>
+      </div>
+      <div class="cs-item">
+        <span class="cs-bullet">◆</span>
+        <div>
+          <span class="cs-lbl">Unique Offensive Tool</span>
+          <span class="cs-txt">Written Lore as Combat: the Scholar can translate a specific class of creature text to reveal its origin — certain World B creatures respond to being "named" correctly by their Chu ceremonial designation, becoming non-hostile. Intellect and academic knowledge as offensive resource.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Amendment I · Section A.II -->
+<div class="ch ch-aline">
+  <div class="ch-label">Amendment I · Section A.II</div>
+  <div class="ch-title">Scholar Combat System — Full Revised Specification <span class="ch-updated">REDESIGNED</span></div>
+  <div class="ch-cn">學者戰鬥系統 · 全面修訂規格</div>
+</div>
+
+<div class="sec">
+  <h3>The Three-Tier Combat Architecture</h3>
+  <p>The Scholar's combat toolkit is organized in three tiers of increasing rarity and effectiveness. This mirrors Aline's design: the most powerful tools are the least frequently applicable.</p>
+
+  <h4>Tier 1 — Environmental and Trap Combat (Always Available)</h4>
+  <p>The Scholar's traps <span class="ref-badge rb-pop">PoP SoT</span> and environmental mechanisms constitute her most accessible combat tier. Pressure plates, chain-weighted portcullises, oil-vessel spray systems — these are set during the Camel Phase and activated in the Lion Phase. They are not limited-ammo resources. They are architectural tools. A Scholar who invested in the environment always has this tier available.</p>
+
+  <h4>Tier 2 — Specialized Weapons (Resource-Limited)</h4>
+  <p><strong>The Jade Lamp</strong> (primary, always carried): Burns lamp oil from a reservoir that depletes over time in World B. In World A, oil management is less critical because shadow-class creatures are less common. In World B's Otherworld state, the lamp is essential for basic navigation as well as combat — burning oil on an enemy is more expensive than using it for visibility. Every lamp-use decision is an Aline-style battery-management problem.</p>
+  <p><strong>The Bronze Spring-Pistol</strong> (found, not starting): A single-shot pneumatic weapon using manually-compressed springs and cast bronze shot. Found in Act I's third major puzzle area. Ammunition is rare — each shot requires a bronze pellet, found in small quantities (maximum 8–12 per run). The Scholar must pump the spring mechanism manually before each shot (a Tormented Souls-style diegetic reload animation, no progress bar). Effective against mechanoid-class creatures (World A constructs) at close range.</p>
+  <p><strong>Resonance Grenades</strong> (crafted at Archive workbenches): Bronze vessels filled with Archive dust and sealed. When thrown, they release a dissonant frequency that stuns mechanoid-class creatures for 6–8 seconds. Maximum carry: 3. Crafted using Archive materials found in the environment. Analogous to Aline's grenade launcher — powerful, situational, resource-expensive.</p>
+
+  <h4>Tier 3 — Intellectual Combat (Situational, Unrepeatable per Creature Type)</h4>
+  <p>Certain World B creatures are anchored to their origin text — a Chu ceremonial designation that defines what they are and why they exist. If the Scholar has fully translated the relevant bamboo scroll or oracle bone fragment, they can speak the creature's designation aloud (a diegetic text-entry or selection action). The creature recognizes its name being spoken correctly and becomes non-hostile, standing motionless, or withdrawing. This works only once per creature type — the effect is permanent for all subsequent encounters with that creature category, but requires the full-depth lore read beforehand.</p>
+
+  <div class="callout">
+    This is Aline's language-defeating-demons mechanic made systemic. The Scholar literally uses academic knowledge as a weapon. The creatures are vulnerable to being correctly understood. This rewards full document reading (deep text engagement) with a unique combat advantage unavailable to any other mechanic. It also feeds the behavioral tracking score — these intellectual combat resolutions contribute significantly to the Colorful ending spectrum.
+  </div>
+
+  <h3>Archive Guardian — Three Encounters (Hybrid Elder Structure)</h3>
+  <p>Directly modeled on the Hybrid Elder's three-encounter structure: a recurring threat that changes form between encounters and culminates in an environmental puzzle solution rather than a direct kill.</p>
+
+  <p><strong>Encounter 1 (Mid-Camel Phase):</strong> The Guardian manifests for the first time during a major puzzle sequence. The Scholar cannot kill it. The correct response is to complete the puzzle fast enough that a mechanism activates and temporarily collapses the dimensional aperture it entered through. The Guardian withdraws. A Resonance Grenade will stun it for 8 seconds if needed to buy puzzle-solving time. Combat here is support — the puzzle is the fight.</p>
+
+  <p><strong>Encounter 2 (Late Camel Phase):</strong> The Guardian appears in a corridor without a puzzle solution nearby. Evasion only. The environment offers no mechanism to suppress it here. Running is the correct answer. This encounter teaches the player: not every appearance has a solution. Sometimes you simply run. This is the Fort Exterior encounter — the moment where fighting is definitively the wrong choice.</p>
+
+  <p><strong>Encounter 3 (Lion Phase — Final):</strong> The Archive Guardian appears for the last time after one Vanguard is eliminated. But the dimensional debt has accumulated to its maximum — the Guardian is now permanent rather than periodic. The Scholar must locate and activate the Archive's primary armillary sphere to collapse all remaining traversal apertures simultaneously. This seals both worlds' boundaries — ending the Guardian's access route. The Guardian, denied its dimensional entry point, dissolves. No weapon is fired for the killing. The Scholar uses the same astronomical instruments they've been studying all game. Intellect as the killing blow.</p>
+</div>
+
+<!-- Amendment I · A.III — Revised Pillar II -->
+<div class="ch ch-aline">
+  <div class="ch-label">Amendment I · Section A.III</div>
+  <div class="ch-title">Revised Design Pillars — Pillar II Replaced <span class="ch-updated">UPDATED</span></div>
+  <div class="ch-cn">修訂後的設計原則</div>
+</div>
+
+<div class="sec">
+  <h3>Pillar II — Corrected</h3>
+
+  <div class="correction">
+    <span class="correction-tag">Old Pillar II — Retired</span>
+    <p>"The Scholar Cannot Fight. Combat is not available to the Scholar at any point in the game." — This was incorrect. Aline Cedrac fights extensively in AitD:TNN. Kenoma's Scholar must follow the same design philosophy.</p>
+  </div>
+
+  <div class="pillars-2col">
+    <div class="pillar">
+      <div class="pillar-num">II</div>
+      <div class="pillar-title">Light Before Gunpowder.<br>Intellect Before Either.</div>
+      <p>The Scholar can fight — but her combat toolkit is specialized, not generalized. The jade lamp (light) is her most effective offensive tool. The bronze spring-pistol (conventional) is rare and slow. Resonance grenades are situational. Intellectual combat (naming creatures, environmental puzzle-kills) is the highest-tier option. Combat exists. Brute force combat is the least efficient path through every encounter. A Scholar who fights their way through the Archive is spending resources on solutions that puzzle-solving would have resolved for free.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">+</div>
+      <div class="pillar-title">The Killing Blow is Always<br>an Idea, Not a Shot.</div>
+      <p>Every major combat encounter — Archive Guardian Encounter 1, Encounter 3, creature intellectual defeats — is resolved by the Scholar's academic expertise, not their weapons. The spring-pistol clears corridors. The jade lamp suppresses shadows. But the things that <em>matter</em> die to the Scholar's mind. This is the Aline Cedrac principle carried to its logical conclusion: the researcher who can sometimes shoot things still wins the real fights by thinking.</p>
+    </div>
+  </div>
+</div>
+
+<div class="div-gold"></div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  AMENDMENT II · METRO SERIES            ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="ch ch-metro">
+  <div class="ch-label">Amendment II · Section B.I</div>
+  <div class="ch-title">Metro Series Analysis — 2033, Last Light, Exodus <span class="ch-new">NEW</span></div>
+  <div class="ch-cn">地鐵系列分析 · 2033 · 最後曙光 · 出走</div>
+</div>
+
+<div class="sec">
+  <h3>Series Overview — What Metro Does at the Highest Level</h3>
+  <p>Metro 2033 (2010), Metro: Last Light (2013), and Metro Exodus (2019) are the defining post-apocalyptic atmospheric shooters of their generation. Developed by 4A Games from Dmitry Glukhovsky's novels, they share an unusually consistent design philosophy across three games and a decade: <strong>FPS mechanics subordinated entirely to atmospheric immersion</strong>, realized through physicalized diegetic information, hidden moral tracking, and a play style defined by "thinking before shooting."</p>
+  <p>Metro: Last Light's creative director intentionally removed most HUD elements because they considered an interface "a barrier preventing players from immersing themselves into the world." Metro Exodus was described by its global brand manager as "a thinking person's shooter." The series' core identity — immersion through diegetic information — is among the most consistently executed design philosophies in the medium.</p>
+
+  <h3>Metro's Five Strongest Design Systems</h3>
+
+  <!-- System 1 -->
+  <div class="metro-card">
+    <div class="metro-card-head">
+      <div class="metro-card-title">1. Total Physicalized Diegetic Information (All Three Games)</div>
+      <div class="metro-card-src">Metro 2033 · Last Light · Exodus</div>
+    </div>
+    <div class="metro-card-body">
+      <p>Metro's most radical and most consistently executed design achievement. Every piece of information the player needs is embedded in the game world as a physical object Artyom interacts with, not as a HUD element overlaid on the screen:</p>
+      <p>Artyom's <strong>wristwatch</strong> shows filter time, bullet count, mission time. His <strong>gas mask</strong> physically fogs when damaged, cracks under fire, needs manual wiping. His <strong>journal</strong> is opened physically to read objectives. His <strong>battery pump</strong> is manually operated to recharge his flashlight. In Exodus, his <strong>backpack workbench</strong> is opened diegetically for crafting. His <strong>gear and clothing</strong> carry all status information visually — wet clothing for rain environments, frost on the mask for cold zones.</p>
+      <p>This approach is not partial — it is total. No health bar, no ammo counter as a number on screen (you feel ammo by watching your clip or counting shots), no minimap. The player must look at Artyom's body and equipment, not at HUD overlays.</p>
+      <div class="metro-sub">
+        <div class="ms-from">Metro Innovation</div>
+        <div class="ms-to">The most complete implementation of diegetic-only information design in mainstream gaming. No competitor has applied it as thoroughly or consistently across three full-length games.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- System 2 -->
+  <div class="metro-card">
+    <div class="metro-card-head">
+      <div class="metro-card-title">2. Military Bullet Economy — Ammo as Currency AND Survival Tool</div>
+      <div class="metro-card-src">Metro 2033 · Last Light</div>
+    </div>
+    <div class="metro-card-body">
+      <p>In Metro 2033 and Last Light, military-grade bullets serve simultaneously as the game's currency (for trading with merchants, paying for services) and as the player's most powerful ammunition. Spending military bullets to buy equipment means spending your best weapons. Saving military bullets for economic use means fighting with weaker standard rounds.</p>
+      <p>This system makes every bullet a compound decision: do I fire this now (survival) or do I save it (economic future)? The tension is non-binary — it is a continuous optimization problem that never resolves. Players who spend all their best ammo have a better immediate survival rate but poorer equipment over time. Players who hoard their military ammo feel constantly under-resourced in combat but richer in the long run.</p>
+      <div class="metro-sub">
+        <div class="ms-from">Why it's Superior</div>
+        <div class="ms-to">Unlike a simple "ammo conservation" mechanic, this creates an economic dimension to every shot fired — it is simultaneously spending your survival AND your capital. The two normally separate systems are fused into one resource, generating the most interesting resource decisions in the genre.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- System 3 -->
+  <div class="metro-card">
+    <div class="metro-card-head">
+      <div class="metro-card-title">3. Hidden Moral System — Actions Reflected in Ending, Not in Score</div>
+      <div class="metro-card-src">Metro 2033 · Last Light · Exodus</div>
+    </div>
+    <div class="metro-card-body">
+      <p>Metro's moral system is one of the most commonly cited examples of hidden behavioral tracking in modern gaming. There is no karma meter, no alignment display, no feedback when moral events trigger. The game signals moral events only with a brief white flash and ambient whispers — subtle enough to miss entirely on a first playthrough.</p>
+      <p>The actions tracked include: listening to NPC conversations without interrupting them, freeing trapped enemies rather than killing them, sparing surrendering enemies, completing optional story events, exploring thoroughly. These accumulate toward a hidden threshold that determines whether Artyom gets the "good" or "bad" ending — a binary that the Metro 2033 Redux version expanded slightly but the series kept deliberately opaque.</p>
+      <p>In Exodus, this system evolves: consequences begin appearing on the Aurora crew in real time rather than only at the ending. NPCs who survive because of moral choices appear at camp, have conversations, contribute to the ending quality visibly throughout the run.</p>
+      <div class="metro-sub">
+        <div class="ms-from">Critical Distinction from SH2</div>
+        <div class="ms-to">Metro's binary ending system is simpler than SH2's four-ending behavioral model. But Exodus's real-time consequence system (crew changes on the Aurora) is more sophisticated than SH2's purely end-state revelation. The player sees their moral choices reflected in living NPCs throughout the run, not only at the ending.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- System 4 -->
+  <div class="metro-card">
+    <div class="metro-card-head">
+      <div class="metro-card-title">4. Weapon Crafting & Modification at Diegetic Workbenches (Exodus)</div>
+      <div class="metro-card-src">Metro Exodus</div>
+    </div>
+    <div class="metro-card-body">
+      <p>In Exodus, weapons are modified at physical workbenches found in the world — opened diegetically, with Artyom physically handling weapon components. Modifications are found by scavenging and exploration, not purchased at menus. The backpack workbench can do basic field crafting (cleaning weapons, basic consumables) anywhere; the full workbench requires location-hunting.</p>
+      <p>This system rewards exploration and makes every scavenged component meaningful. A player who explores the Volga map thoroughly has a significantly more capable weapon loadout than one who rushes through. The crafting vocabulary is wide — stocks, suppressors, scopes, barrel types — creating player expression through tool customization that feel earned rather than purchased.</p>
+      <div class="metro-sub">
+        <div class="ms-from">Why it Matters for Kenoma</div>
+        <div class="ms-to">Kenoma has no equivalent system. The Scholar's tools are found, not built. Exodus suggests that allowing Scholars to upgrade Archive tools at workshop benches — fitting new lens elements to the jade lamp, reinforcing the spring-pistol's spring mechanism, adding resonance chambers to the compass — would reward exploration and deepen the tool relationship.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- System 5 -->
+  <div class="metro-card">
+    <div class="metro-card-head">
+      <div class="metro-card-title">5. Environmental Storytelling Through Overheard Dialogue (All Three)</div>
+      <div class="metro-card-src">Metro 2033 · Last Light · Exodus</div>
+    </div>
+    <div class="metro-card-body">
+      <p>Metro's creative team wrote NPC dialogue specifically designed to be overheard — conversations between enemy guards, civilian station dwellers, crew members — that are inconsequential to the plot but build world depth and character presence. Enemies complain about their commanding officer, share fears about mutants, discuss their families. These dialogues make the Metro world feel inhabited rather than populated.</p>
+      <p>In Exodus specifically, the Aurora crew have continuous overheard conversations throughout the journey that evolve based on story events and player actions. The world is narrated by the people in it, not by the plot alone.</p>
+      <div class="metro-sub">
+        <div class="ms-from">The Design Principle</div>
+        <div class="ms-to">The world becomes real when characters in it behave as though they exist beyond the player's presence. The Vanguard's private behavior — observed when the Scholar watches her from across a room — is already doing this partially. Kenoma could expand this to Archive creatures (environmental audio revealing their nature) and to the Vanguard's conversations with Archive entities the Scholar can partially overhear.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B.II — COMPARATIVE RATING -->
+<div class="ch ch-rating">
+  <div class="ch-label">Amendment II · Section B.II</div>
+  <div class="ch-title">Kenoma vs. Metro — Expert Comparative Rating <span class="ch-new">NEW</span></div>
+  <div class="ch-cn">凱諾瑪 vs 地鐵系列 · 專家評比</div>
+</div>
+
+<div class="sec">
+  <h3>Design Director's Assessment</h3>
+  <p>Metro and Kenoma are operating in adjacent but distinct design spaces. Metro is an atmospheric FPS with horror elements and a literary source. Kenoma is fixed-camera psychological horror with action elements and a philosophical thesis. Comparing them directly requires acknowledging this: where they compete, they compete on design quality, not on genre alignment. The comparison is useful precisely <em>because</em> they're different — it reveals what each design excels at and where each has genuine deficits.</p>
+
+  <div class="rating-block">
+    <div class="rb-metro">
+      <div class="rb-game-name">METRO SERIES</div>
+      <div class="rb-item">
+        <span class="rb-label">Diegetic UI Completeness</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:97%"></div></div>
+          <span class="rb-score">9.7</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Atmospheric Immersion</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:95%"></div></div>
+          <span class="rb-score">9.5</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Resource Economy Depth</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:90%"></div></div>
+          <span class="rb-score">9.0</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Environmental Storytelling</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:92%"></div></div>
+          <span class="rb-score">9.2</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Narrative Sophistication</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:70%"></div></div>
+          <span class="rb-score">7.0</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Antagonist Design Depth</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:62%"></div></div>
+          <span class="rb-score">6.2</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Ending System Sophistication</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:65%"></div></div>
+          <span class="rb-score">6.5</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">World Architecture Originality</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:78%"></div></div>
+          <span class="rb-score">7.8</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Gameplay Subversion</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:55%"></div></div>
+          <span class="rb-score">5.5</span>
+        </div>
+      </div>
+    </div>
+    <div class="rb-vs">VS</div>
+    <div class="rb-kenoma">
+      <div class="rb-game-name">KENOMA</div>
+      <div class="rb-item">
+        <span class="rb-label">Diegetic UI Completeness</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:75%"></div></div>
+          <span class="rb-score">7.5</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Atmospheric Immersion</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:88%"></div></div>
+          <span class="rb-score">8.8</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Resource Economy Depth</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:74%"></div></div>
+          <span class="rb-score">7.4</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Environmental Storytelling</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar" style="width:77%"></div></div>
+          <span class="rb-score">7.7</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Narrative Sophistication</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:95%"></div></div>
+          <span class="rb-score">9.5</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Antagonist Design Depth</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:96%"></div></div>
+          <span class="rb-score">9.6</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Ending System Sophistication</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:94%"></div></div>
+          <span class="rb-score">9.4</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">World Architecture Originality</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:93%"></div></div>
+          <span class="rb-score">9.3</span>
+        </div>
+      </div>
+      <div class="rb-item">
+        <span class="rb-label">Gameplay Subversion</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="rb-bar-wrap" style="flex:1"><div class="rb-bar superior" style="width:97%"></div></div>
+          <span class="rb-score">9.7</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Director's Verdict — Category by Category</h3>
+
+  <h4>Where Metro Definitively Wins</h4>
+  <p><strong>Diegetic UI Completeness (Metro 9.7 / Kenoma 7.5):</strong> Metro's wristwatch, manually-pumped flashlight, physical journal, gas mask fogging, and gear-based status communication is the most complete implementation of diegetic-only information design in the medium. It has been refined across three games and a decade. Kenoma's v3.0 design — compass static, animation-state health, resonance instrument readout — is good but not at Metro's level of totality. <em>This is the gap that Amendment II addresses directly.</em></p>
+  <p><strong>Resource Economy Depth (Metro 9.0 / Kenoma 7.4):</strong> The military-bullet-as-currency system is genuinely brilliant — a resource that is simultaneously survival capital and economic capital, with every shot fired creating a compound tension. Kenoma's incense/candle save system creates resource anxiety, but lacks this dual-purpose depth. <em>This is addressable through the integration proposed below.</em></p>
+  <p><strong>Environmental Storytelling (Metro 9.2 / Kenoma 7.7):</strong> Metro's overheard NPC dialogue — enemies complaining, crew members conversing, station dwellers gossiping — creates a world that feels inhabited beyond the player's presence. Kenoma relies on documents and visual environmental cues. The Vanguard's background behavior is partially filling this role but it needs expanding.</p>
+
+  <h4>Where Kenoma Definitively Wins</h4>
+  <p><strong>Narrative Sophistication (Kenoma 9.5 / Metro 7.0):</strong> Metro's narratives are compelling post-apocalyptic adventure stories rooted in Russian literary tradition — Glukhovsky is a skilled novelist. But they are not philosophically ambitious in the way Kenoma is. Kenoma's Eastern Zhou 士 archetype + Nietzsche's Three Metamorphoses as game phase structure + the dual-Vanguard 合縱連橫 political trap is a synthesis operating at a significantly higher intellectual register. Metro's best narrative question ("What does humanity deserve?") is good. Kenoma's ("Was building your executioner heroic or suicidal?") is rarer.</p>
+  <p><strong>Antagonist Design Depth (Kenoma 9.6 / Metro 6.2):</strong> Metro's antagonists are functional and serve the story well (the Dark Ones evolving from threat to tragic misunderstanding; the factions as political critiques) but they are not behaviorally dynamic in real-time. The Vanguard's runtime learning model — watching the Scholar's hands, building a behavioral model, weaponizing it in the Lion Phase — is incomparably more sophisticated as an antagonist design achievement.</p>
+  <p><strong>Ending System Sophistication (Kenoma 9.4 / Metro 6.5):</strong> Metro's good/bad binary ending system (even in its most expanded form) is a dramatic simplification compared to Kenoma's 10-scenario spectrum determined by a continuous dual-score behavioral analysis. Metro Exodus's real-time crew consequences are an improvement but still not matching the specificity and depth of Kenoma's ending design.</p>
+  <p><strong>Gameplay Subversion (Kenoma 9.7 / Metro 5.5):</strong> Metro does not subvert its genre conventions. It refines them with extraordinary care. Kenoma's False Victory — weaponizing every accumulated player-literacy against the player simultaneously — is in a different category entirely. Metro is genre mastery. Kenoma's False Victory is genre sabotage as art.</p>
+
+  <div class="callout-metro">
+    <span class="cm-tag">Director's Summary</span>
+    Metro is a 9/10 execution of a relatively conventional design ambition. Kenoma is designed to be a 10/10 execution of an <em>unconventional</em> design ambition. Metro will always be more commercially accessible. Kenoma will be harder to make and harder to market — and if it lands, it will be the more durable critical achievement. The correct framing is not "Metro vs. Kenoma" — it is "Metro taught us how to be truly immersive, and Kenoma needs to learn from that while pursuing something Metro was never trying to do."
+  </div>
+</div>
+
+<!-- B.III — METRO INTEGRATION -->
+<div class="ch ch-metro">
+  <div class="ch-label">Amendment II · Section B.III</div>
+  <div class="ch-title">Metro Integration — Four Systems Added to Kenoma <span class="ch-new">NEW</span></div>
+  <div class="ch-cn">地鐵系統整合 · 四個新增設計</div>
+</div>
+
+<div class="sec">
+  <h3>Integration Criteria</h3>
+  <p>Metro systems are integrated into Kenoma only where they are consistent with the game's core identity (fixed-camera psychological horror, Eastern Zhou aesthetic, the Scholar-Vanguard betrayal thesis) AND where they address a genuine gap in the v3.0 design. Four systems qualify. Two Metro systems that were considered but rejected are noted with reasons.</p>
+
+  <h3>Integration 1 — Complete Diegetic Information System (Metro 2033/Last Light/Exodus)</h3>
+  <p>Kenoma's v3.0 diegetic UI was partial. The Scholar's health was communicated through animation state (TS1), and the compass communicated threat proximity (SH1). But objective-tracking, dimensional status, lamp oil levels, spring-pistol spring tension, and inventory weight were still implicit or menu-based. Metro's total-physicalization approach demands all of this become diegetic.</p>
+
+  <div class="diegetic-grid">
+    <div class="dg-cell dg-metro">
+      <span class="dg-label">Metro — Source Systems</span>
+      <div class="dg-item">Wristwatch shows filter time, bullet count, mission data</div>
+      <div class="dg-item">Gas mask physically fogs, cracks, needs manual wiping</div>
+      <div class="dg-item">Journal opened physically for objectives</div>
+      <div class="dg-item">Battery pump manually operated for flashlight charge</div>
+      <div class="dg-item">Backpack workbench opened diegetically for crafting</div>
+      <div class="dg-item">Clothing state visible (wet, frost, damage) for environmental status</div>
+    </div>
+    <div class="dg-cell dg-kenoma">
+      <span class="dg-label">Kenoma — Adapted Implementation</span>
+      <div class="dg-item">Celestial Calibration Disc (jade and bronze pocket device): Scholar physically opens it to read dimensional coordinates, Guardian debt level, lamp oil reserve. No HUD equivalent exists.</div>
+      <div class="dg-item">Jade lamp physically dims as oil depletes — visible flame reduction. Sputtering sound when near-empty. Refill requires the Scholar to pour oil from a flask (diegetic animation).</div>
+      <div class="dg-item">Archive Journal: Scholar's hand-drawn map and personal notes opened physically. Objective context exists only in the journal text. No map pin UI.</div>
+      <div class="dg-item">Spring-pistol tension: a visible spring indicator on the pistol body. Scholar cranks the spring mechanism (diegetic reload). A barely-tensioned spring is visible — the weapon fires weakly when not fully wound.</div>
+      <div class="dg-item">Scholar's coat state: dampened in World B flooding, dusty in World A Otherworld, torn proportionally to health damage. The coat reads health alongside animation state (TS1 system reinforced).</div>
+      <div class="dg-item">Satchel physically opened for inventory — Scholar reaches in, places items with hands visible. No icon grid overlay. Items are arranged spatially in the satchel's compartments.</div>
+    </div>
+  </div>
+
+  <h3>Integration 2 — The Lamp Oil / Spring Shot Dual-Economy (Metro Bullet System)</h3>
+  <p>Metro's military-bullet-as-currency insight applied to Kenoma's specific resources: <strong>lamp oil and spring-shot pellets serve simultaneously as survival tools and as crafting/trade materials</strong> with the Vanguard during the Camel Phase.</p>
+
+  <div class="callout-metro">
+    <span class="cm-tag">Metro Bullet System — Adapted</span>
+    In Metro, military bullets are currency AND your best ammo. In Kenoma: lamp oil is needed for World B navigation AND for crafting the resonance grenades AND for fueling the Archive's minor mechanisms (some puzzle solutions require oil). Spring-shot pellets are the Scholar's combat resource AND are the primary component for crafting resonance grenades. Spending pellets on combat means spending your grenade-crafting material. Giving oil to the Vanguard as a trade good (Camel Phase generosity) directly reduces your World B combat capacity. Every resource decision is a compound tension with multiple downstream implications — never just "shoot or save."
+  </div>
+
+  <p>The Scholar can trade oil and pellets with the Vanguard during the Camel Phase as acts of generosity — these donations improve the ending spectrum score significantly. But they also directly reduce the Scholar's tactical capacity in the Lion Phase. This is the military-bullet tension applied to Kenoma's betrayal thesis: the more generous you are, the more capable the world-builder you are — and the more defenseless you become when the world turns on you.</p>
+
+  <h3>Integration 3 — Real-Time Vanguard Evolution (Metro Exodus Crew System)</h3>
+  <p>Metro Exodus's crew consequences — NPCs on the Aurora visibly changing based on moral decisions throughout the run, not only at the ending — informed a critical improvement to how the Vanguard's Camel Phase evolution is communicated.</p>
+  <p>In v3.0, the Vanguard's behavioral evolution was mostly invisible until the Lion Phase. The behavioral tracking was fully hidden (correct, per SH2). But the Vanguard herself gave no real-time feedback about her growing capability or shifting agenda. Metro Exodus suggests that the player should <em>see</em> the Vanguard becoming more capable in visible, small, uncharged ways throughout the Camel Phase — without any marker or UI acknowledgment that this is meaningful.</p>
+
+  <div class="callout">
+    <strong>Real-Time Evolution Signals (no UI, no labels, just observed behavior):</strong> Early Camel Phase — Vanguard asks the Scholar to explain mechanisms before touching them. Mid-Camel Phase — she no longer asks, she observes and deduces. She begins testing mechanisms before the Scholar reaches them. Late Camel Phase — she completes minor puzzle subsets independently while the Scholar works on the main solution. She has learned. The player, watching this progression, may feel pride (she's growing), attachment (we built this together), and then — in the Lion Phase — the specific horror of realizing what they were witnessing was not growth but preparation.
+  </div>
+
+  <h3>Integration 4 — Overheard Vanguard Dialogue (Metro Environmental Storytelling)</h3>
+  <p>Metro's overheard NPC conversations as world-building applied to Kenoma's Vanguard characterization: the Scholar can observe the Vanguard interacting with Archive entities and environments from a distance. These interactions are not cutscenes — they are fully missable ambient events that reward patient observation.</p>
+  <p>Vanguard A is occasionally observed in a distant room speaking to the Archive's mechanisms as though they are military subordinates — giving orders to mechanisms she's testing, nodding at their response. Vanguard B is occasionally observed performing private Chu ceremonial gestures at World B's shrines — rituals that the Scholar's translations reveal are prayers for strategic victory, not spiritual practice. Neither Vanguard ever shows the Scholar these moments. The player finds them by exploring beyond the required path.</p>
+  <p>These scenes have no quest markers, no completion notifications, no behavioral tracking impact. They exist only to make both Vanguards real. The player who finds three of Vanguard B's private shrine rituals and then correctly identifies the final ceremony as a prayer for the Scholar's death — experienced as environmental discovery, not a scripted reveal — will find the Lion Phase significantly more devastating.</p>
+
+  <h3>Rejected Metro Systems — With Reasons</h3>
+  <p><strong>Open World Sandbox Levels (Exodus):</strong> Rejected. Kenoma's fixed-camera pre-rendered architecture is architecturally incompatible with open-world exploration. The fixed camera system's compositional authority — placing the Vanguard in the background of every frame — requires predefined camera positions that an open world cannot support. The trade-off is not worth it.</p>
+  <p><strong>NPC Faction Diplomacy (All Three):</strong> Rejected. Metro's faction system (Reds, Nazis, Hansa, Rangers) creates political complexity that is irrelevant to Kenoma's two-character focus. Adding factions would dilute the Scholar-Vanguard relationship, which is the game's load-bearing narrative beam. Kenoma's political complexity exists entirely within the Scholar-Vanguard dynamic — adding external factions would reduce rather than increase the intimacy of the betrayal.</p>
+
+  <h3>Complete Integration Summary — Metro → Kenoma</h3>
+
+  <div class="matrix-wrap">
+    <div class="matrix-head">
+      <div>Metro Source</div>
+      <div>Original Design</div>
+      <div>Kenoma Implementation</div>
+    </div>
+    <div class="mx-row">
+      <div class="mx-src">Total Diegetic UI<br>(2033/LL/Exodus)</div>
+      <div class="mx-metro">Wristwatch, gas mask, journal, battery pump, backpack workbench — all information physicalized as world objects</div>
+      <div class="mx-kenoma">Celestial Calibration Disc, physically-dimming lamp, hand-drawn journal, spring-pistol tension indicator, coat damage state, diegetic satchel interface</div>
+    </div>
+    <div class="mx-row">
+      <div class="mx-src">Bullet Economy<br>(2033/Last Light)</div>
+      <div class="mx-metro">Military bullets as currency AND best ammo — every shot is a compound resource decision</div>
+      <div class="mx-kenoma">Lamp oil and bronze pellets as both combat resources AND crafting/trade materials — Camel Phase generosity directly depletes Lion Phase combat capacity</div>
+    </div>
+    <div class="mx-row">
+      <div class="mx-src">Real-Time Crew Evolution<br>(Exodus)</div>
+      <div class="mx-metro">Aurora crew visibly changes based on moral decisions throughout the run — consequences visible in real time, not only at ending</div>
+      <div class="mx-kenoma">Vanguard's Camel Phase observable behavioral progression: from asking → observing → acting independently. Framed as growth, recognized retrospectively as preparation.</div>
+    </div>
+    <div class="mx-row">
+      <div class="mx-src">Overheard NPC Dialogue<br>(2033/LL/Exodus)</div>
+      <div class="mx-metro">Ambient enemy and NPC conversations as world-building — missable, inconsequential to plot, essential to world reality</div>
+      <div class="mx-kenoma">Vanguard's private Archive interactions — Vanguard A commanding mechanisms, Vanguard B performing strategic shrine rituals. Fully missable. No UI acknowledgment. Devastating when found.</div>
+    </div>
+  </div>
+</div>
+
+<div class="div-metro"></div>
+
+<!-- REVISED OPENING SCRIPT — now with Scholar fighting -->
+<div class="ch ch-void">
+  <div class="ch-label">Supplemental</div>
+  <div class="ch-title">Opening Cinematic — Revised v2 (Scholar Combat Visible)</div>
+  <div class="ch-cn">開場電影 · 修訂第二版</div>
+</div>
+
+<div class="sec">
+  <p>A single scene is added to the original opening cinematic sequence — it establishes the Scholar's combat capability while maintaining the Aline model: specialized, secondary, and ultimately resolved by intellect.</p>
+
+  <div class="script">
+    <span class="s-dir">[The original opening continues identically through the Scholar's two V.O. quotes and the gate opening. A creature emerges. The Vanguard resolves it — one strike. Then, as they move into the Archive's entry corridor:]</span>
+
+    <span class="s-dir">[A second creature emerges from a collapsed side passage — between the Scholar and the Vanguard, separating them. The Vanguard is ahead. She does not look back. Her calculation is immediate: the creature is behind her optimal path. She continues forward. The Scholar is alone with it.]</span>
+
+    <span class="s-dir">[The Scholar's hand goes to the jade lamp at their belt. They hold it out — the lamp flares, and the creature recoils from the light, howling. The Scholar does not strike it. They do not run. They watch it recoil, and then they look up at the bamboo inscription frame above the side passage — a warning inscription in archaic Chu script. Their lips move, reading it silently. They turn back to the creature and speak aloud — not loudly, but precisely. The correct Chu designation. The creature goes still. Stands motionless. Looks at them. Then withdraws into the passage.]</span>
+
+    <span class="s-spk">The Vanguard</span>
+    <span class="s-line">[Without turning, flatly:] "I see you found the methodology."</span>
+
+    <span class="s-spk">The Scholar</span>
+    <span class="s-line">"It was in the inscription. They can be named."</span>
+
+    <span class="s-spk">The Vanguard</span>
+    <span class="s-line">[A pause. She turns, briefly, looking at the still creature, then at the Scholar.] "...Interesting."</span>
+
+    <span class="s-dir">[She turns back and continues walking. The Scholar follows. The creature remains motionless in the passage opening behind them. The Scholar reaches into their satchel without breaking stride and begins cranking the spring mechanism of the bronze pistol — in case "interesting" is not enough the next time.]</span>
+  </div>
+
+  <div class="callout">
+    This single scene establishes in 90 seconds: the Scholar uses light as their primary tool, the Scholar can use intellect as a weapon (naming creatures), the Scholar can use conventional weapons as backup (the spring-pistol crank), and the Vanguard notices the Scholar's capabilities with deliberate assessment. She is already calculating the value of what she's watching. "Interesting" is the most terrifying word in the game's first act.
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="div-gold"></div>
+<div class="doc-footer">
+  <span>Kenoma GDD v4.0 — Two Critical Amendments</span>
+  <span>東周凱諾瑪 · All Sources Integrated</span>
+  <span>Confidential — Expert Game Director</span>
+</div>
+
+</div>
+</body>
+</html>

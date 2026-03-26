@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KENOMA — Game Design Document v3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;500;600;700;900&family=Noto+Serif+SC:wght@300;400;500;600;700&family=Inconsolata:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --void:      #06040a;
+  --abyss:     #0a0708;
+  --deep-a:    #0e0b14;   /* World A tint — cold violet */
+  --deep-b:    #0b100e;   /* World B tint — cold jade */
+  --blood:     #8a1a0a;
+  --crimson:   #c02818;
+  --ember:     #d4601a;
+  --gold:      #c8a040;
+  --gold-lt:   #e0c060;
+  --iron:      #445060;
+  --iron-lt:   #6a8090;
+  --jade:      #1e5040;
+  --jade-lt:   #2e7860;
+  --jade-glow: #50c090;
+  --parch:     #f0e8d4;
+  --parch-mid: #e8dcc0;
+  --parch-dk:  #d8c8a4;
+  --ink:       #1a140e;
+  --text:      #2a2018;
+  --muted:     #6a5a44;
+  --ash:       #b8a890;
+  --cn-red:    #c03020;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 16.5px;
+  line-height: 1.85;
+}
+
+.page { max-width: 980px; margin: 0 auto; background: var(--parch); }
+
+/* ═══════════════════════════════════════════
+   COVER
+═══════════════════════════════════════════ */
+.cover {
+  min-height: 100vh;
+  background: var(--abyss);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 56px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ink-wash texture overlay */
+.cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 20%, #140a1a 0%, transparent 60%),
+    radial-gradient(ellipse 60% 100% at 10% 50%, #0a1010 0%, transparent 50%),
+    radial-gradient(ellipse 60% 100% at 90% 50%, #100808 0%, transparent 50%),
+    radial-gradient(ellipse 80% 40% at 50% 90%, #080610 0%, transparent 70%);
+}
+
+/* Vertical rule lines */
+.cover::after {
+  content: '';
+  position: absolute; inset: 40px;
+  border: 1px solid rgba(200,160,64,0.08);
+  pointer-events: none;
+}
+
+.c-cn-top {
+  position: relative; z-index: 2;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 10px;
+  color: rgba(200,160,64,0.35);
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.c-title-block {
+  position: relative; z-index: 2;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.c-en {
+  font-family: 'Cinzel', serif;
+  font-size: 90px;
+  font-weight: 900;
+  letter-spacing: 28px;
+  color: transparent;
+  background: linear-gradient(180deg, var(--gold-lt) 0%, var(--gold) 50%, #8a6020 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  line-height: 1;
+  text-shadow: none;
+  filter: drop-shadow(0 0 40px rgba(200,160,64,0.2));
+}
+
+.c-sub {
+  font-family: 'Cinzel', serif;
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 7px;
+  color: rgba(200,160,64,0.4);
+  text-transform: uppercase;
+  position: relative; z-index: 2;
+  margin-top: 10px;
+  margin-bottom: 40px;
+}
+
+.c-rule {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 16px;
+  width: 100%; max-width: 500px;
+  margin-bottom: 40px;
+}
+.c-rule-line { flex:1; height:1px; background: linear-gradient(to right, transparent, rgba(200,160,64,0.4), transparent); }
+.c-rule-glyph { color: var(--crimson); font-size: 8px; }
+
+.c-quote-block {
+  position: relative; z-index: 2;
+  max-width: 580px; text-align: center;
+  margin-bottom: 48px;
+}
+.c-quote-cn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 19px; font-weight: 500;
+  color: rgba(200,160,64,0.6);
+  letter-spacing: 4px;
+  display: block; margin-bottom: 10px;
+}
+.c-quote-en {
+  font-style: italic;
+  font-size: 17px;
+  color: rgba(200,185,150,0.55);
+  line-height: 1.7;
+}
+.c-quote-attr {
+  font-family: 'Inconsolata', monospace;
+  font-size: 10px; letter-spacing: 3px;
+  color: rgba(200,160,64,0.3);
+  text-transform: uppercase;
+  display: block; margin-top: 10px;
+}
+
+/* Reference band */
+.c-refs {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr 1px 1fr 1px 1fr;
+  width: 100%; max-width: 720px;
+  border: 1px solid rgba(200,160,64,0.15);
+}
+.c-ref-divider { background: rgba(200,160,64,0.15); }
+.c-ref-cell {
+  padding: 14px 16px; text-align: center;
+}
+.c-ref-type {
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; display: block;
+  margin-bottom: 4px;
+  color: var(--crimson);
+}
+.c-ref-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 12px; line-height: 1.4;
+  color: rgba(200,185,150,0.55);
+}
+
+.c-footer-band {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between;
+  width: 100%; max-width: 720px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(200,160,64,0.12);
+}
+.c-footer-band span {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(200,160,64,0.25);
+}
+
+/* ═══════════════════════════════════════════
+   TABLE OF CONTENTS
+═══════════════════════════════════════════ */
+.toc {
+  background: var(--deep-a);
+  padding: 56px 72px;
+  border-bottom: 2px solid var(--gold);
+}
+.toc-hd {
+  font-family: 'Cinzel', serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 7px; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 36px;
+  display: flex; align-items: center; gap: 20px;
+}
+.toc-hd::after { content:''; flex:1; height:1px; background:rgba(200,160,64,0.25); }
+
+.toc-item {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: baseline; gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(200,160,64,0.08);
+}
+.toc-n {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px; color: var(--crimson);
+  letter-spacing: 1px;
+}
+.toc-t {
+  font-family: 'EB Garamond', serif;
+  font-size: 16px; color: var(--ash);
+}
+.toc-tag {
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  color: rgba(200,160,64,0.3); text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   CHAPTER HEADERS
+═══════════════════════════════════════════ */
+.ch {
+  padding: 44px 72px 30px;
+  position: relative;
+}
+.ch.world-a { background: var(--deep-a); border-bottom: 1px solid rgba(100,128,160,0.2); }
+.ch.world-b { background: var(--deep-b); border-bottom: 1px solid rgba(46,120,96,0.2); }
+.ch.neutral  { background: var(--abyss); border-bottom: 1px solid rgba(200,160,64,0.2); }
+
+.ch::before {
+  content:''; position:absolute;
+  top:0; left:0; right:0; height:3px;
+}
+.ch.world-a::before { background: linear-gradient(to right, var(--iron), var(--iron-lt), transparent); }
+.ch.world-b::before { background: linear-gradient(to right, var(--jade), var(--jade-lt), transparent); }
+.ch.neutral::before  { background: linear-gradient(to right, var(--crimson), var(--gold), transparent); }
+
+.ch-num {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--crimson); opacity:.7;
+  margin-bottom: 6px;
+}
+.ch-title {
+  font-family: 'Cinzel', serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--gold-lt);
+  letter-spacing: 3px;
+}
+.ch-cn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 12px; font-weight: 300;
+  color: rgba(200,160,64,0.35);
+  margin-top: 5px; letter-spacing: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════ */
+.sec {
+  padding: 38px 72px;
+  border-bottom: 1px solid var(--parch-dk);
+}
+.sec:last-child { border-bottom: none; }
+
+h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--crimson);
+  margin-bottom: 18px; padding-bottom: 9px;
+  border-bottom: 1px solid var(--parch-dk);
+}
+
+h4 {
+  font-family: 'EB Garamond', serif;
+  font-size: 20px; font-weight: 600;
+  color: var(--ink); margin: 22px 0 8px;
+}
+
+p { margin-bottom: 14px; color: var(--text); }
+em { font-style: italic; }
+strong { font-weight: 700; color: var(--ink); }
+
+/* ═══════════════════════════════════════════
+   REFERENCE SOURCE CARDS (deep dive format)
+═══════════════════════════════════════════ */
+.src-card {
+  border: 1px solid var(--parch-dk);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.src-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0;
+}
+
+.src-accent {
+  width: 6px;
+}
+.src-accent.lit  { background: linear-gradient(180deg, var(--cn-red), #8a1040); }
+.src-accent.game { background: linear-gradient(180deg, var(--iron), #2a3848); }
+
+.src-meta {
+  padding: 16px 20px 14px;
+  background: var(--parch-mid);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+
+.src-title-block {}
+.src-type {
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+  display: block; margin-bottom: 4px;
+}
+.src-type.lit  { color: var(--cn-red); }
+.src-type.game { color: var(--iron); }
+
+.src-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 19px; font-weight: 600;
+  color: var(--ink);
+}
+.src-cn-sub {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 12px; color: var(--muted);
+  display: block; margin-top: 2px;
+}
+
+.src-year {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px; color: var(--muted);
+  text-align: right;
+}
+
+.src-body {
+  padding: 18px 20px 20px 26px;
+  background: var(--parch);
+}
+
+.src-body p { font-size: 15px; margin-bottom: 10px; }
+
+.src-mechanics {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--parch-dk);
+}
+
+.src-mech-hd {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold);
+  display: block; margin-bottom: 10px;
+}
+
+.mech-item {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 0;
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.mech-from {
+  background: var(--parch-mid);
+  padding: 7px 12px;
+  font-style: italic;
+  color: var(--muted);
+  border-left: 2px solid var(--gold);
+}
+
+.mech-to {
+  background: var(--parch);
+  padding: 7px 12px;
+  color: var(--text);
+  border-left: 1px solid var(--parch-dk);
+}
+
+/* ═══════════════════════════════════════════
+   DESIGN PILLARS
+═══════════════════════════════════════════ */
+.pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 20px 0;
+}
+
+.pillar {
+  padding: 22px 24px;
+  background: var(--parch-mid);
+  position: relative;
+}
+
+.pillar::before {
+  content: '';
+  position: absolute; top:0; left:0; width:3px; height:100%;
+  background: var(--gold);
+}
+
+.pillar-num {
+  font-family: 'Cinzel', serif;
+  font-size: 36px; font-weight: 900;
+  color: rgba(200,160,64,0.12);
+  position: absolute; top:10px; right:16px;
+  line-height: 1;
+}
+
+.pillar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--crimson); margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+
+.pillar p {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  position: relative; z-index: 1;
+}
+
+/* ═══════════════════════════════════════════
+   CHARACTER SHEETS
+═══════════════════════════════════════════ */
+.char-block {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 0;
+  border: 1px solid var(--parch-dk);
+  margin: 24px 0;
+  overflow: hidden;
+}
+
+.char-sidebar {
+  background: var(--abyss);
+  padding: 28px 20px;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  border-right: 1px solid rgba(200,160,64,0.15);
+}
+
+.char-glyph {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 52px; color: var(--gold);
+  opacity: .7; margin-bottom: 12px;
+  line-height: 1;
+}
+
+.char-role-tag {
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--crimson); margin-bottom: 4px;
+}
+
+.char-name-en {
+  font-family: 'Cinzel', serif;
+  font-size: 14px; font-weight: 600;
+  color: var(--gold-lt); margin-bottom: 20px;
+}
+
+.stat-row {
+  width: 100%; margin-bottom: 10px; text-align: left;
+}
+.stat-label {
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(200,160,64,0.5);
+  display: block; margin-bottom: 3px;
+}
+.stat-bar {
+  height: 2px;
+  background: rgba(200,160,64,0.1);
+  position: relative;
+}
+.stat-fill { height: 100%; background: var(--gold); transition: width .3s; }
+.stat-fill.zero { background: var(--blood); width: 4px !important; }
+
+.char-main {
+  padding: 26px 30px;
+  background: var(--parch);
+}
+.char-main p { font-size: 15px; }
+.char-main h4 { font-size: 17px; margin-top: 14px; }
+
+/* ═══════════════════════════════════════════
+   WORLD SPLIT TABLE
+═══════════════════════════════════════════ */
+.world-split {
+  display: grid;
+  grid-template-columns: 160px 1fr 1fr;
+  gap: 0;
+  margin: 20px 0;
+  border: 1px solid var(--parch-dk);
+  overflow: hidden;
+}
+
+.ws-header {
+  display: contents;
+}
+
+.ws-hcell {
+  padding: 12px 16px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.ws-hcell.attr { background: var(--abyss); color: var(--muted); }
+.ws-hcell.wa   { background: var(--deep-a); color: var(--iron-lt); }
+.ws-hcell.wb   { background: var(--deep-b); color: var(--jade-glow); }
+
+.ws-row { display: contents; }
+
+.ws-cell {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--parch-dk);
+  vertical-align: top;
+}
+.ws-cell.attr { background: var(--parch-mid); font-weight: 600; font-size: 13px; color: var(--muted); }
+.ws-cell.wa   { background: var(--parch); color: var(--text); }
+.ws-cell.wb   { background: var(--parch); color: var(--text); border-left: 1px solid var(--parch-dk); }
+
+/* ═══════════════════════════════════════════
+   PHASE TRIO
+═══════════════════════════════════════════ */
+.phase-trio {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 0; margin: 22px 0;
+  border: 1px solid var(--parch-dk);
+}
+.phase-card {
+  padding: 24px 20px; text-align: center;
+  border-right: 1px solid var(--parch-dk);
+}
+.phase-card:last-child { border-right: none; }
+.phase-cn {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 32px; color: var(--gold);
+  display: block; margin-bottom: 8px; opacity:.7;
+}
+.phase-en {
+  font-family: 'Cinzel', serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; color: var(--crimson);
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.phase-src {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  color: var(--muted); margin-bottom: 10px;
+  display: block;
+}
+.phase-card p { font-size: 13.5px; color: var(--muted); margin:0; }
+
+/* ═══════════════════════════════════════════
+   CALLOUT VARIANTS
+═══════════════════════════════════════════ */
+.callout {
+  border-left: 3px solid var(--gold);
+  background: var(--parch-mid);
+  padding: 15px 20px;
+  margin: 18px 0;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+
+.callout-dark {
+  background: #100c0a;
+  border-left: 3px solid var(--crimson);
+  padding: 18px 22px; margin: 18px 0;
+  color: #c0a880; font-style: italic;
+  font-size: 15.5px;
+}
+
+.callout-world-a {
+  background: #0e1016;
+  border-left: 3px solid var(--iron-lt);
+  padding: 16px 20px; margin: 16px 0;
+  color: #9ab0c0; font-size: 14.5px;
+}
+.callout-world-a .src-tag {
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--iron-lt);
+  display: block; margin-bottom: 6px;
+}
+
+.callout-world-b {
+  background: #0a100e;
+  border-left: 3px solid var(--jade-lt);
+  padding: 16px 20px; margin: 16px 0;
+  color: #80c0a0; font-size: 14.5px;
+}
+.callout-world-b .src-tag {
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--jade-lt);
+  display: block; margin-bottom: 6px;
+}
+
+.callout-cn {
+  background: #100a08;
+  border: 1px solid rgba(192,40,24,0.3);
+  border-left: 3px solid var(--cn-red);
+  padding: 18px 22px; margin: 18px 0;
+}
+.callout-cn .cn-line {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px; color: rgba(220,180,100,0.7);
+  display: block; letter-spacing: 3px; margin-bottom: 8px;
+}
+.callout-cn .cn-tr {
+  font-style: italic; font-size: 15px;
+  color: rgba(200,180,150,0.6);
+  display: block; margin-bottom: 6px;
+}
+.callout-cn .cn-attr {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 2px;
+  color: rgba(192,40,24,0.5); text-transform: uppercase;
+  display: block; margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   MECHANICS INTEGRATION MATRIX
+═══════════════════════════════════════════ */
+.matrix-hd {
+  display: grid;
+  grid-template-columns: 170px 1fr 1fr;
+  background: var(--abyss);
+  border-bottom: 1px solid rgba(200,160,64,0.2);
+}
+.matrix-hd div {
+  padding: 10px 16px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold);
+}
+
+.matrix-row {
+  display: grid;
+  grid-template-columns: 170px 1fr 1fr;
+  margin-bottom: 2px;
+}
+
+.mr-src {
+  background: var(--parch-dk);
+  padding: 12px 14px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px; color: var(--ink);
+  display: flex; align-items: center;
+  border-left: 3px solid var(--gold);
+  line-height: 1.4;
+}
+
+.mr-mech {
+  background: var(--parch-mid);
+  padding: 12px 14px;
+  font-size: 13.5px; color: var(--text);
+  border-left: 1px solid var(--parch-dk);
+}
+
+.mr-impl {
+  background: var(--parch);
+  padding: 12px 14px;
+  font-size: 13.5px; color: var(--muted);
+  border-left: 1px solid var(--parch-dk);
+}
+
+/* ═══════════════════════════════════════════
+   ENDING SPECTRUM
+═══════════════════════════════════════════ */
+.spec-hd {
+  display: grid;
+  grid-template-columns: 100px 1fr 1fr;
+  background: var(--abyss);
+  border-bottom: 1px solid rgba(200,160,64,0.15);
+}
+.spec-hd div {
+  padding: 10px 20px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.spec-hd .h-lv { color: var(--gold); }
+.spec-hd .h-wa { color: var(--iron-lt); }
+.spec-hd .h-wb { color: var(--jade-glow); }
+
+.spec-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 1fr;
+  margin-bottom: 2px;
+}
+
+.sr-lv {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 14px 8px; text-align: center;
+}
+
+.sr-badge {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px; margin-bottom: 4px;
+  display: inline-block;
+}
+
+.sr-qual {
+  font-size: 11px; color: var(--muted);
+  font-family: 'Inconsolata', monospace;
+}
+
+.sr-cell {
+  padding: 14px 18px;
+  border-left: 1px solid rgba(0,0,0,0.06);
+}
+.sr-cell h4 { font-size: 15.5px; margin: 0 0 5px; }
+.sr-cell p  { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
+
+/* Level color coding */
+.lv-null .sr-lv { background: #3a3530; }
+.lv-null .sr-badge { background:#444; color:#aaa; }
+.lv-null .sr-cell { background: #f0ece3; }
+
+.lv-poor .sr-lv { background: #3a1a10; }
+.lv-poor .sr-badge { background:var(--crimson); color:#fff; }
+.lv-poor .sr-cell { background: #f2ebe0; }
+
+.lv-mid .sr-lv { background: #141824; }
+.lv-mid .sr-badge { background:var(--iron); color:#fff; }
+.lv-mid .sr-cell { background: #eef0f6; }
+
+.lv-high .sr-lv { background: #160e20; }
+.lv-high .sr-badge { background:#5040a0; color:#fff; }
+.lv-high .sr-cell { background: #f2eef8; }
+
+.lv-axiom .sr-lv { background: #1a1404; }
+.lv-axiom .sr-badge { background:var(--gold); color:#111; }
+.lv-axiom .sr-cell { background: #fbf4e0; }
+
+/* ═══════════════════════════════════════════
+   SCRIPT BLOCK
+═══════════════════════════════════════════ */
+.script {
+  background: #0c0a08;
+  color: #d0c0a0;
+  padding: 30px 36px;
+  margin: 22px 0;
+  font-family: 'EB Garamond', serif;
+  font-size: 16px; line-height: 2;
+  border: 1px solid rgba(200,160,64,0.15);
+  border-left: 3px solid var(--gold);
+}
+.s-dir {
+  color: #6a5a3a; font-style: italic;
+  font-size: 13px; display: block;
+  margin: 14px 0 4px; line-height: 1.6;
+}
+.s-spk {
+  font-family: 'Inconsolata', monospace;
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--gold); text-transform: uppercase;
+  margin-top: 16px; display: block;
+}
+.s-line { color: #d0c0a0; }
+
+/* ═══════════════════════════════════════════
+   PROS / CONS
+═══════════════════════════════════════════ */
+.pc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0; margin: 20px 0;
+}
+
+.pc-pro { background: #080e0c; padding: 24px 26px; border-right: 1px solid rgba(46,120,96,0.2); }
+.pc-con { background: #0e0806; padding: 24px 26px; }
+
+.pc-hd {
+  font-family: 'Inconsolata', monospace;
+  font-size: 10px; letter-spacing: 5px;
+  text-transform: uppercase; margin-bottom: 22px;
+  padding-bottom: 10px; border-bottom: 1px solid;
+}
+.pc-pro .pc-hd { color: var(--jade-glow); border-color: rgba(46,120,96,0.3); }
+.pc-con .pc-hd { color: var(--crimson); border-color: rgba(192,40,24,0.3); }
+
+.pc-item {
+  display: grid; grid-template-columns: 18px 1fr;
+  gap: 10px; margin-bottom: 14px;
+  align-items: flex-start;
+}
+.pc-bullet { font-size: 12px; margin-top: 4px; }
+.pc-pro .pc-bullet { color: var(--jade-glow); }
+.pc-con .pc-bullet { color: var(--crimson); }
+
+.pc-content {}
+.pc-lbl {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; display: block;
+  margin-bottom: 2px;
+}
+.pc-pro .pc-lbl { color: var(--jade-lt); }
+.pc-con .pc-lbl { color: var(--ember); }
+
+.pc-txt { font-size: 14px; line-height: 1.6; }
+.pc-pro .pc-txt { color: #80b898; }
+.pc-con .pc-txt { color: #c09080; }
+
+/* ═══════════════════════════════════════════
+   TECHNICAL SYSTEMS TABLE
+═══════════════════════════════════════════ */
+.sys-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 13.5px;
+}
+.sys-table th {
+  background: var(--abyss);
+  color: var(--gold-lt);
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 11px 16px; text-align: left;
+}
+.sys-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--parch-dk);
+  vertical-align: top;
+}
+.sys-table tr:nth-child(even) td { background: var(--parch-mid); }
+.sys-code {
+  font-family: 'Inconsolata', monospace;
+  font-size: 12px; color: var(--iron);
+  background: var(--parch-dk);
+  padding: 1px 6px;
+}
+
+/* ═══════════════════════════════════════════
+   PILL ROW
+═══════════════════════════════════════════ */
+.pills { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+.pill {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; padding: 5px 12px;
+  border: 1px solid var(--gold); color: var(--gold);
+}
+.pill.red { border-color:var(--crimson); color:var(--crimson); }
+.pill.iron { border-color:var(--iron); color:var(--iron-lt); }
+.pill.jade { border-color:var(--jade); color:var(--jade-lt); }
+
+/* ═══════════════════════════════════════════
+   DIVIDERS & FOOTER
+═══════════════════════════════════════════ */
+.divider-full {
+  height: 2px;
+  background: linear-gradient(to right, var(--crimson), var(--gold), var(--jade), transparent);
+}
+
+.divider-a {
+  height: 1px;
+  background: linear-gradient(to right, var(--iron), var(--iron-lt), transparent);
+}
+
+.divider-b {
+  height: 1px;
+  background: linear-gradient(to right, var(--jade), var(--jade-lt), transparent);
+}
+
+.doc-footer {
+  background: var(--abyss);
+  padding: 20px 72px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.doc-footer span {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(200,160,64,0.2);
+}
+
+/* inline source badge */
+.ref-badge {
+  font-family: 'Inconsolata', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase; padding: 2px 7px;
+  border: 1px solid; border-radius: 1px;
+  white-space: nowrap; display: inline-block;
+  margin: 0 2px; vertical-align: middle;
+}
+.rb-aitd { border-color: var(--iron); color: var(--iron-lt); }
+.rb-sh   { border-color: #6060a0; color: #9090c8; }
+.rb-pop  { border-color: var(--ember); color: #e09050; }
+.rb-ts   { border-color: #806050; color: #c09070; }
+.rb-zh   { border-color: var(--cn-red); color: #e06050; }
+.rb-nz   { border-color: #404860; color: #7080a0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ╔══════════════════════════════════╗
+     ║           COVER                  ║
+     ╚══════════════════════════════════╝ -->
+<div class="cover">
+  <div class="c-cn-top">東周凱諾瑪 · 雙淵之書</div>
+
+  <div class="c-title-block">
+    <div class="c-en">KENOMA</div>
+  </div>
+  <div class="c-sub">Chronicle of the Twin Abyss &nbsp;·&nbsp; Game Design Document v3.0</div>
+
+  <div class="c-rule">
+    <div class="c-rule-line"></div>
+    <span class="c-rule-glyph">◆ ◆ ◆</span>
+    <div class="c-rule-line"></div>
+  </div>
+
+  <div class="c-quote-block">
+    <span class="c-quote-cn">飛鳥盡，良弓藏；狡兔死，走狗烹</span>
+    <span class="c-quote-en">"When the flying birds are gone, the good bow is put away.<br>When the cunning hare is dead, the hunting dog is cooked."</span>
+    <span class="c-quote-attr">Fan Li · Chronicles of Eastern Zhou Kingdoms · c. 470 BC</span>
+  </div>
+
+  <div class="c-refs">
+    <div class="c-ref-cell">
+      <span class="c-ref-type">Literature</span>
+      <span class="c-ref-name">Chronicles of<br>Eastern Zhou<br>Kingdoms</span>
+    </div>
+    <div class="c-ref-divider"></div>
+    <div class="c-ref-cell">
+      <span class="c-ref-type">Literature</span>
+      <span class="c-ref-name">Thus Spoke<br>Zarathustra<br>Nietzsche</span>
+    </div>
+    <div class="c-ref-divider"></div>
+    <div class="c-ref-cell">
+      <span class="c-ref-type">Game</span>
+      <span class="c-ref-name">Alone in the Dark<br>Trilogy +<br>New Nightmare</span>
+    </div>
+    <div class="c-ref-divider"></div>
+    <div class="c-ref-cell">
+      <span class="c-ref-type">Game</span>
+      <span class="c-ref-name">Silent Hill<br>1 · 2 · 3 · 4:<br>The Room</span>
+    </div>
+    <div class="c-ref-divider"></div>
+    <div class="c-ref-cell">
+      <span class="c-ref-type">Game</span>
+      <span class="c-ref-name">Prince of Persia<br>II · SoT · WW<br>Two Thrones</span>
+    </div>
+    <div class="c-ref-divider"></div>
+    <div class="c-ref-cell">
+      <span class="c-ref-type">Game</span>
+      <span class="c-ref-name">Tormented<br>Souls<br>1 &amp; 2</span>
+    </div>
+  </div>
+
+  <div class="c-footer-band">
+    <span>Expert Game Director · Lead Game Designer</span>
+    <span>Kenoma Studio — Confidential</span>
+    <span>Rev. 3.0 — All Sources Integrated</span>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toc-hd">Game Design Document — Contents</div>
+  <div class="toc-item"><span class="toc-n">01</span><span class="toc-t">Design Thesis & Five Unbreakable Rules</span><span class="toc-tag">Core Philosophy</span></div>
+  <div class="toc-item"><span class="toc-n">02</span><span class="toc-t">Reference Deep-Dive — All Sources Mapped</span><span class="toc-tag">Literary + Game</span></div>
+  <div class="toc-item"><span class="toc-n">03</span><span class="toc-t">Characters — Scholar, Vanguard, The Twin Structure</span><span class="toc-tag">士 · 將 · 影</span></div>
+  <div class="toc-item"><span class="toc-n">04</span><span class="toc-t">World Architecture — Waking & Sunken Archive</span><span class="toc-tag">Dual-World Design</span></div>
+  <div class="toc-item"><span class="toc-n">05</span><span class="toc-t">The Six Core Mechanics — Complete Specification</span><span class="toc-tag">Gameplay Systems</span></div>
+  <div class="toc-item"><span class="toc-n">06</span><span class="toc-t">Three-Act Structure — Camel · Lion · Child</span><span class="toc-tag">Narrative Design</span></div>
+  <div class="toc-item"><span class="toc-n">07</span><span class="toc-t">The Influence-to-Mechanic Integration Matrix</span><span class="toc-tag">Source → System</span></div>
+  <div class="toc-item"><span class="toc-n">08</span><span class="toc-t">The False Victory & 10-Level Ending Spectrum</span><span class="toc-tag">Climax Design</span></div>
+  <div class="toc-item"><span class="toc-n">09</span><span class="toc-t">Opening Cinematic — Full Draft Script</span><span class="toc-tag">Scripting</span></div>
+  <div class="toc-item"><span class="toc-n">10</span><span class="toc-t">Aesthetic, Audio & UI Direction</span><span class="toc-tag">Art Direction</span></div>
+  <div class="toc-item"><span class="toc-n">11</span><span class="toc-t">Pros & Cons — Expert Design Analysis</span><span class="toc-tag">Risk Assessment</span></div>
+  <div class="toc-item"><span class="toc-n">12</span><span class="toc-t">Technical Architecture & Production Scope</span><span class="toc-tag">Engineering</span></div>
+</div>
+
+<div class="divider-full"></div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  01 — THESIS & PILLARS           ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 01</div>
+  <div class="ch-title">Design Thesis & Five Unbreakable Rules</div>
+  <div class="ch-cn">設計理念 · 五條不可違反的法則</div>
+</div>
+<div class="sec">
+  <h3>Logline</h3>
+  <p>A fixed-camera psychological horror tragedy where you play a wandering scholar-strategist who guides a brilliant tactician through the ruins of a dead civilization across two synchronized dimensions — unaware you are constructing the architecture of your own elimination. Every puzzle solved feeds her mind. Every weapon repaired arms her hand. Every forbidden text you translate gives her the words to rewrite the world without you.</p>
+
+  <div class="callout-cn">
+    <span class="cn-line">知人者智，自知者明。勝人者有力，自勝者強。</span>
+    <span class="cn-tr">"To know others is wisdom. To know oneself is enlightenment. To conquer others is strength. To conquer oneself is power."</span>
+    <span class="cn-attr">— Laozi, Tao Te Ching · The Scholar cannot conquer themselves. They cannot stop building. This is why they die.</span>
+  </div>
+
+  <h3>The Five Unbreakable Design Rules</h3>
+  <p>These rules govern every design decision at every level. No mechanic, level element, UI prompt, or narrative beat may contradict them.</p>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-num">I</div>
+      <div class="pillar-title">No Phase 2. No Second Chance.</div>
+      <p>The Vanguard's final state is absolute and apparent from the first second of the Child Phase. There is no mid-fight transformation, no health bar refill, no "true form." True power does not require a second act to convince the observer. She was always this. <em>Ref: Established in conversation, reinforced by the design.</em></p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">II</div>
+      <div class="pillar-title">The Scholar Cannot Fight.</div>
+      <p>Combat is not available to the Scholar at any point in the game. Every hostile encounter is solved through evasion, environmental manipulation, luring, or puzzle-resolution. The player's power is entirely intellectual. This is the Aline Cedrac rule. <em>Ref: AitD: The New Nightmare.</em></p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">III</div>
+      <div class="pillar-title">The Game Watches Without Speaking.</div>
+      <p>No indicator, prompt, or UI element communicates that the player's behavior is being tracked toward an ending. No karma meter. No relationship gauge. No dialogue branch flags. The behavioral tracking system is entirely invisible. <em>Ref: Silent Hill 2's ending criteria.</em></p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">IV</div>
+      <div class="pillar-title">Every Saved Resource Belongs to the Vanguard.</div>
+      <p>Items the Scholar refuses to give do not disappear — they degrade, attract creatures, or become the sole tools available in the Lion Phase. Hoarding is not safety. It is a different kind of investment in a different outcome. There is no neutral choice. <em>Ref: SH4's haunted items mechanic.</em></p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">V</div>
+      <div class="pillar-title">The Vanguard Is Always Human.</div>
+      <p>The Vanguard never transforms into a supernatural entity. Her ascension in the Child Phase is entirely psychological — the evolution of a superior mind that has absorbed the full logic of the Archive. No wings, no glowing form, no second anatomy. She puts her coat on. She straightens her blade. That is enough. <em>Ref: Core design doctrine established in conversation.</em></p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">VI</div>
+      <div class="pillar-title">The Safe Room is Never Truly Safe.</div>
+      <p>The Scholar establishes a base camp (the Observatory) in the Camel Phase, exactly as the player establishes safe rooms in the genre they trust. Over time, this space is contaminated by the Scholar's own choices. Items left there develop a corruption state. The Vanguard can track it through incense residue. Safety is a resource that depletes. <em>Ref: Silent Hill 4: The Room. AitD safe-room structure.</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  02 — REFERENCE DEEP DIVE        ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 02</div>
+  <div class="ch-title">Reference Deep-Dive — All Sources Mapped</div>
+  <div class="ch-cn">參考資料深度解析 · 文學與遊戲</div>
+</div>
+<div class="sec">
+  <h3>Literary Sources</h3>
+
+  <!-- Eastern Zhou -->
+  <div class="src-card">
+    <div class="src-head">
+      <div class="src-accent lit"></div>
+      <div class="src-meta">
+        <div class="src-title-block">
+          <span class="src-type lit">Historical Novel · Literature</span>
+          <div class="src-name">Chronicles of Eastern Zhou Kingdoms</div>
+          <span class="src-cn-sub">東周列國志 · Dōng Zhōu Liè Guó Zhì · Feng Menglong, 17th century (events 770–221 BC)</span>
+        </div>
+        <div class="src-year">770–221 BC<br>Spring & Autumn /<br>Warring States</div>
+      </div>
+    </div>
+    <div class="src-body">
+      <p>A 108-chapter historical novel covering the fragmentation of the Zhou Dynasty into warring kingdoms. The recurring tragedy is the 士 (Shì) — wandering scholar-strategists who gave their brilliance to rulers who used them until the war was won, then discarded or executed them. Wu Qi reformed the Chu army and was torn apart by ministers after the king died. Shang Yang wrote the laws that made Qin dominant and was executed under those very laws. Su Qin held six kingdoms in alliance simultaneously and was assassinated. Fan Li survived only by leaving <em>before</em> victory was complete.</p>
+      <p>The 合縱連橫 (Vertical and Horizontal Alliances) strategy describes kingdoms simultaneously allied with, and undermining, one another — every party serving their own interest while appearing cooperative. This is the dual-Vanguard political structure made historical fact.</p>
+      <div class="src-mechanics">
+        <span class="src-mech-hd">→ Kenoma Integration Points</span>
+        <div class="mech-item">
+          <div class="mech-from">The 士 Archetype</div>
+          <div class="mech-to">The Scholar IS a 士. Brilliant, transactional, constitutionally unable to stop serving the system that will kill them. Their fate is not tragedy — it is historical law.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">Fan Li's Aphorism</div>
+          <div class="mech-to">The game's thesis, spoken in the opening cinematic as hope. Understood in the ending as its true meaning. The Scholar is the bow. The bow is put away.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">合縱連橫</div>
+          <div class="mech-to">The dual-Vanguard structure: both are simultaneously allied with the Scholar and working against each other. The Scholar is the small state caught between two great powers — essential to both, protected by neither.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">Chu Kingdom Shamanism</div>
+          <div class="mech-to">World B's entire aesthetic. The Chu people's shamanistic rituals, dark cosmology, and supernatural folklore traditions source every creature design, ritual puzzle, and environmental element in the Sunken Archive.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">The Dark Voice</div>
+          <div class="mech-to">Mid-Camel Phase: the Scholar begins hearing Sun Tzu and Fan Li aphorisms as a second internal voice — their own strategic intelligence warning them. Inspired by the Warring States tradition of self-counsel. Maps to PoP Two Thrones' Dark Prince voice.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zarathustra -->
+  <div class="src-card">
+    <div class="src-head">
+      <div class="src-accent lit"></div>
+      <div class="src-meta">
+        <div class="src-title-block">
+          <span class="src-type lit">Philosophical Novel · Literature</span>
+          <div class="src-name">Thus Spoke Zarathustra</div>
+          <span class="src-cn-sub">Also sprach Zarathustra · Friedrich Nietzsche · 1883–1885</span>
+        </div>
+        <div class="src-year">1883–1885<br>German<br>Philosophical</div>
+      </div>
+    </div>
+    <div class="src-body">
+      <p>Nietzsche's most complete philosophical work, structured as prophetic narrative. The Three Metamorphoses (Camel, Lion, Child) describe the evolution of the human spirit from burden-bearer to rebel to creator. The Tightrope Walker parable illustrates the precise mechanism of the Scholar's betrayal — the Camel's careful progress is simply bypassed by the Lion's leap, and the Camel falls without malice being involved. The Übermensch/Last Man axis defines the quality of the Vanguard's final ascension.</p>
+      <div class="src-mechanics">
+        <span class="src-mech-hd">→ Kenoma Integration Points</span>
+        <div class="mech-item">
+          <div class="mech-from">Three Metamorphoses</div>
+          <div class="mech-to">Literal game phase structure. Camel = cooperative arc. Lion = betrayal/survival arc. Child = the execution arc. Not metaphor. Mechanical law.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">Tightrope Walker Parable</div>
+          <div class="mech-to">The specific mechanism of betrayal: the Vanguard does not turn evil. She leaps over the Scholar's careful progress because she has outgrown its pace. The Scholar's death is the natural consequence of her ascension — not its cause.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">Übermensch vs. Last Man</div>
+          <div class="mech-to">The ending spectrum's philosophical axis. A Colorful Vanguard achieves Übermensch status — terrifying, complete, creative. A Poor Vanguard collapses into the Last Man: hollow, broken, unable to create, ruling a dead world.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">"Man is a rope"</div>
+          <div class="mech-to">The Scholar's core monologue. They quote this as self-definition — "I am the bridge." The horror is that they are correct. Bridges are not destinations. The Scholar is a means, not an end.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Game Sources</h3>
+
+  <!-- AitD -->
+  <div class="src-card">
+    <div class="src-head">
+      <div class="src-accent game"></div>
+      <div class="src-meta">
+        <div class="src-title-block">
+          <span class="src-type game">Video Game Series</span>
+          <div class="src-name">Alone in the Dark — Trilogy & The New Nightmare</div>
+          <span class="src-cn-sub">Infogrames · 1992 (AitD 1) · 1993 (AitD 2) · 1994 (AitD 3) · 2001 (The New Nightmare)</span>
+        </div>
+        <div class="src-year">1992–2001<br>Survival Horror<br>PC / PS1</div>
+      </div>
+    </div>
+    <div class="src-body">
+      <p><strong>AitD 1 (1992):</strong> The genre origin. Pre-rendered backgrounds, fixed camera angles, Edward Carnby, the Derceto mansion. Critical rule: some creatures cannot be defeated in combat — the player must find puzzle-based solutions or environmental workarounds. Established fixed-camera as authorial composition rather than technical limitation. The 15-slot inventory grid and document-reading mechanic. The first use of pre-rendered camera angles as psychological constriction.</p>
+      <p><strong>AitD 2 (1993):</strong> Jack is the pirate captain-villain who has assumed a supernatural authority — a being of stolen power and false identity. Maps to the Vanguard's relationship with the Archive's knowledge: she is absorbing a power that isn't native to her yet.</p>
+      <p><strong>AitD 3 (1994):</strong> The gold mines setting — greed and ambition as corruption vectors. The Vanguard's hunger for the Traversal Skill follows this logic: the Archive's knowledge is the gold, and its lure has already made her dangerous long before she acts.</p>
+      <p><strong>AitD: The New Nightmare (2001):</strong> The most directly relevant entry. Two playable characters — Edward Carnby (combat-specialist) and Aline Cedrac (researcher/lore-specialist). The player chooses one; the other is AI-controlled. They navigate the same island from different paths, communicate via radio, and each possess knowledge the other lacks. Carnby without Aline misses critical lore. Aline without Carnby is defenseless. The partnership is mandatory and temporary. A shadow creature can only be harmed by light — flashlight as weapon. Aline reads documents to unlock narrative; document-reading has a mechanical cost.</p>
+      <div class="src-mechanics">
+        <span class="src-mech-hd">→ Kenoma Integration Points</span>
+        <div class="mech-item">
+          <div class="mech-from">AitD:TNN Dual Structure</div>
+          <div class="mech-to">Scholar (Aline) and Vanguard (Carnby) as the fundamental character architecture. The player is ALWAYS Aline — the researcher who cannot fight. The Vanguard is ALWAYS the AI Carnby — the fighter who cannot read the Archive without the Scholar's translation.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">Radio Communication</div>
+          <div class="mech-to">The Scholar and Vanguard communicate across dimensional boundaries via a brass resonance instrument — a Zhou-era astronomical tuning device. It can be used to request the Vanguard's position, share a puzzle solution, or warn of approaching threats. In the Lion Phase, it goes silent on the Vanguard's end.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">AitD 1 — No-Combat Rule</div>
+          <div class="mech-to">The Scholar NEVER fights. Every creature encounter is a puzzle, an evasion, an environmental solution. Some creatures cannot be stopped at all — only outrun or lured away from critical paths. This is the AitD 1 doctrine applied absolutely.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">AitD:TNN — Light as Weapon</div>
+          <div class="mech-to">The Scholar's jade lamp (their only carried item with offensive utility) harms shadow-class creatures from World B that manifest in World A. Not a weapon — a tool that happens to deter specific threats. It also burns incense at altar-saves.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">AitD 1 — 15-Slot Inventory Grid</div>
+          <div class="mech-to">The Scholar carries a 15-slot physical inventory. Items exist as 3D objects that can be examined and rotated. Combining items requires physical adjacency in the grid. The slot structure is a hard constraint — nothing auto-sorts. Combined with TS1's 3D manipulation interface.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">AitD 1 — Fixed Camera as Authorship</div>
+          <div class="mech-to">Every camera angle is a composed painting. The Vanguard appears in the background of Scholar-focused shots throughout the Camel Phase — always watching, always still. The player builds dread simply by noticing her attention. Camera cuts are zone-triggered, not player-controlled.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Silent Hill -->
+  <div class="src-card">
+    <div class="src-head">
+      <div class="src-accent game"></div>
+      <div class="src-meta">
+        <div class="src-title-block">
+          <span class="src-type game">Video Game Series</span>
+          <div class="src-name">Silent Hill 1 · 2 · 3 · 4: The Room</div>
+          <span class="src-cn-sub">Konami / Team Silent · 1999 (SH1) · 2001 (SH2) · 2003 (SH3) · 2004 (SH4)</span>
+        </div>
+        <div class="src-year">1999–2004<br>Psychological Horror<br>PlayStation</div>
+      </div>
+    </div>
+    <div class="src-body">
+      <p><strong>SH1 (1999):</strong> Harry Mason searching for Cheryl in a fog-covered town. The Otherworld manifests from Alessa's trauma — the monsters are her fear made physical. The radio crackles with static when creatures approach (proximity system). Fog as visibility control. The town is psychologically specific to its source trauma.</p>
+      <p><strong>SH2 (2001):</strong> The masterpiece. James Sunderland receives a letter from his dead wife and goes to Silent Hill. The Otherworld is James's own guilt manifested. Pyramid Head exists because James wants to be punished. Endings are determined by silent behavioral tracking: how many times James reads Mary's letter, whether he examines Maria obsessively, whether he keeps his health intentionally low. No UI element communicates this tracking. The player finds out only at the ending. Multiple routes to several endings, each reflecting a psychological truth about the player's unconscious behavior.</p>
+      <p><strong>SH3 (2003):</strong> Heather/Alessa — the protagonist carries within her the origin of the Otherworld. The transition between Normal and Otherworld states happens mid-level. Mirror mechanic: mirrors show the Otherworld state even in the Normal world. The transformation is reactive to Heather's internal state, not to external events.</p>
+      <p><strong>SH4: The Room (2004):</strong> Henry Townshend is trapped in his apartment (Room 302). He can only leave through a hole in the wall. The Room starts as a safe haven but progressively becomes haunted as Henry returns between levels — objects accumulate corruption, ghost-victims follow him through every world, haunted items left in the Room drain his max health. The hole in the wall IS the traversal mechanic made literal.</p>
+      <div class="src-mechanics">
+        <span class="src-mech-hd">→ Kenoma Integration Points</span>
+        <div class="mech-item">
+          <div class="mech-from">SH4 — The Room / The Observatory</div>
+          <div class="mech-to">The Scholar's Observatory (base camp) is The Room. Starts safe. Progressively haunted as items touched by the Vanguard are returned. Items with Vanguard-contact accumulate a corruption state — carried, they drain health. The Scholar must spend incense to cleanse them or leave them behind.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SH4 — The Hole / Traversal</div>
+          <div class="mech-to">Traversal focal points ARE holes in the world's fabric — astronomical instruments that function as dimensional apertures. The Scholar observes through the instrument before committing to the cross (SH4's peering through the hole before entering). The crossing has a physical cost: a brief animation in which the Scholar appears to fold through space.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SH2 — Silent Behavior Tracking</div>
+          <div class="mech-to">The game silently tracks: how fully the Scholar reads each forbidden text (depth), how often they check the resonance instrument, average health maintained, items donated vs. hoarded, traps set vs. left disarmed. This feeds the 0–100 spectrum score per world. No UI element ever acknowledges the tracking.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SH1/2 — Monsters as Complicity</div>
+          <div class="mech-to">Archive creatures are not generic. Each creature type manifests a specific category of Scholar decision. The creature that appears after the Scholar gives a weapon to the Vanguard is different from the one that appears after they hoard medicine. Players who engage deeply with the pattern begin to read their own behavioral history in the monster design.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SH1 — Radio Static</div>
+          <div class="mech-to">The Scholar's brass compass buzzes with static when hostile entities approach. In World B, static intensity correlates to both distance AND the emotional significance of the encounter — it buzzes harder near creatures that manifest the Scholar's most consequential acts. The compass is a conscience made audible.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SH3 — Mid-Level World Shift</div>
+          <div class="mech-to">Both worlds have a Normal and Otherworld state. The Otherworld shift in World A transforms bronze halls into biological clockwork. In World B, submerged spaces shift into total darkness broken only by the Scholar's lamp. Triggers are based on accumulated Scholar decisions, not scripted story moments.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SH2 — Pyramid Head Logic</div>
+          <div class="mech-to">The Archive Guardian (the game's unskippable pursuer entity) exists because the Scholar is subconsciously aware they are building their executioner and cannot stop. It appears more frequently as Camel Phase generosity increases — the more the Scholar gives, the more the Guardian pursues. It represents their borrowed time, made visible.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prince of Persia -->
+  <div class="src-card">
+    <div class="src-head">
+      <div class="src-accent game"></div>
+      <div class="src-meta">
+        <div class="src-title-block">
+          <span class="src-type game">Video Game Series</span>
+          <div class="src-name">Prince of Persia — II · Sands of Time · Warrior Within · The Two Thrones</div>
+          <span class="src-cn-sub">Jordan Mechner · 1993 (II) / Ubisoft Montreal · 2003 · 2004 · 2005</span>
+        </div>
+        <div class="src-year">1993–2005<br>Action / Adventure<br>PC / PS2</div>
+      </div>
+    </div>
+    <div class="src-body">
+      <p><strong>PoP II: The Shadow and the Flame (1993):</strong> The Prince finds his palace conquered and his identity stolen by a disguised Jaffar. His own shadow pursues him as a doppelganger. The Shadow and the Flame are two supernatural forces in opposition. The Prince must reclaim his own identity by the end. This maps directly to the two Vanguards as "Shadow" (World B, Sunken Archive) and "Flame" (World A, Waking Archive) — two aspects of one consuming force, opposed and complementary.</p>
+      <p><strong>Sands of Time (2003):</strong> Farah is the companion whose agenda is never fully aligned with the Prince's. She steals the Dagger of Time briefly because she calculates that her solution is better — not out of betrayal but out of cold, independent reasoning. She does not apologize. The ending: the Prince reverses time entirely. Farah never knows any of it happened. Only the Prince carries the memory of everything that was built and lost.</p>
+      <p><strong>Warrior Within (2004):</strong> The Dahaka is an unstoppable entity that hunts the Prince because he altered time. It CANNOT be defeated in combat through most of the game — it must be outrun. Kaileena (the Empress of Time) is an antagonist trying to prevent her own death — sympathetic, calculating, using the Prince as a means to her own survival. The Sand Wraiths are shadow-versions of the Prince from corrupted timelines.</p>
+      <p><strong>The Two Thrones (2005):</strong> The Dark Prince is the Prince's corrupted alternate self, speaking in his ear, offering shortcuts, demanding sand to stay alive. The Prince must choose between integration and rejection of this internal voice.</p>
+      <div class="src-mechanics">
+        <span class="src-mech-hd">→ Kenoma Integration Points</span>
+        <div class="mech-item">
+          <div class="mech-from">PoP II — Shadow & Flame</div>
+          <div class="mech-to">The two Vanguards ARE the Shadow and Flame. Vanguard A (Waking / Systemic) = The Flame — ordered, consuming, reducing old knowledge to clean architecture. Vanguard B (Sunken / Folkloric) = The Shadow — patient, possessive, claiming what she touches without violence. Each Vanguard is incomplete without the other's quality. The one who absorbs the Traversal Skill gains both.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SoT — Farah's Logic</div>
+          <div class="mech-to">The Vanguard's betrayal follows Farah's exact reasoning: she does not act out of malice. She calculates that the Scholar's continued existence is the largest remaining inefficiency in her system. She is not wrong. The game never frames this as a moral failure. She is correct within her logic.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SoT — Environmental Traps</div>
+          <div class="mech-to">During the Camel Phase, the Scholar arms environmental mechanisms: pressure plates, spike corridors, chain-weighted portcullises, oil-vessel pressure systems. These are presented as optional puzzle elements. In the Lion Phase, they become the Scholar's only defensive tools. The Vanguard circumvents traps she observed being set. Only traps she never saw activated can catch her — and only once.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">WW — The Dahaka System</div>
+          <div class="mech-to">The Archive Guardian is the Dahaka. It appears periodically and cannot be fought — only outrun. Its frequency of appearance is tied to the Scholar's use of the Traversal Skill: every dimensional crossing accumulates a "debt," and the Guardian is the debt collector. Heavy Traversal use = more frequent, faster Guardian pursuit. This disincentivizes careless dimensional hopping and makes every crossing a deliberate risk calculation.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">WW — Kaileena's Sympathy</div>
+          <div class="mech-to">The Vanguard is designed with Kaileena's emotional logic. She is not a villain. She is a person who made a completely rational decision given the information she had. Players who understand her fully — and many will — will feel the tragedy of her correctness more than the horror of her power.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">TT — The Dark Voice</div>
+          <div class="mech-to">Mid-Camel Phase, the Scholar develops a second internal voice — their own strategic mind, finally articulating what their academic training has known for hours. It speaks in Eastern Zhou aphorisms. It warns. The player can LISTEN (triggering early sabotage options) or IGNORE (extending cooperation, intensifying Lion Phase). Neither is clearly correct. Both have costs.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">SoT — The Erased Memory Ending</div>
+          <div class="mech-to">In SoT's ending, the Prince rewinds time and Farah remembers nothing. In Kenoma, the Scholar's memory is erased differently: the Vanguard, having achieved the Child Phase, deletes the Scholar from the Archive's history. The lore fragments the Scholar translated now attribute the work to an anonymous source. The Scholar did not exist. They were a bridge. Bridges are not credited.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tormented Souls -->
+  <div class="src-card">
+    <div class="src-head">
+      <div class="src-accent game"></div>
+      <div class="src-meta">
+        <div class="src-title-block">
+          <span class="src-type game">Video Game Series</span>
+          <div class="src-name">Tormented Souls 1 & 2</div>
+          <span class="src-cn-sub">Dual Effect / Abstract Digital · 2021 (TS1 — Caroline Walker) · 2023 (TS2 — Justine)</span>
+        </div>
+        <div class="src-year">2021–2023<br>Survival Horror<br>PC / Console</div>
+      </div>
+    </div>
+    <div class="src-body">
+      <p><strong>TS1 (2021):</strong> Caroline Walker arrives at Winterlake Hospital to investigate a missing twin (again: the duality theme). The game is the most successful modern revival of classic fixed-camera survival horror, featuring: fully 3D inventory manipulation (items are physical objects that can be rotated and examined), a candle-save system (place candles at specific floor positions — limited supply, each position unlocks once per run), health communicated through visible body-horror to the player character rather than a numerical gauge, and a document-reading animation that costs time and leaves Caroline vulnerable. The "combination crafting" system requires items to be physically compatible in the 3D space before combining.</p>
+      <p><strong>TS2 (2023):</strong> Justine as protagonist. Expanded outdoor environments, more complex multi-step puzzle chains, improved item interaction physics, and a wider variety of enemies requiring specific environmental approaches. Proves the format can scale and iterate. TS1+2 together constitute the strongest modern proof-of-concept that this genre format is commercially viable.</p>
+      <div class="src-mechanics">
+        <span class="src-mech-hd">→ Kenoma Integration Points</span>
+        <div class="mech-item">
+          <div class="mech-from">TS1 — 3D Inventory + AitD Grid</div>
+          <div class="mech-to">The Scholar's inventory combines both systems: AitD's 15-slot grid structure with TS1's 3D physical manipulation interface. Items are placed in grid slots but can be removed and physically examined/rotated before use or combination. The interface is diegetic — the Scholar physically opens their satchel.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">TS1 — Candle-Save System</div>
+          <div class="mech-to">Saves require burning incense at Eastern Zhou bronze altar vessels. Limited supply (~14–18 per run depending on exploration depth). Each altar locks after one use per session. In the Lion Phase, recently used altars emit detectable incense residue. The Vanguard can locate hot altars and position near them — saving becomes a tactical risk.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">TS1 — Body Horror Health</div>
+          <div class="mech-to">The Scholar's health state is communicated entirely through animation and appearance: slowing movement, hunching posture, hand tremor during puzzle interaction, increasing irregularity of breathing sounds. No numerical display. Inspired by TS1's visible degradation approach. The player learns to read the Scholar's body language as a health gauge.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">TS1 — Document Reading Cost</div>
+          <div class="mech-to">Reading forbidden texts (bamboo scrolls, oracle bone inscriptions, bronze inscription plates) triggers a reading animation during which the Scholar cannot move. Full-depth reading provides maximum lore (feeding the behavioral tracking toward Colorful endings) but costs time and leaves the Scholar exposed to the Guardian's timed appearances. Partial reading reduces knowledge gain. TS2's expanded puzzle chains inform how lore fragments combine into full Archive knowledge.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">TS1 — Twin/Duality Theme</div>
+          <div class="mech-to">Caroline searches for her missing twin — the duality motif runs through both TS games. In Kenoma, the Vanguard's "twin" nature (Shadow/Flame, two Vanguards as two aspects of one strategic mind) echoes this. The Scholar's dead dimensional counterpart (Narrator B, whose death enables Traversal) is the "missing twin" they can never find.</div>
+        </div>
+        <div class="mech-item">
+          <div class="mech-from">TS2 — Scalable Puzzle Chains</div>
+          <div class="mech-to">TS2's multi-step puzzle chains inform Kenoma's cross-dimensional puzzle design: a solution in World A may require gathering three components across both worlds in sequence. The puzzle grammar scales from single-item solutions in the early Camel Phase to elaborate 5-step cross-dimensional chains in the late Camel Phase.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  03 — CHARACTERS                 ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 03</div>
+  <div class="ch-title">Characters — Scholar, Vanguard, The Twin Structure</div>
+  <div class="ch-cn">人物設計 · 士與將 · 影與焰</div>
+</div>
+<div class="sec">
+  <h3>The Scholar (Player Character)</h3>
+  <div class="char-block">
+    <div class="char-sidebar">
+      <div class="char-glyph">士</div>
+      <div class="char-role-tag">Player Character</div>
+      <div class="char-name-en">The Scholar</div>
+      <div class="stat-row"><span class="stat-label">Combat</span><div class="stat-bar"><div class="stat-fill zero" style="width:3%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Intellect</span><div class="stat-bar"><div class="stat-fill" style="width:96%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Traversal</span><div class="stat-bar"><div class="stat-fill" style="width:100%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Lore Access</span><div class="stat-bar"><div class="stat-fill" style="width:98%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Loyalty</span><div class="stat-bar"><div class="stat-fill" style="width:90%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Self-Preservation</span><div class="stat-bar"><div class="stat-fill" style="width:22%"></div></div></div>
+    </div>
+    <div class="char-main">
+      <p>The Scholar is the Aline Cedrac of this world: the researcher whose presence makes the Archive legible. They are a 士 — a Warring States intellectual mercenary, constitutionally driven to serve the system they inhabit. They cannot fight. Their power is translation, puzzle-resolution, and the unique dimensional privilege of the Traversal Skill.</p>
+      <p>They carry a leather satchel containing: a jade lamp (their only threat-deterrent), a brass compass (static proximity alarm, per SH1), a dimensional resonance instrument (cross-world communication, per AitD:TNN's radio), bamboo scroll fragments, calibration tools, and available inventory slots for Archive items.</p>
+      <h4>The Dark Voice</h4>
+      <p>Mid-Camel Phase — after the third major puzzle sequence — the Scholar begins hearing a second internal voice. Their own strategic consciousness, finally overriding their academic servility. It speaks in the language of Sun Tzu and Fan Li. <em>"The general who wins a battle makes many calculations before the fight. The general who loses makes few."</em> The player can choose to listen (early sabotage), answer back (escalate toward Lion Phase), or suppress it (maintain cooperation). Drawn from PoP Two Thrones' Dark Prince voice system.</p>
+      <h4>Health Communication</h4>
+      <p>No health bar. The Scholar's condition is read entirely from their body: movement speed, postural degradation, puzzle interface tremor, breath audio irregularity. Drawn from TS1's Caroline Walker approach — the player learns to read the Scholar the way the Scholar reads the Archive.</p>
+    </div>
+  </div>
+
+  <h3>The Vanguard (AI Antagonist — Shadow and Flame)</h3>
+  <div class="char-block">
+    <div class="char-sidebar">
+      <div class="char-glyph">將</div>
+      <div class="char-role-tag">AI Antagonist</div>
+      <div class="char-name-en">The Vanguard</div>
+      <div class="stat-row"><span class="stat-label">Combat</span><div class="stat-bar"><div class="stat-fill" style="width:94%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Tactical Mind</span><div class="stat-bar"><div class="stat-fill" style="width:100%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Learning Rate</span><div class="stat-bar"><div class="stat-fill" style="width:100%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Loyalty</span><div class="stat-bar"><div class="stat-fill zero" style="width:0%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Patience</span><div class="stat-bar"><div class="stat-fill" style="width:98%"></div></div></div>
+      <div class="stat-row"><span class="stat-label">Malice</span><div class="stat-bar"><div class="stat-fill zero" style="width:0%"></div></div></div>
+    </div>
+    <div class="char-main">
+      <p>The Vanguard is the Edward Carnby of this partnership: the fighter who makes the Scholar's research survivable. She protects the Scholar not out of loyalty but because they are the most efficient available key to the Archive's locked systems. She is Edward Carnby filtered through Farah (SoT), Kaileena (WW), and the female military commanders of the Eastern Zhou period — brilliant, calculating, operating under a rational agenda that will eventually supersede the Scholar's utility.</p>
+      <p>She never transforms. She never glows. She never becomes a monster. Her evolution is entirely in her eyes — in the way she studies the Scholar's hands during a puzzle sequence, the way she stops asking for clarification mid-Camel Phase and simply acts on what she's already deduced. The horror is in watching someone gradually no longer need you.</p>
+      <h4>Vanguard A vs. Vanguard B — Shadow and Flame (PoP II)</h4>
+      <p><strong>Vanguard A (Waking Archive — The Flame):</strong> Ordered, consuming, architectural. She fights with clean precision — each strike finding the structural weakness, each movement a tactical calculation. Her voice is quiet, measured. When she absorbs the Traversal Skill, she becomes the Flame: a force that reduces everything it touches to clean, structured ash, ready to build on.</p>
+      <p><strong>Vanguard B (Sunken Archive — The Shadow):</strong> Patient, possessive, mythic. She moves differently — slower, more deliberate, using the Archive's dark spaces as extensions of her own patience. Her voice carries the rhythm of Chu ceremonial speech. When she absorbs the Traversal Skill, she becomes the Shadow: she claims ownership of everything she passes through, silently, without declaration.</p>
+      <p>The two Vanguards share a single underlying tactical architecture expressed through two aesthetic registers. They are the same intelligence, divided by the dimensional threshold — which is why they cannot coexist once the Traversal Skill is available. Two instances of the same system cannot share the same administrative privileges.</p>
+    </div>
+  </div>
+
+  <h3>The Archive Guardian — The Dahaka of Kenoma</h3>
+  <p>Drawn from PoP Warrior Within's Dahaka and SH2's Pyramid Head: an entity that cannot be defeated in combat (until the final moments of the Camel Phase, as a deliberate structural feint) and must only be outrun or evaded. The Guardian represents the Scholar's borrowed time — the temporal debt accumulated by a Narrator who should not be traversing dimensions at all.</p>
+  <p>It appears with increasing frequency as the Scholar uses Traversal more. Its speed increases with each manifestation. Its design is drawn from the Chu cosmological tradition — not a mechanized creature, not a gore-construct, but an entity that appears fundamentally wrong within the physical logic of the Archive. It moves like something that does not belong in three-dimensional space. It is not hostile toward the Vanguard. Only the Scholar. This is not a coincidence the player will miss.</p>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  04 — WORLD ARCHITECTURE         ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 04</div>
+  <div class="ch-title">World Architecture — Waking & Sunken Archive</div>
+  <div class="ch-cn">世界架構 · 醒界與沉界</div>
+</div>
+<div class="sec">
+  <h3>The Twin Archives — Design Identity</h3>
+
+  <div class="world-split">
+    <div class="ws-header">
+      <div class="ws-hcell attr">Attribute</div>
+      <div class="ws-hcell wa">★ World A — The Waking Archive</div>
+      <div class="ws-hcell wb">◈ World B — The Sunken Archive</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Historical Source</div>
+      <div class="ws-cell wa">Northern Zhou court architecture: bronze halls, jade-inlaid mechanisms, astronomical instruments, Confucian administrative order imposed on ancient ruins.</div>
+      <div class="ws-cell wb">Chu Kingdom shamanic tradition: submerged ceremonial spaces, dark ritual chambers, waterlogged bamboo forests, oracle bone shrines.</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Visual Identity</div>
+      <div class="ws-cell wa">Gothic clockwork fused with Eastern Zhou bronze architecture. Iron mechanisms with jade inlays. AitD 1-style fixed-camera compositions — high angles dwarfing the Scholar against massive bronze halls.</div>
+      <div class="ws-cell wb">Silent Hill Otherworld logic applied to Chu ritual spaces. Black water, bioluminescent algae, dark thorns, submerged statuary. SH3-style mid-level Otherworld shifts into total darkness.</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Camera Style</div>
+      <div class="ws-cell wa">Dutch-angle and high-angle fixed compositions — the AitD 1 approach. Vanguard A visible in background of Scholar shots throughout Camel Phase.</div>
+      <div class="ws-cell wb">Closer, more intimate fixed angles. Fog limits depth — Silent Hill's fog-as-depth-control. The compass static begins before threats are visible.</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Save System</div>
+      <div class="ws-cell wa">Burning incense at Zhou bronze altar vessels. Limited supply. Post-burn residue is detectable by Vanguard A in Lion Phase.</div>
+      <div class="ws-cell wb">Placing candles at Chu ritual floor markings. Same resource pool as World A incense — shared constraint. TS1 candle-save system applied to shamanistic context.</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Otherworld State</div>
+      <div class="ws-cell wa">Bronze halls become biological clockwork — organic tissue threaded through iron mechanisms. Triggered by accumulated Scholar decisions (SH3 trigger logic).</div>
+      <div class="ws-cell wb">Submerged spaces become total darkness broken only by the Scholar's jade lamp. The lamp's light reveals things that only exist when observed — a quantum horror principle.</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Creature Logic</div>
+      <div class="ws-cell wa">Manifestations of systemic complicity — creatures that move like failed mechanisms, like clockwork given corrupted purpose. The Scholar reads their origin in Archive texts.</div>
+      <div class="ws-cell wb">Manifestations of folkloric guilt — drowned memories, suppressed knowledge, Chu ceremonial figures distorted by the Scholar's refusal to translate their full meaning. SH2 monster-as-guilt principle.</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Sound Design</div>
+      <div class="ws-cell wa">Resonating bronze zhong bells, grinding iron, mechanical rhythm. Compass static is sharp, electrical — SH1 radio crackle applied to brass instrument.</div>
+      <div class="ws-cell wb">Water movement, distant Chu ceremonial chanting, waterlogged wood creak. Compass static is lower, more organic — almost biological. SH2's industrial ambient applied to underwater spaces.</div>
+    </div>
+    <div class="ws-row">
+      <div class="ws-cell attr">Vanguard Presence</div>
+      <div class="ws-cell wa">Vanguard A: appears in background of fixed shots studying mechanisms, testing trap resistance, calibrating her behavioral model of the Scholar.</div>
+      <div class="ws-cell wb">Vanguard B: harder to locate in fixed shots — she is present but uses the fog and dark water to appear at the edge of compositions, watching from distance.</div>
+    </div>
+  </div>
+
+  <h3>The Traversal Focal Points — The Holes in the Wall</h3>
+  <p>Directly drawn from SH4: The Room's "hole in the wall" mechanic. Traversal focal points are Eastern Zhou astronomical instruments — bronze armillary spheres, jade orreries, celestial alignment chambers — that function as apertures between dimensions. The Scholar observes through the instrument before crossing (SH4's peering-through-the-hole interaction), and the crossing has a physical cost: the Scholar appears to fold through space, emerging on the other side displaced slightly in time.</p>
+
+  <div class="callout-world-b">
+    <span class="src-tag">SH4: The Room — Integrated System</span>
+    The Observatory (Scholar's base camp) begins as a safe haven, identical to SH4's Room 302. As the run progresses: items given to the Vanguard return to the Observatory in a corrupted state after the Camel Phase ends. Corrupted items carried drain health. Items left in the Observatory long-term accumulate a "haunting" value — above a threshold, the Observatory itself begins spawning environmental hazards. The Scholar must spend incense (save resources) to perform a cleansing ritual, removing corruption at the cost of save capacity.
+  </div>
+
+  <h3>The Archive Guardian — Traversal Debt System (PoP Warrior Within)</h3>
+  <p>Each Traversal crossing increments a hidden debt counter. The Guardian's spawn frequency is a direct function of this counter. Light use of Traversal (crossing only when necessary) keeps the Guardian rare and predictable. Overuse of Traversal (frequent dimensional hopping to solve problems efficiently) turns the Guardian into a near-constant threat. This is the Dahaka system applied to dimensional mechanics — freedom of traversal has an invisible cost that compounds.</p>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  05 — CORE MECHANICS             ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 05</div>
+  <div class="ch-title">The Six Core Mechanics — Complete Specification</div>
+  <div class="ch-cn">六大核心機制 · 完整規格</div>
+</div>
+<div class="sec">
+  <h3>Mechanic 1 — The Tactile Inventory (AitD 1 Grid + TS1 3D Manipulation)</h3>
+  <p>The Scholar's satchel contains a 15-slot grid (AitD 1's slot count) where items are stored as 3D physical objects. When examining an item, the player removes it from the slot and can rotate it freely in a 3D space (TS1's interface). Items have physical properties: weight (affects Scholar movement speed when carried), compatibility (TS2's combination rules — volatile + ignition source = prohibited adjacency), and wear state.</p>
+  <p>Giving an item to the Vanguard requires physically placing it into her hands in the game world — not through a menu. This is a deliberate design choice: the act of relinquishing a resource is a physical, first-person action with spatial weight. You reach into your satchel, take the item out, and hold it out. She takes it without looking at you. She is already examining it.</p>
+
+  <div class="callout-world-a">
+    <span class="src-tag">AitD:TNN — Asymmetric Information</span>
+    Items given to the Vanguard disappear from the Scholar's inventory — but the player never sees what she does with them. In the Camel Phase, this is fine. In the Lion Phase, the Scholar begins encountering Vanguard-optimized weapons and environmental modifications she has made using the Scholar's donated resources. The donated items have been weaponized against their donor.
+  </div>
+
+  <h3>Mechanic 2 — The Candle-Incense Save System (TS1 + AitD Safe Room)</h3>
+  <p>Incense sticks (~14–18 per run, exploration-dependent) are burned at bronze altar vessels in World A and placed as candles at Chu ritual floor markings in World B. Both consume from the same resource pool. Each altar/marking locks after one use per session. The Scholar cannot save in the same place twice in one session.</p>
+  <p><strong>Lion Phase complication:</strong> Incense burns leave detectable residue for 15–20 minutes of play time. Vanguard A can detect a hot altar by examining it — if she finds residue, she will position near it or near neighboring altars, anticipating the Scholar's return. The save system becomes a tactical intelligence problem.</p>
+
+  <h3>Mechanic 3 — The Compass / Static System (SH1 Radio + SH2 Guilt Frequency)</h3>
+  <p>The Scholar's brass compass emits static from its resonance chamber when hostile entities approach. Static intensity encodes two variables: proximity (louder = closer) AND emotional significance (the static changes quality — sharper for creatures manifesting the Scholar's Camel Phase generosity, lower and more organic for creatures manifesting their hoarding decisions). Players who engage with the system develop an intuitive read of their own behavioral history through audio.</p>
+
+  <h3>Mechanic 4 — Forbidden Text Reading (TS1 + AitD 1 Documents)</h3>
+  <p>Reading bamboo scrolls, oracle bone inscriptions, and bronze plate inscriptions triggers a reading animation (the Scholar unfurls the scroll or holds the plate to their lamp) during which movement is locked. Reading depths:</p>
+  <p><strong>Skim read (2 seconds):</strong> Scholar notes the document exists. No lore gain. No behavioral tracking impact. <strong>Standard read (8–12 seconds):</strong> Extracts the document's surface content. Moderate lore gain. Adds to behavioral tracking. <strong>Deep read (25–40 seconds):</strong> Full translation including esoteric content hidden in archaic script. Maximum lore gain. Maximum behavioral tracking. High Guardian spawn probability during the read window. The most valuable texts are the most dangerous to translate fully. The Scholar must decide, in real time, how much they want to know.</p>
+
+  <h3>Mechanic 5 — Environmental Trap Architecture (PoP Sands of Time + PoP II)</h3>
+  <p>Throughout the Camel Phase, the Scholar discovers and can arm environmental mechanisms. These exist as optional puzzle elements presented without any indication of their Lion Phase utility — a first playthrough player may activate them for puzzle rewards, not knowing they are establishing a defensive infrastructure.</p>
+  <p><strong>Trap Types:</strong> Pressure plate corridors (floor-spike systems from PoP's classic trap vocabulary), chain-weighted portcullises (can seal a room or create a temporary barrier), oil vessel pressure systems (spray flammable residue — activates with the jade lamp), structural weight traps (destabilized ceiling sections that fall on a trigger).</p>
+  <p><strong>Vanguard Intelligence:</strong> Any trap the Vanguard observed the Scholar interact with is flagged in her behavioral model. She will not trigger a flagged trap. She will reset an observed pressure plate so the Scholar triggers it when fleeing. She makes the same mistake only once. Traps she never watched being armed remain effective — and she will study the mechanism after encountering it, never being caught by it again.</p>
+
+  <h3>Mechanic 6 — The Silent Behavioral Tracking (SH2 Ending Criteria)</h3>
+  <p>The game maintains two hidden accumulating scores (0–100), one per world. Every Scholar decision contributes to both scores. No UI element acknowledges the tracking system's existence. The scores determine which of the 10 ending scenarios triggers at the Child Phase. Tracked variables include:</p>
+
+  <div class="callout">
+    Document depth rates, item donation frequency and tier, average health maintained (high health = hoarding instinct, low health = sacrifice pattern), compass check frequency (how often the Scholar monitors threat proximity), traps set vs. left disarmed, Traversal debt (Guardian spawn frequency), Dark Voice — listened vs. ignored, incense conservation vs. liberal use, whether the Scholar attempted to decode Vanguard B's motivations in World B lore before the betrayal, time spent in the Observatory after items began showing corruption.
+  </div>
+
+  <p>These inputs produce a behavioral signature that maps cleanly to one of five spectrum levels per world without the player ever understanding the system they're being evaluated by. This is exactly Silent Hill 2's ending design — the player discovers they were being profiled only when the ending reveals what their behavior meant.</p>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  06 — THREE-ACT STRUCTURE        ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 06</div>
+  <div class="ch-title">Three-Act Structure — Camel · Lion · Child</div>
+  <div class="ch-cn">三幕結構 · 尼采的三種蛻變</div>
+</div>
+<div class="sec">
+  <div class="phase-trio">
+    <div class="phase-card">
+      <span class="phase-cn">駱駝</span>
+      <div class="phase-en">The Camel</div>
+      <span class="phase-src">Nietzsche: "Thou Shalt" / AitD:TNN Cooperation / TS1 Exploration</span>
+      <p>The burden-bearer. You serve, solve, give, translate. The Vanguard watches. You establish the Observatory, arm the Archive's mechanisms, build the infrastructure of a civilization you will never inhabit. Every correct decision here is a decision being added to her tactical model.</p>
+    </div>
+    <div class="phase-card">
+      <span class="phase-cn">獅子</span>
+      <div class="phase-en">The Lion</div>
+      <span class="phase-src">Nietzsche: "I Will" / PoP SoT Trap Phase / SH2 Guilt Manifested</span>
+      <p>The rebel. The Vanguards turn on each other, using the Scholar as their weapon. You must use the traps you set, the environmental knowledge you accumulated, and every remaining incense stick with precision. Safe rooms are compromised. The radio is silent. The compass buzzes constantly.</p>
+    </div>
+    <div class="phase-card">
+      <span class="phase-cn">孩童</span>
+      <div class="phase-en">The Child</div>
+      <span class="phase-src">Nietzsche: "Sacred Yes" / PoP SoT False Victory / SH2 Endings</span>
+      <p>The creator. The False Victory. One Vanguard falls. The achievement pops. The music resolves. Then the dimensional tear opens. What follows is determined entirely by the world you built over the preceding four to seven hours.</p>
+    </div>
+  </div>
+
+  <h3>Act I — The Camel Phase (Cooperative Architecture)</h3>
+  <p>The longest act (~40–50% of total playtime). The Scholar and both Vanguards navigate the twin Archives in a state of functional cooperation. The puzzle grammar scales from single-item solutions to 5-step cross-dimensional chains (TS2). The Scholar opens the Observatory in the first hour and establishes it as a safe, warm space — save altars nearby, items organized, the resonance instrument on the central table for communication with both Vanguards.</p>
+  <p>The Vanguards are present throughout the Camel Phase as observable AI entities: Vanguard A works visibly through World A's mechanisms, and the Scholar can watch her through traversal focal points. Vanguard B is rarely visible directly but her presence is felt — items in World B are organized after she's passed through, doors she opened remain open, her footprints are in the silt.</p>
+  <p>The Dark Voice emerges after the third major puzzle sequence. Its first words are always Fan Li's aphorism, spoken in the Scholar's own register. The player who knows Eastern Zhou history will recognize the warning instantly. The player who doesn't will interpret it as an intrusive thought and ignore it. Both responses are valid. Both have consequences.</p>
+
+  <h3>Act II — The Lion Phase (Environmental Chess)</h3>
+  <p>The turn is not a cutscene. It is a behavioral shift. The Scholar attempts to use the resonance instrument to coordinate with Vanguard A. There is a long silence. When the response comes, it is not a request for assistance. It is a position report. Vanguard A communicates where Vanguard B was last located. The Scholar understands immediately.</p>
+  <p>Vanguard A demands the Scholar traverse to World B and compromise Vanguard B's position — flood a corridor, collapse a mechanism, corrupt a save altar. Vanguard B makes the reciprocal demand through a separate instrument message. If the Scholar delays responding to either demand, that Vanguard begins moving toward the Scholar's last known location.</p>
+  <p>The trap vocabulary (PoP SoT) now activates. The Scholar's only available tools: environmental traps they armed during the Camel Phase, their jade lamp (deterrent against shadow-class entities), the Observatory (compromised but still providing minimal safe space), and their dimensional traversal — with its attendant Guardian cost (PoP WW Dahaka debt).</p>
+
+  <div class="callout-dark">
+    "The player's Camel Phase behavior determines the quality of their Lion Phase toolkit. A Scholar who set every optional trap, maintained their incense supply, and kept the Observatory clean has a rich defensive infrastructure. A Scholar who gave everything away, never armed a trap, and spent all their incense finds the Lion Phase is simply a countdown to a death they cannot slow."
+    <br><em>— Design note: both outcomes are valid. The game does not punish the generous Scholar with a bad experience — it rewards them with a different quality of tragedy.</em>
+  </div>
+
+  <h3>Act III — The Child Phase (False Victory Architecture)</h3>
+  <p>After the Scholar orchestrates one Vanguard's elimination through environmental manipulation, the combat music resolves to a quiet, sustained note. The "Area Cleared" notification appears in the format of the genre's most familiar success prompt — the same font, the same sound, the same contextual position in the screen. A save prompt offers itself. The scholar's breathing normalizes.</p>
+  <p>The air tears. Not dramatically — a quiet seam in the air, like fabric parting. The surviving Vanguard steps through, her coat dry, her blade sheathed. She does not look at the Scholar. She walks to her counterpart's body, kneels, and performs a single-gesture ritual drawn from Chu ceremonial tradition (World B survivor) or adjusts the dead Vanguard's equipment with mechanical precision (World A survivor). She absorbs the Traversal Skill. The Scholar's compass goes completely silent — for the first time in the entire game. There are no threats to warn against. There is only her.</p>
+  <p>The UI disappears. The Traversal Skill is stripped from the Scholar's inventory. She straightens, turns, and looks at the Scholar for the first time in the entire sequence. What follows is determined by the behavioral score accumulated over the entire run.</p>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  07 — INTEGRATION MATRIX         ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 07</div>
+  <div class="ch-title">The Influence-to-Mechanic Integration Matrix</div>
+  <div class="ch-cn">影響轉化矩陣 · 來源到系統</div>
+</div>
+<div class="sec">
+  <div class="matrix-hd">
+    <div>Source</div>
+    <div>Original Mechanic / Element</div>
+    <div>Kenoma Implementation</div>
+  </div>
+  <div class="matrix-row"><div class="mr-src">Eastern Zhou · Fan Li</div><div class="mr-mech">The 士 Scholar-Advisor archetype: brilliant, transactional, constitutionally unable to stop serving</div><div class="mr-impl">The Scholar's fundamental psychology. Their inability to stop giving resources to the Vanguard is not stupidity — it is the 士's defining characteristic as a historical type.</div></div>
+  <div class="matrix-row"><div class="mr-src">Eastern Zhou · 合縱連橫</div><div class="mr-mech">Simultaneous vertical and horizontal alliances — every party serves itself while appearing cooperative</div><div class="mr-impl">The dual-Vanguard political trap. The Scholar is the small state caught between two great powers in the Lion Phase.</div></div>
+  <div class="matrix-row"><div class="mr-src">Zarathustra · Three Metamorphoses</div><div class="mr-mech">Camel (burden), Lion (will), Child (creation) as stages of spiritual evolution</div><div class="mr-impl">Literal game phase structure. Every act has a distinct mechanics profile corresponding to the philosophical stage. Not metaphor — mechanical law.</div></div>
+  <div class="matrix-row"><div class="mr-src">AitD:TNN · Dual Characters</div><div class="mr-mech">Aline (researcher) and Carnby (fighter): two characters with asymmetric abilities, one AI-controlled</div><div class="mr-impl">Scholar (always player, zero combat) and Vanguard (always AI, zero lore access without Scholar). The partnership is the game's load-bearing structure.</div></div>
+  <div class="matrix-row"><div class="mr-src">AitD:TNN · Radio Communication</div><div class="mr-mech">Characters communicate across separate map sections via radio</div><div class="mr-impl">Brass resonance instrument for cross-dimensional communication. Silent in the Lion Phase from the Vanguard's end — the first signal that the relationship has changed.</div></div>
+  <div class="matrix-row"><div class="mr-src">AitD 1 · Combat-Free Encounters</div><div class="mr-mech">Some creatures cannot be defeated — must be lured, avoided, or puzzle-solved past</div><div class="mr-impl">The Scholar NEVER fights. Every hostile encounter is puzzle, evasion, or environmental solution. The combat vocabulary is entirely absent from the Scholar's toolkit.</div></div>
+  <div class="matrix-row"><div class="mr-src">AitD 1 · 15-Slot Grid Inventory</div><div class="mr-mech">Hard-limited inventory grid requiring deliberate item management</div><div class="mr-impl">15-slot grid combined with TS1's 3D physical manipulation. Giving items to the Vanguard is a physical in-world action. The slot constraint creates every meaningful resource decision.</div></div>
+  <div class="matrix-row"><div class="mr-src">AitD:TNN · Light as Weapon</div><div class="mr-mech">Flashlight harms shadow-class creatures — light as offense</div><div class="mr-impl">The Scholar's jade lamp is their only threat-deterrent. Harms shadow-class entities from World B that manifest in World A. Also lights incense (saves). Also illuminates World B's Otherworld state. One tool, three critical functions.</div></div>
+  <div class="matrix-row"><div class="mr-src">SH1 · Radio Static</div><div class="mr-mech">Crackling static when creatures approach — proximity alarm</div><div class="mr-impl">Brass compass static system. Encodes both proximity and emotional significance (per SH2 guilt-creature logic). The compass is a conscience made audible.</div></div>
+  <div class="matrix-row"><div class="mr-src">SH2 · Silent Behavior Tracking</div><div class="mr-mech">Ending criteria determined by behaviors the game tracks without displaying to the player</div><div class="mr-impl">The complete 10-scenario ending system. Two hidden 0–100 scores per world, determined by accumulated Scholar decisions. No UI acknowledgment. Discovered only at the ending.</div></div>
+  <div class="matrix-row"><div class="mr-src">SH2 · Pyramid Head Logic</div><div class="mr-mech">An entity that exists to punish the protagonist because they want to be punished</div><div class="mr-impl">The Archive Guardian exists because the Scholar knows they are building their executioner and cannot stop. Its frequency increases with generosity — not with transgression. It punishes the Scholar for being correct about the Vanguard.</div></div>
+  <div class="matrix-row"><div class="mr-src">SH3 · Mid-Level World Shift</div><div class="mr-mech">Transition from Normal to Otherworld state mid-level, triggered by internal state</div><div class="mr-impl">Both Archives have Normal and Otherworld states. Triggered by accumulated Scholar decisions, not scripted story events. A Scholar who reads deeply and gives freely triggers more frequent Otherworld states — the knowledge itself makes the Archive more honest about what it is.</div></div>
+  <div class="matrix-row"><div class="mr-src">SH4 · The Room</div><div class="mr-mech">Safe base camp that progressively becomes haunted; haunted items drain max health</div><div class="mr-impl">The Observatory. Starts safe. Items with Vanguard-contact return in corrupted state. Carried corrupt items drain health. Cleansing costs incense (save resources). The safe space has a corruption lifecycle the Scholar must actively manage.</div></div>
+  <div class="matrix-row"><div class="mr-src">SH4 · The Hole in the Wall</div><div class="mr-mech">Dimensional aperture that the protagonist observes through before entering; the entry itself is a physical act</div><div class="mr-impl">Traversal focal points as apertures. The Scholar observes through the astronomical instrument before committing to cross. The crossing animation is a visible physical act — a fold through space with a brief displacement delay on arrival.</div></div>
+  <div class="matrix-row"><div class="mr-src">PoP II · Shadow and Flame</div><div class="mr-mech">Two supernatural forces in opposition — the Shadow as doppelganger, the Flame as consuming force</div><div class="mr-impl">Vanguard A = The Flame. Vanguard B = The Shadow. Two aspects of one consuming strategic force, divided by the dimensional threshold. The survivor absorbs both qualities.</div></div>
+  <div class="matrix-row"><div class="mr-src">PoP SoT · Farah's Logic</div><div class="mr-mech">Companion who betrays the protagonist not from malice but from cold, independent reasoning</div><div class="mr-impl">The Vanguard's turn follows Farah's exact psychological architecture. She is not wrong. The game never frames her as a villain. She calculated correctly. The Scholar was always the bow.</div></div>
+  <div class="matrix-row"><div class="mr-src">PoP SoT · Environmental Traps</div><div class="mr-mech">Pressure plates, spike corridors, portcullises as environmental puzzle vocabulary</div><div class="mr-impl">The Scholar's Lion Phase defensive infrastructure. Set during Camel Phase as optional elements, activated as survival tools in the Lion Phase. Vanguard intelligence (observed = flagged = circumvented) makes trap placement a strategic discipline.</div></div>
+  <div class="matrix-row"><div class="mr-src">PoP WW · The Dahaka</div><div class="mr-mech">An unstoppable entity that cannot be fought — only outrun. Appears because the protagonist disturbed time.</div><div class="mr-impl">The Archive Guardian. Appears because the Scholar is disturbing dimensional law by traversing. Frequency tied to Traversal debt. Cannot be fought. Can only be outrun or evaded using the Archive's architecture.</div></div>
+  <div class="matrix-row"><div class="mr-src">PoP TT · Dark Prince Voice</div><div class="mr-mech">Internal corrupted voice offering shortcuts and alternative action paths</div><div class="mr-impl">The Scholar's Dark Voice — their own strategic mind finally speaking. Delivers Eastern Zhou aphorisms as warnings. Listen or ignore. Both choices have costs the player won't fully understand until the Lion Phase.</div></div>
+  <div class="matrix-row"><div class="mr-src">TS1 · 3D Inventory Manipulation</div><div class="mr-mech">Items as 3D physical objects that can be rotated, examined, and combined in space</div><div class="mr-impl">Combined with AitD's 15-slot grid. The Scholar's satchel interface is the game's most tactile and deliberate mechanic — every item decision has physical weight.</div></div>
+  <div class="matrix-row"><div class="mr-src">TS1 · Candle-Save System</div><div class="mr-mech">Place candles at specific positions — limited supply, position locks per session</div><div class="mr-impl">Incense/candle save system across both worlds. Same resource pool shared between worlds. Post-use residue detectable by Vanguard in Lion Phase. Save = exposure.</div></div>
+  <div class="matrix-row"><div class="mr-src">TS1 · Body Horror Health</div><div class="mr-mech">Protagonist's health state communicated through visible physical degradation, not numbers</div><div class="mr-impl">The Scholar's animation-state health system. No numerical display. The player reads postural degradation, movement slowdown, and hand tremor on the puzzle interface as health indicators.</div></div>
+  <div class="matrix-row"><div class="mr-src">TS2 · Multi-Step Puzzle Chains</div><div class="mr-mech">Complex puzzle solutions requiring sequential multi-environment item gathering</div><div class="mr-impl">Late Camel Phase puzzles scale to 5-step cross-dimensional chains. The Scholar must coordinate item gathering across both worlds, managing traversal debt while assembling each solution.</div></div>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  08 — FALSE VICTORY + ENDINGS    ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 08</div>
+  <div class="ch-title">The False Victory & 10-Level Ending Spectrum</div>
+  <div class="ch-cn">虛假勝利 · 十種終結的光譜</div>
+</div>
+<div class="sec">
+  <h3>The False Victory Architecture</h3>
+  <p>The False Victory is the game's final act of subversion — weaponizing every piece of accumulated player-literacy against the player simultaneously. At the moment of apparent victory, the game mimics the exact UI, audio, and pacing of a classic survival horror boss clear: the combat music resolves to a major key cadence, the achievement notification appears with the correct sound, the save prompt manifests. The player exhales.</p>
+  <p>The dimensional tear opens quietly. Not a dramatic portal — a fold in the air, like a page turning. The surviving Vanguard steps through. She does not look at the Scholar. She is already past them in every sense that matters. She kneels by her counterpart, absorbs the Traversal Skill in a single gesture, and stands. The UI goes dark. The Scholar's compass is silent — permanently. There are no more threats for it to warn against. There is only one entity in this Archive now, and she is not a threat. She is the new law.</p>
+
+  <h3>10-Level Execution Spectrum — Human Ascension (No Physical Transformation)</h3>
+  <p>Per Design Rule V: The Vanguard never transforms. Her final form is human. Her evolution is entirely psychological — the expression of a superior mind that has consumed the full logic of the Archive and no longer needs to share it.</p>
+
+  <div class="spec-hd">
+    <div class="h-lv">Level</div>
+    <div class="h-wa">★ World A Survives — The Flame (Systemic Mind)</div>
+    <div class="h-wb">◈ World B Survives — The Shadow (Mythic Mind)</div>
+  </div>
+
+  <div class="spec-row lv-null">
+    <div class="sr-lv"><span class="sr-badge">Lv.1</span><span class="sr-qual">Absolute Poor</span></div>
+    <div class="sr-cell">
+      <h4>The Shell-Shocked Conscript</h4>
+      <p>The Traversal Skill overloads a completely starved mind. She doesn't transcend — she fractures. Hunched, hyperventilating, operating on feral survival instinct. She drags you into the nearest corridor and kills you in a clumsy, desperate brawl. It is ugly, human, and deeply sad. She barely understands what she has become.</p>
+    </div>
+    <div class="sr-cell">
+      <h4>The Drowning Victim</h4>
+      <p>The Sunken Archive's folklore collapses inward — too much weight, no foundation. She is a weeping, sodden presence, her movements erratic, her clothing soaked. She grabs your ankles with vice-like human grip and drags you into stagnant water. No grandeur. Just the end of two people who were both used by the same system.</p>
+    </div>
+  </div>
+
+  <div class="spec-row lv-poor">
+    <div class="sr-lv"><span class="sr-badge">Lv.2</span><span class="sr-qual">Poor-Leaning</span></div>
+    <div class="sr-cell">
+      <h4>The Attrition Commander</h4>
+      <p>Tactical awareness without systemic foundation. She wins through brutal logistics: destroying cover, shooting items, bleeding your last resources dry. Her face is set with exhausted determination. She looks like a general fighting a war she's already won but can't stop fighting. She strangles you methodically. It takes longer than it should.</p>
+    </div>
+    <div class="sr-cell">
+      <h4>The Paranoid Villager</h4>
+      <p>The folklore has made her superstitious — she moves in eerie, jerky pauses, hiding like someone protecting a cursed territory. She leaves psychological traps (a ticking music box, a misplaced object) to herd you before stepping from a shadow and cutting your throat in a desperate, very human panic.</p>
+    </div>
+  </div>
+
+  <div class="spec-row lv-mid">
+    <div class="sr-lv"><span class="sr-badge">Lv.3</span><span class="sr-qual">Neutral</span></div>
+    <div class="sr-cell">
+      <h4>The Eastern Zhou Strategist</h4>
+      <p>Military clarity achieved. She stands completely still when she enters, reads the room in under a second, and fights without a single unnecessary movement. The Traversal Skill lets her strike your blind spot the moment you reload. Emotionless. She removes you from the board the way a general removes an obsolete piece from a war table. No malice. No ceremony.</p>
+    </div>
+    <div class="sr-cell">
+      <h4>The Mourning Widow</h4>
+      <p>Cold gothic dread weaponized as patience. She wears dark lace, moves at a measured pace, and is always ten steps behind you when you check — no matter how fast you ran. The psychological weight of her silent, relentless following forces you into a dead end. She draws her blade slowly, as though concluding a ceremony that was always going to end this way.</p>
+    </div>
+  </div>
+
+  <div class="spec-row lv-high">
+    <div class="sr-lv"><span class="sr-badge">Lv.4</span><span class="sr-qual">Colorful-Leaning</span></div>
+    <div class="sr-cell">
+      <h4>The Digital Twin</h4>
+      <p>She has built a perfect behavioral model of you from the Camel Phase. When you aim, she is already moving before you fire. When you approach a trap she's never triggered, she stops one inch from the pressure plate and looks you in the eye. She has simulated your complete decision tree. She waits for you to exhaust its branches, then steps forward.</p>
+    </div>
+    <div class="sr-cell">
+      <h4>The Cult Matriarch</h4>
+      <p>She smiles warmly when she steps through the tear. Her voice is calm and soothing and paralyzing. She extinguishes the room's lanterns one by one using Traversal, explaining your fate in the dark with the patient composure of someone concluding a ceremony. She delivers the final strike in complete darkness. You hear it before you feel it.</p>
+    </div>
+  </div>
+
+  <div class="spec-row lv-axiom">
+    <div class="sr-lv"><span class="sr-badge">Lv.5</span><span class="sr-qual">Absolute Colorful</span></div>
+    <div class="sr-cell">
+      <h4>The Architect of Clean Architecture</h4>
+      <p>Absolute systemic optimization. She walks slowly toward you, heels clicking on stone, entirely unhurried. She uses Traversal to sever the room's architecture piece by piece — the bridge you stand on, the portcullis that blocked her path, the exit. She finds the one structural weakness in your position and resolves it with a single, surgical thrust. The room is hers. It was always going to be hers. You just hadn't finished building it yet.</p>
+    </div>
+    <div class="sr-cell">
+      <h4>The Author of the Fable</h4>
+      <p>She places a chair in the center of the room, sits, and watches you exhaust yourself against the doors and traps she has rearranged around you. She narrates. Not to you — to the Archive itself. She is writing the closing passage of a text that began when you first opened the gate. When you collapse from exhaustion and despair, she walks over, closes the distance with three unhurried steps, and delivers the final line. The Archive's lights go out. The story is complete.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  09 — OPENING CINEMATIC          ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 09</div>
+  <div class="ch-title">Opening Cinematic — Full Draft Script</div>
+  <div class="ch-cn">開場電影 · 完整劇本草稿</div>
+</div>
+<div class="sec">
+  <p>The opening synthesizes Fan Li's aphorism and Nietzsche's rope metaphor — both spoken by the Scholar as expressions of confidence and hope. Both are understood, retroactively, as confessions of suicide. The scene uses AitD:TNN's dual-character reveal structure and AitD 1's establishing-shot doctrine to frame power dynamics through camera composition alone.</p>
+
+  <div class="script">
+    <span class="s-dir">[Scene 1 — Exterior. Fixed low-angle shot: a colossal gate of black iron and bronze set into a mountainside. Eastern Zhou astronomical carvings frame the arch — constellations, armillary rings, jade inlays. Rain and fog. A single bronze bell resonates in the far distance and decays slowly. The camera does not move.]</span>
+
+    <span class="s-spk">The Scholar (V.O.)</span>
+    <span class="s-line">"A strategist of the Eastern Zhou once warned his companion: when the flying birds are gone, the good bow is put away. When the cunning hare is dead, the hunting dog is cooked. He meant it as a warning. He was telling his friend to leave before the victory arrived."</span>
+
+    <span class="s-dir">[Two figures emerge from the fog. The Scholar: hunched, soaked, carrying a satchel of instruments — astrolabes, scrolls, a brass compass that catches the light. The Vanguard follows a half-step behind: sharp silhouette, high-collared coat, a modular rapier sheathed at her side. She is absolutely silent. The camera stays fixed as they cross the frame. She moves without looking at the Scholar — she is reading the gate's inscription before they've finished approaching. She is already ahead of them.]</span>
+
+    <span class="s-spk">The Scholar (V.O.)</span>
+    <span class="s-line">"I have always thought he was wrong. I am not a bow. I am a bridge. And bridges do not disappear when the crossing is complete. They remain — essential, permanent, the architecture of all future crossing."</span>
+
+    <span class="s-dir">[The Scholar reaches the gate. The locking mechanism is a massive armillary sphere of bronze — a astronomical puzzle sealed by its own complexity. The Scholar's hands align its rings: clack-clack-clack — the deep resonance of bronze mechanisms waking. The Vanguard has not helped. She is watching the Scholar's hands. She is learning the motion.]</span>
+
+    <span class="s-dir">[The gate groans open. From the darkness beyond, a creature — not named, not explained — moves toward the Scholar. The Scholar freezes. The Vanguard steps forward in a single motion and resolves the encounter with one anatomically precise strike. The creature falls. She does not look at it. She turns to examine the gate mechanism the Scholar just solved. She is already somewhere past this moment.]</span>
+
+    <span class="s-spk">The Scholar (V.O.)</span>
+    <span class="s-line">"Man is a rope, tied between beast and what comes after. A dangerous crossing. A bridge over an abyss. What is great in man is that he is a bridge, and not an end."</span>
+
+    <span class="s-dir">[The Scholar reaches into their satchel and produces the brass resonance instrument — holds it toward the Vanguard. She takes it, examines it briefly, places it inside her coat. She extends her other hand. The Scholar takes it. She pulls them to their feet with effortless ease and turns immediately toward the Archive's interior, already walking. The Scholar follows, speaks:]</span>
+
+    <span class="s-spk">The Scholar (V.O. — quiet. Entirely unaware.)</span>
+    <span class="s-line">"I will teach her the architecture of the gods. And together, we will build a new world."</span>
+
+    <span class="s-dir">[The camera holds on the exterior. The two figures disappear into the dark. The gate grinds shut behind them. The camera holds on the closed gate for several long seconds — the sound of the Scholar's voice still reverberating against the stone. Then the bronze bell sounds once more, and its decay is very slow, and very cold.]</span>
+
+    <span class="s-dir">[Title card. KENOMA. Beneath it, in Noto Serif SC: 東周凱諾瑪 — 雙淵之書]</span>
+  </div>
+
+  <div class="callout">
+    Directorial note: The camera never follows the Scholar and Vanguard inside. It stays outside. The Archive claims them both the moment they cross the threshold. The player watches the gate close and understands, in retrospect, that this is the last moment of freedom either character will experience.
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  10 — AESTHETIC & AUDIO          ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 10</div>
+  <div class="ch-title">Aesthetic, Audio & UI Direction</div>
+  <div class="ch-cn">美學方向 · 音頻設計 · 介面哲學</div>
+</div>
+<div class="sec">
+  <h3>Visual Identity</h3>
+  <p>The game's visual identity is the structural collision of two architectural traditions: Eastern Zhou bronze-hall construction (jade inlays, astronomical instruments, bamboo-and-stone) and European gothic horror (iron mechanisms, vaulted stone, the pre-rendered compositional authority of Alone in the Dark 1). Neither tradition dominates. Every room of World A expresses both simultaneously.</p>
+  <p>Camera work follows AitD 1's compositional doctrine absolutely: every angle is a deliberate painting. High angles dwarf the Scholar against the Archive's scale. Dutch angles in the Lion Phase destabilize the Scholar's world spatially. The Vanguard appears in the background of Scholar-focused shots throughout the Camel Phase — always watching, always still, slightly out of focus but never gone from the frame. The player builds dread from her background presence alone.</p>
+  <p>World B's visual identity applies SH3's Otherworld design logic to Chu Kingdom shamanic architecture: submerged ceremonial spaces, bioluminescent algae on oracle bone shrines, dark thorns growing through waterlogged bamboo. The fog from SH1 is adapted to water: World B's "fog" is a diffused opacity of silt and darkness that limits the Scholar's visible depth to 4–6 meters at the default lamp intensity.</p>
+
+  <h3>Score Architecture</h3>
+  <p>Built on two instruments: a cello (the Scholar) and a tuned bronze zhong bell (the Vanguard). The Camel Phase score is their quiet counterpoint — cautious harmonics that complement without fully resolving. In the Lion Phase, the bell's theme begins incorporating dissonance, irregular time, and the interference patterns of two incompatible tonal systems. The cello is stripped from the mix gradually — its absence is not announced, it is simply noticed one room too late.</p>
+  <p>The Child Phase score is determined by ending level. Poor endings: only a broken bell figure, decaying and distorted. Colorful endings: the bell has absorbed the cello's melodic line — a single instrument now playing both themes as one. The Scholar's voice is still present in the Vanguard's theme. It was always going to be. She learned music from the Scholar too.</p>
+
+  <h3>UI Philosophy — The Invisible Game</h3>
+  <p><strong>Zero heads-up display during gameplay.</strong> Health: Scholar animation state. Threat proximity: compass static timbre. Vanguard's status: the brass resonance instrument's readout panel (three phases: human vitals → encrypted data streams → architectural code). Inventory: opened by a physical satchel interaction. Save system: diegetic incense/candle placement. No map (SH2's map system is retained as a manual, discovered-through-exploration diagram that the Scholar draws themselves in a notebook).</p>
+  <p>The behavioral tracking system (<em>Rule III</em>) is completely invisible. Its score does not appear anywhere in the game's UI. It is not referenced in any dialogue, document, or environmental element. The player discovers they were profiled at the ending — and only then, through the Vanguard's specific execution method, do they understand what their behavior meant.</p>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  11 — PROS & CONS                ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 11</div>
+  <div class="ch-title">Pros & Cons — Expert Design Analysis</div>
+  <div class="ch-cn">優缺點分析 · 專家設計評估</div>
+</div>
+<div class="sec">
+  <h3>Design Strengths</h3>
+  <div class="pc-grid">
+    <div class="pc-pro">
+      <div class="pc-hd">Structural Strengths</div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">De-Risked Format</span><p class="pc-txt">Tormented Souls 1 &amp; 2 (2021/2023) have proven the fixed-camera survival horror format is commercially viable in the modern market, eliminating the primary investor objection to the genre. Kenoma is the next evolution of what TS validated, with a dramatically more ambitious narrative and world design.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">Original Market Position</span><p class="pc-txt">No current game combines fixed-camera horror, dual-world synchronization, an AI antagonist whose evolution is systemic, an unwinnable ending, and behavioral-score-based outcome selection. The pitch comps are clear (AitD:TNN + SH2 + PoP SoT) but the synthesis is genuinely new.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">Cross-Cultural Resonance</span><p class="pc-txt">Fan Li's aphorism is foundational in East Asian literary tradition; Nietzsche's Zarathustra is cornerstone Western philosophy. Using both expands critical reception and marketing reach across Eastern and Western markets simultaneously without pandering to either.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">Modular Ending Budget Efficiency</span><p class="pc-txt">The 10-ending spectrum is not 10 independently constructed environments. Each ending level is primarily shader variation, audio composition, and behavioral AI parameter changes on a single base arena. The production cost of 10 endings is approximately 1.5–2× the cost of a single ending. High perceived value, manageable production scope.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">The AitD:TNN Pitch Comp</span><p class="pc-txt">AitD: The New Nightmare's dual-character structure provides the clearest existing game as pitch comparison. "It is AitD: The New Nightmare if you could only play Aline — and Carnby is a genius who is studying you" is immediately understandable to any survival horror veteran or publisher with genre literacy.</p></div></div>
+    </div>
+    <div class="pc-pro">
+      <div class="pc-hd">Narrative & Mechanical Strengths</div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">The False Victory — Accumulated Trust</span><p class="pc-txt">The False Victory only works because the entire game spends its runtime building the player's trust in survival horror genre conventions. Every familiar cue is present and respected until the critical moment — then weaponized simultaneously. This requires no additional content. It is architectural, not additive.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">SH2 Behavior Tracking Reapplied</span><p class="pc-txt">Silent Hill 2's ending system is widely considered one of the most profound behavioral feedback loops in horror game history. Kenoma applies the same principle at a larger scale: not 4–6 endings, but 10, and determined by richer behavioral data. Players will replay specifically to understand what their behavior meant.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">Vanguard as Non-Monster</span><p class="pc-txt">Designing the Vanguard's ascension as psychological rather than physical is the game's most distinctive horror choice. The monster that stares at you from across the room with complete composure, speaks your fate in a calm voice, and executes you with one unhurried movement is permanently more disturbing than any transformation sequence.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">PoP Trap Retroactivity</span><p class="pc-txt">The Camel Phase trap-setting mechanic (PoP SoT) creates a rare design achievement: meaningful first-playthrough decisions that most players don't understand are decisions until their second run. The Lion Phase reveals what every optional Camel Phase mechanic was for. This drives replay without requiring new content.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">◆</span><div class="pc-content"><span class="pc-lbl">SH4 Observatory Lifecycle</span><p class="pc-txt">The Observatory's corruption lifecycle transforms the safe space from a passive resource (classic genre convention) into an active mechanical system requiring management. The horror of watching your only safe space decay is among the most psychologically effective design moves available in the genre.</p></div></div>
+    </div>
+  </div>
+
+  <h3>Design Risks & Mitigations</h3>
+  <div class="pc-grid">
+    <div class="pc-con">
+      <div class="pc-hd">Structural Risks</div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">Tank Controls — Modern Friction</span><p class="pc-txt">Tank controls are authentic to the format but alienating to players who entered gaming after the PS2 era. <em>Mitigation:</em> Offer a modern directional control option as a toggle in the options menu. The camera system's integrity is unaffected by control scheme — the player always looks where the camera looks, not where they point the stick.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">Dual-World Sync Complexity</span><p class="pc-txt">Synchronizing two worlds' states across all puzzle solutions, trap activations, corruption states, and Guardian debt requires extremely disciplined technical architecture. <em>Mitigation:</em> The WorldSyncManager (Observer/Event Bus) must be designed first, before any content is built. All world-state changes are events, never direct calls. See Chapter 12.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">Zero-Combat Scholar — Frustration Risk</span><p class="pc-txt">Some action-horror players will find the Scholar's complete inability to fight deeply frustrating. <em>Mitigation:</em> AitD 1 established the no-combat-encounter precedent. TS1 reinforced it. The marketing must communicate this clearly — "You do not fight. You think" is a compelling differentiator, not a weakness, if framed correctly from day one.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">False Victory — Disappointment vs. Horror</span><p class="pc-txt">The False Victory only works if the Camel Phase has built genuine attachment between player and Vanguard. If players spend the Camel Phase treating the Vanguard as a utility object, the False Victory is frustrating rather than devastating. <em>Mitigation:</em> The Camel Phase must engineer 3–4 moments of genuine emotional resonance between Scholar and Vanguard — moments where the player forgets they know the ending.</p></div></div>
+    </div>
+    <div class="pc-con">
+      <div class="pc-hd">Production & Narrative Risks</div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">Cultural Synthesis — Tokenism Risk</span><p class="pc-txt">Eastern Zhou + Nietzsche + gothic horror is a volatile cultural mixture. Without a lead writer with genuine fluency in Eastern Zhou history (not just aesthetic familiarity), the Chinese elements risk becoming decorative rather than structural. <em>Mitigation:</em> The Eastern Zhou elements are load-bearing — Fan Li's aphorism IS the thesis, the 士 archetype IS the character foundation. If the writer can't engage with the primary texts, they can't write this game.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">Silent Hill Comparisons</span><p class="pc-txt">A fixed-camera psychological horror game with an Otherworld-style secondary dimension will attract Silent Hill comparisons in marketing regardless of differentiation. <em>Mitigation:</em> Lean into the comparison initially as a credibility signal, then differentiate: "Like Silent Hill, but your guilt isn't about the past — it's about what you're building right now." The Eastern Zhou visual identity makes the distinction visceral and immediate.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">Behavioral Tracking — Playthrough Length</span><p class="pc-txt">The 10-level ending system requires a full playthrough (~6–8 hours) to reveal its meaning. Players who drop the game before the False Victory never discover the system. <em>Mitigation:</em> The game must earn every hour of its runtime in the Camel Phase through puzzle quality, atmosphere, and Vanguard characterization. The Camel Phase's quality is the game's commercial survival mechanism.</p></div></div>
+      <div class="pc-item"><span class="pc-bullet">✖</span><div class="pc-content"><span class="pc-lbl">Dark Voice Decision Branch</span><p class="pc-txt">The Dark Voice (PoP TT system) adds a complex early decision branch that some players may engage with accidentally (following the aphorisms without understanding they are triggering mechanical effects) or ignore entirely (missing a layer of the game's thematic depth). <em>Mitigation:</em> The Dark Voice's mechanical effects should be subtle enough not to confuse, but significant enough to reward on second playthrough. It should feel like an Easter egg the first time and a design revelation the second.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════╗
+     ║  12 — TECHNICAL ARCHITECTURE    ║
+     ╚══════════════════════════════════╝ -->
+<div class="ch neutral">
+  <div class="ch-num">Chapter 12</div>
+  <div class="ch-title">Technical Architecture & Production Scope</div>
+  <div class="ch-cn">技術架構 · 製作範圍</div>
+</div>
+<div class="sec">
+  <h3>Engine & Core Architecture</h3>
+  <p><strong>Engine:</strong> Unity (URP). The pre-rendered background system, fixed-camera zone management, and component-based AI architecture are all well-supported. The dual-world synchronization system and Vanguard behavioral model are the two most technically complex systems; both require clean, modular design before content production begins.</p>
+
+  <h3>Critical Systems</h3>
+
+  <table class="sys-table">
+    <tr><th>System</th><th>Design Pattern</th><th>Source Ref</th><th>Critical Requirement</th></tr>
+    <tr>
+      <td><strong>WorldSyncManager</strong></td>
+      <td>Observer / Event Bus</td>
+      <td><span class="ref-badge rb-sh">SH4</span></td>
+      <td>All state changes in World A broadcast events that World B subscribes to. A broken mechanism in World A must register in World B's mirrored space within one frame. No direct cross-world calls — only events. This is the architectural load-bearing system of the entire game.</td>
+    </tr>
+    <tr>
+      <td><strong>VanguardBehaviorModel</strong></td>
+      <td>Behavior Tree + Runtime Profile</td>
+      <td><span class="ref-badge rb-aitd">AitD:TNN</span> <span class="ref-badge rb-sh">SH2</span></td>
+      <td>Continuously ingests Scholar behavior data: movement routes, item usage, document reading depth, save altar positions. In the Lion Phase, this profile feeds the Vanguard's pathing, ambush positioning, and trap-circumvention logic. The Vanguard's intelligence must feel earned, not scripted.</td>
+    </tr>
+    <tr>
+      <td><strong>EndingSpectrumCalculator</strong></td>
+      <td>Weighted Score Accumulator</td>
+      <td><span class="ref-badge rb-sh">SH2 Endings</span></td>
+      <td>Maintains two hidden 0–100 scores (one per world). Each Scholar decision contributes weighted values. At Child Phase trigger, scores determine ending level per world. No UI output at any point. The system is completely invisible until the ending makes it visible retroactively.</td>
+    </tr>
+    <tr>
+      <td><strong>TraversalDebtManager</strong></td>
+      <td>Counter + Event Dispatcher</td>
+      <td><span class="ref-badge rb-pop">PoP WW Dahaka</span></td>
+      <td>Increments a hidden debt value on every Traversal crossing. The GuardianSpawnSystem subscribes to debt thresholds and adjusts spawn frequency and movement speed accordingly. The Scholar never sees this counter. They only feel its effect.</td>
+    </tr>
+    <tr>
+      <td><strong>ObservatoryCorruptionSystem</strong></td>
+      <td>State Machine per Item</td>
+      <td><span class="ref-badge rb-sh">SH4 Room</span></td>
+      <td>Each item in the Observatory that has been touched by the Vanguard accumulates a corruption value over time. Items above threshold: carried = health drain. The Scholar can perform a cleansing ritual (costs incense) to reset. The Observatory itself tracks an aggregate corruption level that affects spawn rates within it above a threshold.</td>
+    </tr>
+    <tr>
+      <td><strong>TrapRegistryManager</strong></td>
+      <td>Dictionary + Observer</td>
+      <td><span class="ref-badge rb-pop">PoP SoT</span></td>
+      <td>Logs every trap the Scholar places (type, position, arming state) and a boolean: was the Vanguard present when this trap was armed? Traps with observed=true are flagged in VanguardBehaviorModel as known — she will circumvent, not trigger them. Critical to the integrity of the Lion Phase's strategic balance.</td>
+    </tr>
+    <tr>
+      <td><strong>FalseVictorySequencer</strong></td>
+      <td>Timeline / Cutscene Controller</td>
+      <td><span class="ref-badge rb-sh">SH2</span> <span class="ref-badge rb-pop">SoT</span></td>
+      <td>Triggers the False Victory UI suite (achievement notification with correct audio signature, save prompt, combat music resolution cadence) at a precisely calibrated interval after the boss-kill event. The timing must maximize the player's relaxation before the dimensional tear event. Requires playtesting across player types to calibrate the exact window.</td>
+    </tr>
+    <tr>
+      <td><strong>DarkVoiceController</strong></td>
+      <td>State Machine + Audio Sequencer</td>
+      <td><span class="ref-badge rb-pop">PoP TT</span> <span class="ref-badge rb-zh">Eastern Zhou</span></td>
+      <td>Tracks the Scholar's engagement with the Dark Voice across the Camel Phase. Three states: Suppressed, Acknowledged, Followed. Each state modifies available Scholar actions in the mid-to-late Camel Phase. Followed state unlocks early sabotage mechanics. No state is labeled or indicated in UI.</td>
+    </tr>
+  </table>
+
+  <h3>Pre-Rendered Camera Architecture</h3>
+  <p>Following AitD 1's approach and Resident Evil's camera system: backgrounds are pre-rendered at high visual quality and composited with real-time character models. Camera transitions are zone-triggered, not player-controlled. Each camera angle is authored as a deliberate composition. This architectural choice reduces real-time rendering complexity while enabling art-quality environments that real-time rendering cannot match at equivalent budget for an AA-scale production.</p>
+
+  <div class="callout">
+    Production advantage: Pre-rendered backgrounds also provide a technical benefit for the VanguardBehaviorModel. Camera zone transitions are predictable events, allowing the Vanguard AI to calculate optimal positioning relative to the Scholar's anticipated arrival point. She appears prescient without requiring omniscient pathfinding — because the fixed-camera system makes her prescience architecturally possible.
+  </div>
+
+  <h3>Production Scope Classification</h3>
+  <p><strong>Scope: AA with ambition.</strong> The fixed-camera pre-rendered format, single-player linear-with-branching structure, and modular ending system make Kenoma achievable below AAA budget. Key scope discipline required: dual-world synchronization must be engineered as a modular event system from day one, before any content is built — attempting to retrofit WorldSync into an existing codebase would be project-threatening.</p>
+  <p>The 10 endings are modular variations on a single base arena, not 10 independent environments. The Vanguard behavioral AI has clearly defined parameters rather than machine-learning systems, making it producible and testable. The pre-rendered camera system reduces per-environment GPU complexity dramatically.</p>
+  <p>Recommended team: 20–35 people. 24–30 months production. PC + console. The game Tormented Souls was made with approximately 8 people — Kenoma at 3–4× that team size produces a dramatically more ambitious project while remaining fundable as a passion-driven AA title.</p>
+
+  <div class="pills">
+    <span class="pill red">Unity URP</span>
+    <span class="pill iron">Pre-Rendered Cameras</span>
+    <span class="pill">WorldSync Event Bus</span>
+    <span class="pill jade">VanguardBehaviorModel</span>
+    <span class="pill">10-Level Ending Spectrum</span>
+    <span class="pill iron">AA Scope · 20–35 Team</span>
+    <span class="pill">24–30 Month Production</span>
+    <span class="pill red">Zero Combat for Scholar</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="divider-full"></div>
+<div class="doc-footer">
+  <span>Kenoma — Game Design Document v3.0</span>
+  <span>東周凱諾瑪 · Chronicle of the Twin Abyss</span>
+  <span>Expert GD · Confidential · All Sources Integrated</span>
+</div>
+
+</div>
+</body>
+</html>

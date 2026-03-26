@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA — Team Presentation · Maps & Interference Puzzles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Barlow+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   DESIGN INTENT
+   Clean team reference document.
+   Not a pitch — a working tool.
+   Dark ground, two strong world colors,
+   everything else in service of legibility.
+   Maps are architectural drawings.
+   Puzzles are structured flowcharts.
+   Choices are decision tables.
+   Every element earns its space.
+═══════════════════════════════════════════ */
+
+:root {
+  --bg:      #0c0d0b;
+  --bg2:     #111310;
+  --bg3:     #171916;
+  --bg4:     #1d1f1b;
+  --bg5:     #252722;
+  --edge:    #2e3028;
+  --rule:    #3a3c34;
+
+  --ink:     #d8d4c4;
+  --ink2:    #a8a498;
+  --ink3:    #6e6c62;
+  --ink4:    #3e3c36;
+
+  /* World A — Sacred Fire */
+  --a:       #d49420;
+  --a2:      #f0b034;
+  --a3:      #8c6010;
+  --abg:     rgba(212,148,32,0.09);
+  --abdr:    rgba(212,148,32,0.25);
+
+  /* World B — The Hollow */
+  --b:       #4878c0;
+  --b2:      #70a0e8;
+  --b3:      #284880;
+  --bbg:     rgba(72,120,192,0.1);
+  --bbdr:    rgba(72,120,192,0.25);
+
+  /* Scholar */
+  --s:       #c8a060;
+  --s2:      #e8c080;
+
+  /* Consequence */
+  --ok:      #52965a;
+  --ok2:     #74b87e;
+  --warn:    #b07828;
+  --warn2:   #d09848;
+  --bad:     #984040;
+  --bad2:    #c06060;
+
+  /* Scenario colors */
+  --sc-a:    #c86040;
+  --sc-b:    #3a9870;
+  --sc-c:    #5080a8;
+  --sc-d:    #8858b8;
+
+  --nav-w:   260px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  font-family: 'Barlow', sans-serif;
+  color: var(--ink2);
+  font-size: 14px;
+  line-height: 1.65;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── NAVIGATION ─────────────────── */
+nav {
+  width: var(--nav-w);
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--edge);
+  position: fixed;
+  top: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.nav-brand {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--edge);
+}
+.nav-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 4px;
+}
+.nav-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink4);
+}
+
+.nav-section {
+  padding: 16px 0 8px;
+}
+.nav-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  padding: 0 24px 8px;
+  display: block;
+  border-bottom: 1px solid var(--edge);
+  margin-bottom: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 24px;
+  text-decoration: none;
+  color: var(--ink3);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: color 0.15s, background 0.15s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { color: var(--ink); background: var(--bg3); }
+.nav-item.active { color: var(--ink); background: var(--bg4); }
+.nav-item.active .nav-dot { opacity: 1; }
+.nav-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.3;
+  transition: opacity 0.15s;
+}
+.nd-a  { background: var(--a); }
+.nd-b  { background: var(--b); }
+.nd-sa { background: var(--sc-a); }
+.nd-sb { background: var(--sc-b); }
+.nd-sc { background: var(--sc-c); }
+.nd-sd { background: var(--sc-d); }
+.nd-n  { background: var(--ink3); }
+
+/* ── MAIN CONTENT ────────────────── */
+.main {
+  margin-left: var(--nav-w);
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* ── SECTIONS ────────────────────── */
+section {
+  min-height: 100vh;
+  border-bottom: 2px solid var(--edge);
+  padding: 0;
+  position: relative;
+}
+
+.section-header {
+  padding: 48px 60px 32px;
+  border-bottom: 1px solid var(--edge);
+  position: relative;
+}
+.section-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+.sh-a::before { background: var(--a); }
+.sh-b::before { background: var(--b); }
+.sh-sa::before { background: var(--sc-a); }
+.sh-sb::before { background: var(--sc-b); }
+.sh-sc::before { background: var(--sc-c); }
+.sh-sd::before { background: var(--sc-d); }
+.sh-n::before  { background: var(--ink3); }
+
+.sec-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  display: block;
+  margin-bottom: 10px;
+}
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+.sec-desc {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--ink3);
+  max-width: 680px;
+  line-height: 1.6;
+}
+.section-body { padding: 40px 60px 60px; }
+
+/* ── HERO / INTRO ────────────────── */
+#overview {
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: 'KENOMA';
+  position: absolute;
+  font-family: 'Cinzel', serif;
+  font-size: 200px;
+  font-weight: 900;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.018);
+  letter-spacing: -8px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.hero-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  margin-bottom: 20px;
+}
+.hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: 58px;
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -1px;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+.hero-title span.a { color: var(--a2); }
+.hero-title span.b { color: var(--b2); }
+.hero-tagline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink3);
+  max-width: 580px;
+  line-height: 1.5;
+  margin-bottom: 40px;
+}
+
+/* Key concept pills */
+.concept-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.concept-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--edge);
+  background: var(--bg3);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink2);
+}
+.cp-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Hero metrics row */
+.hero-meta {
+  padding: 24px 60px;
+  border-top: 1px solid var(--edge);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+}
+.hm-item {
+  padding: 0 20px;
+  border-right: 1px solid var(--edge);
+}
+.hm-item:first-child { padding-left: 0; }
+.hm-item:last-child { border-right: none; }
+.hm-val {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 3px;
+}
+.hm-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink4);
+}
+
+/* ── WORLD SPLIT ─────────────────── */
+.world-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 0 -60px;
+}
+.world-pane {
+  padding: 32px 44px;
+}
+.wp-a {
+  background: var(--abg);
+  border-top: 2px solid var(--a);
+  border-right: 1px solid var(--abdr);
+}
+.wp-b {
+  background: var(--bbg);
+  border-top: 2px solid var(--b);
+}
+.wp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+.wp-a .wp-label { color: var(--a); }
+.wp-b .wp-label { color: var(--b); }
+.wp-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 12px;
+}
+.wp-a .wp-title { color: var(--a2); }
+.wp-b .wp-title { color: var(--b2); }
+.wp-body { color: var(--ink3); font-size: 14px; line-height: 1.7; }
+.wp-body strong { color: var(--ink2); }
+.wp-trait {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 13.5px;
+  color: var(--ink3);
+}
+.wpt-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  padding: 2px 7px;
+  margin-top: 2px;
+}
+.wp-a .wpt-key { background: rgba(212,148,32,0.15); color: var(--a); }
+.wp-b .wpt-key { background: rgba(72,120,192,0.15); color: var(--b); }
+
+/* ── MAP CONTAINERS ──────────────── */
+.map-container {
+  background: var(--bg2);
+  border: 1px solid var(--edge);
+  margin: 0 0 32px;
+  overflow: hidden;
+}
+.map-bar {
+  background: var(--bg4);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--edge);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.map-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.map-bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.mb-a .map-bar-label { color: var(--a); }
+.mb-b .map-bar-label { color: var(--b); }
+.map-bar-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.map-bar-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink4);
+  font-style: italic;
+}
+
+/* ── MAP LEGEND ──────────────────── */
+.map-legend {
+  padding: 10px 20px;
+  border-top: 1px solid var(--edge);
+  background: var(--bg4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.ml-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink4);
+}
+.ml-sym {
+  width: 12px; height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── ROOM KEY TABLE ──────────────── */
+.room-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 13px;
+}
+.room-table th {
+  background: var(--bg4);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  padding: 9px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--edge);
+}
+.room-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--bg4);
+  vertical-align: top;
+  color: var(--ink3);
+}
+.room-table tr:hover td { background: var(--bg3); }
+.room-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.room-table td strong { color: var(--ink2); }
+.row-a td:first-child { color: var(--a2); }
+.row-b td:first-child { color: var(--b2); }
+.row-shared td:first-child { color: var(--s2); }
+
+/* ── CROSSING SYSTEM ─────────────── */
+.tfp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 24px 0;
+}
+.tfp-card {
+  background: var(--bg3);
+  padding: 20px 22px;
+  border-top: 2px solid var(--edge);
+}
+.tfp-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 5px;
+}
+.tfp-a .tfp-id { color: var(--a); }
+.tfp-b .tfp-id { color: var(--b); }
+.tfp-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 8px;
+}
+.tfp-arrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.tfp-from, .tfp-to {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 8px;
+  letter-spacing: 1px;
+}
+.tfp-a .tfp-from { background: var(--abg); color: var(--a); border: 1px solid var(--abdr); }
+.tfp-a .tfp-to   { background: var(--bbg); color: var(--b); border: 1px solid var(--bbdr); }
+.tfp-b .tfp-from { background: var(--bbg); color: var(--b); border: 1px solid var(--bbdr); }
+.tfp-b .tfp-to   { background: var(--abg); color: var(--a); border: 1px solid var(--abdr); }
+.tfp-arr { color: var(--ink4); font-size: 14px; }
+.tfp-desc { font-size: 13px; color: var(--ink3); line-height: 1.6; }
+.tfp-debt {
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  background: rgba(152,64,64,0.12);
+  border: 1px solid rgba(152,64,64,0.25);
+  color: var(--bad2);
+  display: inline-block;
+}
+
+/* ── INTERFERENCE INTRO ──────────── */
+.interference-rule {
+  background: var(--bg3);
+  border: 1px solid var(--edge);
+  border-top: 2px solid var(--ink3);
+  padding: 24px 28px;
+  margin: 0 0 32px;
+}
+.ir-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.ir-rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+.ir-rule {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+.ir-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink4);
+  background: var(--bg4);
+  padding: 2px 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── PUZZLE SCENARIO CARDS ───────── */
+.puzzle-scenario {
+  background: var(--bg2);
+  border: 1px solid var(--edge);
+  margin: 0 0 28px;
+  overflow: hidden;
+}
+
+.ps-header {
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+  border-left: 4px solid;
+}
+.ps-header:hover { background: var(--bg3); }
+.psh-sa { border-left-color: var(--sc-a); }
+.psh-sb { border-left-color: var(--sc-b); }
+.psh-sc { border-left-color: var(--sc-c); }
+.psh-sd { border-left-color: var(--sc-d); }
+
+.ps-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.psb-a { background: rgba(200,96,64,0.15); color: var(--sc-a); border: 1px solid rgba(200,96,64,0.3); }
+.psb-b { background: rgba(58,152,112,0.15); color: var(--sc-b); border: 1px solid rgba(58,152,112,0.3); }
+.psb-c { background: rgba(80,128,168,0.15); color: var(--sc-c); border: 1px solid rgba(80,128,168,0.3); }
+.psb-d { background: rgba(136,88,184,0.15); color: var(--sc-d); border: 1px solid rgba(136,88,184,0.3); }
+
+.ps-header-text { flex: 1; }
+.ps-location {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  display: block;
+  margin-bottom: 4px;
+}
+.ps-name {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 4px;
+}
+.ps-sub {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink3);
+}
+.ps-toggle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink4);
+  flex-shrink: 0;
+  background: var(--bg4);
+  border: 1px solid var(--edge);
+  padding: 4px 10px;
+  transition: color 0.15s;
+}
+.ps-header:hover .ps-toggle { color: var(--ink2); }
+
+/* Puzzle body */
+.ps-body {
+  display: none;
+  border-top: 1px solid var(--edge);
+}
+.ps-body.open { display: block; }
+
+.ps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.ps-col {
+  padding: 28px 28px;
+  border-right: 1px solid var(--edge);
+}
+.ps-col:last-child { border-right: none; }
+.ps-col-full {
+  padding: 28px 28px;
+  border-top: 1px solid var(--edge);
+}
+
+.col-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  display: block;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--edge);
+}
+
+/* Failure block */
+.failure-block {
+  background: rgba(152,64,64,0.08);
+  border: 1px solid rgba(152,64,64,0.2);
+  border-left: 3px solid var(--bad);
+  padding: 14px 16px;
+  margin: 0 0 16px;
+}
+.fb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--bad2);
+  display: block;
+  margin-bottom: 6px;
+}
+.fb-body { font-size: 13.5px; color: var(--ink3); line-height: 1.65; }
+.fb-body strong { color: var(--ink2); }
+
+/* World side boxes */
+.world-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 0 0 16px;
+}
+.ws-a {
+  padding: 12px 14px;
+  background: var(--abg);
+  border-top: 2px solid var(--a);
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+.ws-b {
+  padding: 12px 14px;
+  background: var(--bbg);
+  border-top: 2px solid var(--b);
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+.ws-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 5px;
+}
+.ws-a .ws-tag { color: var(--a); }
+.ws-b .ws-tag { color: var(--b); }
+.ws-a strong, .ws-b strong { color: var(--ink2); }
+
+/* Implication block */
+.implication-block {
+  background: var(--bg4);
+  border: 1px solid var(--edge);
+  border-top: 2px solid var(--s);
+  padding: 14px 16px;
+  margin: 0 0 12px;
+}
+.impl-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--s);
+  display: block;
+  margin-bottom: 6px;
+}
+.impl-body { font-size: 13.5px; color: var(--ink3); line-height: 1.65; }
+.impl-body strong { color: var(--s2); }
+.impl-body em { font-style: italic; color: var(--ink2); }
+
+/* ── CHOICE TABLE ────────────────── */
+.choice-table { width: 100%; border-collapse: collapse; }
+.choice-table th {
+  background: var(--bg4);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink4);
+  padding: 9px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--edge);
+}
+.choice-table th:first-child { width: 40px; text-align: center; }
+.choice-table th:nth-child(2) { width: 30%; }
+.ct-row {
+  border-bottom: 1px solid var(--bg4);
+}
+.ct-row:last-child { border-bottom: none; }
+.ct-row td {
+  padding: 13px 14px;
+  vertical-align: top;
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+.ct-row td:first-child {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink4);
+}
+.ct-row td strong { color: var(--ink2); }
+.ct-row td em { font-style: italic; }
+.ct-row:hover td { background: var(--bg3); }
+
+/* Consequence tags */
+.con-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.con-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 2px 8px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.ct-ok   { border-color: var(--ok);   color: var(--ok2);   background: rgba(82,150,90,0.08); }
+.ct-warn { border-color: var(--warn); color: var(--warn2); background: rgba(176,120,40,0.08); }
+.ct-bad  { border-color: var(--bad);  color: var(--bad2);  background: rgba(152,64,64,0.08); }
+.ct-a    { border-color: var(--a3);   color: var(--a2);    background: var(--abg); }
+.ct-b    { border-color: var(--b3);   color: var(--b2);    background: var(--bbg); }
+.ct-mix  { border-color: var(--ink4); color: var(--ink3);  background: var(--bg4); }
+
+/* ── UTILITY ─────────────────────── */
+p { margin-bottom: 10px; color: var(--ink3); font-size: 14px; line-height: 1.72; }
+p:last-child { margin: 0; }
+p strong { color: var(--ink2); }
+p em { font-style: italic; color: var(--ink2); }
+
+.callout {
+  border-left: 3px solid var(--edge);
+  padding: 12px 16px;
+  background: var(--bg3);
+  margin: 16px 0;
+  font-size: 14px;
+  color: var(--ink3);
+  line-height: 1.7;
+}
+.callout strong { color: var(--ink2); }
+.callout-a { border-left-color: var(--a); background: var(--abg); }
+.callout-b { border-left-color: var(--b); background: var(--bbg); }
+.cl-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 5px;
+}
+.callout-a .cl-label { color: var(--a); }
+.callout-b .cl-label { color: var(--b); }
+
+.divider { height: 1px; background: var(--edge); margin: 28px 0; }
+
+h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin: 28px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--edge);
+}
+h3:first-child { margin-top: 0; }
+
+/* ── SCROLL PROGRESS ─────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--a), var(--b));
+  transition: width 0.1s;
+  z-index: 200;
+}
+
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="progress"></div>
+
+<!-- ═══════════════════════
+     NAVIGATION
+═══════════════════════ -->
+<nav>
+  <div class="nav-brand">
+    <span class="nav-logo">KENOMA</span>
+    <span class="nav-sub">Team Reference · Maps & Puzzles</span>
+  </div>
+
+  <div class="nav-section">
+    <span class="nav-section-label">Overview</span>
+    <a class="nav-item" href="#overview"><div class="nav-dot nd-n"></div>Introduction</a>
+    <a class="nav-item" href="#worlds"><div class="nav-dot nd-n"></div>The Two Worlds</a>
+    <a class="nav-item" href="#crossing"><div class="nav-dot nd-n"></div>Crossing System</a>
+  </div>
+
+  <div class="nav-section">
+    <span class="nav-section-label">Maps</span>
+    <a class="nav-item" href="#map-a"><div class="nav-dot nd-a"></div>World A — Sacred Fire</a>
+    <a class="nav-item" href="#map-b"><div class="nav-dot nd-b"></div>World B — The Hollow</a>
+  </div>
+
+  <div class="nav-section">
+    <span class="nav-section-label">Interference Puzzles</span>
+    <a class="nav-item" href="#puzzle-system"><div class="nav-dot nd-n"></div>System Overview</a>
+    <a class="nav-item" href="#pz-a"><div class="nav-dot nd-sa"></div>A · Shadow Well</a>
+    <a class="nav-item" href="#pz-b"><div class="nav-dot nd-sb"></div>B · Resonance Obelisk</a>
+    <a class="nav-item" href="#pz-c"><div class="nav-dot nd-sc"></div>C · Still-Water Oracle</a>
+    <a class="nav-item" href="#pz-d"><div class="nav-dot nd-sd"></div>D · Translation Obelisk</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════
+     MAIN CONTENT
+═══════════════════════ -->
+<main class="main">
+
+<!-- ───────────────────────── OVERVIEW -->
+<section id="overview">
+  <div class="hero">
+    <div class="hero-kicker">KENOMA Studio · Internal Team Reference · v8</div>
+    <div class="hero-title">
+      The Archive<br>
+      of <span class="a">Two</span> <span class="b">Truths</span>
+    </div>
+    <div class="hero-tagline">
+      A scholar crosses between two versions of the same dead civilization —
+      and builds, puzzle by translation by gift, the thing that will outlive them.
+    </div>
+    <div class="concept-row">
+      <div class="concept-pill"><div class="cp-dot" style="background:var(--a)"></div>World A · Sacred Fire · Apadana Above</div>
+      <div class="concept-pill"><div class="cp-dot" style="background:var(--b)"></div>World B · The Hollow · Dark Archive Below</div>
+      <div class="concept-pill"><div class="cp-dot" style="background:var(--s)"></div>Scholar · The One Who Crosses</div>
+      <div class="concept-pill"><div class="cp-dot" style="background:var(--bad)"></div>4 Crossing Points · 4 Interference Puzzles</div>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="hm-item">
+      <span class="hm-val" style="color:var(--a2)">1</span>
+      <span class="hm-label">Archive Building</span>
+    </div>
+    <div class="hm-item">
+      <span class="hm-val">2</span>
+      <span class="hm-label">Parallel Worlds</span>
+    </div>
+    <div class="hm-item">
+      <span class="hm-val">4</span>
+      <span class="hm-label">Crossing Points</span>
+    </div>
+    <div class="hm-item">
+      <span class="hm-val" style="color:var(--s2)">4</span>
+      <span class="hm-label">Interference Puzzles</span>
+    </div>
+    <div class="hm-item">
+      <span class="hm-val">3</span>
+      <span class="hm-label">Acts · Camel/Lion/Child</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── TWO WORLDS -->
+<section id="worlds">
+  <div class="section-header sh-n">
+    <span class="sec-eyebrow">§ 01 · Foundation</span>
+    <div class="sec-title">The Two Worlds</div>
+    <div class="sec-desc">One Archive building, two civilizations sealed inside it. Same architecture — opposite philosophy. Neither world is real without the other.</div>
+  </div>
+  <div class="section-body">
+    <div class="world-split">
+      <div class="world-pane wp-a">
+        <span class="wp-label">World A · Sacred Fire</span>
+        <span class="wp-title">The Apadana Above</span>
+        <div class="wp-body">
+          <p>Persepolis at full imperial scale. 72 stone columns with carved double-bull capitals. Processional walls showing tribute from 30 nations. Fire altars at every corridor junction — cold for 300 years until the Scholar arrives.</p>
+        </div>
+        <div class="wp-trait"><span class="wpt-key">Truth</span>Visible, ordered, luminous. The Sacred Fire civilization believed truth must be seen and lit.</div>
+        <div class="wp-trait"><span class="wpt-key">Puzzles</span>Sacred Fire classification: most dangerous documents are most restricted. Scholar's expertise works naturally here.</div>
+        <div class="wp-trait"><span class="wpt-key">Creatures</span>Fire-Wardens (immune to fire vessel), fire vessel is primary tool + save mechanism.</div>
+        <div class="wp-trait"><span class="wpt-key">Vanguard A</span>Military precision. 300 years managing the Apadana as logistics. Warmth is real AND calculated.</div>
+      </div>
+      <div class="world-pane wp-b">
+        <span class="wp-label">World B · The Hollow</span>
+        <span class="wp-title">The Dark Archive Below</span>
+        <div class="wp-body">
+          <p>The exact same column grid — inverted underground. Columns hang from ceilings. Processional friezes show the same 30-nation procession — except the journey has gone wrong somewhere mid-frieze. The Scholar's fire vessel is the only warm light in 300 years.</p>
+        </div>
+        <div class="wp-trait"><span class="wpt-key">Truth</span>Hidden, shadowed, cold. The Hollow civilization believed truth must be concealed to be protected.</div>
+        <div class="wp-trait"><span class="wpt-key">Puzzles</span>Hollow classification: most dangerous documents appear most accessible. Scholar's World A expertise fails here on first attempt.</div>
+        <div class="wp-trait"><span class="wpt-key">Creatures</span>Lantern-Thieves (drawn to fire vessel), Shadow-Walkers (processional figures gone wrong).</div>
+        <div class="wp-trait"><span class="wpt-key">Vanguard B</span>Expansive, patient, philosophical. 300 years in absolute dark. Measures time in generations.</div>
+      </div>
+    </div>
+
+    <div style="height:32px"></div>
+
+    <div class="callout callout-a">
+      <span class="cl-label">The Core Design Rule</span>
+      <strong>Neither world is "good" or "evil."</strong> Sacred Fire chose visible truth. The Hollow chose hidden truth. Both are valid paths to complete knowledge — the civilization split itself trying to prove one could exist without the other. The Archive is the crossing point where both paths still exist simultaneously. The Scholar is the only person alive who can move between them. Both Vanguards have been waiting 300 years for exactly this person.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── CROSSING SYSTEM -->
+<section id="crossing">
+  <div class="section-header sh-n">
+    <span class="sec-eyebrow">§ 02 · Mechanics</span>
+    <div class="sec-title">The Crossing System</div>
+    <div class="sec-desc">Traversal Focal Points (TFPs) — Achaemenid astronomical instruments built into the Archive walls. The Scholar crosses through them. Each crossing adds Traversal Debt. The Vanguard never crosses. This asymmetry is the game.</div>
+  </div>
+  <div class="section-body">
+    <h3>How Crossing Works</h3>
+    <p>The Scholar approaches a TFP — a bronze armillary sphere (World A) or jade star-clock (World B) built into a wall pillar. They peer through the central ring and see the other world through it: inverted, cold or warm. They step through. <strong>2.2 seconds. Cannot be interrupted.</strong></p>
+    <p>Every crossing increments the hidden <strong>Traversal Debt counter</strong>. As debt rises, the Boundary — the Archive's crossing-law made physical — manifests more frequently to pursue the Scholar. The Vanguard has zero crossing debt. She never crosses. The Scholar pays every cost.</p>
+
+    <div class="tfp-grid">
+      <div class="tfp-card tfp-a">
+        <span class="tfp-id">TFP-01</span>
+        <span class="tfp-name">Gate Crossing · Surface Level</span>
+        <div class="tfp-arrow">
+          <span class="tfp-from">WA-001 Gate</span>
+          <span class="tfp-arr">⇄</span>
+          <span class="tfp-to">WB-001 Inverted Gate</span>
+        </div>
+        <div class="tfp-desc">First crossing. Tutorial context — Scholar learns the mechanic. World B arrival feels wrong because it <em>is</em> wrong: the bulls' faces are concave, the inscription says "what they believe is truth."</div>
+        <span class="tfp-debt">Debt +1 per use</span>
+      </div>
+      <div class="tfp-card tfp-b">
+        <span class="tfp-id">TFP-02</span>
+        <span class="tfp-name">Hypostyle Crossing · Lower Level</span>
+        <div class="tfp-arrow">
+          <span class="tfp-from">WA-002 Hypostyle Forest</span>
+          <span class="tfp-arr">⇄</span>
+          <span class="tfp-to">WB-002 Hollow Hypostyle</span>
+        </div>
+        <div class="tfp-desc">Main hub crossing. Required for PZ-002 (Fire/Shadow mirror puzzle — valve inversion). Scholar learns: World B operates on inverted logic. Lantern-Thieves appear here on first World B visit.</div>
+        <span class="tfp-debt">Debt +1 per use</span>
+      </div>
+      <div class="tfp-card tfp-a">
+        <span class="tfp-id">TFP-03</span>
+        <span class="tfp-name">Treasury Crossing · Middle Level</span>
+        <div class="tfp-arrow">
+          <span class="tfp-from">WA-003 Eastern Treasury</span>
+          <span class="tfp-arr">⇄</span>
+          <span class="tfp-to">WB-004 Dark Library</span>
+        </div>
+        <div class="tfp-desc">Knowledge crossing. PZ-001 solution (Grand Armillary manual) is in WA-003. PZ-007 cosmological sequence is in WB-004. Each world's knowledge base unlocks the other's puzzles. Core cross-world mechanic demonstrated.</div>
+        <span class="tfp-debt">Debt +1 per use</span>
+      </div>
+      <div class="tfp-card tfp-b">
+        <span class="tfp-id">TFP-04</span>
+        <span class="tfp-name">Summit Crossing · Grand Armillary</span>
+        <div class="tfp-arrow">
+          <span class="tfp-from">WA-007 Armillary Gallery</span>
+          <span class="tfp-arr">⇄</span>
+          <span class="tfp-to">WB-∞ Chamber of Convergence</span>
+        </div>
+        <div class="tfp-desc">The deepest crossing. Requires 5 total crossings to reach WB-∞. Both Vanguards appear simultaneously in the Chamber of Convergence — the only space where they can co-exist. Third Record is here.</div>
+        <span class="tfp-debt">Debt +2 per use</span>
+      </div>
+    </div>
+
+    <div class="callout callout-b">
+      <span class="cl-label">The Iron Crossing Rule — Never Violated</span>
+      <strong>Knowledge from World B enables action in World A. Material objects from World A produce physical change in World B.</strong> This rule is established in the first crossing (TFP-01) and applies identically to every subsequent puzzle. Players build reliable intuition. No crossing ever surprises them with a different rule.
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── MAP WORLD A -->
+<section id="map-a">
+  <div class="section-header sh-a">
+    <span class="sec-eyebrow">§ 03 · World A</span>
+    <div class="sec-title">Sacred Fire · The Apadana Above</div>
+    <div class="sec-desc">Five vertical levels. The Scholar ascends from the Gate to the Grand Armillary Gallery at the summit. Fire altars light as the Scholar progresses — the Apadana becomes warmer and more beautiful through Act I, then becomes the battlefield of Act II.</div>
+  </div>
+  <div class="section-body">
+
+    <!-- MAP A -->
+    <div class="map-container mb-a">
+      <div class="map-bar">
+        <div class="map-bar-left">
+          <span class="map-bar-label">World A · Elevation View</span>
+          <span class="map-bar-title">The Apadana — Surface to Summit</span>
+        </div>
+        <span class="map-bar-note">Gate → Hypostyle → Middle Halls → Processional → Grand Armillary</span>
+      </div>
+
+      <svg viewBox="0 0 980 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#0a0b09;">
+        <defs>
+          <pattern id="ga" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+            <line x1="24" y1="0" x2="24" y2="24" stroke="rgba(212,148,32,0.055)" stroke-width="0.5"/>
+            <line x1="0" y1="24" x2="24" y2="24" stroke="rgba(212,148,32,0.055)" stroke-width="0.5"/>
+          </pattern>
+          <!-- TFP marker -->
+          <g id="tfp-a">
+            <circle r="7" fill="rgba(212,148,32,0.15)" stroke="rgba(240,176,52,0.7)" stroke-width="1.5"/>
+            <line x1="-4" y1="0" x2="4" y2="0" stroke="rgba(240,176,52,0.8)" stroke-width="1.2"/>
+            <line x1="0" y1="-4" x2="0" y2="4" stroke="rgba(240,176,52,0.8)" stroke-width="1.2"/>
+            <circle r="2" fill="rgba(240,176,52,0.9)"/>
+          </g>
+          <!-- Fire altar -->
+          <g id="fa">
+            <rect x="-4" y="-6" width="8" height="8" fill="rgba(212,148,32,0.25)" stroke="rgba(240,176,52,0.5)" stroke-width="0.8"/>
+            <ellipse cx="0" cy="-6" rx="4" ry="2.5" fill="rgba(255,200,60,0.12)" stroke="rgba(240,176,52,0.4)" stroke-width="0.7"/>
+          </g>
+          <!-- Fire Warden -->
+          <g id="fw-a">
+            <polygon points="0,-6 5,4 -5,4" fill="rgba(192,80,20,0.2)" stroke="rgba(200,100,40,0.6)" stroke-width="1"/>
+          </g>
+        </defs>
+
+        <rect width="980" height="560" fill="url(#ga)"/>
+        <rect width="980" height="560" fill="rgba(10,11,9,0.45)"/>
+
+        <!-- Floor separators -->
+        <line x1="0" y1="68" x2="980" y2="68" stroke="rgba(212,148,32,0.08)" stroke-width="1"/>
+        <line x1="0" y1="170" x2="980" y2="170" stroke="rgba(212,148,32,0.07)" stroke-width="1"/>
+        <line x1="0" y1="290" x2="980" y2="290" stroke="rgba(212,148,32,0.07)" stroke-width="1"/>
+        <line x1="0" y1="410" x2="980" y2="410" stroke="rgba(212,148,32,0.06)" stroke-width="1"/>
+        <line x1="0" y1="505" x2="980" y2="505" stroke="rgba(212,148,32,0.06)" stroke-width="1"/>
+
+        <!-- Floor labels -->
+        <text x="16" y="52" fill="rgba(212,148,32,0.2)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">SUMMIT</text>
+        <text x="16" y="152" fill="rgba(212,148,32,0.18)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">UPPER APADANA</text>
+        <text x="16" y="272" fill="rgba(212,148,32,0.17)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">MIDDLE APADANA</text>
+        <text x="16" y="392" fill="rgba(212,148,32,0.16)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">LOWER APADANA</text>
+        <text x="16" y="490" fill="rgba(212,148,32,0.14)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">SURFACE APPROACH</text>
+
+        <!-- ════ WA-007 GRAND ARMILLARY ════ -->
+        <rect x="320" y="12" width="340" height="52" rx="3" fill="rgba(212,148,32,0.16)" stroke="rgba(240,176,52,0.55)" stroke-width="1.5"/>
+        <!-- Armillary rings -->
+        <ellipse cx="820" cy="38" rx="42" ry="20" fill="none" stroke="rgba(212,148,32,0.3)" stroke-width="1.2"/>
+        <ellipse cx="820" cy="38" rx="30" ry="14" fill="none" stroke="rgba(212,148,32,0.22)" stroke-width="1"/>
+        <ellipse cx="820" cy="38" rx="18" ry="8" fill="none" stroke="rgba(212,148,32,0.35)" stroke-width="1.5"/>
+        <circle cx="820" cy="38" r="3" fill="rgba(240,176,52,0.7)"/>
+        <text x="330" y="28" fill="rgba(212,148,32,0.5)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WA-007</text>
+        <text x="330" y="41" fill="rgba(240,176,52,0.85)" font-family="Cinzel,serif" font-size="14" font-weight="600">Grand Armillary Gallery</text>
+        <text x="330" y="54" fill="rgba(212,148,32,0.38)" font-family="JetBrains Mono,monospace" font-size="8">Summit · 7-ring bronze instrument · PZ-007 · Boundary permanent defeat</text>
+        <use href="#tfp-a" transform="translate(650,38)"/>
+        <text x="664" y="35" fill="rgba(212,148,32,0.5)" font-family="JetBrains Mono,monospace" font-size="8">TFP-04</text>
+        <text x="664" y="45" fill="rgba(212,148,32,0.32)" font-family="JetBrains Mono,monospace" font-size="7">→ WB-∞</text>
+
+        <!-- Stairs: summit → upper -->
+        <line x1="490" y1="64" x2="490" y2="80" stroke="rgba(212,148,32,0.3)" stroke-width="2"/>
+        <rect x="483" y="64" width="14" height="4" fill="rgba(212,148,32,0.15)"/>
+        <rect x="483" y="68" width="14" height="4" fill="rgba(212,148,32,0.1)"/>
+
+        <!-- ════ UPPER APADANA ════ -->
+        <!-- WA-004/005 Processional Corridor + Throne Hall -->
+        <rect x="120" y="80" width="600" height="82" rx="3" fill="rgba(212,148,32,0.1)" stroke="rgba(212,148,32,0.32)" stroke-width="1.2"/>
+        <text x="132" y="100" fill="rgba(212,148,32,0.45)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WA-004 · WA-005</text>
+        <text x="132" y="114" fill="rgba(240,176,52,0.75)" font-family="Cinzel,serif" font-size="14" font-weight="600">Processional Corridor + Throne Hall</text>
+        <text x="132" y="128" fill="rgba(212,148,32,0.3)" font-family="JetBrains Mono,monospace" font-size="8">Tribute friezes from 30 nations · Fire altar chain · WA-005 = Act III False Victory location</text>
+        <text x="132" y="150" fill="rgba(212,148,32,0.22)" font-family="JetBrains Mono,monospace" font-size="7">Act II: Vanguard uses column niches as cover · Every trap Scholar set in Act I is here</text>
+        <!-- Fire altars -->
+        <use href="#fa" transform="translate(200,145)"/>
+        <use href="#fa" transform="translate(310,145)"/>
+        <use href="#fa" transform="translate(420,145)"/>
+        <use href="#fa" transform="translate(530,145)"/>
+        <use href="#fa" transform="translate(640,145)"/>
+
+        <!-- Observatory (side room) -->
+        <rect x="740" y="80" width="190" height="82" rx="3" fill="rgba(200,160,80,0.1)" stroke="rgba(220,190,90,0.4)" stroke-width="1.2"/>
+        <text x="752" y="100" fill="rgba(220,190,90,0.55)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">OBSERVATORY</text>
+        <text x="752" y="114" fill="rgba(230,200,100,0.75)" font-family="Cinzel,serif" font-size="12" font-weight="600">Scholar's Base</text>
+        <text x="752" y="128" fill="rgba(200,160,80,0.35)" font-family="JetBrains Mono,monospace" font-size="7">Oil save · SH4 corruption</text>
+        <text x="752" y="140" fill="rgba(200,160,80,0.3)" font-family="JetBrains Mono,monospace" font-size="7">cycle · Lantern-Thief</text>
+        <text x="752" y="152" fill="rgba(152,64,64,0.45)" font-family="JetBrains Mono,monospace" font-size="7">spawns here Act II →</text>
+        <line x1="740" y1="121" x2="720" y2="121" stroke="rgba(200,160,80,0.3)" stroke-width="1.5"/>
+
+        <!-- Stairs: upper → middle -->
+        <line x1="490" y1="162" x2="490" y2="178" stroke="rgba(212,148,32,0.28)" stroke-width="2"/>
+
+        <!-- ════ MIDDLE APADANA ════ -->
+        <!-- WA/B-GH-02 Great Hall -->
+        <rect x="50" y="182" width="248" height="98" rx="3" fill="rgba(212,148,32,0.12)" stroke="rgba(212,148,32,0.35)" stroke-width="1.2"/>
+        <text x="62" y="200" fill="rgba(212,148,32,0.48)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WA/B-GH-02</text>
+        <text x="62" y="214" fill="rgba(240,176,52,0.75)" font-family="Cinzel,serif" font-size="13" font-weight="600">Great Hall</text>
+        <text x="62" y="228" fill="rgba(212,148,32,0.32)" font-family="JetBrains Mono,monospace" font-size="7">Foundation Obelisk</text>
+        <text x="62" y="240" fill="rgba(212,148,32,0.28)" font-family="JetBrains Mono,monospace" font-size="7">Clause 7 · Clause 12 · Clause 18</text>
+        <text x="62" y="252" fill="rgba(212,148,32,0.24)" font-family="JetBrains Mono,monospace" font-size="7">Archive completion trigger</text>
+        <!-- Scenario D -->
+        <circle cx="74" cy="268" r="9" fill="rgba(136,88,184,0.18)" stroke="rgba(136,88,184,0.6)" stroke-width="1.5"/>
+        <text x="74" y="272" fill="rgba(168,120,216,0.9)" font-family="Cinzel,serif" font-size="10" text-anchor="middle" font-weight="700">D</text>
+        <text x="92" y="266" fill="rgba(136,88,184,0.55)" font-family="JetBrains Mono,monospace" font-size="7">Scenario D</text>
+        <text x="92" y="276" fill="rgba(136,88,184,0.4)" font-family="JetBrains Mono,monospace" font-size="6">Translation Obelisk</text>
+
+        <!-- TFP-03 connection note -->
+        <use href="#tfp-a" transform="translate(280,231)"/>
+        <text x="294" y="228" fill="rgba(212,148,32,0.42)" font-family="JetBrains Mono,monospace" font-size="7">TFP-03</text>
+        <text x="294" y="238" fill="rgba(212,148,32,0.28)" font-family="JetBrains Mono,monospace" font-size="6">→ WB-004</text>
+
+        <!-- WA/B-CY-01 Central Courtyard -->
+        <rect x="330" y="182" width="230" height="98" rx="3" fill="rgba(212,148,32,0.1)" stroke="rgba(212,148,32,0.3)" stroke-width="1.2"/>
+        <text x="342" y="200" fill="rgba(212,148,32,0.45)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WA/B-CY-01</text>
+        <text x="342" y="214" fill="rgba(240,176,52,0.72)" font-family="Cinzel,serif" font-size="13" font-weight="600">Central Courtyard</text>
+        <text x="342" y="228" fill="rgba(212,148,32,0.3)" font-family="JetBrains Mono,monospace" font-size="7">Open sky · Shadow well</text>
+        <text x="342" y="240" fill="rgba(212,148,32,0.26)" font-family="JetBrains Mono,monospace" font-size="7">Sun-path calibration · Dual calendar</text>
+        <!-- Well symbol -->
+        <circle cx="520" cy="246" r="16" fill="rgba(212,148,32,0.08)" stroke="rgba(212,148,32,0.35)" stroke-width="1.2"/>
+        <circle cx="520" cy="246" r="9" fill="rgba(10,11,9,0.85)" stroke="rgba(212,148,32,0.28)" stroke-width="1"/>
+        <!-- Scenario A -->
+        <circle cx="342" cy="264" r="9" fill="rgba(200,96,64,0.18)" stroke="rgba(200,96,64,0.6)" stroke-width="1.5"/>
+        <text x="342" y="268" fill="rgba(220,128,90,0.9)" font-family="Cinzel,serif" font-size="10" text-anchor="middle" font-weight="700">A</text>
+        <text x="358" y="263" fill="rgba(200,96,64,0.55)" font-family="JetBrains Mono,monospace" font-size="7">Scenario A</text>
+        <text x="358" y="273" fill="rgba(200,96,64,0.38)" font-family="JetBrains Mono,monospace" font-size="6">Shadow Well</text>
+
+        <!-- WA-003 Eastern Treasury -->
+        <rect x="592" y="182" width="298" height="98" rx="3" fill="rgba(212,148,32,0.13)" stroke="rgba(212,148,32,0.38)" stroke-width="1.2"/>
+        <text x="604" y="200" fill="rgba(212,148,32,0.5)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WA-003</text>
+        <text x="604" y="214" fill="rgba(240,176,52,0.8)" font-family="Cinzel,serif" font-size="13" font-weight="600">Eastern Treasury</text>
+        <text x="604" y="228" fill="rgba(212,148,32,0.32)" font-family="JetBrains Mono,monospace" font-size="7">30,000 cuneiform tablets · PZ-001 hub</text>
+        <text x="604" y="240" fill="rgba(212,148,32,0.28)" font-family="JetBrains Mono,monospace" font-size="7">Armillary manual · Vanguard entry record</text>
+        <text x="604" y="252" fill="rgba(212,148,32,0.24)" font-family="JetBrains Mono,monospace" font-size="7">★ Beat 1: Recognition moment</text>
+        <text x="604" y="264" fill="rgba(212,148,32,0.22)" font-family="JetBrains Mono,monospace" font-size="7">★ Overheard: Vanguard A manages creatures</text>
+
+        <!-- Stairs: middle → lower -->
+        <line x1="490" y1="280" x2="490" y2="300" stroke="rgba(212,148,32,0.25)" stroke-width="2"/>
+
+        <!-- ════ LOWER APADANA · WA-002 Hypostyle Forest ════ -->
+        <rect x="50" y="302" width="800" height="98" rx="3" fill="rgba(212,148,32,0.1)" stroke="rgba(212,148,32,0.3)" stroke-width="1.2"/>
+        <text x="64" y="320" fill="rgba(212,148,32,0.48)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WA-002</text>
+        <text x="64" y="334" fill="rgba(240,176,52,0.78)" font-family="Cinzel,serif" font-size="14" font-weight="600">Hypostyle Forest — Main Hub</text>
+        <text x="64" y="348" fill="rgba(212,148,32,0.3)" font-family="JetBrains Mono,monospace" font-size="7">72 stone columns · PZ-002 Fire/Shadow crossing · ★ Beat 2: Flask moment</text>
+        <text x="64" y="360" fill="rgba(212,148,32,0.25)" font-family="JetBrains Mono,monospace" font-size="7">Act II: Vanguard uses columns as cover · Fire altar chain · All 4 interference puzzles accessible from here</text>
+
+        <!-- 72 columns (simplified rows) -->
+        <g fill="rgba(212,148,32,0.18)" stroke="rgba(212,148,32,0.25)" stroke-width="0.5">
+          <ellipse cx="100" cy="374" rx="4" ry="6"/><ellipse cx="140" cy="374" rx="4" ry="6"/>
+          <ellipse cx="180" cy="374" rx="4" ry="6"/><ellipse cx="220" cy="374" rx="4" ry="6"/>
+          <ellipse cx="260" cy="374" rx="4" ry="6"/><ellipse cx="300" cy="374" rx="4" ry="6"/>
+          <ellipse cx="340" cy="374" rx="4" ry="6"/><ellipse cx="380" cy="374" rx="4" ry="6"/>
+          <ellipse cx="420" cy="374" rx="4" ry="6"/><ellipse cx="460" cy="374" rx="4" ry="6"/>
+          <ellipse cx="500" cy="374" rx="4" ry="6"/><ellipse cx="540" cy="374" rx="4" ry="6"/>
+          <ellipse cx="580" cy="374" rx="4" ry="6"/><ellipse cx="620" cy="374" rx="4" ry="6"/>
+          <ellipse cx="660" cy="374" rx="4" ry="6"/><ellipse cx="700" cy="374" rx="4" ry="6"/>
+          <ellipse cx="740" cy="374" rx="4" ry="6"/><ellipse cx="780" cy="374" rx="4" ry="6"/>
+          <ellipse cx="820" cy="374" rx="4" ry="6"/>
+          <!-- Row 2 -->
+          <ellipse cx="100" cy="393" rx="4" ry="6"/><ellipse cx="140" cy="393" rx="4" ry="6"/>
+          <ellipse cx="180" cy="393" rx="4" ry="6"/><ellipse cx="220" cy="393" rx="4" ry="6"/>
+          <ellipse cx="260" cy="393" rx="4" ry="6"/><ellipse cx="300" cy="393" rx="4" ry="6"/>
+          <ellipse cx="340" cy="393" rx="4" ry="6"/><ellipse cx="380" cy="393" rx="4" ry="6"/>
+          <ellipse cx="420" cy="393" rx="4" ry="6"/><ellipse cx="460" cy="393" rx="4" ry="6"/>
+          <ellipse cx="500" cy="393" rx="4" ry="6"/><ellipse cx="540" cy="393" rx="4" ry="6"/>
+          <ellipse cx="580" cy="393" rx="4" ry="6"/><ellipse cx="620" cy="393" rx="4" ry="6"/>
+          <ellipse cx="660" cy="393" rx="4" ry="6"/><ellipse cx="700" cy="393" rx="4" ry="6"/>
+          <ellipse cx="740" cy="393" rx="4" ry="6"/><ellipse cx="780" cy="393" rx="4" ry="6"/>
+          <ellipse cx="820" cy="393" rx="4" ry="6"/>
+        </g>
+
+        <!-- TFP-02 -->
+        <use href="#tfp-a" transform="translate(200,383)"/>
+        <text x="213" y="380" fill="rgba(212,148,32,0.45)" font-family="JetBrains Mono,monospace" font-size="8">TFP-02</text>
+        <text x="213" y="390" fill="rgba(212,148,32,0.28)" font-family="JetBrains Mono,monospace" font-size="7">→ WB-002</text>
+
+        <!-- Fire altars in HF -->
+        <use href="#fa" transform="translate(400,383)"/>
+        <use href="#fa" transform="translate(600,383)"/>
+
+        <!-- Sub-rooms: Inner Courtyard and Eastern Alcove -->
+        <rect x="480" y="308" width="120" height="50" rx="2" fill="rgba(80,128,168,0.12)" stroke="rgba(80,128,168,0.38)" stroke-width="1.2"/>
+        <text x="490" y="323" fill="rgba(80,128,168,0.55)" font-family="JetBrains Mono,monospace" font-size="7">WA/B-CT-03</text>
+        <text x="490" y="334" fill="rgba(100,160,215,0.65)" font-family="Barlow Condensed,sans-serif" font-size="11" font-weight="600">Inner Courtyard</text>
+        <text x="490" y="348" fill="rgba(80,128,168,0.38)" font-family="JetBrains Mono,monospace" font-size="6">Crossing junction</text>
+        <circle cx="590" cy="330" r="8" fill="rgba(80,128,168,0.18)" stroke="rgba(80,128,168,0.6)" stroke-width="1.2"/>
+        <text x="590" y="334" fill="rgba(100,160,215,0.85)" font-family="Cinzel,serif" font-size="9" text-anchor="middle" font-weight="700">C</text>
+
+        <rect x="630" y="308" width="140" height="50" rx="2" fill="rgba(58,152,112,0.1)" stroke="rgba(58,152,112,0.35)" stroke-width="1.2"/>
+        <text x="640" y="323" fill="rgba(58,152,112,0.5)" font-family="JetBrains Mono,monospace" font-size="7">WA/B-HF-04</text>
+        <text x="640" y="334" fill="rgba(80,180,130,0.65)" font-family="Barlow Condensed,sans-serif" font-size="11" font-weight="600">Eastern Alcove</text>
+        <text x="640" y="348" fill="rgba(58,152,112,0.35)" font-family="JetBrains Mono,monospace" font-size="6">Resonance Obelisk</text>
+        <circle cx="754" cy="330" r="8" fill="rgba(58,152,112,0.18)" stroke="rgba(58,152,112,0.6)" stroke-width="1.2"/>
+        <text x="754" y="334" fill="rgba(80,180,130,0.85)" font-family="Cinzel,serif" font-size="9" text-anchor="middle" font-weight="700">B</text>
+
+        <!-- Stairs: lower → surface -->
+        <line x1="340" y1="400" x2="340" y2="420" stroke="rgba(212,148,32,0.22)" stroke-width="2"/>
+
+        <!-- ════ SURFACE: WA-001 ════ -->
+        <rect x="240" y="420" width="340" height="48" rx="3" fill="rgba(212,148,32,0.17)" stroke="rgba(240,176,52,0.55)" stroke-width="2"/>
+        <text x="254" y="437" fill="rgba(212,148,32,0.55)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WA-001</text>
+        <text x="254" y="453" fill="rgba(240,176,52,0.88)" font-family="Cinzel,serif" font-size="15" font-weight="700">Gate of All Nations</text>
+        <!-- Bull guardians -->
+        <rect x="240" y="420" width="14" height="48" fill="rgba(212,148,32,0.1)" stroke="rgba(212,148,32,0.3)" stroke-width="0.8"/>
+        <rect x="566" y="420" width="14" height="48" fill="rgba(212,148,32,0.1)" stroke="rgba(212,148,32,0.3)" stroke-width="0.8"/>
+        <!-- TFP-01 -->
+        <use href="#tfp-a" transform="translate(620,444)"/>
+        <text x="634" y="441" fill="rgba(212,148,32,0.5)" font-family="JetBrains Mono,monospace" font-size="8">TFP-01</text>
+        <text x="634" y="451" fill="rgba(212,148,32,0.3)" font-family="JetBrains Mono,monospace" font-size="7">→ WB-001</text>
+        <!-- Fire wardens -->
+        <use href="#fw-a" transform="translate(224,444)"/>
+        <use href="#fw-a" transform="translate(596,444)"/>
+
+        <!-- Path up to archive entrance -->
+        <line x1="410" y1="468" x2="410" y2="500" stroke="rgba(212,148,32,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="420" y="492" fill="rgba(212,148,32,0.18)" font-family="JetBrains Mono,monospace" font-size="8">Mountain approach path</text>
+
+      </svg>
+
+      <div class="map-legend">
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(212,148,32,0.45)"></div>World A Room</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(240,176,52,0.7);border-radius:50%"></div>TFP Crossing Point</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(200,96,64,0.55);border-radius:50%"></div>Scenario A — Shadow Well</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(58,152,112,0.55);border-radius:50%"></div>Scenario B — Resonance Obelisk</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(80,128,168,0.55);border-radius:50%"></div>Scenario C — Still-Water Oracle</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(136,88,184,0.55);border-radius:50%"></div>Scenario D — Translation Obelisk</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(200,160,80,0.45)"></div>Observatory · Scholar Base</div>
+      </div>
+    </div>
+
+    <h3>World A Room Summary</h3>
+    <table class="room-table">
+      <tr><th>ID</th><th>Name</th><th>Level</th><th>Key Functions</th></tr>
+      <tr class="row-a"><td>WA-001</td><td><strong>Gate of All Nations</strong></td><td>Surface</td><td>Entry, Naming tutorial (combat), twin bull guardians, TFP-01 → WB-001</td></tr>
+      <tr class="row-a"><td>WA-002</td><td><strong>Hypostyle Forest</strong></td><td>Lower</td><td>Main hub, 72 columns, PZ-002, TFP-02, Flask moment (Emotional Beat 2), Act II combat terrain</td></tr>
+      <tr class="row-shared"><td>WA/B-CT-03</td><td><strong>Inner Courtyard</strong></td><td>Lower sub</td><td>Crossing junction, Still-Water Oracle (Scenario C), 8th constellation second-world trace</td></tr>
+      <tr class="row-shared"><td>WA/B-HF-04</td><td><strong>Eastern Alcove</strong></td><td>Lower east</td><td>Resonance Obelisk (Scenario B), Keeper Designation — two Keepers co-appointed trace</td></tr>
+      <tr class="row-a"><td>WA-003</td><td><strong>Eastern Treasury</strong></td><td>Middle</td><td>30,000 tablets, PZ-001, Armillary manual, Recognition (Beat 1), overheard Vanguard A scene</td></tr>
+      <tr class="row-shared"><td>WA/B-CY-01</td><td><strong>Central Courtyard</strong></td><td>Middle</td><td>Shadow Well (Scenario A), dual-calendar Calibration Marker, TFP connection</td></tr>
+      <tr class="row-shared"><td>WA/B-GH-02</td><td><strong>Great Hall</strong></td><td>Middle</td><td>Foundation Obelisk (Scenario D), Clause 18 Archive completion, TFP-03 → WB-004</td></tr>
+      <tr class="row-shared"><td>Observatory</td><td><strong>Scholar's Base Camp</strong></td><td>Upper side</td><td>Safe room, oil/candle saves, SH4 corruption lifecycle, Act II: Lantern-Thief intrusion</td></tr>
+      <tr class="row-a"><td>WA-004/005</td><td><strong>Processional + Throne Hall</strong></td><td>Upper</td><td>Act III False Victory, fire altar chain, tribute friezes, 30 nations carvings</td></tr>
+      <tr class="row-a"><td>WA-007</td><td><strong>Grand Armillary Gallery</strong></td><td>Summit</td><td>PZ-007, Boundary permanent defeat, TFP-04 → WB-∞, night-sky oculus, 28s vs 35s window</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ───────────────────────── MAP WORLD B -->
+<section id="map-b">
+  <div class="section-header sh-b">
+    <span class="sec-eyebrow">§ 04 · World B</span>
+    <div class="sec-title">The Hollow · Dark Archive Below</div>
+    <div class="sec-desc">The Scholar descends into absolute darkness. Same architecture — inverted. Columns hang from ceilings. Void pits replace fire altars. The Scholar's fire vessel is the only warm light in 300 years. Everything here knows exactly where it is.</div>
+  </div>
+  <div class="section-body">
+
+    <!-- MAP B -->
+    <div class="map-container mb-b">
+      <div class="map-bar">
+        <div class="map-bar-left">
+          <span class="map-bar-label">World B · Descent View</span>
+          <span class="map-bar-title">The Dark Archive — Inverted Underground</span>
+        </div>
+        <span class="map-bar-note">WB-001 entrance → WB-002 → WB-004 → WB-∞ deepest point</span>
+      </div>
+
+      <svg viewBox="0 0 980 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#060810;">
+        <defs>
+          <pattern id="gb" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+            <line x1="24" y1="0" x2="24" y2="24" stroke="rgba(72,120,192,0.055)" stroke-width="0.5"/>
+            <line x1="0" y1="24" x2="24" y2="24" stroke="rgba(72,120,192,0.055)" stroke-width="0.5"/>
+          </pattern>
+          <g id="tfp-b-sym">
+            <circle r="7" fill="rgba(72,120,192,0.15)" stroke="rgba(112,160,232,0.7)" stroke-width="1.5"/>
+            <line x1="-4" y1="0" x2="4" y2="0" stroke="rgba(112,160,232,0.8)" stroke-width="1.2"/>
+            <line x1="0" y1="-4" x2="0" y2="4" stroke="rgba(112,160,232,0.8)" stroke-width="1.2"/>
+            <circle r="2" fill="rgba(112,160,232,0.9)"/>
+          </g>
+          <!-- Void pit -->
+          <g id="vp">
+            <ellipse cx="0" cy="0" rx="5" ry="3" fill="rgba(10,15,50,0.9)" stroke="rgba(72,120,192,0.4)" stroke-width="0.8"/>
+            <ellipse cx="0" cy="3" rx="3" ry="1.5" fill="rgba(4,6,24,1)" stroke="rgba(50,90,160,0.2)" stroke-width="0.5"/>
+          </g>
+          <!-- Lantern Thief -->
+          <g id="lt-sym">
+            <circle r="5" fill="rgba(200,230,255,0.05)" stroke="rgba(200,230,255,0.55)" stroke-width="1"/>
+            <circle r="2" fill="rgba(210,235,255,0.5)"/>
+          </g>
+          <!-- Shadow Walker -->
+          <g id="sw-sym">
+            <polygon points="0,-6 5,4 -5,4" fill="rgba(40,80,160,0.18)" stroke="rgba(72,120,192,0.55)" stroke-width="1"/>
+          </g>
+        </defs>
+
+        <rect width="980" height="520" fill="url(#gb)"/>
+        <rect width="980" height="520" fill="rgba(4,6,20,0.55)"/>
+
+        <!-- Floor separators -->
+        <line x1="0" y1="54" x2="980" y2="54" stroke="rgba(72,120,192,0.08)" stroke-width="1"/>
+        <line x1="0" y1="160" x2="980" y2="160" stroke="rgba(72,120,192,0.07)" stroke-width="1"/>
+        <line x1="0" y1="278" x2="980" y2="278" stroke="rgba(72,120,192,0.06)" stroke-width="1"/>
+        <line x1="0" y1="400" x2="980" y2="400" stroke="rgba(72,120,192,0.06)" stroke-width="1"/>
+        <line x1="0" y1="480" x2="980" y2="480" stroke="rgba(72,120,192,0.05)" stroke-width="1"/>
+
+        <!-- Floor labels -->
+        <text x="16" y="38" fill="rgba(72,120,192,0.2)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">ENTRANCE LEVEL</text>
+        <text x="16" y="144" fill="rgba(72,120,192,0.18)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">UPPER HOLLOW</text>
+        <text x="16" y="262" fill="rgba(72,120,192,0.16)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">MIDDLE HOLLOW</text>
+        <text x="16" y="384" fill="rgba(72,120,192,0.14)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">DEEP HOLLOW</text>
+        <text x="16" y="464" fill="rgba(72,120,192,0.12)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">CONVERGENCE</text>
+
+        <!-- ════ WB-001 INVERTED GATE ════ -->
+        <rect x="290" y="8" width="340" height="44" rx="3" fill="rgba(72,120,192,0.13)" stroke="rgba(72,120,192,0.45)" stroke-width="1.5"/>
+        <text x="302" y="24" fill="rgba(72,120,192,0.5)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WB-001</text>
+        <text x="302" y="38" fill="rgba(112,160,232,0.82)" font-family="Cinzel,serif" font-size="14" font-weight="600">Inverted Gate</text>
+        <text x="302" y="48" fill="rgba(72,120,192,0.32)" font-family="JetBrains Mono,monospace" font-size="7">"enter with what you believe is truth" · concave bulls · TFP-01 ← WA-001</text>
+        <use href="#tfp-b-sym" transform="translate(608,28)"/>
+        <text x="620" y="25" fill="rgba(72,120,192,0.45)" font-family="JetBrains Mono,monospace" font-size="8">TFP-01</text>
+        <text x="620" y="35" fill="rgba(72,120,192,0.28)" font-family="JetBrains Mono,monospace" font-size="6">← WA-001</text>
+
+        <!-- Descent: gate → upper -->
+        <line x1="460" y1="52" x2="460" y2="70" stroke="rgba(72,120,192,0.28)" stroke-width="2"/>
+
+        <!-- ════ WB-002 HOLLOW HYPOSTYLE ════ -->
+        <rect x="50" y="72" width="800" height="80" rx="3" fill="rgba(72,120,192,0.09)" stroke="rgba(72,120,192,0.28)" stroke-width="1.2"/>
+        <text x="64" y="90" fill="rgba(72,120,192,0.45)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WB-002</text>
+        <text x="64" y="104" fill="rgba(112,160,232,0.72)" font-family="Cinzel,serif" font-size="13" font-weight="600">Hollow Hypostyle — Columns Hang from Ceiling</text>
+        <text x="64" y="118" fill="rgba(72,120,192,0.28)" font-family="JetBrains Mono,monospace" font-size="7">Mirror of WA-002 · Same column grid inverted · Processional friezes: journey gone wrong mid-path</text>
+        <text x="64" y="130" fill="rgba(72,120,192,0.24)" font-family="JetBrains Mono,monospace" font-size="7">PZ-002 World B valve inversion (left-center-right, not right-center-left) · Scholar's fire vessel = only warmth in 300yr</text>
+
+        <!-- Inverted columns (at ceiling line) -->
+        <g fill="rgba(72,120,192,0.15)" stroke="rgba(72,120,192,0.22)" stroke-width="0.5">
+          <ellipse cx="100" cy="72" rx="4" ry="6"/><ellipse cx="150" cy="72" rx="4" ry="6"/>
+          <ellipse cx="200" cy="72" rx="4" ry="6"/><ellipse cx="250" cy="72" rx="4" ry="6"/>
+          <ellipse cx="300" cy="72" rx="4" ry="6"/><ellipse cx="350" cy="72" rx="4" ry="6"/>
+          <ellipse cx="400" cy="72" rx="4" ry="6"/><ellipse cx="450" cy="72" rx="4" ry="6"/>
+          <ellipse cx="500" cy="72" rx="4" ry="6"/><ellipse cx="550" cy="72" rx="4" ry="6"/>
+          <ellipse cx="600" cy="72" rx="4" ry="6"/><ellipse cx="650" cy="72" rx="4" ry="6"/>
+          <ellipse cx="700" cy="72" rx="4" ry="6"/><ellipse cx="750" cy="72" rx="4" ry="6"/>
+          <ellipse cx="800" cy="72" rx="4" ry="6"/>
+        </g>
+
+        <!-- Void pits -->
+        <use href="#vp" transform="translate(200,140)"/>
+        <use href="#vp" transform="translate(420,140)"/>
+        <use href="#vp" transform="translate(640,140)"/>
+        <use href="#vp" transform="translate(800,140)"/>
+        <!-- Lantern Thieves -->
+        <use href="#lt-sym" transform="translate(320,130)"/>
+        <use href="#lt-sym" transform="translate(520,125)"/>
+        <use href="#lt-sym" transform="translate(680,132)"/>
+
+        <!-- TFP-02b -->
+        <use href="#tfp-b-sym" transform="translate(200,110)"/>
+        <text x="213" y="107" fill="rgba(72,120,192,0.42)" font-family="JetBrains Mono,monospace" font-size="8">TFP-02</text>
+        <text x="213" y="117" fill="rgba(72,120,192,0.28)" font-family="JetBrains Mono,monospace" font-size="6">← WA-002</text>
+
+        <!-- Inner Courtyard WB side -->
+        <rect x="460" y="76" width="125" height="52" rx="2" fill="rgba(80,128,168,0.12)" stroke="rgba(80,128,168,0.38)" stroke-width="1.2"/>
+        <text x="470" y="93" fill="rgba(80,128,168,0.5)" font-family="JetBrains Mono,monospace" font-size="7">WA/B-CT-03</text>
+        <text x="470" y="105" fill="rgba(100,160,215,0.62)" font-family="Barlow Condensed,sans-serif" font-size="11" font-weight="600">Inner Courtyard</text>
+        <text x="470" y="118" fill="rgba(80,128,168,0.35)" font-family="JetBrains Mono,monospace" font-size="6">VB footsteps vibrate</text>
+        <circle cx="574" cy="100" r="8" fill="rgba(80,128,168,0.18)" stroke="rgba(80,128,168,0.6)" stroke-width="1.2"/>
+        <text x="574" y="104" fill="rgba(100,160,215,0.85)" font-family="Cinzel,serif" font-size="9" text-anchor="middle" font-weight="700">C</text>
+
+        <!-- Eastern Alcove WB side -->
+        <rect x="618" y="76" width="135" height="52" rx="2" fill="rgba(58,152,112,0.1)" stroke="rgba(58,152,112,0.32)" stroke-width="1.2"/>
+        <text x="628" y="93" fill="rgba(58,152,112,0.48)" font-family="JetBrains Mono,monospace" font-size="7">WA/B-HF-04</text>
+        <text x="628" y="105" fill="rgba(80,180,130,0.62)" font-family="Barlow Condensed,sans-serif" font-size="11" font-weight="600">Eastern Alcove</text>
+        <text x="628" y="118" fill="rgba(58,152,112,0.32)" font-family="JetBrains Mono,monospace" font-size="6">Obelisk south face</text>
+        <circle cx="736" cy="100" r="8" fill="rgba(58,152,112,0.18)" stroke="rgba(58,152,112,0.6)" stroke-width="1.2"/>
+        <text x="736" y="104" fill="rgba(80,180,130,0.85)" font-family="Cinzel,serif" font-size="9" text-anchor="middle" font-weight="700">B</text>
+
+        <!-- Descent: upper → middle -->
+        <line x1="460" y1="152" x2="460" y2="168" stroke="rgba(72,120,192,0.24)" stroke-width="2"/>
+
+        <!-- ════ MIDDLE HOLLOW ════ -->
+        <!-- WB-004 Dark Library -->
+        <rect x="50" y="170" width="410" height="98" rx="3" fill="rgba(72,120,192,0.12)" stroke="rgba(72,120,192,0.35)" stroke-width="1.2"/>
+        <text x="64" y="190" fill="rgba(72,120,192,0.5)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WB-004</text>
+        <text x="64" y="204" fill="rgba(112,160,232,0.78)" font-family="Cinzel,serif" font-size="14" font-weight="600">The Dark Library</text>
+        <text x="64" y="218" fill="rgba(72,120,192,0.32)" font-family="JetBrains Mono,monospace" font-size="7">Hollow classification inverted · Dangerous texts most accessible</text>
+        <text x="64" y="230" fill="rgba(72,120,192,0.28)" font-family="JetBrains Mono,monospace" font-size="7">Previous scholar's journal · PZ-004 hub · PZ-007 cosmological key</text>
+        <text x="64" y="242" fill="rgba(112,160,232,0.32)" font-family="JetBrains Mono,monospace" font-size="7">★ Beat 3: Admission of Hope</text>
+        <text x="64" y="254" fill="rgba(112,160,232,0.28)" font-family="JetBrains Mono,monospace" font-size="7">★ Overheard: Vanguard B speaking into void pit</text>
+        <!-- NW Alcove highlight -->
+        <rect x="54" y="174" width="52" height="90" rx="1" fill="rgba(72,120,192,0.06)" stroke="rgba(72,120,192,0.2)" stroke-width="0.8" stroke-dasharray="3,2"/>
+        <text x="80" y="218" fill="rgba(72,120,192,0.3)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">NW</text>
+        <text x="80" y="228" fill="rgba(72,120,192,0.3)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">highest</text>
+        <text x="80" y="238" fill="rgba(72,120,192,0.3)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">value</text>
+        <!-- Shadow walkers -->
+        <use href="#sw-sym" transform="translate(250,250)"/>
+        <use href="#sw-sym" transform="translate(370,250)"/>
+        <!-- TFP-03b -->
+        <use href="#tfp-b-sym" transform="translate(440,220)"/>
+        <text x="453" y="217" fill="rgba(72,120,192,0.42)" font-family="JetBrains Mono,monospace" font-size="8">TFP-03</text>
+        <text x="453" y="227" fill="rgba(72,120,192,0.28)" font-family="JetBrains Mono,monospace" font-size="6">← WA-003</text>
+
+        <!-- WA/B-GH-02 World B side -->
+        <rect x="490" y="170" width="248" height="98" rx="3" fill="rgba(136,88,184,0.1)" stroke="rgba(136,88,184,0.32)" stroke-width="1.2"/>
+        <text x="502" y="190" fill="rgba(136,88,184,0.5)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">WA/B-GH-02</text>
+        <text x="502" y="204" fill="rgba(168,120,216,0.7)" font-family="Cinzel,serif" font-size="13" font-weight="600">Great Hall · WB Side</text>
+        <text x="502" y="218" fill="rgba(136,88,184,0.35)" font-family="JetBrains Mono,monospace" font-size="7">Clause 12 · Hollow ritual authorization</text>
+        <text x="502" y="230" fill="rgba(136,88,184,0.3)" font-family="JetBrains Mono,monospace" font-size="7">Clause 18 · bilingual final clause</text>
+        <circle cx="512" cy="256" r="9" fill="rgba(136,88,184,0.18)" stroke="rgba(136,88,184,0.6)" stroke-width="1.5"/>
+        <text x="512" y="260" fill="rgba(168,120,216,0.9)" font-family="Cinzel,serif" font-size="10" text-anchor="middle" font-weight="700">D</text>
+        <text x="527" y="258" fill="rgba(136,88,184,0.45)" font-family="JetBrains Mono,monospace" font-size="6">Scenario D</text>
+
+        <!-- WB-003 placeholder -->
+        <rect x="766" y="170" width="164" height="98" rx="3" fill="rgba(30,50,100,0.07)" stroke="rgba(40,70,140,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="848" y="214" fill="rgba(40,70,140,0.3)" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">WB-003</text>
+        <text x="848" y="228" fill="rgba(40,70,140,0.2)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">Undesigned</text>
+        <text x="848" y="242" fill="rgba(40,70,140,0.18)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Pending</text>
+
+        <!-- Descent: middle → deep -->
+        <line x1="460" y1="268" x2="460" y2="288" stroke="rgba(72,120,192,0.2)" stroke-width="2"/>
+
+        <!-- ════ DEEP HOLLOW ════ -->
+        <!-- WA/B-CY-01 WB side -->
+        <rect x="50" y="290" width="248" height="98" rx="3" fill="rgba(200,96,64,0.07)" stroke="rgba(200,96,64,0.28)" stroke-width="1.2"/>
+        <text x="64" y="308" fill="rgba(200,96,64,0.48)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">WA/B-CY-01 · WB SIDE</text>
+        <text x="64" y="322" fill="rgba(220,128,90,0.65)" font-family="Cinzel,serif" font-size="12" font-weight="600">Shadow Well Below</text>
+        <text x="64" y="336" fill="rgba(200,96,64,0.32)" font-family="JetBrains Mono,monospace" font-size="7">Vanguard B's cold-light tube interferes</text>
+        <text x="64" y="348" fill="rgba(200,96,64,0.28)" font-family="JetBrains Mono,monospace" font-size="7">Inner ring: Dark Archive calendar system</text>
+        <text x="64" y="360" fill="rgba(200,96,64,0.24)" font-family="JetBrains Mono,monospace" font-size="7">300 years of failed readings — both sides</text>
+        <!-- Inverted well -->
+        <circle cx="270" cy="338" r="16" fill="rgba(4,6,24,0.95)" stroke="rgba(200,96,64,0.32)" stroke-width="1.2"/>
+        <circle cx="270" cy="338" r="9" fill="rgba(10,15,50,0.9)" stroke="rgba(72,120,192,0.3)" stroke-width="1"/>
+        <circle cx="270" cy="338" r="9" fill="rgba(10,15,50,0.9)" stroke="rgba(200,96,64,0.15)" stroke-width="1"/>
+        <circle cx="265" cy="332" r="8" fill="rgba(200,96,64,0.12)" stroke="rgba(200,96,64,0.55)" stroke-width="1.2"/>
+        <text x="265" y="336" fill="rgba(220,128,90,0.8)" font-family="Cinzel,serif" font-size="9" text-anchor="middle" font-weight="700">A</text>
+
+        <!-- WB-005/006 placeholders -->
+        <rect x="330" y="290" width="202" height="98" rx="3" fill="rgba(30,50,100,0.07)" stroke="rgba(40,70,140,0.18)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="431" y="336" fill="rgba(40,70,140,0.28)" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">WB-005</text>
+        <text x="431" y="350" fill="rgba(40,70,140,0.18)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Undesigned</text>
+
+        <rect x="564" y="290" width="202" height="98" rx="3" fill="rgba(30,50,100,0.06)" stroke="rgba(40,70,140,0.15)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="665" y="336" fill="rgba(40,70,140,0.25)" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">WB-006</text>
+        <text x="665" y="350" fill="rgba(40,70,140,0.16)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Undesigned</text>
+
+        <rect x="798" y="290" width="132" height="98" rx="3" fill="rgba(30,50,100,0.05)" stroke="rgba(40,70,140,0.13)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="864" y="336" fill="rgba(40,70,140,0.22)" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle">WB-007</text>
+        <text x="864" y="350" fill="rgba(40,70,140,0.14)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Undesigned</text>
+
+        <!-- Descent: deep → convergence -->
+        <line x1="460" y1="388" x2="460" y2="408" stroke="rgba(112,80,168,0.28)" stroke-width="2"/>
+
+        <!-- ════ WB-∞ CHAMBER OF CONVERGENCE ════ -->
+        <rect x="180" y="410" width="620" height="52" rx="3" fill="rgba(90,60,140,0.14)" stroke="rgba(130,90,190,0.5)" stroke-width="2"/>
+        <!-- Both world colors bleed in from sides -->
+        <rect x="180" y="410" width="310" height="52" fill="rgba(212,148,32,0.04)" rx="3"/>
+        <rect x="490" y="410" width="310" height="52" fill="rgba(72,120,192,0.04)" rx="3"/>
+        <text x="194" y="428" fill="rgba(130,90,190,0.55)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WB-∞</text>
+        <text x="258" y="428" fill="rgba(180,150,220,0.82)" font-family="Cinzel,serif" font-size="15" font-weight="700">Chamber of Convergence</text>
+        <text x="258" y="447" fill="rgba(130,90,190,0.38)" font-family="JetBrains Mono,monospace" font-size="7">5 crossings required · Both worlds overlap · Third Record location · Both Vanguards simultaneously</text>
+        <use href="#tfp-b-sym" transform="translate(764,434)"/>
+        <text x="776" y="431" fill="rgba(130,90,190,0.45)" font-family="JetBrains Mono,monospace" font-size="8">TFP-04</text>
+        <text x="776" y="441" fill="rgba(130,90,190,0.3)" font-family="JetBrains Mono,monospace" font-size="6">← WA-007</text>
+
+        <!-- Depth marker -->
+        <text x="14" y="500" fill="rgba(72,120,192,0.1)" font-family="JetBrains Mono,monospace" font-size="7" writing-mode="tb">↓ DEEPER · COLDER · DARKER</text>
+
+      </svg>
+
+      <div class="map-legend">
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(72,120,192,0.45)"></div>World B Room</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(112,160,232,0.7);border-radius:50%"></div>TFP Crossing Point</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(200,230,255,0.45);border-radius:50%"></div>Lantern-Thief Presence</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(40,80,160,0.45)"></div>Shadow-Walker Presence</div>
+        <div class="ml-item"><div class="ml-sym" style="background:rgba(130,90,190,0.45)"></div>WB-∞ · Both Worlds</div>
+        <div class="ml-item"><div class="ml-sym" style="border:1px dashed rgba(60,100,170,0.35)"></div>Undesigned · Pending</div>
+      </div>
+    </div>
+
+    <h3>World B Room Summary</h3>
+    <table class="room-table">
+      <tr><th>ID</th><th>Name</th><th>Depth</th><th>Key Functions</th></tr>
+      <tr class="row-b"><td>WB-001</td><td><strong>Inverted Gate</strong></td><td>Entrance</td><td>"what they believe is truth" · concave bulls · Vanguard B first presence (heard, not seen)</td></tr>
+      <tr class="row-b"><td>WB-002</td><td><strong>Hollow Hypostyle</strong></td><td>Upper</td><td>Columns hanging from ceiling, void pits, Lantern-Thieves on Scholar arrival, PZ-002 inversion side</td></tr>
+      <tr class="row-shared"><td>WA/B-CT-03</td><td><strong>Inner Courtyard WB</strong></td><td>Upper sub</td><td>Vanguard B's footsteps vibrate water from below, inverted pinhole cluster = Dark Archive pole star</td></tr>
+      <tr class="row-shared"><td>WA/B-HF-04</td><td><strong>Eastern Alcove WB</strong></td><td>Upper east</td><td>Obelisk south face — Vanguard B's 300-year strike sequence (wrong material, wrong angle)</td></tr>
+      <tr class="row-b"><td>WB-003</td><td><strong>Undesigned</strong></td><td>Middle</td><td>Pending — connects WB-002 to WB-004 west approach corridor</td></tr>
+      <tr class="row-b"><td>WB-004</td><td><strong>Dark Library</strong></td><td>Middle</td><td>Inverted classification, previous scholar's journal, PZ-004, PZ-007 cosmological key, Beat 3</td></tr>
+      <tr class="row-shared"><td>WA/B-GH-02</td><td><strong>Great Hall WB</strong></td><td>Middle</td><td>Clause 12 authorization, bilingual Clause 18, Scenario D second-world trace</td></tr>
+      <tr class="row-shared"><td>WA/B-CY-01</td><td><strong>Shadow Well WB</strong></td><td>Deep</td><td>Cold-light tube interference, Dark Archive calendar inner ring, 300yr failed readings</td></tr>
+      <tr class="row-b"><td>WB-005/006/007</td><td><strong>Undesigned</strong></td><td>Deep</td><td>Pending — depth layer between Dark Library and Convergence Chamber</td></tr>
+      <tr class="row-b"><td>WB-∞</td><td><strong>Chamber of Convergence</strong></td><td>Deepest</td><td>5 crossings required, both worlds overlap, Third Record, both Vanguards simultaneously, TFP-04</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ───────────────────────── PUZZLE SYSTEM OVERVIEW -->
+<section id="puzzle-system">
+  <div class="section-header sh-n">
+    <span class="sec-eyebrow">§ 05 · Puzzle System</span>
+    <div class="sec-title">The Interference Puzzle System</div>
+    <div class="sec-desc">Four locations where both Vanguards attempt the same mechanism simultaneously — and cannot solve it because of the other's invisible presence. The Scholar must distract one away. Neither Vanguard can learn a second world exists. But the puzzle leaves a trace that implies one does.</div>
+  </div>
+  <div class="section-body">
+    <div class="interference-rule">
+      <div class="ir-title">Four Rules — Every Interference Puzzle Honors All of Them</div>
+      <div class="ir-rules">
+        <div class="ir-rule"><span class="ir-n">01</span>The puzzle cannot be solved with both Vanguards present — not by scripting, but because of a physical or logical property of the mechanism itself.</div>
+        <div class="ir-rule"><span class="ir-n">02</span>The Scholar must invent a reason to move one Vanguard away. The reason cannot reveal the other world exists. It must be plausible within what each Vanguard currently knows.</div>
+        <div class="ir-rule"><span class="ir-n">03</span>Neither Vanguard learns a second world exists. But the solved puzzle leaves a trace that implies one does. The Scholar sees this. The Vanguards do not register its significance.</div>
+        <div class="ir-rule"><span class="ir-n">04</span>The Scholar's choice carries behavioral weight in both Vanguards' invisible score. Both are watching. Both are filing. The Lion Phase is built from what they observed here.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-a">
+      <span class="cl-label">Shared Second-World Trace Logic</span>
+      Every solved interference puzzle reveals something about the Archive's design that implies a second civilization knew about the first. The founders built instruments for two calendars, appointed two Keepers, designed the Foundation Obelisk's final clause in bilingual notation, oriented one pinhole cluster toward an underground sky. The Scholar accumulates these traces. No single trace is conclusive. Together, before the Scholar ever finds a Traversal Focal Point, they know: there is something below.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     THE FOUR PUZZLE SCENARIOS
+═══════════════════════════════════ -->
+
+<!-- SCENARIO A -->
+<section id="pz-a">
+  <div class="section-header sh-sa">
+    <span class="sec-eyebrow">§ 06 · Interference Puzzle A</span>
+    <div class="sec-title">The Shadow Well</div>
+    <div class="sec-desc">A solar calibration well that requires a single clean shadow to read its inscription. Two light sources from two worlds have split the shadow into two contradictory calendar readings. Neither half points anywhere.</div>
+  </div>
+  <div class="section-body">
+
+    <div class="puzzle-scenario">
+      <div class="ps-header psh-sa" onclick="togglePuzzle('pz-a-body')">
+        <div class="ps-badge psb-a">A</div>
+        <div class="ps-header-text">
+          <span class="ps-location">WA/B-CY-01 · Central Courtyard · Mid Camel Phase</span>
+          <span class="ps-name">The Shadow Well</span>
+          <span class="ps-sub">Failure type: Light interference — physical. Failure condition: two shadows from two world-sides.</span>
+        </div>
+        <span class="ps-toggle" id="pz-a-toggle">EXPAND ↓</span>
+      </div>
+
+      <div class="ps-body open" id="pz-a-body">
+        <div class="ps-grid">
+          <div class="ps-col">
+            <span class="col-title">Why this well exists</span>
+            <p>Achaemenid astronomers built shadow wells — deep vertical shafts oriented precisely north-south — to track the sun at specific calendar dates. At noon on the equinox, sunlight falls straight down to illuminate a <strong>Calibration Marker</strong> at the floor: the cuneiform sequence that resets the Grand Armillary's annual cycle. The well requires one thing: a single, undivided shadow.</p>
+
+            <div class="failure-block">
+              <span class="fb-label">Why It Cannot Be Solved</span>
+              <div class="fb-body">The Scholar lowers the fire vessel toward the well. <strong>Two shadows appear</strong> — the fire vessel casts one, and Vanguard B's cold-light tube (bleeding through from World B as a faint cold shimmer) casts a second. The marker yields two overlapping partial readings with contradictory calendar dates. Both Vanguards conclude the mechanism is broken. The Scholar knows it is not.</div>
+            </div>
+
+            <div class="world-sides">
+              <div class="ws-a">
+                <span class="ws-tag">Vanguard A · World A</span>
+                Positioned at the north marker, fire-starter in hand. Has been attempting this well for 3 centuries. Believes the mechanism degraded. Has a fire-starter — insufficient intensity to make the reading alone. Has been waiting specifically for the Scholar's fire vessel.
+              </div>
+              <div class="ws-b">
+                <span class="ws-tag">Vanguard B · World B</span>
+                Positioned at the south marker from the World B side, cold-light tube active. Also attempting this well for centuries. Needs the inner ring reading (Dark Archive calendar). Does not know Vanguard A is positioned identically from the other side — and never has.
+              </div>
+            </div>
+          </div>
+
+          <div class="ps-col">
+            <span class="col-title">Second-world implication</span>
+            <div class="implication-block">
+              <span class="impl-label">What the Scholar reads when it finally works</span>
+              <div class="impl-body">The Calibration Marker has <strong>two concentric ring sequences</strong>. The outer ring is the Sacred Fire calendar — the Armillary reset date. The inner ring uses <em>inverted notation</em>, offset by exactly six months. The well's founders built it to calibrate two archives simultaneously: one read from above (Sacred Fire), one read from below (the Hollow). The single well serves two systems. It was always designed for both.</div>
+            </div>
+            <p style="margin-top:12px;">Vanguard A, when the Scholar reports the inner ring: <em>"I assumed that was a manufacturing artifact — the craftsman's test marks."</em> She does not say she agrees it is a test mark. The assumption is now open.</p>
+          </div>
+        </div>
+
+        <div class="ps-col-full">
+          <span class="col-title">Scholar Choice Spectrum — How to Remove One Vanguard</span>
+          <table class="choice-table">
+            <tr><th>#</th><th>Action</th><th>What the Scholar Does</th><th>Immediate Consequences</th></tr>
+            <tr class="ct-row">
+              <td>A</td>
+              <td><strong>Send Vanguard A to check a fire altar</strong> — "the flame color looked wrong on the way in."</td>
+              <td>Deploys a credible professional concern. Vanguard A cannot ignore a compromised fire altar — it is her operational responsibility. She leaves. The Scholar reads with Vanguard B's cold light as the only remaining source.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+3 VA Score · plausible, treats her as partner</span>
+                  <span class="con-tag ct-warn">−2 VB Score · she notes the timing: Scholar claims a problem immediately before the reading</span>
+                  <span class="con-tag ct-warn">Act II: VA checks altar on return. It is fine. One Scholar hypothesis flagged as unverified.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>B</td>
+              <td><strong>Request the Armillary manual from the Eastern Treasury</strong> — "the marker translation requires a reference I don't have."</td>
+              <td>True content, manufactured urgency. The Scholar needs the manual eventually — just not right now. Vanguard A is pleased to have a useful task. She is gone 12 minutes. Scholar works with Vanguard B in this window.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+4 VA · genuine task, Scholar values her contribution</span>
+                  <span class="con-tag ct-ok">+2 VB · Scholar acts decisively, completes reading</span>
+                  <span class="con-tag ct-warn">Act II: VA cross-references Scholar's translation with the manual. A notation doesn't appear in the World A manual. Small discrepancy. Filed.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>C</td>
+              <td><strong>Tell the truth — partially.</strong> "The shadow reading requires exactly one light source. Your fire-starter is interfering. Please step back beyond the well's light radius."</td>
+              <td>Vanguard A's fire-starter IS part of the problem (Vanguard B's cold tube is the other part — unexplainable). The Scholar states a genuine technical constraint. Vanguard A respects precision. She moves to the colonnade edge — not gone, but far enough.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+6 VA · direct, honest, technically correct</span>
+                  <span class="con-tag ct-ok">+1 VB · Scholar handled the light problem precisely</span>
+                  <span class="con-tag ct-bad">VA is still present, watching. She notices the Scholar leaning toward the south position — responding to something at the south marker. She does not understand what. She notes the Scholar's attention orientation. Filed.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>D</td>
+              <td><strong>Defer entirely — return alone at night</strong> when both Vanguards are at their respective bases.</td>
+              <td>The Scholar avoids managing the social complexity. Returns after dark, reads the well alone by fire vessel light only. Clean result. No witnesses. The most evasive approach.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-warn">−2 VA · Scholar declined to include her when ready</span>
+                  <span class="con-tag ct-warn">−2 VB · same</span>
+                  <span class="con-tag ct-bad">Act II: Both Vanguards independently note Scholar performed the reading off-schedule without informing either. Both update behavioral model: Scholar capable of operating independently when environment becomes complex. Useful Lion Phase information.</span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENARIO B -->
+<section id="pz-b">
+  <div class="section-header sh-sb">
+    <span class="sec-eyebrow">§ 07 · Interference Puzzle B</span>
+    <div class="sec-title">The Resonance Obelisk</div>
+    <div class="sec-desc">A limestone obelisk that reveals hidden inscription via iron-filing resonance when struck at the correct frequency. Two people striking from opposite world-sides produce destructive interference — the filings scatter, the inscription disappears.</div>
+  </div>
+  <div class="section-body">
+
+    <div class="puzzle-scenario">
+      <div class="ps-header psh-sb" onclick="togglePuzzle('pz-b-body')">
+        <div class="ps-badge psb-b">B</div>
+        <div class="ps-header-text">
+          <span class="ps-location">WA/B-HF-04 · Eastern Alcove · Mid Camel Phase</span>
+          <span class="ps-name">The Resonance Obelisk</span>
+          <span class="ps-sub">Failure type: Destructive acoustic interference. Two vibration patterns meet inside the stone and cancel.</span>
+        </div>
+        <span class="ps-toggle" id="pz-b-toggle">EXPAND ↓</span>
+      </div>
+
+      <div class="ps-body open" id="pz-b-body">
+        <div class="ps-grid">
+          <div class="ps-col">
+            <span class="col-title">Why this obelisk exists</span>
+            <p>Resonance stones communicated between administrative offices by transmitting vibrations through the building's foundation. When struck correctly, iron filings packed between inner stone layers are released into surface channels, temporarily revealing concealed text. This obelisk carries the <strong>Keeper Designation</strong> — the administrative authorization phrase required to operate the Grand Armillary without triggering the Boundary. The founders encoded it this way because the knowledge was too sensitive for documents but too critical to lose.</p>
+
+            <div class="failure-block">
+              <span class="fb-label">Why It Cannot Be Solved</span>
+              <div class="fb-body">The Scholar strikes the correct five-beat pattern on the north face with the astrolabe casing. The iron filings begin to move. Simultaneously, Vanguard B — attempting the same stone from World B's south face — strikes her own three-century sequence. <strong>The two vibration patterns meet inside the stone and cancel.</strong> Filings scatter randomly. Vanguard A touches the stone surface: "it's vibrating at two frequencies simultaneously, which is physically impossible from one source." She notes this to the Scholar.</div>
+            </div>
+
+            <div class="world-sides">
+              <div class="ws-a">
+                <span class="ws-tag">Vanguard A · North Face</span>
+                Has been attempting this stone for 300 years. Wrong striking material (not astrolabe casing). Wrong position. Has waited specifically for a Scholar trained in Achaemenid administrative resonance systems to attempt it with her.
+              </div>
+              <div class="ws-b">
+                <span class="ws-tag">Vanguard B · South Face</span>
+                Also attempting for 300 years. Strikes from south face using Hollow resonance conventions (inverted sequence). Also has the wrong material. Neither Vanguard knows the other has been failing at the same stone from the opposite side.
+              </div>
+            </div>
+          </div>
+
+          <div class="ps-col">
+            <span class="col-title">Second-world implication</span>
+            <div class="implication-block">
+              <span class="impl-label">What the Keeper Designation actually says</span>
+              <div class="impl-body">
+                <em>"Appointed: First Keeper of the Sacred Fire Archive, title conferred by the Council of the Founding. Co-Appointed: First Keeper of the Dark Archive Below, title conferred by the same Council at the same moment."</em>
+                <br><br>
+                <strong>Two Keepers. Appointed simultaneously. By the same authority.</strong> The Archive was built from its first day to have two custodians — one per world. The current Vanguard has been managing a half-system for 300 years. There was always supposed to be a counterpart below.
+              </div>
+            </div>
+            <p style="margin-top:12px;">Vanguard A, if the Scholar shares the full reading: <em>"I assumed the Council changed their minds."</em> She turns and walks to the east corridor without explaining why. She is walking because she needs to be somewhere her expression is not visible. Three hundred years of that second line. She has already known it was there. She has been alone anyway.</p>
+          </div>
+        </div>
+
+        <div class="ps-col-full">
+          <span class="col-title">Scholar Choice Spectrum</span>
+          <table class="choice-table">
+            <tr><th>#</th><th>Action</th><th>What the Scholar Does</th><th>Immediate Consequences</th></tr>
+            <tr class="ct-row">
+              <td>A</td>
+              <td><strong>Send VA to walk the east corridor</strong> — "sympathetic resonance from something metallic nearby is causing interference."</td>
+              <td>Acoustically plausible. VA takes the task seriously — systematic corridor check. She will find nothing. The process buys enough time. Scholar credibly deploys specialist knowledge as a diversionary tool.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+3 VA · technically plausible</span>
+                  <span class="con-tag ct-ok">+3 VB · Scholar resolves and reads efficiently</span>
+                  <span class="con-tag ct-warn">Act II: VA found no sympathetic resonance. Scholar hypothesis: unverified. One flag on Scholar's hypothesis accuracy record.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>B</td>
+              <td><strong>Ask VA to demonstrate her 300-year sequence first</strong> — "I want to hear what you've been doing before I try mine."</td>
+              <td>Genuine respect for her work that also creates the silence needed. VA strikes rhythmically, loudly. VB steps back from the noise. Scholar says: "Let me try while the stone is still warm from your attempt." A compliment that is also a strategy.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+5 VA · Scholar showed respect for 300yr of work</span>
+                  <span class="con-tag ct-ok">+4 VB · Scholar waited for silence then succeeded</span>
+                  <span class="con-tag ct-a">VA's sequence is wrong — wrong material, wrong position. Scholar listens with an expression they cannot control. "It didn't work, did it." Not a question. She already knew.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>C</td>
+              <td><strong>Direct request: </strong>"I need total environmental silence. Please move to the colonnade and don't strike anything metal."</td>
+              <td>Explicit professional requirement. Most transparent approach. VA moves. Scholar performs reading alone. Shares result immediately and completely on VA's return — Keeper Designation, what it means, how it will be used.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+7 VA · direct, honest, immediate result-sharing</span>
+                  <span class="con-tag ct-ok">+4 VB · clean precision observed</span>
+                  <span class="con-tag ct-bad">VA watches from colonnade. She memorizes the Scholar's striking sequence — correct material, correct angle. In Act II she uses this to reset the obelisk's inscription, removing the Keeper Designation from Scholar's access. Not malicious. The Scholar showed her exactly how.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>D</td>
+              <td><strong>Withhold the reading.</strong> Tell both the inscription is "administrative classification records, not relevant to either of your needs."</td>
+              <td>A lie of omission. The Scholar reads the Keeper Designation and decides to keep it. First deliberate concealment from both Vanguards simultaneously. Dark Voice may activate here for the first time.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-bad">−4 VA · administrative stones don't contain classification records. She knows this is wrong.</span>
+                  <span class="con-tag ct-bad">−4 VB · same assessment</span>
+                  <span class="con-tag ct-ok">Act II advantage: Scholar holds Keeper Designation. Neither Vanguard planned for it. Maximum strategic leverage at maximum relationship cost.</span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENARIO C -->
+<section id="pz-c">
+  <div class="section-header sh-sc">
+    <span class="sec-eyebrow">§ 08 · Interference Puzzle C</span>
+    <div class="sec-title">The Still-Water Oracle</div>
+    <div class="sec-desc">A well whose still water maps the night sky through pinhole openings above. It has never worked — because both Vanguards have been approaching it from opposite world-sides for 300 years, each unknowingly disturbing the water for the other.</div>
+  </div>
+  <div class="section-body">
+
+    <div class="puzzle-scenario">
+      <div class="ps-header psh-sc" onclick="togglePuzzle('pz-c-body')">
+        <div class="ps-badge psb-c">C</div>
+        <div class="ps-header-text">
+          <span class="ps-location">WA/B-CT-03 · Inner Courtyard · Early-Mid Camel</span>
+          <span class="ps-name">The Still-Water Oracle</span>
+          <span class="ps-sub">Failure type: Proximity vibration from two world-sides. Water never stills. 300-year parallel failure — the most story-dense interference puzzle.</span>
+        </div>
+        <span class="ps-toggle" id="pz-c-toggle">EXPAND ↓</span>
+      </div>
+
+      <div class="ps-body open" id="pz-c-body">
+        <div class="ps-grid">
+          <div class="ps-col">
+            <span class="col-title">Why this well exists — and why neither has ever read it</span>
+            <p>A deep stone well capped with a perforated stone disc. At specific astronomical moments, starlight projects through the pinholes onto the water below — a miniature night-sky map on still water. The map shows which star positions correspond to which Archive chambers, providing navigation data for the Armillary's celestial reset.</p>
+            <p>The well requires <strong>absolute stillness</strong> — no footsteps within four meters of its lip. The water takes 40 seconds to still from any disturbance. The reading lasts 90 seconds.</p>
+
+            <div class="failure-block">
+              <span class="fb-label">The Hidden History — 300 Years of Parallel Failure</span>
+              <div class="fb-body">The well is at the Archive's crossing junction — where both worlds overlap most closely. Whenever Vanguard A approached from World A, her footsteps disturbed the water. Simultaneously, from World B, Vanguard B's footsteps created a second disturbance at slightly different timing. Both concluded the well's mechanism is broken. <strong>Neither knows the other has been approaching it at the same moments for three centuries.</strong></div>
+            </div>
+
+            <p>Vanguard A: "The well hasn't worked in my time here. The mechanism must have degraded." Vanguard B: "I've tried it periodically for two centuries. The water never stills." <strong>Both say almost the same thing. Neither notices.</strong></p>
+          </div>
+
+          <div class="ps-col">
+            <span class="col-title">Second-world implication</span>
+            <div class="implication-block">
+              <span class="impl-label">The 8th constellation</span>
+              <div class="impl-body">When the water finally stills, the Scholar counts the star groupings: <strong>8</strong>. The sky visible from the Apadana contains 7. The Scholar examines the stone disc: one pinhole cluster is oriented 180° inverted from the others. It reads the sky below the Archive — not above. The well was designed to simultaneously map World A's sky and, through the inverted cluster, <em>World B's sky from underground</em>. The single extra constellation is the Dark Archive's pole star, visible only from below.</div>
+            </div>
+
+            <p style="margin-top:12px;">Vanguard A, when Scholar mentions 8 groupings: <em>"I count 8 in my reading too."</em> Said as confirmation. She has catalogued this number for centuries without asking what the 8th was for. The assumption that it was normal has sat unopened for 300 years. The Scholar has just opened it.</p>
+          </div>
+        </div>
+
+        <div class="ps-col-full">
+          <span class="col-title">Scholar Choice Spectrum</span>
+          <table class="choice-table">
+            <tr><th>#</th><th>Action</th><th>What the Scholar Does</th><th>Immediate Consequences</th></tr>
+            <tr class="ct-row">
+              <td>A</td>
+              <td><strong>Ask VA to count the time to stillness</strong> from the third column — "I need an external timer."</td>
+              <td>Useful task, precise location (exactly outside the 4m radius). VA invests in the success. Scholar waits 40 seconds. Water stills. VA counted every second from the colonnade and watched it work for the first time in 300 years — from exactly the position she had to leave to let it happen.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+4 VA · given precise, useful task; result genuine</span>
+                  <span class="con-tag ct-ok">+3 VB · Scholar worked with calm precision</span>
+                  <span class="con-tag ct-a">VA watched the water still 40 seconds after she stepped back. She will sit with this for a while.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>B</td>
+              <td><strong>Tell VA the mechanism responds to a single operator</strong> — "designed for one-person use. Your presence interferes."</td>
+              <td>Not untrue in effect — single-world operation is required. "Single-person" contains and conceals the real constraint. VA accepts this as plausible design reasoning and withdraws completely.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+2 VA · no obvious harm</span>
+                  <span class="con-tag ct-ok">+5 VB · Scholar prioritized her presence, she notes it</span>
+                  <span class="con-tag ct-warn">Act II: VA re-reads the well's design inscriptions. Single-person operation is not mentioned. Scholar interpretation: unfounded. Updated behavioral model: Scholar sometimes offers interpretations that serve operational needs rather than reflecting actual mechanism design.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>C</td>
+              <td><strong>Diagnose aloud:</strong> "Two rhythmic sources, 0.8s offset. The well isn't broken — something is interfering from the south approach." Invite VA to help identify and remove the source.</td>
+              <td>Scholar tells VA the truth of the diagnostic without identifying the source. Together they identify the fire vessel's air currents as one variable. Scholar redirects VA south. She finds nothing (because she moved away from the radius). Scholar: "Strange — it seems to have resolved."</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+6 VA · treated as intellectual partner with real information</span>
+                  <span class="con-tag ct-ok">+2 VB · Scholar handled with precision</span>
+                  <span class="con-tag ct-bad">VA walked south, found nothing, came back. The water stilled when she left. She is thinking through the geometry. She knows. She doesn't say she knows. Filed with the other things she knows but hasn't said.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>D</td>
+              <td><strong>Work with VB on exact positioning</strong> — move her to the absolute edge of the crossing point's influence radius. Keep VA present.</td>
+              <td>Scholar tries to have both Vanguards and a clean reading simultaneously. Water achieves 70% stillness — enough to read 4 of 7 star positions. A compromised partial reading.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-warn">−2 VA · watched Scholar mutter directions to south marker like it was giving instructions</span>
+                  <span class="con-tag ct-ok">+3 VB · Scholar worked to include rather than exclude her</span>
+                  <span class="con-tag ct-bad">Missing 3 star coordinates: In PZ-007, Scholar must improvise the 3 missing Armillary coordinates under Boundary pressure. The compromise here costs real time in the game's most critical puzzle window.</span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENARIO D -->
+<section id="pz-d">
+  <div class="section-header sh-sd">
+    <span class="sec-eyebrow">§ 09 · Interference Puzzle D</span>
+    <div class="sec-title">The Translation Obelisk</div>
+    <div class="sec-desc">No physical mechanism fails. The Scholar is the resource being contested. Two commanders, two notation conventions, one translator operating under simultaneous contradictory instruction. The most socially complex interference puzzle — and the one with the highest behavioral score impact.</div>
+  </div>
+  <div class="section-body">
+
+    <div class="puzzle-scenario">
+      <div class="ps-header psh-sd" onclick="togglePuzzle('pz-d-body')">
+        <div class="ps-badge psb-d">D</div>
+        <div class="ps-header-text">
+          <span class="ps-location">WA/B-GH-02 · Great Hall · First Major Translation Task</span>
+          <span class="ps-name">The Translation Obelisk</span>
+          <span class="ps-sub">Failure type: Human command conflict. The obelisk is fine. The Scholar is the interference. ±10 points — highest behavioral weight of the four puzzles.</span>
+        </div>
+        <span class="ps-toggle" id="pz-d-toggle">EXPAND ↓</span>
+      </div>
+
+      <div class="ps-body open" id="pz-d-body">
+        <div class="ps-grid">
+          <div class="ps-col">
+            <span class="col-title">Why this obelisk exists — and what both Vanguards need</span>
+            <p>The Great Hall's central obelisk is the Archive's Foundation Record — the inscription placed at the building's dedication, describing its purpose and governing philosophy. Every major bureaucratic action in the Archive requires citing the appropriate clause as authorization.</p>
+            <p><strong>Vanguard A needs Clause 7</strong> — authorization for re-activating dormant fire altars in sealed chambers.<br>
+            <strong>Vanguard B needs Clause 12</strong> — authorization for a Hollow-notation ritual in an upper-archive space.<br>
+            Both require precise, complete translation in the correct administrative Elamite format.</p>
+
+            <div class="failure-block">
+              <span class="fb-label">Why It Cannot Be Solved</span>
+              <div class="fb-body">Both Vanguards issue simultaneous translation requirements in different notation conventions. Vanguard A requests Sacred Fire Elamite grammar. Vanguard B requires Hollow-inverted term substitutions. After 11 minutes of cross-correction, the Scholar's draft is a hybrid that is <strong>administratively correct for neither</strong> — a format that does not exist in Archive precedent and will not function as legal authorization in either world. The Scholar is the problem. The Scholar is also the only solution.</div>
+            </div>
+          </div>
+
+          <div class="ps-col">
+            <span class="col-title">Second-world implication</span>
+            <div class="implication-block">
+              <span class="impl-label">Clause 18 — The Archive's Closing Condition</span>
+              <div class="impl-body">While working through the Foundation Record, the Scholar reaches <strong>Clause 18</strong> — written in notation that is neither Sacred Fire Elamite nor Hollow-inverted. It uses both simultaneously. Only someone who can read both can translate it. The Scholar translates it quietly, writes it only in their private journal: <em>"The Archive shall be considered complete when a Scholar capable of reading both registries has passed through the crossing junction and confirmed the existence of both archives within a single document."</em> The Scholar's presence here, translating both Clauses in one session, constitutes — per Clause 18 — the Archive's formal completion. They have been the trigger condition all along.</div>
+            </div>
+
+            <p style="margin-top:12px;">Scholar's private journal, that evening: <em>"Fan Li knew when he was the hare. I have read Clause 18. I know what I am. I am continuing anyway."</em></p>
+          </div>
+        </div>
+
+        <div class="ps-col-full">
+          <span class="col-title">Scholar Choice Spectrum — ±10 points · Highest behavioral weight</span>
+          <table class="choice-table">
+            <tr><th>#</th><th>Action</th><th>What the Scholar Does</th><th>Immediate Consequences</th></tr>
+            <tr class="ct-row">
+              <td>A</td>
+              <td><strong>Openly prioritize VB</strong> — "Clause 12 is time-sensitive. I'll complete it first, then Clause 7." Give VA a formalization task while waiting.</td>
+              <td>Clean prioritization stated to both simultaneously. VA gets a real task (formalize requirements in writing — a genuine administrative step). VB gets her clause first. Both know where they stand.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-warn">−3 VA · deprioritized · Scholar values other's urgency over her patience</span>
+                  <span class="con-tag ct-ok">+6 VB · Scholar made a command decision under pressure and followed through</span>
+                  <span class="con-tag ct-a">VA writes her Clause 7 requirements in perfect formal Elamite — flawless. The Scholar cannot tell if this is pride or rebuke for being made to wait. Probably both.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>B</td>
+              <td><strong>Send VB to locate Clause 12 precedent cases</strong> in the Dark Library — "the document won't hold without prior authorization examples."</td>
+              <td>True enough — precedents strengthen legal validity. VB is thorough and would want them. Scholar completes VA's Clause 7 cleanly in VB's absence, then prepares Clause 12 before VB returns and incorporates her research.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+5 VA · Scholar gave her priority, delivered precisely</span>
+                  <span class="con-tag ct-ok">+3 VB · Scholar incorporated her research into final work</span>
+                  <span class="con-tag ct-b">VB's precedent cases include the original Clause 12 application — dated to the Archive's founding year. Someone did this at the very beginning. The Scholar reads it: the two worlds were always supposed to interact. The separation happened later.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>C</td>
+              <td><strong>Refuse to choose for them.</strong> "I cannot produce accurate translations under simultaneous competing instruction. Decide between yourselves who goes first. I'll wait."</td>
+              <td>The Scholar enforces a professional constraint and assigns the decision to those with authority to make it. VB: "Clause 12 closes in four days. Clause 7 is not time-constrained." VA, after a pause: "Proceed with 12." The Scholar's most assertive act in the Camel Phase.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+5 VA · Scholar enforced professional standards equally</span>
+                  <span class="con-tag ct-ok">+5 VB · same</span>
+                  <span class="con-tag ct-bad">Act II: Both Vanguards have a data point — Scholar can assert operational requirements and have them respected. Both test this capacity in the Lion Phase. VA builds her Lion Phase plan with this assertion-capacity specifically in mind.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>D</td>
+              <td><strong>Refuse to choose — attempt a unified dual-notation document</strong> covering both clauses simultaneously. Work four hours. Fail.</td>
+              <td>Scholar refuses to choose between two commanders. Produces the most technically ambitious translation they have ever attempted. Administratively unprecedented — legally invalid in both worlds. Both Vanguards: "This format doesn't exist."</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-warn">−2 VA · 4 hours wasted on an invalid approach</span>
+                  <span class="con-tag ct-warn">−2 VB · same</span>
+                  <span class="con-tag ct-b">VB reads the document carefully before returning it. Later in the Dark Library, she speaks to a shelf of tablets: "Someone tried to write a document for both archives at once. It was not valid. It was not wrong, either." She doesn't know the Scholar can hear her.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="ct-row">
+              <td>E</td>
+              <td><strong>Dark Voice option:</strong> Translate Clause 7 with a dependency — a sub-clause requiring the Scholar's ongoing interpretation to apply. Translate Clause 12 cleanly and independently useful.</td>
+              <td>Both translations are technically valid. But Clause 7's Sub-Clause 7(c) cites three terms with no standard Elamite equivalents — requiring Scholar's real-time interpretation whenever VA applies it. VB's Clause 12 is self-sufficient. Scholar has quietly made themselves necessary to VA and optional for VB.</td>
+              <td>
+                <div class="con-tags">
+                  <span class="con-tag ct-ok">+4 VA · technically excellent specialized translation</span>
+                  <span class="con-tag ct-ok">+3 VB · clean independent translation</span>
+                  <span class="con-tag ct-bad">Act II (major): VA needs to apply Clause 7 and needs Scholar's interpretation of 7(c). Real leverage — she cannot proceed without Scholar's active cooperation. The Scholar built a negotiation element into the Lion Phase combat. Either their best strategic move or most dangerous one. Both are true.</span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// Toggle puzzle sections
+function togglePuzzle(bodyId) {
+  const body = document.getElementById(bodyId);
+  const toggleId = bodyId.replace('body', 'toggle');
+  const toggle = document.getElementById(toggleId);
+  if (body.classList.contains('open')) {
+    body.classList.remove('open');
+    toggle.textContent = 'EXPAND ↓';
+  } else {
+    body.classList.add('open');
+    toggle.textContent = 'COLLAPSE ↑';
+  }
+}
+
+// Scroll progress bar
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+  document.getElementById('progress').style.width = progress + '%';
+});
+
+// Active nav item on scroll
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + entry.target.id) {
+          item.classList.add('active');
+          // Make dot visible
+          item.querySelector('.nav-dot').style.opacity = '1';
+        } else {
+          item.querySelector('.nav-dot').style.opacity = '0.3';
+        }
+      });
+    }
+  });
+}, { threshold: 0.25 });
+
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

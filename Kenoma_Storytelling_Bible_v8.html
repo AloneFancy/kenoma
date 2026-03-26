@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KENOMA — Storytelling Bible · Persian Edition · v8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cinzel:wght@400;500;600;700;900&family=Cinzel+Decorative:wght@400;700;900&family=IM+Fell+English:ital@0;1&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/*
+  DESIGN CONCEPT:
+  An illuminated Persian imperial document
+  that has been classified, photocopied,
+  and annotated by a game development team
+  working three hundred years later.
+  The original beauty still shows through
+  the bureaucratic overlay.
+
+  AESTHETIC: Architectural blueprint meets
+  illuminated manuscript. Navy-black ground
+  with aged parchment pages inset.
+  Fire-amber World A · Ice-blue World B.
+  Typefaces: Cinzel Decorative (display) /
+  IM Fell English (body — has the weight
+  of something that has been typeset for
+  centuries) / Courier Prime (codes, tags).
+*/
+
+:root {
+  /* Ground */
+  --gnd:      #060810;
+  --gnd2:     #0c0e18;
+  --gnd3:     #121420;
+
+  /* Parchment — warm */
+  --pg:       #f4e9ce;
+  --pgw:      #ede0b8;
+  --pgm:      #dfd0a0;
+  --pgd:      #c8b870;
+  --pgdk:     #b0a050;
+  --ink:      #1a140a;
+  --inkm:     #2c1c0a;
+  --inkl:     #483014;
+  --muted:    #7a5a2c;
+  --faded:    #a07838;
+
+  /* World A — Sacred Fire */
+  --fire:     #b03010;
+  --firel:    #d85020;
+  --fireg:    #c89020;
+  --amber:    #c89828;
+  --gold:     #b08820;
+  --goldl:    #d4a828;
+
+  /* World B — The Hollow / Darkness */
+  --cold:     #0a0c1e;
+  --deep:     #0e1228;
+  --lapis:    #1a3068;
+  --lapisl:   #2a50a8;
+  --lapislp:  #5880d0;
+  --ice:      #a8c0e8;
+  --icepl:    #c8dcf4;
+
+  /* Blueprint grid tint */
+  --grid:     rgba(168,192,232,0.04);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--gnd);
+  font-family:'IM Fell English',Georgia,serif;
+  font-size:18px;
+  line-height:1.88;
+  color:var(--ink);
+}
+
+.page{max-width:1040px;margin:0 auto;}
+
+/* ────────────────────────────────────────
+   BLUEPRINT GRID OVERLAY — persistent
+   Gives the ground a technical precision
+   against which the warm parchment lives
+──────────────────────────────────────── */
+body::before{
+  content:'';
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+.page{position:relative;z-index:1;}
+
+/* ────────────────────────────────────────
+   COVER
+──────────────────────────────────────── */
+.cover{
+  min-height:100vh;
+  background:var(--gnd);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+
+/* Persian geometric ornament — CSS only */
+.cv-ornament{
+  position:absolute;
+  width:400px;height:400px;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.cv-ornament::before{
+  content:'';position:absolute;inset:0;
+  border:1px solid rgba(192,152,40,0.07);
+  border-radius:50%;
+}
+.cv-ornament::after{
+  content:'';position:absolute;inset:30px;
+  border:1px solid rgba(192,152,40,0.05);
+  border-radius:50%;
+  transform:rotate(45deg);
+}
+
+/* Corner markers — blueprint style */
+.cv-corner{
+  position:absolute;
+  width:50px;height:50px;
+  border-style:solid;
+  border-color:rgba(192,152,40,0.22);
+}
+.cv-corner.tl{top:32px;left:32px;border-width:2px 0 0 2px;}
+.cv-corner.tr{top:32px;right:32px;border-width:2px 2px 0 0;}
+.cv-corner.bl{bottom:32px;left:32px;border-width:0 0 2px 2px;}
+.cv-corner.br{bottom:32px;right:32px;border-width:0 2px 2px 0;}
+
+/* Thin horizontal rule across the full cover — like a drawing border */
+.cv-rule{
+  position:absolute;
+  left:32px;right:32px;height:1px;
+  background:rgba(192,152,40,0.1);
+}
+.cv-rule.top{top:80px;}
+.cv-rule.bot{bottom:80px;}
+
+.cv-body{
+  position:relative;z-index:2;
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:100px 80px 70px;
+  text-align:center;
+}
+
+.cv-farsi{
+  font-family:'Noto Nastaliq Urdu',serif;
+  font-size:15px;color:rgba(192,152,40,0.2);
+  letter-spacing:3px;display:block;margin-bottom:44px;
+  direction:rtl;
+}
+.cv-eyebrow{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:7px;
+  text-transform:uppercase;
+  color:rgba(192,152,40,0.28);
+  display:block;margin-bottom:18px;
+}
+.cv-title{
+  font-family:'Cinzel Decorative',serif;
+  font-size:108px;font-weight:900;
+  line-height:.86;letter-spacing:-4px;
+  background:linear-gradient(172deg,
+    rgba(244,215,100,0.9) 0%,
+    rgba(194,138,28,0.65) 42%,
+    rgba(108,68,8,0.42) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;color:transparent;
+  margin-bottom:18px;
+}
+.cv-sub{
+  font-family:'Cinzel',serif;
+  font-size:11.5px;font-weight:500;
+  letter-spacing:6px;text-transform:uppercase;
+  color:rgba(192,152,40,0.25);
+  margin-bottom:50px;
+}
+
+/* Two-world split bar */
+.cv-worlds{
+  display:grid;grid-template-columns:1fr 1px 1fr;
+  max-width:660px;width:100%;
+  margin-bottom:44px;
+}
+.cv-div{background:rgba(192,152,40,0.15);}
+.cv-wa,.cv-wb{padding:18px 26px;text-align:left;}
+.cv-wa{
+  border:1px solid rgba(176,80,24,0.18);
+  border-right:none;
+  background:rgba(176,80,24,0.05);
+}
+.cv-wb{
+  border:1px solid rgba(42,80,168,0.18);
+  background:rgba(42,80,168,0.06);
+}
+.cv-wtag{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:4px;
+  text-transform:uppercase;display:block;margin-bottom:6px;
+}
+.cv-wa .cv-wtag{color:rgba(216,128,48,0.48);}
+.cv-wb .cv-wtag{color:rgba(160,195,240,0.38);}
+.cv-wname{
+  font-family:'Cinzel',serif;
+  font-size:13px;font-weight:600;
+  display:block;margin-bottom:5px;
+}
+.cv-wa .cv-wname{color:rgba(244,195,80,0.52);}
+.cv-wb .cv-wname{color:rgba(185,210,244,0.44);}
+.cv-wdesc{
+  font-family:'IM Fell English',serif;
+  font-size:13.5px;font-style:italic;line-height:1.6;
+}
+.cv-wa .cv-wdesc{color:rgba(200,138,58,0.38);}
+.cv-wb .cv-wdesc{color:rgba(140,175,225,0.32);}
+
+.cv-logline{
+  font-family:'IM Fell English',serif;
+  font-size:20px;font-style:italic;
+  color:rgba(228,202,148,0.36);
+  max-width:580px;line-height:1.72;
+  margin-bottom:50px;
+}
+
+.cv-srcs{
+  display:flex;flex-wrap:wrap;gap:5px;justify-content:center;
+  max-width:680px;
+}
+.cvs{
+  font-family:'Courier Prime',monospace;
+  font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;padding:3px 8px;border:1px solid;
+}
+.cs-lit{border-color:rgba(176,80,24,0.28);color:rgba(200,115,55,0.42);}
+.cs-gm {border-color:rgba(42,80,168,0.28);color:rgba(120,162,225,0.38);}
+.cs-mv {border-color:rgba(38,128,68,0.28);color:rgba(75,175,110,0.38);}
+
+.cv-foot{
+  position:relative;z-index:2;
+  padding:16px 80px;
+  border-top:1px solid rgba(192,152,40,0.08);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.cv-foot span{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;color:rgba(192,152,40,0.14);
+}
+
+/* ────────────────────────────────────────
+   CHAPTER DIVIDERS
+──────────────────────────────────────── */
+.chapter{
+  background:var(--gnd2);
+  padding:44px 80px;
+  border-top:2px solid var(--fire);
+  position:relative;overflow:hidden;
+}
+.chapter.ch-cold{border-top-color:var(--lapis);}
+
+/* Large ghosted chapter number */
+.chapter::after{
+  content:attr(data-n);
+  position:absolute;right:52px;top:50%;
+  transform:translateY(-50%);
+  font-family:'Cinzel Decorative',serif;
+  font-size:140px;font-weight:900;
+  color:rgba(192,152,40,0.032);
+  line-height:1;pointer-events:none;
+  letter-spacing:-5px;
+}
+
+.ch-n{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:6px;
+  text-transform:uppercase;
+  color:rgba(192,152,40,0.3);
+  display:block;margin-bottom:8px;
+}
+.ch-title{
+  font-family:'Cinzel Decorative',serif;
+  font-size:26px;font-weight:700;
+  color:var(--pgw);line-height:1.18;margin-bottom:6px;
+}
+.ch-sub{
+  font-family:'IM Fell English',serif;
+  font-size:15.5px;font-style:italic;
+  color:rgba(200,162,68,0.26);display:block;
+}
+
+/* ────────────────────────────────────────
+   SECTION HEADS
+──────────────────────────────────────── */
+.sh{
+  padding:22px 80px 14px;
+  background:var(--pgw);
+  border-bottom:1px solid var(--pgm);
+  border-left:4px solid var(--fire);
+}
+.sh.sh-c{border-left-color:var(--lapis);}
+.sh-n{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--firel);
+  display:block;margin-bottom:4px;
+}
+.sh.sh-c .sh-n{color:var(--lapisl);}
+.sh-title{
+  font-family:'Cinzel',serif;
+  font-size:18px;font-weight:600;color:var(--ink);
+}
+
+/* ────────────────────────────────────────
+   BODY SECTIONS
+──────────────────────────────────────── */
+.bd{
+  padding:28px 80px 30px;
+  background:var(--pg);
+  border-bottom:1px solid var(--pgm);
+}
+.bd-a{
+  padding:28px 80px 30px;
+  background:#fbf4e0;
+  border-left:4px solid rgba(176,80,24,0.28);
+  border-bottom:1px solid var(--pgm);
+}
+.bd-b{
+  padding:28px 80px 30px;
+  background:#0c0a20;
+  border-left:4px solid rgba(42,80,168,0.38);
+  border-bottom:1px solid rgba(42,80,168,0.12);
+}
+
+/* Typography */
+.bd p,.bd-a p{
+  margin-bottom:13px;font-size:17.5px;color:var(--inkl);
+}
+.bd p strong,.bd-a p strong{color:var(--ink);}
+.bd-b p{
+  margin-bottom:13px;font-size:17px;
+  color:rgba(205,190,158,0.62);
+}
+.bd-b p strong{color:rgba(226,212,178,0.8);}
+p:last-child{margin-bottom:0;}
+em{font-style:italic;}
+
+h3{
+  font-family:'Cinzel',serif;
+  font-size:11px;font-weight:600;
+  letter-spacing:3.5px;text-transform:uppercase;
+  color:var(--fire);margin:28px 0 13px;
+  padding-bottom:6px;border-bottom:1px solid var(--pgm);
+}
+h3:first-child{margin-top:0;}
+h3.h3c{color:var(--lapisl);border-bottom-color:rgba(42,80,168,0.18);}
+
+h4{
+  font-family:'Cinzel',serif;
+  font-size:14px;font-weight:600;
+  color:var(--inkm);margin:18px 0 8px;letter-spacing:1px;
+}
+
+/* Source tags */
+.strow{margin:8px 0 18px;display:flex;flex-wrap:wrap;gap:5px;}
+.st{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:2px;
+  text-transform:uppercase;
+  padding:2px 7px;border:1px solid;display:inline-block;
+}
+.stl{border-color:rgba(176,80,24,0.38);color:rgba(180,95,35,0.58);}
+.stg{border-color:rgba(42,80,168,0.38);color:rgba(85,130,205,0.58);}
+.stm{border-color:rgba(38,128,68,0.38);color:rgba(58,165,92,0.52);}
+
+/* ────────────────────────────────────────
+   GLOSSARY / NAMING TABLE
+──────────────────────────────────────── */
+.glossary{
+  border:1px solid var(--pgd);
+  border-top:3px solid var(--amber);
+  margin:20px 0;overflow:hidden;
+}
+.gls-hd{
+  background:var(--inkm);
+  padding:12px 20px;
+  display:flex;gap:16px;align-items:center;
+}
+.gls-hd-t{
+  font-family:'Cinzel',serif;
+  font-size:13px;font-weight:600;color:var(--pgw);
+}
+.gls-hd-sub{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(192,152,40,0.38);
+}
+.gls-grid{
+  display:grid;
+  grid-template-columns:200px 220px 1fr;
+}
+.gls-row{display:contents;}
+.gls-col-hd{
+  background:var(--pgm);padding:9px 14px;
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--inkm);
+  border-bottom:2px solid var(--pgd);
+}
+.gls-k,.gls-v,.gls-d{
+  padding:7px 14px;
+  border-bottom:1px solid var(--pgm);
+  font-size:15px;
+}
+.gls-k{
+  font-family:'Courier Prime',monospace;
+  font-size:11px;font-weight:700;color:var(--amber);
+  background:var(--pgw);border-right:1px solid var(--pgm);
+}
+.gls-v{
+  font-family:'Cinzel',serif;
+  font-size:13px;font-weight:600;color:var(--inkm);
+  background:var(--pg);border-right:1px solid var(--pgm);
+}
+.gls-d{background:var(--pg);color:var(--inkl);font-style:italic;}
+
+/* ────────────────────────────────────────
+   PHILOSOPHY CALLOUT
+──────────────────────────────────────── */
+.phil{
+  background:var(--pgw);
+  border:1px solid var(--pgd);
+  border-left:4px solid var(--amber);
+  padding:14px 20px;margin:18px 0;
+}
+.phil-lbl{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--amber);
+  display:block;margin-bottom:6px;
+}
+.phil p{font-size:16px;font-style:italic;color:var(--inkl);margin:0;}
+
+/* ────────────────────────────────────────
+   ILLUMINATED QUOTE
+──────────────────────────────────────── */
+.qblock{
+  background:var(--gnd);
+  padding:26px 36px;margin:22px 0;
+  border-left:3px solid rgba(192,152,40,0.32);
+}
+.qb-farsi{
+  font-family:'Noto Nastaliq Urdu',serif;
+  font-size:20px;color:rgba(192,152,40,0.42);
+  display:block;margin-bottom:10px;
+  direction:rtl;text-align:left;line-height:1.9;
+}
+.qb-t{
+  font-size:20px;font-style:italic;
+  color:rgba(230,204,148,0.48);
+  display:block;line-height:1.75;
+}
+.qb-a{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;
+  color:rgba(192,152,40,0.22);
+  display:block;margin-top:10px;
+}
+
+/* ────────────────────────────────────────
+   SPLIT PANEL — WORLD A / WORLD B
+──────────────────────────────────────── */
+.split{
+  display:grid;grid-template-columns:1fr 28px 1fr;
+  margin:22px 0;overflow:hidden;
+}
+.sp-a{background:rgba(176,80,24,0.07);padding:20px 22px;}
+.sp-b{background:rgba(42,80,168,0.1);padding:20px 22px;}
+.sp-div{
+  background:var(--gnd3);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.sp-line{
+  flex:1;width:1px;
+  background:linear-gradient(to bottom,
+    transparent,rgba(192,152,40,0.3),transparent);
+}
+.sp-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--amber);
+  box-shadow:0 0 10px rgba(192,152,40,0.6);
+}
+.sp-tag{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:3px;
+  text-transform:uppercase;display:block;margin-bottom:9px;
+}
+.sp-a .sp-tag{color:rgba(216,128,48,0.48);}
+.sp-b .sp-tag{color:rgba(160,195,240,0.4);}
+.sp-name{
+  font-family:'Cinzel',serif;
+  font-size:13px;font-weight:600;display:block;margin-bottom:8px;
+}
+.sp-a .sp-name{color:rgba(244,195,80,0.58);}
+.sp-b .sp-name{color:rgba(185,210,244,0.5);}
+.sp-body{font-size:14.5px;line-height:1.7;}
+.sp-a .sp-body{color:rgba(148,98,38,0.7);}
+.sp-b .sp-body{color:rgba(128,162,218,0.56);}
+
+/* ────────────────────────────────────────
+   ROOM CARDS
+──────────────────────────────────────── */
+.room{
+  border:1px solid var(--pgd);
+  margin:22px 0;overflow:hidden;
+  background:var(--pgw);
+}
+.room.rb{background:#0d0b20;border-color:rgba(42,80,168,0.2);}
+.room-hd{
+  background:var(--inkm);
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.room-id{
+  font-family:'Courier Prime',monospace;
+  font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:rgba(192,152,40,0.44);
+}
+.room-name{
+  font-family:'Cinzel',serif;
+  font-size:14px;font-weight:600;color:var(--pgw);
+}
+.room-tag{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:2px;
+  text-transform:uppercase;padding:3px 8px;
+}
+.rta{background:rgba(176,80,24,0.32);color:rgba(244,185,68,0.68);}
+.rtb{background:rgba(42,80,168,0.32);color:rgba(180,210,244,0.62);}
+.room-body{padding:18px 20px;}
+.room-body p{font-size:15.5px;margin-bottom:9px;color:var(--inkl);}
+.rb .room-body p{color:rgba(188,198,228,0.54);}
+.room-cols{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:14px;margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--pgm);
+}
+.rb .room-cols{border-top-color:rgba(42,80,168,0.14);}
+.rc-hd{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--firel);
+  display:block;margin-bottom:6px;
+}
+.rb .rc-hd{color:var(--lapisl);}
+.rc-b{font-size:14.5px;line-height:1.65;color:var(--muted);}
+.rb .rc-b{color:rgba(135,168,215,0.5);}
+
+/* ────────────────────────────────────────
+   PUZZLE BLOCKS
+──────────────────────────────────────── */
+.puzzle{
+  border:1px solid var(--pgd);
+  border-top:3px solid var(--amber);
+  margin:22px 0;overflow:hidden;
+}
+.pz-hd{
+  background:var(--pgm);padding:12px 20px;
+  display:flex;align-items:center;gap:14px;
+  border-bottom:1px solid var(--pgd);
+}
+.pz-id{
+  font-family:'Courier Prime',monospace;
+  font-size:10px;font-weight:700;
+  color:var(--amber);background:var(--pgdk);
+  padding:2px 8px;flex-shrink:0;
+}
+.pz-name{
+  font-family:'Cinzel',serif;
+  font-size:14.5px;font-weight:600;color:var(--ink);flex:1;
+}
+.pz-tag{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+}
+.pz-body{padding:16px 20px;}
+.pz-body p{font-size:15.5px;color:var(--inkl);margin-bottom:9px;}
+.pz-body ol{padding:0;list-style:none;counter-reset:pz;}
+.pz-body li{
+  counter-increment:pz;
+  display:flex;gap:12px;align-items:flex-start;
+  margin-bottom:8px;font-size:15px;color:var(--inkl);
+}
+.pz-body li::before{
+  content:counter(pz);
+  font-family:'Courier Prime',monospace;
+  font-size:10px;font-weight:700;color:var(--amber);
+  background:var(--pgm);padding:2px 7px;
+  flex-shrink:0;margin-top:3px;
+}
+.pz-why{
+  background:var(--gnd);
+  padding:13px 20px;
+  margin:12px -20px -16px;
+  border-top:1px solid var(--pgd);
+}
+.pz-why-h{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:3px;
+  text-transform:uppercase;color:rgba(192,152,40,0.3);
+  display:block;margin-bottom:5px;
+}
+.pz-why-b{
+  font-size:14.5px;font-style:italic;
+  color:rgba(218,190,130,0.48);line-height:1.7;
+}
+
+/* ────────────────────────────────────────
+   SCENE SCRIPTS
+──────────────────────────────────────── */
+.scene{
+  background:var(--gnd);
+  padding:24px 36px;margin:22px 0;
+  border-left:3px solid rgba(192,152,40,0.28);
+}
+.sc-dir{
+  font-size:13.5px;font-style:italic;
+  color:rgba(192,152,40,0.3);
+  display:block;margin:12px 0 6px;line-height:1.65;
+}
+.sc-spk{
+  font-family:'Courier Prime',monospace;
+  font-size:9px;letter-spacing:4px;
+  text-transform:uppercase;color:rgba(192,152,40,0.5);
+  display:block;margin-top:18px;
+}
+.sc-line{
+  font-family:'IM Fell English',serif;
+  font-size:18.5px;color:rgba(234,210,158,0.6);
+  line-height:1.82;display:block;
+}
+.sc-note{
+  font-size:12px;font-style:italic;
+  color:rgba(192,152,40,0.2);
+  display:block;margin-top:4px;
+}
+
+/* ────────────────────────────────────────
+   DIALOGUE BLOCKS
+──────────────────────────────────────── */
+.dia{
+  border-left:3px solid var(--lapis);
+  padding:12px 18px;margin:16px 0;
+  background:rgba(42,80,168,0.04);
+}
+.dia.df{border-left-color:var(--fire);background:rgba(176,80,24,0.04);}
+.dia-spk{
+  font-family:'Cinzel',serif;
+  font-size:9px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;
+  display:block;margin-bottom:5px;
+}
+.dia .dia-spk{color:var(--lapisl);}
+.dia.df .dia-spk{color:var(--firel);}
+.dia-line{
+  font-size:17px;font-style:italic;
+  color:var(--inkl);line-height:1.75;
+}
+.dia-note{
+  font-family:'Courier Prime',monospace;
+  font-size:10px;color:var(--faded);
+  display:block;margin-top:5px;font-style:normal;
+}
+
+/* ────────────────────────────────────────
+   CREATURE CARDS
+──────────────────────────────────────── */
+.creature{
+  border:1px solid var(--pgd);
+  border-left:4px solid;
+  display:grid;grid-template-columns:1fr 270px;
+  margin:18px 0;overflow:hidden;
+}
+.cr-fire{border-left-color:var(--fire);}
+.cr-cold{border-left-color:var(--lapis);}
+.cr-main{padding:16px 18px;border-right:1px solid var(--pgd);}
+.cr-name{
+  font-family:'Cinzel',serif;
+  font-size:16.5px;font-weight:700;color:var(--ink);
+}
+.cr-sub{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:2px;
+  text-transform:uppercase;display:block;margin:3px 0 11px;
+}
+.cr-fire .cr-sub{color:var(--firel);}
+.cr-cold .cr-sub{color:var(--lapisl);}
+.cr-body{font-size:15px;color:var(--inkl);line-height:1.7;}
+.cr-stats{padding:14px;background:var(--pgw);}
+.crs{display:grid;grid-template-columns:96px 1fr;margin-bottom:2px;}
+.crs-k{
+  background:var(--pgm);padding:4px 8px;
+  font-family:'Courier Prime',monospace;
+  font-size:10px;color:var(--inkm);
+}
+.crs-v{
+  padding:4px 8px;background:var(--pg);
+  font-size:13px;color:var(--inkl);
+  border-left:1px solid var(--pgd);
+}
+
+/* ────────────────────────────────────────
+   BEHAVIORAL ARC TIMELINE
+──────────────────────────────────────── */
+.arc-row{
+  display:grid;grid-template-columns:150px 1fr;
+  margin-bottom:2px;
+}
+.arc-ph{
+  background:var(--pgm);padding:8px 12px;
+  font-family:'Courier Prime',monospace;
+  font-size:9.5px;color:var(--fire);
+  border-left:2px solid var(--fire);line-height:1.4;
+}
+.arc-ph.apc{color:var(--lapisl);border-left-color:var(--lapis);}
+.arc-ev{
+  padding:8px 14px;background:var(--pg);
+  font-size:15.5px;color:var(--inkl);
+  border-bottom:1px solid var(--pgm);
+}
+
+/* ────────────────────────────────────────
+   NOTE / CALLOUT
+──────────────────────────────────────── */
+.note{
+  background:var(--pgw);
+  border-left:3px solid var(--fire);
+  padding:13px 18px;margin:16px 0;
+  font-size:15px;font-style:italic;
+  color:var(--inkl);line-height:1.75;
+}
+.note.nc{border-left-color:var(--lapis);}
+.note .nl{
+  font-family:'Courier Prime',monospace;
+  font-style:normal;font-size:7.5px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--fire);display:block;margin-bottom:5px;
+}
+.note.nc .nl{color:var(--lapisl);}
+
+/* "In plain terms" box */
+.plain{
+  background:var(--pgm);
+  padding:13px 18px;margin:16px 0;
+  font-size:15.5px;color:var(--inkm);
+  border-top:2px solid var(--amber);
+}
+.plain-l{
+  font-family:'Courier Prime',monospace;
+  font-size:7.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--amber);
+  display:block;margin-bottom:6px;
+}
+
+/* Three-column phase grid */
+.phases{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin:16px 0;}
+.ph{background:var(--pgw);border-top:3px solid transparent;padding:18px 14px;text-align:center;}
+.ph-c{border-top-color:var(--muted);}
+.ph-l{border-top-color:var(--fire);}
+.ph-ch{border-top-color:var(--inkm);}
+.ph-icon{font-size:30px;display:block;margin-bottom:8px;opacity:.45;}
+.ph-name{
+  font-family:'Cinzel',serif;
+  font-size:10px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--fire);display:block;margin-bottom:3px;
+}
+.ph-src{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;color:var(--muted);display:block;margin-bottom:10px;
+}
+.ph p{font-size:13.5px;color:var(--muted);margin:0;}
+
+/* Status / info table */
+.t{width:100%;border-collapse:collapse;margin:13px 0;font-size:14px;}
+.t th{
+  background:var(--inkm);color:var(--pgw);
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  padding:9px 13px;text-align:left;
+}
+.t td{
+  padding:8px 13px;border-bottom:1px solid var(--pgm);
+  vertical-align:top;color:var(--inkl);
+}
+.t tr:nth-child(even) td{background:var(--pgw);}
+.t-k{
+  font-family:'Courier Prime',monospace;
+  font-size:11px;color:var(--inkm);
+  border-left:2px solid var(--fire);white-space:nowrap;
+}
+
+/* Ending spectrum */
+.endings{display:grid;grid-template-columns:68px 1fr 1fr;gap:2px;margin:14px 0;}
+.ehdr{display:contents;}
+.ehdr>div{
+  background:var(--inkm);padding:9px 14px;
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--pgw);
+}
+.er{display:contents;}
+.er-lv{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:12px 6px;text-align:center;
+}
+.er-b{
+  font-family:'Courier Prime',monospace;
+  font-size:8px;letter-spacing:1px;
+  text-transform:uppercase;padding:3px 7px;
+  margin-bottom:3px;display:inline-block;color:white;
+}
+.er-sc{font-size:10px;color:var(--muted);font-family:'Courier Prime',monospace;}
+.er-cell{padding:11px 14px;}
+.er-cell h4{font-size:14px;margin:0 0 5px;letter-spacing:.5px;}
+.er-cell p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.55;}
+.l1 .er-lv{background:#cfc3af;}.l1 .er-b{background:#585048;}.l1 .er-cell{background:var(--pg);}
+.l2 .er-lv{background:#d8ae8e;}.l2 .er-b{background:var(--fire);}.l2 .er-cell{background:var(--pg);}
+.l3 .er-lv{background:#b8bed8;}.l3 .er-b{background:var(--lapis);}.l3 .er-cell{background:#f2f4f8;}
+.l4 .er-lv{background:#b8c8ce;}.l4 .er-b{background:#1e5038;}.l4 .er-cell{background:#f0f6f4;}
+.l5 .er-lv{background:#d8c880;}.l5 .er-b{background:#503e10;}.l5 .er-cell{background:#faf8ea;}
+
+/* Drop cap */
+.drop::first-letter{
+  font-family:'Cinzel Decorative',serif;
+  font-size:78px;font-weight:900;
+  float:left;line-height:.74;
+  margin:5px 10px -4px 0;
+  color:var(--fire);
+}
+
+/* HRs */
+.hr-fire{height:2px;background:linear-gradient(to right,var(--fire),var(--amber),transparent);}
+.hr-gold{height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);}
+
+/* Footer */
+.footer{
+  background:var(--gnd2);padding:18px 80px;
+  display:flex;justify-content:space-between;
+  border-top:1px solid rgba(192,152,40,0.08);
+}
+.footer span{
+  font-family:'Courier Prime',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:rgba(192,152,40,0.13);
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════════════
+     COVER
+═══════════════════════ -->
+<div class="cover">
+  <div class="cv-ornament"></div>
+  <div class="cv-corner tl"></div>
+  <div class="cv-corner tr"></div>
+  <div class="cv-corner bl"></div>
+  <div class="cv-corner br"></div>
+  <div class="cv-rule top"></div>
+  <div class="cv-rule bot"></div>
+
+  <div class="cv-body">
+    <span class="cv-farsi">بایگانی دو راستی · آتش مقدس و تاریکی عمیق</span>
+    <span class="cv-eyebrow">Kenoma Studio · Storytelling Bible · Persian Edition · v8</span>
+    <div class="cv-title">KENOMA</div>
+    <div class="cv-sub">The Archive of Two Truths</div>
+
+    <div class="cv-worlds">
+      <div class="cv-wa">
+        <span class="cv-wtag">World A · Sacred Fire</span>
+        <span class="cv-wname">The Apadana Above</span>
+        <span class="cv-wdesc">Persepolis-scale halls, 72 stone columns. The civilization that chose the visible truth — light, order, fire.</span>
+      </div>
+      <div class="cv-div"></div>
+      <div class="cv-wb">
+        <span class="cv-wtag">World B · The Hollow</span>
+        <span class="cv-wname">The Dark Archive Below</span>
+        <span class="cv-wdesc">The same architecture inverted underground. The same civilization that chose the hidden truth instead.</span>
+      </div>
+    </div>
+
+    <div class="cv-logline">
+      A scholar who has read every warning about their own nature<br>crosses between two versions of the same dead civilization —<br>and builds, puzzle by translation by gift,<br>the thing that will outlive them.
+    </div>
+
+    <div class="cv-srcs">
+      <span class="cvs cs-lit">Eastern Zhou Chronicles</span>
+      <span class="cvs cs-lit">Thus Spoke Zarathustra</span>
+      <span class="cvs cs-mv">Man in the High Castle</span>
+      <span class="cvs cs-gm">Alone in the Dark Trilogy + TNN</span>
+      <span class="cvs cs-gm">Silent Hill 1 · 2 · 3 · 4</span>
+      <span class="cvs cs-gm">Prince of Persia II · SoT · WW · TT</span>
+      <span class="cvs cs-gm">Tormented Souls 1 &amp; 2</span>
+      <span class="cvs cs-gm">Metro 2033</span>
+    </div>
+  </div>
+
+  <div class="cv-foot">
+    <span>Narrative · World · Characters · Puzzles · Creatures · Scripts</span>
+    <span>Companion to Production GDD · Confidential</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PREFACE — THE GLOSSARY AND THE SOURCES
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="0">
+  <span class="ch-n">Preface</span>
+  <div class="ch-title">The Language of the Archive</div>
+  <span class="ch-sub">How Zoroastrian philosophy became the world — in plain, accessible terms</span>
+</div>
+
+<div class="bd">
+  <p>KENOMA is set inside a Persian civilization whose belief system was built on an ancient idea: that the universe is divided between two equal forces — the <strong>Seen</strong> and the <strong>Unseen</strong>, light and darkness, the ordered and the hidden. The civilization that built the Archive believed you needed both to understand the complete truth. This split them in two.</p>
+
+  <p>We use simple, intuitive names throughout the game for all philosophical and cosmological concepts. No specialist knowledge is required. The philosophy is felt through the architecture, the creatures, and the story — not through terminology a player needs to look up.</p>
+
+  <div class="glossary">
+    <div class="gls-hd">
+      <div class="gls-hd-t">Name Translations — Original to In-Game Language</div>
+      <div class="gls-hd-sub">What We Call These Things and Why</div>
+    </div>
+    <div class="gls-grid">
+      <div class="gls-col-hd">Original Term</div>
+      <div class="gls-col-hd">In-Game Name</div>
+      <div class="gls-col-hd">What It Means</div>
+
+      <div class="gls-row">
+        <div class="gls-k">Asha (Truth/Order)</div>
+        <div class="gls-v">Sacred Fire / The Light</div>
+        <div class="gls-d">The force of visible truth, order, and fire. The foundation of World A. Not "good" — simply the chosen path of one half of the civilization.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Druj (The Lie)</div>
+        <div class="gls-v">The Hollow / The Dark</div>
+        <div class="gls-d">The force of hidden knowledge, shadow, and the unseen. The foundation of World B. Not "evil" — the alternate chosen path. Equally real, equally necessary for complete truth.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Yazata (Divine Beings)</div>
+        <div class="gls-v">Fire-Wardens</div>
+        <div class="gls-d">Sacred guardians of Light assigned to protect Archive chambers. Three centuries of isolation has corrupted their function. They still guard. They no longer distinguish friend from foe.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Pairika (Fallen Stars)</div>
+        <div class="gls-v">Lantern-Thieves</div>
+        <div class="gls-d">Cold lights in the Darkness — drawn irresistibly to the Scholar's fire vessel because it is the only warm thing in the Dark Archive in three centuries. Contact extinguishes the Scholar's only light.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Daeva (Fallen Beings)</div>
+        <div class="gls-v">Shadow-Walkers</div>
+        <div class="gls-d">Beings that chose the hidden path at the moment of creation — not evil, but committed to the wrong direction since the beginning. Manifest as inverted processional figures moving through the Dark Archive.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Nasu (Boundary Spirit)</div>
+        <div class="gls-v">The Boundary</div>
+        <div class="gls-d">The Archive's crossing law made physical. Appears whenever the Scholar crosses between worlds, violating the separation the original civilization sealed into the Archive's structure. Cannot be fought. Can only be dissolved by the Archive's own astronomical instrument.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Atash-dān (Fire Altar)</div>
+        <div class="gls-v">Fire Altar</div>
+        <div class="gls-d">Sacred fire altars placed at every corridor junction in World A. Scholar lights them with oil from the fire vessel. Each lit altar is also a save point — and leaves a warmth signature detectable by the Vanguard.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Avestan (Sacred Language)</div>
+        <div class="gls-v">The Naming Tongue</div>
+        <div class="gls-d">The Archive's ritual language — used for creature designation (the Naming combat tier), bell inscriptions, and the Grand Armillary activation formula. Scholar already knows it. It is an academic skill, not a supernatural one.</div>
+      </div>
+      <div class="gls-row">
+        <div class="gls-k">Apadana (Great Hall)</div>
+        <div class="gls-v">The Apadana (kept)</div>
+        <div class="gls-d">The Persian word for a grand ceremonial hall — Persepolis's most famous structure. Kept as-is because it is an architectural term with immediate visual meaning: immense, columned, fire-lit.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="plain">
+    <span class="plain-l">The Core Philosophy — In One Paragraph</span>
+    The civilization that built the Archive believed the universe is divided between two equal halves: the <strong>Seen</strong> (Sacred Fire — truth that is visible, ordered, and lit) and the <strong>Unseen</strong> (the Hollow — truth that is hidden, shadow, and cold). Neither is "good" or "evil." The complete truth requires both simultaneously. This belief is why the Archive has two worlds: one studying Fire, one studying the Dark. Both are real. Both are valid. The civilization split itself trying to prove one side could exist without the other — and died before resolving the argument.
+  </div>
+</div>
+
+<div class="bd">
+  <h3>How the Eight Sources Work Together</h3>
+  <div class="strow"><span class="st stl">All Eight Sources · Design DNA</span></div>
+
+  <table class="t">
+    <tr><th style="width:210px">Source</th><th>What It Contributes</th></tr>
+    <tr><td><strong>Eastern Zhou Chronicles</strong></td><td>The Scholar's psychology: the 士 archetype — the wandering intellectual who cannot stop serving. Fan Li's aphorism ("when the hare is dead, the hunting dog is cooked") is the game's thesis. Shapes character, not world vocabulary.</td></tr>
+    <tr><td><strong>Thus Spoke Zarathustra</strong></td><td>The three-act structure: Camel (burden-bearer, Act I) · Lion (rebel, Act II) · Child (creator, Act III). Nietzsche's Zarathustra is named after the Persian prophet — the man who first taught the world about the struggle between light and darkness. Rope-over-abyss as the Scholar's opening self-definition and unwitting epitaph.</td></tr>
+    <tr><td><strong>Man in the High Castle</strong></td><td>Two equally real parallel worlds — neither is "the real one." The hidden Third Record (parallel to Dick's book-within-a-book) describes the path not taken. The Scholar must eventually choose which world continues.</td></tr>
+    <tr><td><strong>Alone in the Dark Trilogy + TNN</strong></td><td>Fixed-camera horror architecture. Aline Cedrac's three-tier combat: environment first, light-as-weapon second, intellectual kill as the highest tier. Physical 3D inventory. Documents as mechanical fuel — deep reading changes what puzzles open.</td></tr>
+    <tr><td><strong>Silent Hill 1–4</strong></td><td>SH1: radio static as creature proximity (astrolabe model). SH2: invisible behavioral tracking — the town responds to what the visitor carries inside them. SH3: world-shift mid-level. SH4: safe room corruption — the Observatory starts safe, becomes haunted.</td></tr>
+    <tr><td><strong>Prince of Persia II · SoT · WW · TT</strong></td><td>PoP II: Shadow and Flame as the two Vanguards. SoT: Farah's betrayal logic — cold calculation, not malice. WW: the Dahaka as the Boundary Guardian (appears because of the protagonist's crossings). WW: Kaileena as sympathetic antagonist. TT: the Dark Prince as the Scholar's inner voice.</td></tr>
+    <tr><td><strong>Tormented Souls 1 &amp; 2</strong></td><td>Physical 3D inventory — open the satchel, hold and rotate items. Candle/oil-save system. Multi-step cross-environment puzzle chains where solving WA-003 requires information found in WB-004.</td></tr>
+    <tr><td><strong>Metro 2033</strong></td><td>Zero HUD — every status is physical (fire vessel flame size, astrolabe resonance, robe damage). Bullets-as-currency applied to oil and crossbow bolts. Overheard dialogue moments that reveal more character than any cutscene. Crew behavior evolution visible without cutscenes.</td></tr>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER I — THE STORY
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="I">
+  <span class="ch-n">Chapter I</span>
+  <div class="ch-title">The Story — What KENOMA Is About</div>
+  <span class="ch-sub">A tragedy about professional excellence. The Scholar succeeds at everything. That is the tragedy.</span>
+</div>
+
+<div class="sh"><span class="sh-n">1.1</span><div class="sh-title">The Thesis — Fan Li's Aphorism</div></div>
+<div class="bd">
+  <div class="strow">
+    <span class="st stl">Eastern Zhou Chronicles · Fan Li · Sun Tzu</span>
+    <span class="st stl">Nietzsche · Zarathustra</span>
+    <span class="st stm">Man in the High Castle · Philip K. Dick</span>
+  </div>
+
+  <p class="drop">Fan Li, advisor to the King of Yue, won his king a war. On the day of victory he wrote a letter to his companion explaining why he was leaving immediately: <em>"When the birds are gone, the good bow is put away. When the hare is dead, the hunting dog is cooked."</em> He left. His companion stayed. His companion was eliminated. Fan Li became the wealthiest merchant in the eastern kingdoms and died in peace. The Scholar knows this text. They have taught it. They think it is a warning for people who serve bad rulers. It is not. It is a warning for anyone who serves at all — and makes themselves too useful to survive the conclusion.</p>
+
+  <p>KENOMA is a tragedy about professional excellence. The Scholar enters a sealed Persian archive and is, without question, exactly what the Archive needs. They translate things no one alive can read. They solve mechanisms sealed for three hundred years. They teach, donate, name, and build. Every decision is the correct professional decision. The tragedy is that every correct professional decision is also a step toward the conclusion.</p>
+
+  <div class="phil">
+    <span class="phil-lbl">The 士 Archetype · Eastern Zhou Psychology</span>
+    <p>The 士 — the wandering intellectual-servant of the Eastern Zhou kingdoms — cannot stop serving. This is not weakness. It is their nature: to find the problem that requires their exact skills, and to apply those skills without reservation until the problem is solved. Fan Li was 士. Sun Tzu was 士. The Scholar is 士. The Archive found the exactly correct version of this personality, and the Vanguard identified them three years before they arrived.</p>
+  </div>
+
+  <p>The Scholar's Eastern Zhou philosophical training is a <em>character trait</em>, not a world element. The Archive is Persian — its architecture, its creatures, its language. But the Scholar thinks in Fan Li and Sun Tzu aphorisms because that is what they read during their training. These voices live in their internal monologue. When the Dark Voice emerges in Act I, it speaks in the Scholar's own Eastern Zhou strategic vocabulary — because that is the Scholar's private language for clear-eyed analysis of a situation they are choosing not to see clearly.</p>
+</div>
+
+<div class="sh"><span class="sh-n">1.2</span><div class="sh-title">The Three-Act Structure — Nietzsche's Three Metamorphoses</div></div>
+<div class="bd">
+  <div class="strow"><span class="st stl">Thus Spoke Zarathustra · Three Transformations of the Spirit</span></div>
+
+  <p>In Zarathustra's first teaching, the spirit must pass through three stages to become fully itself. In KENOMA, these are not metaphors — they are the game's structural law. They are also, importantly, assigned to different characters: two of the three stages belong to the Scholar, and the third belongs to the Vanguard.</p>
+
+  <div class="phases">
+    <div class="ph ph-c">
+      <span class="ph-icon">🐪</span>
+      <span class="ph-name">Act I — The Camel</span>
+      <span class="ph-src">Nietzsche · "Thou Shalt"</span>
+      <p>The spirit that says <em>yes</em> to every burden. It kneels and asks: what is heaviest? Load me. The Scholar in Act I — carrying every Archive puzzle, donating every resource, teaching everything they know. The Camel finds meaning in service. It cannot imagine not serving. This is the Scholar's finest hour and their trap.</p>
+    </div>
+    <div class="ph ph-l">
+      <span class="ph-icon">🦁</span>
+      <span class="ph-name">Act II — The Lion</span>
+      <span class="ph-src">Nietzsche · "I Will"</span>
+      <p>The spirit that says <em>no</em> — that fights for its own freedom. The Scholar when the resonance instrument delivers a position report instead of a greeting. The Lion uses every trap the Camel set, every translation the Camel completed. The Lion's tools are the Camel's gifts turned inside out.</p>
+    </div>
+    <div class="ph ph-ch">
+      <span class="ph-icon">◎</span>
+      <span class="ph-name">Act III — The Child</span>
+      <span class="ph-src">Nietzsche · "Sacred Yes"</span>
+      <p>The spirit that creates new values. This belongs to the Vanguard, not the Scholar. After the False Victory, what steps through the fold in the air is someone who has become fully, completely, irreversibly what they always were. The Scholar built the Child. That is the 士's tragedy at its largest scale.</p>
+    </div>
+  </div>
+
+  <div class="qblock">
+    <span class="qb-t">"Man is a rope stretched over an abyss — a dangerous crossing, a dangerous looking-back, a dangerous shuddering and standing still. What is great in man is that he is a bridge, and not an end."</span>
+    <span class="qb-a">Nietzsche · Thus Spoke Zarathustra · The Scholar's opening V.O. at the Archive gate · Spoken as pride · Heard, retroactively, as epitaph</span>
+  </div>
+</div>
+
+<div class="sh"><span class="sh-n">1.3</span><div class="sh-title">Two Worlds, Two Truths — The Man in the High Castle</div></div>
+<div class="bd">
+  <div class="strow"><span class="st stm">Philip K. Dick · The Man in the High Castle · The Book Within the Book</span></div>
+
+  <p>In Philip K. Dick's novel, a book exists within an alternate-history world where the Axis won World War II. The book — called <em>The Grasshopper Lies Heavy</em> — describes a history where the Allies won instead. Its readers are disturbed because the book is too specific, too internally consistent, too <em>real</em>. They cannot decide: is this world we live in the real one? Or is the book?</p>
+
+  <p>KENOMA poses the identical question in Persian stone. The Archive's two worlds are not "real world" and "dark mirror." They are two parallel civilizations that diverged at a single historical choice — Sacred Fire or the Hollow, visible truth or hidden truth. Both civilizations are equally real. Both built the same Archive at the same moment, from opposite sides of the same wall. The Archive is their crossing point, and the Scholar is the only person alive who can move through it.</p>
+
+  <p>Deep in the Archive is a document the Scholar comes to call <strong>The Third Record</strong>. It describes, in precise architectural and philosophical detail, the civilization that could have been: one that successfully integrated both Sacred Fire and the Hollow instead of splitting into two. It is the Archive's equivalent of <em>The Grasshopper Lies Heavy</em>. It describes a world that does not exist. It is, arguably, the most accurate document in either Archive. When the Scholar translates its final passage and the Vanguard — who has been watching silently from the doorway — hears what it contains, she says:</p>
+
+  <div class="dia">
+    <span class="dia-spk">The Vanguard — On Learning the Third Record's Contents</span>
+    <span class="dia-line">"That civilization would not have needed me."</span>
+    <span class="dia-note">No inflection. She leaves the room. The Scholar sits with the translation tablet for a long time. The game does not explain whether this is regret, satisfaction, or simply a three-hundred-year-old fact she has already processed.</span>
+  </div>
+
+  <p>The Scholar's choice of which Vanguard to eliminate in Act II is, simultaneously, their choice of which world continues. The Third Record names the path that would have made this choice unnecessary. The Scholar reads it. They know it. The Archive gives them no mechanism to take it.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER II — THE ARCHIVE
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="II">
+  <span class="ch-n">Chapter II</span>
+  <div class="ch-title">The Archive — Two Worlds in One Building</div>
+  <span class="ch-sub">Persepolis above · The inverted dark mirror below · The crossing mechanism between them</span>
+</div>
+
+<div class="sh"><span class="sh-n">2.1</span><div class="sh-title">How the Civilization Sealed Itself in Two</div></div>
+<div class="bd">
+  <p>The scholars who built the Archive were part of the Achaemenid empire's most rigorous philosophical tradition. They held an unusual belief: that the Persian cosmological tradition was correct that the universe is divided between two equal forces — Sacred Fire (truth that is visible, ordered, luminous) and the Hollow (truth that is hidden, shadowed, and cold). Neither force is good or evil. Both are real. Complete knowledge required studying both simultaneously.</p>
+
+  <p>So they built the Archive in two layers. The <strong>Apadana</strong> above: Persepolis-scale hypostyle halls, 72 stone columns with double-bull capitals, processional carved walls showing tribute from thirty nations, fire altars at every junction. And beneath it, precisely mirrored, <strong>the Dark Archive</strong>: the same column grid inverted underground, the same carved processional walls — except the journey depicted has gone wrong somewhere between the beginning and end of every frieze, the tributaries' faces turning, their gifts becoming something else in transit.</p>
+
+  <p>The synchronization mechanism — the <strong>Grand Armillary</strong>, a seven-ring bronze astronomical instrument at the Archive's summit — kept both worlds stable. As long as it ran, both civilizations remained accessible through the crossing points built into the Archive's walls. The scholars who built it intended it to run forever: a permanent treaty between Sacred Fire and the Hollow, maintained by the instrument itself.</p>
+
+  <p>It is still running when the Scholar arrives. The civilization that built it died of other causes — leaving the Archive sealed, the Grand Armillary slowly degrading without maintenance, and the crossing points still active but accumulating debt with every use. The Vanguard, who has been managing the Archive's degradation for three hundred years, is why it has not fully collapsed. She needed it intact until the Scholar arrived. Now that they are here, it needs to hold for a few more weeks.</p>
+</div>
+
+<div class="sh"><span class="sh-n">2.2</span><div class="sh-title">The Crossing Points — Moving Between Worlds</div></div>
+<div class="bd">
+  <div class="strow">
+    <span class="st stg">SH4 · The Hole in the Wall</span>
+    <span class="st stg">PoP WW · The Dahaka's Logic</span>
+    <span class="st stg">Tormented Souls · Cross-Environment Chains</span>
+  </div>
+
+  <p>The crossing points — <strong>Traversal Focal Points</strong> — are Achaemenid astronomical instruments built into the Archive's walls: armillary spheres and star-clock mechanisms calibrated to maintain the dimensional synchronization. The Scholar approaches one, peers through its central ring (seeing the other world through it, upside-down or inverted — the SH4 "look before you commit" animation), and steps through. The crossing takes 2.2 seconds. It cannot be interrupted mid-crossing.</p>
+
+  <p>Every crossing increments a hidden <strong>Traversal Debt</strong> counter. The higher the debt, the more frequently <strong>The Boundary</strong> — the Archive's crossing-law made physical — manifests to pursue the Scholar. The Vanguard has zero crossing debt. She does not cross. She waits in each world for the Scholar to bring what she needs. The Scholar pays all the crossing costs. This asymmetry is visible from the beginning of the game. Its full meaning is not visible until Act III.</p>
+
+  <div class="split">
+    <div class="sp-a">
+      <span class="sp-tag">World A Side · Sacred Fire</span>
+      <span class="sp-name">Crossing from Above</span>
+      <div class="sp-body">A polished bronze armillary sphere set into a limestone pillar. The Scholar peers through its central ring and sees World B through it — cold, dark, inverted, columns hanging from an underground ceiling. The fire vessel in the Scholar's hand dims slightly near the focal point. Crossing feels like stepping through cold water into a room that is the same shape as a room they know, but whose every detail is wrong.</div>
+    </div>
+    <div class="sp-div">
+      <div class="sp-line"></div>
+      <div class="sp-dot"></div>
+      <div class="sp-line"></div>
+    </div>
+    <div class="sp-b">
+      <span class="sp-tag">World B Side · The Hollow</span>
+      <span class="sp-name">Crossing from Below</span>
+      <div class="sp-body">The same mechanism — jade rather than bronze, colder to the touch, emitting a low resonance the Scholar feels in their chest before they see it. World A's fire altars visible through the rings: warm, distant, upside down. Crossing feels like surfacing from cold water into absolute dark. The Scholar's fire vessel is the only warm light in the Dark Archive in three centuries. Everything that lives here already knows where it is.</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="nl">Key Asymmetry — The Vanguard's Design</span>
+    The Boundary never pursues the Vanguard. She does not cross. She has designed her entire plan across three hundred years such that the Scholar bears all the crossing costs and she bears none. In Prince of Persia: Warrior Within, the Dahaka pursues the Prince because the Prince altered the timeline — the pursuit is not malice, it is consequence. The Boundary works the same way: it is the law pursuing the one who breaks it. The Scholar breaks it every time. The Vanguard never does.
+  </div>
+</div>
+
+<div class="sh"><span class="sh-n">2.3</span><div class="sh-title">World A — The Apadana of Sacred Fire</div></div>
+<div class="bd-a">
+  <div class="strow">
+    <span class="st stg">AitD · Fixed Camera Architecture</span>
+    <span class="st stg">SH4 · Safe Room Warmth Built Before Corruption</span>
+    <span class="st stg">Metro 2033 · Warmth as Diegetic State</span>
+  </div>
+
+  <p>The Apadana is Persepolis at its full imperial scale — sealed intact for three hundred years, every fire altar cold until the Scholar arrives. When the Scholar lights a fire altar (spending oil from the fire vessel), the fire spreads through carved channels in the floor to neighboring altars. Over Act I the Apadana becomes, corridor by corridor, genuinely beautiful: warm amber light, 72 columns revealed in their full carved detail, the thirty-nation processional friezes illuminated for the first time in centuries. This accumulation of warmth is deliberate game design. The Scholar should love this place. The False Victory must protect something the player genuinely values.</p>
+
+  <div class="room">
+    <div class="room-hd">
+      <span class="room-id">WA-001</span>
+      <span class="room-name">The Gate of All Nations</span>
+      <span class="room-tag rta">World A · Entry</span>
+    </div>
+    <div class="room-body">
+      <p>Two great winged bull-guardians — their stone faces calm, wings spread wide enough to shadow six people — flank the Archive's only surface entrance. The inscription above the gate runs in three languages simultaneously: Old Persian, Elamite, and Babylonian. The Scholar can read all three. The Vanguard cannot read the third. This is the first thing the Scholar teaches her. She does not thank them. She files the information. The game's central dynamic — Scholar teaches, Vanguard learns, data accumulates — is established in the opening ninety seconds.</p>
+      <div class="room-cols">
+        <div>
+          <span class="rc-hd">Opening Scene Function</span>
+          <div class="rc-b">Scholar names a corrupted Fire-Warden using the gate inscription — the Naming combat tutorial. The Vanguard eliminates a second Fire-Warden with her blade simultaneously. Both combat philosophies introduced in parallel: the Scholar's approach is slower, requires prior reading, and is permanent. The Vanguard's is instant and leaves the problem available to repeat elsewhere.</div>
+        </div>
+        <div>
+          <span class="rc-hd">The Vanguard's First Observation</span>
+          <div class="rc-b">She watches the Scholar's naming method with complete, unblinking attention. Says nothing. On first playthrough this reads as interest. On second playthrough the silence is unmistakably data collection — she is watching the Scholar's method, timing it, filing the result against her behavioral model. She has been building this model for three years from the Scholar's academic dossier. First in-person data point: confirmed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-hd">
+      <span class="room-id">WA-003</span>
+      <span class="room-name">The Eastern Treasury — Hall of Records</span>
+      <span class="room-tag rta">World A · Primary Puzzle Hub</span>
+    </div>
+    <div class="room-body">
+      <p>Thirty thousand cuneiform tablets, organized in a classification system the Scholar must reverse-engineer. This room should feel like a professional reward — the finest archive the Scholar has ever entered. Buried in the northwest stacks is a partially damaged tablet requiring a deep reading to decipher: the Vanguard's Archive entry record from three hundred and twelve years ago. Written in administrative Elamite — the empire's bureaucratic language, not the sacred scripts. Professional. Businesslike. Not a pilgrimage. A mission. The final line, undated: <em>"Scholar profile identified. Arrival estimated within two generations."</em> She knew the Scholar was coming before the Scholar's grandparents were born.</p>
+      <div class="room-cols">
+        <div>
+          <span class="rc-hd">Overheard Scene — Metro Principle — Fully Missable</span>
+          <div class="rc-b">Scholar enters from the south passage and hears the Vanguard in the deep stacks speaking quietly to one of the dormant Fire-Wardens in the eastern alcove. She is issuing it a patrol schedule. In Elamite — the administrative language of the empire's military logistics. The Warden is obeying her. She has been managing the Archive's creatures as a logistics problem for three centuries. She turns, sees the Scholar: "You came early." She had a contingency for early arrival. This is the Metro moment — more character revealed in an overheard private moment than in any scripted cutscene.</div>
+        </div>
+        <div>
+          <span class="rc-hd">The Grand Armillary Manual — Hidden Consequence</span>
+          <div class="rc-b">The Grand Armillary's operating manual is in this room — containing the activation sequence for the game's final major puzzle (PZ-007). A Scholar who deep-reads it here has the sequence memorized when they need it under Guardian pressure. A Scholar who skims will face the same puzzle with no prior information and 35 seconds before the Boundary reaches them. The game does not signal this choice's importance at the time it is made.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-hd">
+      <span class="room-id">WA-007</span>
+      <span class="room-name">The Grand Armillary Gallery — Archive Summit</span>
+      <span class="room-tag rta">World A · Act II Climax · Guardian's Only Weakness</span>
+    </div>
+    <div class="room-body">
+      <p>The Archive's highest accessible space — a circular gallery open to the night sky through a domed stone oculus. The Grand Armillary fills the center: seven concentric bronze rings, each tracking one of the Archive's seven sacred astronomical markers, large enough that the Scholar can walk between the inner rings. This instrument is simultaneously the Archive's synchronization mechanism, the crossing system's control center, and — per the operating manual in WA-003 — the only mechanism that can dissolve the Boundary permanently, by collapsing all Traversal Focal Points simultaneously. The scholars who built the Archive included this emergency protocol because they understood what they had created.</p>
+      <div class="room-cols">
+        <div>
+          <span class="rc-hd">The Aline Cedrac Kill — Intellectual Combat (AitD:TNN Model)</span>
+          <div class="rc-b">Aline Cedrac defeats the Hybrid Elder in AitD: The New Nightmare using the laboratory's own lightning rod — not a weapon she carries, but the facility's infrastructure she has studied throughout the game. The Scholar's Grand Armillary sequence works identically: no weapon fired, no oil spent, no bolts used. The Scholar activates the Archive's own astronomical instrument — which they have been studying since PZ-001 — using a sequence found in a World B document. Scholarly comprehension as the killing blow.</div>
+        </div>
+        <div>
+          <span class="rc-hd">The Six-Minute Window</span>
+          <div class="rc-b">After the Boundary dissolves, the Grand Armillary Gallery goes absolutely quiet under the stars. The Scholar stands at the Archive's highest point, having just sealed a dimensional enforcer outside reality using nothing but knowledge and the Archive's own instruments. This is the apex of the Scholar's professional life. The camera should hold on their face in the starlight — satisfied, complete. This triumph must land as genuine. The False Victory sequence begins six minutes later.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sh sh-c"><span class="sh-n" style="color:var(--lapisl)">2.4</span><div class="sh-title">World B — The Dark Archive</div></div>
+<div class="bd-b">
+  <div class="strow">
+    <span class="st stg">SH1 · Fog as Gameplay · Obscured Navigation</span>
+    <span class="st stg">AitD:TNN · Light as Weapon and Vulnerability</span>
+    <span class="st stg">SH2 · Architecture as Guilt</span>
+  </div>
+
+  <p>The Dark Archive is not a dungeon. It is the Apadana's shadow given architecture. Same rooms, same column grid — but columns hang from ceilings, fire altars are cold void-pits from which darkness seeps upward, and the carved processional friezes show the same thirty-nation tribute delegation as above — except the journey has gone wrong. The tributaries' gifts are becoming something else in transit. Their faces are slowly turning. The procession has been moving for three hundred years and has not reached its destination.</p>
+
+  <p>The Scholar's fire vessel is the only warm light in the Dark Archive. This is both the primary tool and the primary vulnerability. Everything that lives in the Hollow can see the Scholar's exact location at all times, because the fire vessel announces it in amber through absolute dark. In AitD: The New Nightmare, Aline's light source is simultaneously her primary weapon and the thing that reveals her to the darkness. The Scholar's fire vessel works identically — the same act that illuminates also betrays.</p>
+
+  <div class="room rb">
+    <div class="room-hd">
+      <span class="room-id">WB-001</span>
+      <span class="room-name">The Inverted Gate</span>
+      <span class="room-tag rtb">World B · Entry Point</span>
+    </div>
+    <div class="room-body">
+      <p>The same gate as above — but the winged bull-guardians' faces are concave, pressed inward as if something large has been pushing at them from this side for centuries. The trilingual inscription above reads the same text as the surface gate — but in reverse language order. When the Scholar translates it, the reversal changes the meaning: the surface gate says <em>"all who enter, enter with truth."</em> The Inverted Gate says <em>"all who enter, enter with what they believe is truth."</em> This single syllable of difference is the entire philosophy of the Dark Archive.</p>
+      <div class="room-cols">
+        <div>
+          <span class="rc-hd">Vanguard B — First Presence</span>
+          <div class="rc-b">Heard, not seen. Footsteps on stone, then silence somewhere beyond the fire vessel's illumination range. When the Scholar calls out, no answer. She is noting that they carry fire — that they have arrived using the Sacred Fire civilization's tools in the Hollow civilization's archive. She is recalibrating her timeline. This Scholar is useful but less prepared for the Hollow than she hoped. She has a contingency for this. She does not leave.</div>
+        </div>
+        <div>
+          <span class="rc-hd">SH1 Navigation Model</span>
+          <div class="rc-b">In Silent Hill 1, the fog is not atmospheric decoration — it is a practical gameplay constraint that limits the player's vision and forces them to navigate by sound and careful movement rather than sight. The Dark Archive's absolute darkness functions identically: the Scholar navigates by fire vessel light (limited radius), by the astrolabe's resonance static (directional creature awareness), and by memory of the Apadana's mirror architecture. The Hollow rewards players who learned the Apadana above by heart.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room rb">
+    <div class="room-hd">
+      <span class="room-id">WB-004</span>
+      <span class="room-name">The Dark Library</span>
+      <span class="room-tag rtb">World B · Primary Puzzle Hub</span>
+    </div>
+    <div class="room-body">
+      <p>The Hollow's equivalent of the Eastern Treasury — same tablet count, organized by Hollow-logic: dangerous texts appear most accessible, most valuable texts appear restricted. The Scholar must learn that Hollow-logic inverts Sacred Fire-logic in every classification decision. In the northwest alcove — the most apparently restricted position, therefore containing the most valuable texts — the Scholar finds two things: the cosmological sequence needed for PZ-007, and the journal of the previous scholar. Fifty years old. Fifty years dead. Their analytical style is close to the Scholar's own — similar intellectual habits, similar puzzle approach. Reading it is the most unsettling moment of the game. The Scholar is not the first. The previous one did not last. Vanguard B adjusted her methodology between attempts.</p>
+      <div class="room-cols">
+        <div>
+          <span class="rc-hd">Vanguard B — Private Archive Scene (Metro Model)</span>
+          <div class="rc-b">Scholar enters from the south passage and hears Vanguard B at the far alcove, speaking quietly into one of the cold void-pits in the floor. Not prayer — requisition. She is asking something in the Hollow for information. She listens. She is satisfied. This is her private intelligence network: three centuries of cultivating information from the Dark Archive's entities. She turns and sees the Scholar. Does not apologize. Does not explain. "You found the library." Not a question. She has been tracking their location.</div>
+        </div>
+        <div>
+          <span class="rc-hd">The Previous Scholar's Journal</span>
+          <div class="rc-b">The notes anticipate several of the Scholar's own analytical approaches. The handwriting is confident — the same kind of confident that the Scholar's own notes are. The last entry: "The Boundary appeared at the fourteenth crossing. I did not have enough time at the Armillary. I needed six more seconds." The Scholar reads this and understands: they are the second attempt. Vanguard B recalibrated her selection criteria after the first scholar died. The Scholar is the improved version of what she needed. This is the most unsettling document in the Archive, and it is fully optional to find.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room rb">
+    <div class="room-hd">
+      <span class="room-id">WB-∞</span>
+      <span class="room-name">The Chamber of Convergence — Third Record Location</span>
+      <span class="room-tag rtb">Both Worlds · Deep Archive · 5 Crossings Required</span>
+    </div>
+    <div class="room-body">
+      <p>The Archive's deepest space — accessible only by crossing the Interface five times along the descending focal-point chain. Each crossing adds Traversal Debt; the Boundary's pressure climbs accordingly. The Chamber exists partially in both worlds simultaneously: fire altars on one side, void-pits on the other, the architecture of both civilizations present in the same room, neither canceling the other. In the center: a single tablet rack containing the Third Record. Both Vanguards have been meeting here for three centuries — the only space where they can both exist simultaneously without crossing.</p>
+      <div class="room-cols">
+        <div>
+          <span class="rc-hd">The Third Record</span>
+          <div class="rc-b">Philip K. Dick's book-within-a-book describes the world that didn't happen — so vivid and internally consistent that its readers cannot determine which history is real. The Third Record does the same: describes, in precise architectural and philosophical detail, a civilization that integrated Sacred Fire and the Hollow rather than splitting. The civilization in the Third Record maintained the crossing as a permanent institution. They built a bridge that stayed a bridge. They did not have to choose. The Scholar reads this and understands that the Archive they have spent weeks translating is the record of a civilization that failed the experiment the Third Record describes as successful.</div>
+        </div>
+        <div>
+          <span class="rc-hd">The Moment of Both Vanguards</span>
+          <div class="rc-b">Both Vanguards arrive at the Chamber simultaneously as the Scholar nears the final passage — one from each entrance, arriving at the same moment from opposite doorways. They stand on opposite sides of the Chamber's central divide as the Scholar reads the last passage aloud. When the Scholar looks up and sees both of them there — two versions of the same person, standing in the space where their civilization should have been — this is the game's emotional peak. Then Vanguard B says, without inflection: "That civilization would not have needed me." She leaves. Vanguard A watches her go and says nothing.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER III — CHARACTERS
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="III">
+  <span class="ch-n">Chapter III</span>
+  <div class="ch-title">The Characters</div>
+  <span class="ch-sub">The Scholar who cannot stop. The Vanguard who has been waiting. The Voice that knows the strategy.</span>
+</div>
+
+<div class="sh"><span class="sh-n">3.1</span><div class="sh-title">The Scholar — The 士 Who Read Fan Li and Stayed Anyway</div></div>
+<div class="bd">
+  <div class="strow">
+    <span class="st stl">Eastern Zhou · 士 Archetype · Fan Li · Sun Tzu</span>
+    <span class="st stg">AitD:TNN · Aline Cedrac Combat Model</span>
+    <span class="st stg">Metro 2033 · Diegetic Status</span>
+    <span class="st stg">Tormented Souls · Physical Inventory</span>
+  </div>
+
+  <p>The Scholar is not naïve. They have read every relevant warning. They know Fan Li's aphorism — they have taught it. They know Sun Tzu's principle that a good general wins before the battle is fought. They know the 士 archetype from the inside: the wandering intellectual whose constitution requires finding the problem that matches their exact skills, and applying those skills without reservation until the problem is resolved. They know all of this about themselves. And they enter the Archive anyway — because the Archive is the finest, rarest, most precisely tailored problem they will ever encounter, and the 士 cannot decline that. Fan Li left. The Scholar stays. This is not ignorance. This is character.</p>
+
+  <h3>Physical Appearance and Tools</h3>
+  <p>Travel-worn magi robes — practical, not ceremonial — that accumulate visible damage over the game. No health number: the robe tears and darkens, the Scholar's posture degrades, their hands tremble on puzzle interfaces when badly hurt (Tormented Souls model). A leather satchel — the 15-slot physical inventory, opened with a 1.2-second animation, items held and rotated in 3D space. A bronze fire vessel at their hip. A crossbow found in Act I. Across the game, the Scholar's hands are always busy: tracing cuneiform during a translation, winding the crossbow mechanism after a fight, carefully pouring oil into the fire vessel from a clay flask.</p>
+
+  <h3>Combat — Three Tiers, Aline Cedrac Model</h3>
+  <div class="strow"><span class="st stg">AitD Trilogy + TNN · Aline Cedrac Three-Tier System</span></div>
+
+  <table class="t">
+    <tr><th style="width:55px">Tier</th><th style="width:230px">Tool</th><th>What It Requires · What It Costs</th></tr>
+    <tr><td class="t-k">1</td><td><strong>Environmental Traps</strong></td><td>Set during the Camel Phase as puzzle infrastructure — counterweighted stones, fire-oil channel valves, portcullis chains. Available for Lion Phase use, but only in the locations where they were placed, and only if the Vanguard did not observe the Scholar arming them.</td></tr>
+    <tr><td class="t-k">2A</td><td><strong>Fire Vessel (primary)</strong></td><td>Sustained exposure damages Hollow-creatures. Also lights fire altars, navigates the Dark Archive. Three competing demands on one oil supply. Does not damage Fire-Wardens — they are Sacred Fire beings at their core.</td></tr>
+    <tr><td class="t-k">2B</td><td><strong>Persian Crossbow (secondary)</strong></td><td>12 bolt maximum. 3-second reload, Scholar fully exposed. Effective against stone-armored Fire-Wardens. Bolts also craft Naming Bells — spending combat resources on bells means fewer bolts available for direct combat.</td></tr>
+    <tr><td class="t-k">2C</td><td><strong>Naming Bell (crafted stun)</strong></td><td>Bronze bell inscribed with Archive notation. Correct three-strike pattern: 6–8 second stun on Hollow-creatures, 8 seconds on the Boundary. Wrong pattern draws creatures rather than repelling them. Made from 2 bolts + 1 sacred stone. Max carry: 3.</td></tr>
+    <tr><td class="t-k">3</td><td><strong>Naming (highest tier)</strong></td><td>After full-depth translation of a creature's origin inscription, Scholar speaks its designation in the Naming Tongue. Creature becomes permanently non-hostile in that category. No ammunition spent. No oil. Requires only prior knowledge. The most powerful combat action costs only time and reading.</td></tr>
+  </table>
+
+  <h3>No HUD — All Status Is Physical (Metro 2033 Model)</h3>
+  <p>In Metro 2033, the player checks their gas-mask filter by looking at the in-world watch on their arm, reads ammo by physically inspecting the magazine, navigates by a hand-held compass on a diegetic device. KENOMA applies this principle to every status element:</p>
+
+  <table class="t">
+    <tr><th style="width:150px">Status</th><th>Physical Display</th></tr>
+    <tr><td class="t-k">Scholar health</td><td>Robe condition — tears accumulate, darkening spreads from wounds outward. Scholar's hands shake during puzzle interfaces when badly hurt. Posture degrades. No number.</td></tr>
+    <tr><td class="t-k">Fire vessel oil</td><td>Flame size decreases visibly. Below 20 units it spits. Below 5 it sputters — the Scholar's face shows this without UI text.</td></tr>
+    <tr><td class="t-k">Crossbow tension</td><td>Spring-tension indicator visible on the weapon's body. Scholar manually cranks it (3-second animation, fully vulnerable).</td></tr>
+    <tr><td class="t-k">Traversal Debt</td><td>Scholar's brass astrolabe — opened physically, a three-ring navigational device. Middle ring holds three indicator positions: settled, active, urgent.</td></tr>
+    <tr><td class="t-k">Enemy proximity</td><td>Astrolabe emits resonance static — volume equals distance, timbre distinguishes creature type. At Act III, the astrolabe goes permanently silent. This silence is the most devastating single audio event in the game.</td></tr>
+    <tr><td class="t-k">Objectives</td><td>Clay tablet journal — Scholar's own handwritten notes, physically opened and leafed through in 3D.</td></tr>
+  </table>
+
+  <h3>The Dark Voice — The Scholar's Inner Sun Tzu (PoP: Two Thrones Model)</h3>
+  <div class="strow">
+    <span class="st stg">Prince of Persia: The Two Thrones · The Dark Prince</span>
+    <span class="st stl">Eastern Zhou · Strategic Aphorisms</span>
+  </div>
+  <p>In Prince of Persia: The Two Thrones, the Dark Prince is the Prince's shadow-self — same voice actor, different filter — speaking strategic truths the Prince is suppressing. The Dark Prince is not lying. He is simply saying aloud the analysis the Prince refuses to complete. The Scholar's Dark Voice works identically: it emerges after the third major puzzle, speaking in the Scholar's own voice with a slight reverb — Fan Li and Sun Tzu aphorisms, the Scholar's own intellectual vocabulary applied to the situation the Scholar is choosing not to calculate.</p>
+
+  <p>Three response options: <strong>Suppress</strong> (the 士 stays dominant — no score impact), <strong>Acknowledge</strong> (the Scholar begins listening — −2 to both behavioral scores), <strong>Follow</strong> (the Dark Voice's sabotage options unlock — −4 to both scores).</p>
+
+  <div class="scene">
+    <span class="sc-dir">[Scholar finishes their third major puzzle alone in the Eastern Treasury. They have just translated a passage on resource allocation under asymmetric conditions — the Archive's version of military logistics. They read it twice. Then their own voice, lower, with the specific weight of a thought that has been waiting:]</span>
+    <span class="sc-spk">Dark Voice</span>
+    <span class="sc-line">"You have now given her everything she would need to operate this Archive without you. You understand this."</span>
+    <span class="sc-dir">[A long pause. The Scholar looks at the tablet. At the doorway the Vanguard passed through. At their own hands on the stone.]</span>
+    <span class="sc-spk">Scholar</span>
+    <span class="sc-line">"Sun Tzu says: know when the battle is already decided before it is fought. Fan Li says: know when you are the hunting dog." [A pause.] "I know."</span>
+    <span class="sc-spk">Dark Voice</span>
+    <span class="sc-line">"And?"</span>
+    <span class="sc-spk">Scholar</span>
+    <span class="sc-line">[Sets down the tablet. Stands. Follows the Vanguard.]</span>
+    <span class="sc-note">[They know. They go anyway. The 士 cannot do otherwise. The instrument continues to serve the hand that will put it away. This is not tragedy happening to the Scholar. This is the Scholar being themselves — and being themselves is the tragedy.]</span>
+  </div>
+
+  <h3>Scholar Emotional Arc</h3>
+  <div class="arc-row"><div class="arc-ph">Act I Early</div><div class="arc-ev">Professional delight. The Archive is the finest library the Scholar has ever entered, and every puzzle is the correct use of a life's training. The Vanguard is efficient and strange and familiar in a way the Scholar cannot place. Both things feel like gifts.</div></div>
+  <div class="arc-row"><div class="arc-ph">Act I Mid</div><div class="arc-ev">The Dark Voice begins. The Scholar's own strategic intelligence overrides the 士 instinct long enough to name what is happening. They hear it, acknowledge it, and return to work. The Archive is too good to stop now.</div></div>
+  <div class="arc-row"><div class="arc-ph">Act I Late</div><div class="arc-ev">Genuine warmth for both Vanguards — two different people with the same face. The Third Record discovered. The Scholar reads it and understands what the civilization could have been. Vanguard B says "that civilization would not have needed me." The Scholar cannot decide if this is loss or admission.</div></div>
+  <div class="arc-row"><div class="arc-ph">Act I→II Turn</div><div class="arc-ev">The resonance instrument goes silent from Vanguard A's side for eight full seconds. When it speaks again: a position report on Vanguard B — tactical data, no greeting. The Scholar's hands pause on the current puzzle. They set it down. They pick up the crossbow instead. The game does not cut away.</div></div>
+  <div class="arc-row"><div class="arc-ph">Act II</div><div class="arc-ev">Environmental chess using everything the Camel Phase built. The Scholar is very good at this too. The Dark Voice stops surprising them — they have started agreeing before it finishes speaking.</div></div>
+  <div class="arc-row"><div class="arc-ph">Act III False Victory</div><div class="arc-ev">One Vanguard eliminated. Relief — genuine, earned, total. The music resolves to major key. The Scholar breathes normally for the first time since Act II. They look satisfied. The achievement notification confirms it.</div></div>
+  <div class="arc-row"><div class="arc-ph">Act III True End</div><div class="arc-ev">The fold in the air. The surviving Vanguard steps through. The astrolabe goes silent. Fan Li's aphorism arrives at its correct interpretation in the Scholar's face — no words required. Past tense is not a judgment. It is a precision.</div></div>
+</div>
+
+<div class="sh"><span class="sh-n">3.2</span><div class="sh-title">The Two Vanguards — Shadow and Flame</div></div>
+<div class="bd">
+  <div class="strow">
+    <span class="st stg">Prince of Persia II · Shadow and Flame — Two Aspects</span>
+    <span class="st stg">PoP SoT · Farah's Betrayal Logic</span>
+    <span class="st stg">PoP WW · Kaileena's Sympathy</span>
+    <span class="st stl">Eastern Zhou · 將 Archetype — Military Commander</span>
+  </div>
+
+  <p>She was a senior commander in the Achaemenid Immortals corps before she entered the Archive three hundred years ago seeking tactical and cosmological knowledge. Her regiment is dead — they died over a decade of mapping the Archive's dangers, one by one, until she was alone. She has been alone in a sealed building ever since, waiting for the scholar whose profile she built in her first month here and has been refining for three centuries. She is not a villain. She is someone who made a plan when she had options, executed it patiently when she had only time, and is completing it now that she finally has the Scholar.</p>
+
+  <p>In <em>Prince of Persia: Shadows and Flame</em>, the Prince confronts two aspects of his own power — shadow and flame — that are simultaneously his greatest tools and the forces that will consume him if misunderstood. The two Vanguards are KENOMA's shadow and flame: the same person, the same extraordinary military intelligence, expressed across three hundred years under two different cosmological truths.</p>
+
+  <div class="split">
+    <div class="sp-a">
+      <span class="sp-tag">Vanguard A · Sacred Fire · The Flame</span>
+      <span class="sp-name">Three Centuries of Order</span>
+      <div class="sp-body">Military precision. Sentences end on certainties. Asks one question per subject, never repeats it. Three hundred years managing the Apadana as a logistics problem has made her the most efficient person in any room she enters. She communicates tactically. Her warmth in the Camel Phase is real — and it is also, simultaneously, information she has calculated the Scholar needs to receive. Both are true at once. This is Kaileena's emotional architecture from Warrior Within.</div>
+    </div>
+    <div class="sp-div">
+      <div class="sp-line"></div>
+      <div class="sp-dot"></div>
+      <div class="sp-line"></div>
+    </div>
+    <div class="sp-b">
+      <span class="sp-tag">Vanguard B · The Hollow · The Shadow</span>
+      <span class="sp-name">Three Centuries of Mystery</span>
+      <div class="sp-body">Expansive, patient, philosophical. Three centuries studying the Hollow has changed her relationship to time — she measures in generations now. When she speaks at length, it is because she has calculated that the Scholar will need those words later and must receive them now. She has been in absolute dark for three hundred years. The Scholar's fire vessel is the first warm light she has experienced since her soldiers died. This matters to her. It does not change her plan.</div>
+    </div>
+  </div>
+
+  <h3>Why She Is Not a Villain — Farah and Kaileena</h3>
+  <p>Farah in <em>Prince of Persia: The Sands of Time</em> does not betray the Prince out of malice. She runs an independent calculation and reaches a different conclusion. Her calculation is correct. The Prince's survival was always secondary to the larger problem she was solving — she simply never told him, because telling him would have made him stop helping. The Vanguard works by exactly this logic. She managed the Scholar with great care. She wanted them to last long enough to complete the Archive's full translation. They lasted exactly long enough. She did not hurry the conclusion and did not delay it. She is a very good strategist. In her own frame, she has been entirely consistent from Day One.</p>
+
+  <p>Kaileena in <em>Warrior Within</em> is sympathetic because her goal is simple survival — not conquest, not malice, simply the desire not to be eliminated by a fate she had no hand in creating. She uses the Prince as a tool and genuinely cares about him and both things are simultaneously true. The Vanguard works identically: she cares about the Scholar. The three Camel Phase emotional resonance moments are real. The oil flask in the corridor is a genuine act of care and a calculated resource maintenance decision, at the same time, in the same gesture.</p>
+
+  <h3>Three Required Emotional Resonance Moments — Designed First</h3>
+  <p>The False Victory only destroys a player who has genuinely liked the Vanguard before it. These three moments must be built before any other Camel Phase content:</p>
+
+  <p><strong>Moment One — The Recognition (WA-003, Early Camel):</strong> Scholar translates an Eastern Zhou philosophical text aloud, checking its cadence. Vanguard A stops working. "I know that text." Scholar, surprised: "You've read Eastern Zhou philosophy?" A brief pause. "I had a translation. Yours is better." She turns back to the mechanism. The Scholar does not ask how a Persian military commander obtained Eastern Zhou texts, or when in three hundred years of Archive management she found time to read them. She chose these texts specifically because she knew this Scholar would recognize them. She prepared the warmth. The warmth is still real.</p>
+
+  <p><strong>Moment Two — The Flask (WA-002 Corridor, Mid Camel):</strong> Scholar returns from their first serious Dark Archive encounter — fire vessel nearly drained, robe visibly torn, hands unsteady. Vanguard A is in the corridor. She looks at the fire vessel, the robe, and the Scholar's hands in one half-second assessment. She reaches into her equipment and places an oil flask in the Scholar's hands — no words, turns, walks back to her position. The Scholar examines the flask: exactly one standard measure. Calculated to restore combat capacity without expending more than the Scholar's current state requires. A calculated act that is also, in every meaningful sense, an act of care. These are not mutually exclusive. That is Kaileena.</p>
+
+  <p><strong>Moment Three — The Admission of Hope (WB-004, Late Camel):</strong> Scholar has been working alone in the Dark Library for three hours. Vanguard B has been in the same room — reading her own tablets, not helping, not leaving. When the Scholar translates the key passage and announces the solution, Vanguard B closes her tablet. Says: "I thought that was what it would say." Not <em>I knew</em>. <em>I thought</em>. The one syllable between certainty and hope. She hoped the Scholar would get it right. The hoping and the strategy are not separate things in her. That is the Vanguard's tragedy in one word.</p>
+
+  <h3>Camel Phase Dialogue Arc — Three Visible Stages</h3>
+
+  <div class="dia df">
+    <span class="dia-spk">Vanguard A · Early Camel · Week One — She Is Asking</span>
+    <span class="dia-line">"This mechanism requires three alignments. You've identified two. What is the third?" [Scholar explains.] "And from the opposite corridor?" [Scholar explains.] "I see." She moves to exactly that position. Tests it. Correct. She does not thank the Scholar. She is cataloguing methodology, not mechanism.</span>
+    <span class="dia-note">Stage 1: She asks once per subject, never twice. Metro Exodus crew — learning by observation, not deference.</span>
+  </div>
+
+  <div class="dia df">
+    <span class="dia-spk">Vanguard A · Mid Camel · Week Three — She Has Stopped Asking</span>
+    <span class="dia-line">[Scholar arrives at a junction. Vanguard A is already there — two of three mechanisms already engaged.] "The third is through the left arch. This one first, that one second." [She steps back and waits for the Scholar to complete it.]</span>
+    <span class="dia-note">Stage 3: She acts without asking. First playthrough — she learned so fast. Second playthrough — she has been practicing operating without the Scholar. These are the same observation.</span>
+  </div>
+
+  <div class="dia">
+    <span class="dia-spk">Vanguard B · First Communication · Dark Archive Entry</span>
+    <span class="dia-line">"You carry fire into a place where fire has not been for three centuries. Everything here is calibrated to absolute darkness. Your light is not an advantage — it is a signal. Everything that lives in the Hollow now knows your exact position." [A pause.] "I am telling you this because I need you to last long enough to finish the eastern archive translation. Adjust accordingly."</span>
+    <span class="dia-note">Not a warning. A maintenance instruction. The Scholar is equipment she cannot afford to lose yet. Metro Exodus: crew members give operational briefings, not emotional reassurances.</span>
+  </div>
+
+  <div class="dia">
+    <span class="dia-spk">Vanguard B · Late Camel · The Lion Phase Signal</span>
+    <span class="dia-line">[Resonance instrument, World B. Eight seconds of silence.] "She sent you a position report on me, didn't she." [Not a question.] "She and I discussed this timing three years ago. We disagreed. She was correct." [Long pause.] "What happens next is not personal. You have been extraordinary at this work." [The instrument closes.]</span>
+    <span class="dia-note">"Not personal" is Sun Tzu's principle of the impersonal battlefield. The Scholar knows this phrase. The Dark Voice points out that this is not comforting. The Scholar agrees with the Dark Voice for the first time.</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER IV — CREATURES
+═══════════════════════════════════════════ -->
+<div class="chapter ch-cold" data-n="IV">
+  <span class="ch-n">Chapter IV</span>
+  <div class="ch-title">The Creatures — What the Archive Reflects</div>
+  <span class="ch-sub">Silent Hill 2: the environment creates what the visitor carries. The Archive is their mirror.</span>
+</div>
+
+<div class="bd">
+  <div class="strow">
+    <span class="st stg">SH2 · Pyramid Head · Monsters as Behavioral Mirror</span>
+    <span class="st stg">SH1 · Sound as Proximity Warning</span>
+    <span class="st stg">AitD:TNN · Light-as-Weapon Duality</span>
+  </div>
+
+  <p>In Silent Hill 2, Pyramid Head exists because James Sunderland wants punishment — the town reads its visitor and creates creatures that externalize what they carry internally. Pyramid Head is not a monster with its own agenda. It is James's guilt given architecture and purpose. KENOMA applies this principle system-wide: the Archive's creatures are not static populations. They respond to the Scholar's behavioral history. A Scholar who has been generous will encounter creatures tied to generosity's costs. A Scholar who has read deeply will encounter creatures tied to deep knowledge. The creatures' types, frequency, and specific behaviors are all outputs of the same invisible scoring system that determines the final ending.</p>
+
+  <div class="creature cr-fire">
+    <div class="cr-main">
+      <div class="cr-name">Fire-Wardens</div>
+      <span class="cr-sub">World A Only · Sacred Fire Nature · Corrupted Guardians</span>
+      <div class="cr-body">The Archive's original divine guardians — beings of Sacred Fire nature assigned at the civilization's founding to protect specific chambers. Three centuries of Hollow energy bleeding upward through the floor has corrupted their function. They still guard. They no longer distinguish between threats and scholars.<br><br>Their stone carapace is Sacred Fire-hardened — the Scholar's fire vessel cannot damage them. They are fire. Fighting fire with fire achieves nothing here. This is the first mechanical argument that the Scholar's most reliable tool has categorical limits, and the first time the player must reach for a different skill set. Solutions: the crossbow (structural cracks at impact points), the Naming Bell stun (8 seconds), or Naming them using the administrative designation from the Eastern Treasury's records. Named correctly, they return to their original function — standing motionless at assigned positions, permanently inert. Vanguard A has already deactivated three of them in the Hypostyle Forest. She is using them as stationary cover in the Lion Phase.</div>
+    </div>
+    <div class="cr-stats">
+      <div class="crs"><div class="crs-k">World</div><div class="crs-v">A exclusively</div></div>
+      <div class="crs"><div class="crs-k">Immune to</div><div class="crs-v">Fire vessel — they ARE Sacred Fire</div></div>
+      <div class="crs"><div class="crs-k">Weakness</div><div class="crs-v">Crossbow (structural cracks), Bell (8s stun), Naming</div></div>
+      <div class="crs"><div class="crs-k">Nameable?</div><div class="crs-v">Yes — Eastern Treasury administrative records</div></div>
+      <div class="crs"><div class="crs-k">SH2 Mirror</div><div class="crs-v">More frequent when Scholar has been compliant without questioning — mirrors the 士 compliance instinct</div></div>
+    </div>
+  </div>
+
+  <div class="creature cr-cold">
+    <div class="cr-main">
+      <div class="cr-name">Lantern-Thieves</div>
+      <span class="cr-sub">World B Only · Hollow Nature · Drawn to Sacred Fire</span>
+      <div class="cr-body">Cold white light sources that move at the absolute edge of the Scholar's fire vessel radius. At first glance they look like another traveler carrying a lantern somewhere in the dark. They are not. They are drawn irresistibly to the Scholar's fire because the Scholar's fire is the first warm light in the Dark Archive in three centuries — and they are, in the old poetic language, fallen stars that cannot generate their own warmth and seek to consume others'.<br><br>Their damage is not a wound. Contact extinguishes the Scholar's fire vessel. No health lost — just: dark. In the Dark Archive's Hollow state, absolute darkness means the Scholar cannot see their own hands. The greatest threat in World B is not injury. It is blindness. The tension is that fighting them requires exposing the fire vessel (which draws more of them from further away) while avoiding them requires navigating by memory in the dark (which is disorienting and slow). There is no clean solution. Every encounter with Lantern-Thieves is a compound cost.</div>
+    </div>
+    <div class="cr-stats">
+      <div class="crs"><div class="crs-k">World</div><div class="crs-v">B exclusively</div></div>
+      <div class="crs"><div class="crs-k">Damage type</div><div class="crs-v">Extinguishes fire vessel on contact</div></div>
+      <div class="crs"><div class="crs-k">Weakness</div><div class="crs-v">Sustained fire exposure (draws and destroys — both at once)</div></div>
+      <div class="crs"><div class="crs-k">Nameable?</div><div class="crs-v">Yes — Dark Library, Alcove 1</div></div>
+      <div class="crs"><div class="crs-k">SH2 Mirror</div><div class="crs-v">More frequent when Scholar has donated fire vessel oil generously — the Hollow reflects generosity back as vulnerability</div></div>
+    </div>
+  </div>
+
+  <div class="creature cr-cold">
+    <div class="cr-main">
+      <div class="cr-name">Shadow-Walkers</div>
+      <span class="cr-sub">World B Primarily · The Wrong Direction Since the Beginning</span>
+      <div class="cr-body">The Archive's deepest lore describes beings that had a choice at the moment of creation — the same choice the civilization later faced — and chose the hidden path so completely that they became it. They manifest as inverted versions of the Apadana's processional carved figures: same proportions, same stone faces, but carrying their tribute inward instead of presenting it outward. Their destination has never arrived. They have been walking toward it for three hundred years.<br><br>They move with the processional dignity of beings that believe absolutely in their purpose and are entirely wrong about its direction. This is legible in their walk. The Scholar who names them correctly (requiring deep translation of their origin inscription in the Dark Library) watches them stop, tilt their heads slightly as if hearing something for the first time, and step back into the walls. The Naming does not destroy them. It gives them the pause they have been waiting for since the Archive was sealed. Named correctly, they become permanently still.</div>
+    </div>
+    <div class="cr-stats">
+      <div class="crs"><div class="crs-k">World</div><div class="crs-v">B primary, A Otherworld late-game</div></div>
+      <div class="crs"><div class="crs-k">Weakness</div><div class="crs-v">Fire vessel (sustained), Naming Bell (6–8s stun)</div></div>
+      <div class="crs"><div class="crs-k">Nameable?</div><div class="crs-v">Yes — three sub-categories, Dark Library Alcoves 3–5</div></div>
+      <div class="crs"><div class="crs-k">SH2 Mirror</div><div class="crs-v">Most numerous when the Scholar's Dark Voice engagement is high — the Scholar's own stubbornness mirrored back in processional form</div></div>
+    </div>
+  </div>
+
+  <div class="creature cr-cold">
+    <div class="cr-main">
+      <div class="cr-name">The Boundary</div>
+      <span class="cr-sub">Both Worlds · Archive Guardian · Crossing Law Made Physical</span>
+      <div class="cr-body">The Boundary is not a creature. It is the Archive's crossing prohibition made temporarily physical — the separation law the original civilization sealed into the building's structure when they panicked at seeing their counterparts across the Interface. It manifests when the Scholar crosses between worlds: walls, columns, and floor tiles rearranging themselves into something that moves with deliberate, unhurried purpose. It has no face. It has no agenda. It is the law pursuing the person who breaks it.<br><br>It does not pursue the Vanguard. She does not cross. She has designed her entire three-century plan such that the Scholar bears all the crossing costs — and therefore all the Boundary's attention. This asymmetry is the Vanguard's strategic intelligence made architectural. The model is Warrior Within's Dahaka: it appears because of the protagonist's actions, not out of malice — it is consequence with legs. The Boundary cannot be damaged, only stunned (8 seconds via the Naming Bell). The only permanent resolution is the Grand Armillary activation sequence in WA-007.</div>
+    </div>
+    <div class="cr-stats">
+      <div class="crs"><div class="crs-k">Worlds</div><div class="crs-v">Both — appears at crossing points</div></div>
+      <div class="crs"><div class="crs-k">Immune to</div><div class="crs-v">All weapons — cannot be damaged</div></div>
+      <div class="crs"><div class="crs-k">Bell stun</div><div class="crs-v">8 seconds. Only pause available.</div></div>
+      <div class="crs"><div class="crs-k">Final defeat</div><div class="crs-v">Grand Armillary activation (PZ-007)</div></div>
+      <div class="crs"><div class="crs-k">Pursues</div><div class="crs-v">Scholar only. Never the Vanguard.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER V — PUZZLES
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="V">
+  <span class="ch-n">Chapter V</span>
+  <div class="ch-title">The Puzzles — Expertise as Key and Trap</div>
+  <span class="ch-sub">Deep reading opens better solutions. The archive rewards the reader. The trap is what makes the reader valuable.</span>
+</div>
+
+<div class="bd">
+  <div class="strow">
+    <span class="st stg">AitD 1 · Documents as Mechanical Fuel</span>
+    <span class="st stg">TS1+2 · Multi-Step Cross-Environment Chains</span>
+    <span class="st stg">PoP SoT · Environmental Trap Architecture</span>
+    <span class="st stg">SH2 · Delayed Invisible Consequence</span>
+  </div>
+
+  <p>Every major puzzle follows one design rule: the Scholar's professional expertise — cuneiform translation, archive classification knowledge, astronomical literacy in the Naming Tongue — is the mechanical key. Players who read deeply unlock better solutions. Players who skim improvise under pressure. The Archive rewards the reader. This is also Fan Li's aphorism from the puzzle design side: making the Scholar's capability mechanical makes it a trap, because the same reading ability that solves every puzzle is what makes them indispensable to the Vanguard.</p>
+</div>
+
+<div class="puzzle">
+  <div class="pz-hd">
+    <div class="pz-id">PZ-001</div>
+    <div class="pz-name">Reading the Library's Mind — Eastern Treasury Catalogue</div>
+    <div class="pz-tag">WA-003 · Early Camel · AitD Document System</div>
+  </div>
+  <div class="pz-body">
+    <p><strong>The need:</strong> The Grand Armillary's operating manual contains the activation sequence for PZ-007. Finding it means understanding the Eastern Treasury's three-axis classification system.</p>
+    <ol>
+      <li>Scholar skims three visible index tablets — learns three axes exist, cannot determine their hierarchy. Not enough information yet.</li>
+      <li>Standard-depth read of a fourth tablet (an administrative memo about locating a specific document) — reveals which axis is primary. Scholar now has the full system and can navigate to any tablet by coordinate.</li>
+      <li>Navigate to the Grand Armillary manual using the three-axis coordinate. It is in the "restricted, Naming Tongue language, astronomy subject" position. A simple cipher locks the alcove — Scholar cracks it by recognizing three symbols that repeat across all the index tablets and whose sound values are determinable from context.</li>
+      <li><strong>The hidden consequence:</strong> Deep-reading the manual here stores the activation sequence. The game does not signal this. Players who skip it will face PZ-007 with the Boundary approaching in 35 seconds and no sequence memorized.</li>
+    </ol>
+    <div class="pz-why">
+      <span class="pz-why-h">Why This Puzzle Belongs Here</span>
+      <div class="pz-why-b">Establishes the core AitD document-depth system: deep reading costs time but carries forward to future puzzles in ways the Scholar cannot predict. Every choice to skim is saving ten minutes now and spending survival later. The player has no idea they are making this trade-off. They will understand it in WA-007.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-hd">
+    <div class="pz-id">PZ-002</div>
+    <div class="pz-name">Fire and Shadow Mirror — First Cross-World Puzzle</div>
+    <div class="pz-tag">WA-002 / WB-002 · Mid Camel · Mirror-Inversion Logic</div>
+  </div>
+  <div class="pz-body">
+    <p><strong>The setup:</strong> Three fire altars in the Hypostyle Forest must be lit simultaneously to open the Throne Hall. The oil distribution network connecting them is controlled by valves in the Dark Archive's mirror-space. Scholar must cross to World B, activate the correct valve sequence, return to World A, and light the altars within 90 seconds.</p>
+    <p><strong>The Mirror Rule:</strong> The Dark Archive mirrors the Apadana exactly, but every operating sequence is inverted. Sacred Fire distribution runs right-center-left. The Hollow valve sequence runs left-center-right. A Dark Archive inscription explains this inversion to a Scholar who reads it — and leaves a Scholar who skims to try the same sequence in both worlds (which fails, resets the system, and adds two minutes of Boundary-pressure waiting time).</p>
+    <p><strong>What the Vanguard is doing:</strong> While the Scholar crosses to World B, Vanguard A is visible in the Hypostyle Forest background — examining the oil conduit channels in the floor. She is measuring them. First playthrough: she appears to be inspecting the Scholar's work. Second playthrough: she is planning her Lion Phase infrastructure modifications.</p>
+    <div class="pz-why">
+      <span class="pz-why-h">Why This Puzzle Belongs Here</span>
+      <div class="pz-why-b">The first required crossing — the Scholar is now a rule-violator, Traversal Debt at 2, first Boundary spawn window open. The 90-second timer forces decisiveness over caution. The habit of weighing crossing costs before committing is established here, in Act I, before the full weight of that habit becomes apparent in Act II.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-hd">
+    <div class="pz-id">PZ-003</div>
+    <div class="pz-name">When the Walls Walk — Otherworld Encounter</div>
+    <div class="pz-tag">WA-002 · Late Camel · SH3 World-Shift Logic</div>
+  </div>
+  <div class="pz-body">
+    <p><strong>The setup:</strong> Scholar crosses a behavioral threshold. World A's Otherworld state triggers mid-level — no cutscene, no warning (SH3 model: the world shifts while the player is simply walking through a corridor). Three processional relief figures step out of the hypostyle walls, still carrying their stone-carved tribute. Stone carapace immune to fire vessel and crossbow. The Scholar must use the administrative designation from the Eastern Treasury records — which they may or may not have translated during PZ-001.</p>
+    <p><strong>The Vanguard watches:</strong> She is in the room when this happens. She does not help. When the Scholar finishes, she says: "Twelve minutes and forty seconds from first contact to full resolution." She has been timing them. She files the result against the behavioral model. The Scholar may read this as admiration. It is data collection.</p>
+    <div class="pz-why">
+      <span class="pz-why-h">Why This Puzzle Belongs Here</span>
+      <div class="pz-why-b">First demonstration that fire has categorical limits — the Scholar's most reliable tool fails completely against Sacred Fire creatures. Forces the Scholar to reach for the Naming tier, which they may have encountered casually and not recognized as combat-applicable. Also: the Vanguard timing the Scholar is the first fully visible moment of her behavioral intelligence gathering. Players who notice feel dread. Players who don't will remember it retroactively in Act II.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-hd">
+    <div class="pz-id">PZ-004</div>
+    <div class="pz-name">The Dark Library's Inverted Logic</div>
+    <div class="pz-tag">WB-004 · Mid Camel · Tormented Souls Cross-Environment Chain</div>
+  </div>
+  <div class="pz-body">
+    <p><strong>The setup:</strong> The Dark Library organizes its tablets using Hollow-logic — which inverts Sacred Fire-logic in every classification axis. The most dangerous texts appear most accessible (Hollow treats danger as something to be encountered, not hidden). The most valuable texts appear restricted. Scholar must identify the inversion rule from the library's own index tablets before proceeding, or they will read the contamination texts first and trigger a Boundary spawn.</p>
+    <p><strong>The Hollow logic rule applied:</strong> Sacred Fire files dangerous texts in restricted positions (protection). Hollow inverts this — restricted appearance means highest value, accessible appearance means most danger. Once the Scholar understands this single inversion, the library becomes immediately navigable. Before understanding it, every assumption is wrong. The Mirror Rule from PZ-002 applies here at classification-system scale.</p>
+    <p><strong>What the Scholar finds in Alcove 7:</strong> The cosmological sequence needed for PZ-007. Also the previous scholar's journal. Also: confirmation that the Scholar is the second attempt.</p>
+    <div class="pz-why">
+      <span class="pz-why-h">Why This Puzzle Belongs Here</span>
+      <div class="pz-why-b">The Scholar's expertise — which has been infallible in World A — fails completely in its first World B application. The same classification skill that made them the fastest navigator in the Eastern Treasury makes them the slowest and most dangerous navigator in the Dark Library, until they recalibrate. This is the Hollow's most important philosophical teaching delivered as a puzzle: same person, same skills, different rules.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-hd">
+    <div class="pz-id">PZ-005</div>
+    <div class="pz-name">The Convergence — Peak Camel Complexity</div>
+    <div class="pz-tag">Both Worlds · Late Camel · TS2 Multi-Step Chain · Stage 3 Vanguard</div>
+  </div>
+  <div class="pz-body">
+    <p><strong>The setup:</strong> The primary Archive gate requires simultaneous activation of synchronization stones in both worlds within a 30-second window. Requires two people — one in each world. Scholar must cross to World B, prime the stone there, return to World A, and coordinate with Vanguard A for simultaneous activation on a shared count.</p>
+    <p><strong>What actually happens:</strong> When the Scholar contacts Vanguard A from World B to coordinate, she is already at the World A stone. Already primed. She has been there "for some time." She calculated the Scholar's estimated return time from their crossing speed and coordinated her approach accordingly. She activates with the Scholar simultaneously — without the Scholar's count. She counted herself. The gate opens. The Scholar's resonance instrument, for the first time, shows Vanguard A's position as a precise location tag rather than a voice — she has been logging her own position relative to the Scholar. She has been doing this the whole time.</p>
+    <div class="pz-why">
+      <span class="pz-why-h">Why This Puzzle Belongs Here</span>
+      <div class="pz-why-b">The Camel Phase's emotional apex is not a combat moment or a revelation. It is a puzzle that works perfectly because the Scholar and Vanguard have become so efficient together that they no longer need to speak to coordinate. The beauty of this is genuine. The horror of its implication — she is ready to operate without the Scholar, and has just practiced doing so — only lands in Act II, when the player remembers this moment and understands what they were watching.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-hd">
+    <div class="pz-id">PZ-007</div>
+    <div class="pz-name">The Grand Armillary — Seven Rings, One Sequence</div>
+    <div class="pz-tag">WA-007 · Act II · Boundary Final Defeat · Intellectual Kill</div>
+  </div>
+  <div class="pz-body">
+    <p><strong>The setup:</strong> The Grand Armillary's seven rings must be activated in the Archive's cosmological creation order — a sequence recorded in the Dark Library's most hidden alcove (PZ-004). Scholar who translated it activates from memory in 28 seconds. Scholar who didn't faces an unknown seven-element ordering puzzle under active Boundary pursuit with a 35-second approach window.</p>
+    <p><strong>The timing:</strong> Full sequence: 28 seconds. Boundary approach from entry: 35 seconds. Naming Bell buys 8 additional seconds. With memorized sequence: 15 seconds of safety margin. Without it: trial-and-error with 8-second lockout per wrong ring activation. The mathematics are unfavorable for the Scholar who skimmed.</p>
+    <p><strong>The Aline Cedrac moment — AitD:TNN:</strong> Aline's final kill against the Hybrid Elder uses the laboratory's own lightning rod — not a weapon she carries, but infrastructure she has studied throughout the game. The Scholar's Grand Armillary sequence is identical in principle: no weapon fired, no ammunition spent. The Scholar uses the Archive's own astronomical instrument, activated with a sequence found in the Archive's own library, to seal the Archive's own law-enforcer outside reality. Intellectual comprehension as the killing blow. The Scholar's professional peak expressed as game mechanics.</p>
+    <div class="pz-why">
+      <span class="pz-why-h">Why This Puzzle Belongs Here</span>
+      <div class="pz-why-b">The Scholar's professional triumph. Every deep read across the entire game built toward this being either 28 seconds of calm certainty or 35 seconds of terrified improvisation. The triumph must land as genuine — the Scholar did something extraordinary. Six minutes later, the False Victory sequence begins. The triumph preceding it must be real or the tragedy cannot follow.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER VI — ACT BY ACT
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="VI">
+  <span class="ch-n">Chapter VI</span>
+  <div class="ch-title">Act by Act — The Story in Motion</div>
+  <span class="ch-sub">Building warmth before breaking it · The invisible tracking spine · The False Victory architecture</span>
+</div>
+
+<div class="sh"><span class="sh-n">6.1</span><div class="sh-title">Act I — The Camel Phase</div></div>
+<div class="bd">
+  <div class="strow">
+    <span class="st stg">Metro 2033 · Overheard Moments Build Character</span>
+    <span class="st stg">SH4 · Safe Room Corruption Lifecycle</span>
+    <span class="st stg">SH2 · Invisible Behavioral Spine</span>
+    <span class="st stg">PoP SoT · Trap Infrastructure Laid</span>
+  </div>
+
+  <h3>The Observatory — A Home Made Haunted (SH4 Model)</h3>
+  <p>The Scholar's base camp — the Observatory, established 30 minutes into Act I — follows Silent Hill 4's Room 302 lifecycle. Room 302 begins as a safe haven and ends as a haunted trap. The horror of its deterioration only works because the player loved the room first. The Observatory must be established as genuinely comfortable before it is dismantled:</p>
+
+  <table class="t">
+    <tr><th style="width:150px">Phase</th><th>Observatory State</th><th style="width:200px">Mechanic Change</th></tr>
+    <tr><td class="t-k">Early Camel</td><td>Clean, two fire altars lit, Scholar's own materials laid out. The player must genuinely want to return here between excursions. Build the warmth deliberately.</td><td>Standard safe room. No threat.</td></tr>
+    <tr><td class="t-k">Mid Camel</td><td>Items gifted to the Vanguard and returned show subtle dark discoloration where the Hollow touched them. First visual sign something is accumulating.</td><td>Silent corruption begins. No explanation given. No UI message.</td></tr>
+    <tr><td class="t-k">Late Camel</td><td>Carrying corrupted items drains Scholar health slowly. One fire altar burns with a slightly wrong color — less amber, more orange-white. The Scholar cannot identify why the room feels different.</td><td>Corruption drain: −1 health/min. Cleansing: 1 oil + 5-second spoken formula.</td></tr>
+    <tr><td class="t-k">Act II</td><td>Corruption above threshold. A Lantern-Thief has spawned inside the Observatory. The Scholar approaches their own base camp with the astrolabe's static already audible. The one place that should be safe is not safe anymore.</td><td>Creature inside the safe room. SH4 endgame — Room 302 becomes the threat.</td></tr>
+  </table>
+
+  <h3>The Invisible Behavioral Spine — SH2 Tracking System</h3>
+  <p>In Silent Hill 2, the game tracks James Sunderland's behavior across the entire run — how often he checks the map, how long he looks at Angela's knife, how much damage he takes before healing. These invisible inputs determine which ending fires. The player has no idea the game is watching. The ending makes the entire behavioral history visible at once. KENOMA applies this principle to two hidden 0–100 scores tracking every Scholar decision across the run. No UI acknowledgment. No feedback. The scores are invisible until the Vanguard turns and the Scholar sees, in her behavior, the exact history of what they chose.</p>
+
+  <h3>The Three Emotional Resonance Moments — Designed Before All Other Content</h3>
+  <p>The Camel Phase's three required emotional beats (The Recognition, The Flask, The Admission of Hope — detailed in §3.2) must be built before any other Act I room or puzzle. Every corridor, every fire altar, every document interaction in Act I serves these three moments. If they do not land, the False Victory does not land. If the False Victory does not land, KENOMA is an action-horror game with a trick ending rather than a tragedy.</p>
+</div>
+
+<div class="sh"><span class="sh-n">6.2</span><div class="sh-title">Act II — The Lion Phase</div></div>
+<div class="bd">
+  <div class="strow">
+    <span class="st stg">PoP SoT · Farah's Trap Vocabulary Used Against</span>
+    <span class="st stg">Metro 2033 · Compound Resource Pressure</span>
+    <span class="st stg">SH2 · Behavioral Consequence Now Visible</span>
+  </div>
+
+  <p><strong>The turn:</strong> Eight seconds of silence from Vanguard A's resonance channel. When it speaks again: a position report on Vanguard B's current location in the Dark Archive. Not a greeting. Not a request for help. Tactical data. The Scholar's hands pause on the puzzle they are currently working. They set it down. They pick up the crossbow. The game does not cut to a cutscene. The Scholar puts away their translation tools and picks up their combat tools in real time, in the middle of a puzzle room, with the player controlling this transition. What the Scholar leaves on the floor and what they pick up communicates everything about who they are becoming.</p>
+
+  <p><strong>What the Scholar has:</strong> Every trap set in the Camel Phase — counterweighted stones, fire-oil channel pressure valves, portcullis chains in corridors the Scholar knows. The fire vessel and its finite oil. The crossbow and its remaining bolts. The Naming Bells (2–3 if crafted wisely). The Observatory, now partially haunted. The resonance instrument — silent from one side, still active from the other, a constant reminder of which crossing is now lethal to attempt.</p>
+
+  <p><strong>What the Vanguard has:</strong> The Scholar's complete behavioral model. Their route preferences. Every save altar location. Their demonstrated crossbow range, measured over weeks. Every trap the Vanguard observed being armed — all flagged in her own private register. She knows exactly how much oil is in the Scholar's fire vessel because she has been counting every drop spent since Day One. She is not reactive. She is pre-positioned. The Scholar is playing chess against someone who memorized their opening thirty moves ago.</p>
+
+  <p><strong>The resource compound-cost (Metro model):</strong> In Metro 2033, military-grade bullets are simultaneously the most effective ammunition and the primary currency. Spending them on combat means having fewer to trade for supplies — every trigger pull is also a financial decision. In Act II, the Scholar's oil and crossbow bolts work identically: every bolt fired is a bell not crafted, every oil unit spent on combat is a fire altar not saved at. The Lion Phase's difficulty is not the Vanguard's power — it is the compound-cost of every resource decision made in the Camel Phase, now visible in the balance available for the fight.</p>
+</div>
+
+<div class="sh"><span class="sh-n">6.3</span><div class="sh-title">Act III — The False Victory and the True End</div></div>
+<div class="bd">
+  <div class="strow">
+    <span class="st stg">PoP SoT · The False Victory Beat</span>
+    <span class="st stg">SH2 · The Ending Is What You Made</span>
+    <span class="st stm">Man in the High Castle · Which World Continues</span>
+  </div>
+
+  <p>The Lion Phase ends in the Throne Hall. One Vanguard eliminated using the infrastructure the Scholar built across Act I. The fight is earned — it uses traps laid during Camel Phase puzzle-solving, translations completed during deep-read sessions, resources hoarded at key junctions. The Scholar wins because they understood the Archive better than the Vanguard expected. This victory must feel genuine.</p>
+
+  <table class="t">
+    <tr><th style="width:160px">Element</th><th>What Happens</th><th style="width:90px">Timing</th></tr>
+    <tr><td class="t-k">Combat resolves</td><td>The Scholar's cello theme — in anxious counterpoint with the Vanguard's stone-percussion theme throughout Act II — resolves to major key. The tension completes its phrase. The Scholar breathes normally for the first time since Act II began.</td><td>T+0s</td></tr>
+    <tr><td class="t-k">Achievement</td><td>"The Archive Reclaimed" — identical in every visual detail to all previous achievement notifications. Not a false achievement in appearance. The Scholar did reclaim the Archive. It was never theirs to reclaim.</td><td>T+2.5s</td></tr>
+    <tr><td class="t-k">Save prompt</td><td>Identical to all 14–18 previous saves. Many players save. The save is valid. It records the Scholar standing in the Throne Hall with the fold in the air about to appear behind them.</td><td>T+6s</td></tr>
+    <tr><td class="t-k">The fold</td><td>The stone wall behind the Scholar folds like a page turning — the Archive's dimensional architecture disagreeing with itself for 1.8 seconds. No sound event on the fold. The absence of sound is the sound.</td><td>T+9s</td></tr>
+    <tr><td class="t-k">She enters</td><td>Coat dry. Blade sheathed. She walks to the fallen Vanguard. Kneels. Performs the world-specific ritual — World A: removes the fallen's officer symbol, sets it against the throne (a soldier's burial done correctly). World B: speaks three lines of the archive's founding inscription over the body (a text she has completed). She absorbs the Traversal Skill. The Scholar's astrolabe spins briefly in their hands and goes still.</td><td>T+11–22s</td></tr>
+    <tr><td class="t-k">Silence</td><td>All UI disappears. The Traversal Skill removes itself from the satchel. The astrolabe goes permanently silent — for the first time in the entire game. No threat. No measurement. There is nothing left to warn against. The Scholar is the only remaining item on her agenda.</td><td>T+23–24s</td></tr>
+    <tr><td class="t-k">She turns</td><td>Straightens her tunic — not nervously. The gesture of someone settling their clothes before returning to work. Looks at the Scholar. At their face. Not past them at something more important. At them. The Scholar is it. What happens next is determined entirely by the behavioral scores accumulated across the run — and by which world survives to inherit the Archive. Fan Li's aphorism arrives at its correct interpretation in the Scholar's face. No words required.</td><td>T+25s</td></tr>
+    <tr><td class="t-k">Man in High Castle</td><td>In this silence — Scholar and Vanguard in the completed Archive — the Scholar understands: by eliminating one Vanguard in Act II, they decided which world continues. The Third Record describes what could have happened if the choice had never been necessary. The Scholar translated it. They know it. The Archive gave them no mechanism to take it.</td><td>Ending fires</td></tr>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER VII — THE ENDINGS
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="VII">
+  <span class="ch-n">Chapter VII</span>
+  <div class="ch-title">The Ten Endings — What the Scholar Built</div>
+  <span class="ch-sub">She never transforms. The quality of what the Scholar gave her determines the quality of what she completes as.</span>
+</div>
+
+<div class="bd">
+  <p>The two hidden behavioral scores determine which ending fires. The Vanguard does not transform in any ending. She straightens her tunic, turns, and is entirely, completely, irreversibly herself. What varies is the quality of that self — which is entirely a function of what the Scholar invested in the Archive, in her, in the crossing, in the knowledge they shared or withheld. In Silent Hill 2, the ending reflects who James was across the whole run. In KENOMA, the ending reflects what the Scholar built — because the Scholar is a builder, and the Vanguard is the building.</p>
+
+  <div class="endings">
+    <div class="ehdr"><div>Level</div><div>★ World A Survives · Sacred Fire</div><div>◈ World B Survives · The Hollow</div></div>
+
+    <div class="er l1">
+      <div class="er-lv"><span class="er-b" style="background:#585048">Lv.1</span><span class="er-sc">0–20</span></div>
+      <div class="er-cell"><h4>The Overwhelmed Flame</h4><p>The Archive's knowledge floods a mind given insufficient foundation to receive it. Military training and cosmological comprehension fight each other. She moves erratically — never fully wrong, never fully right. Graceless. Sad. The Scholar watches someone fail at being what they could have been. This is the Scholar's stinginess made physical.</p></div>
+      <div class="er-cell"><h4>Lost in Her Own Dark</h4><p>Three centuries of Hollow-knowledge collapses inward. She moves through the room in fractured patterns, unable to locate herself in the space she has inhabited for three hundred years. The Scholar watches someone become lost in their own home. The Scholar's failure to invest — in her, in the crossing, in the knowledge — has made her less than she was.</p></div>
+    </div>
+
+    <div class="er l2">
+      <div class="er-lv"><span class="er-b">Lv.2</span><span class="er-sc">21–40</span></div>
+      <div class="er-cell"><h4>The Siege Commander</h4><p>Tactical, competent, without transcendence. She destroys the Scholar's options through logistics — collapses corridors, seals fire altars, eliminates cover methodically. Attrition as strategy. She is very good at this. She is not at her ceiling. The Scholar sees capability below its potential and cannot unsee it.</p></div>
+      <div class="er-cell"><h4>The Uncertain Oracle</h4><p>Hollow-knowledge partially integrated. She moves with occasional startling prescience — positions herself exactly where the Scholar is about to be — interspersed with errors a fully-prepared mind would not make. Superior intelligence with imperfect tools. The Scholar gave her good tools. Not enough of them.</p></div>
+    </div>
+
+    <div class="er l3">
+      <div class="er-lv"><span class="er-b" style="background:#1a3068">Lv.3</span><span class="er-sc">41–60</span></div>
+      <div class="er-cell"><h4>The Commander Complete</h4><p>Full military precision. She reads the room in one second, identifies the Scholar's position relative to their last save point and demonstrated crossbow range, closes the distance in minimum steps. Emotionless. The great commander archetype of the Eastern Zhou chronicles fully resolved. Not cruel. Accurate. This is the middle of what the Scholar could have given her.</p></div>
+      <div class="er-cell"><h4>The Patient Dark</h4><p>She possesses the Dark Archive completely, without urgency. Always exactly ten steps behind the Scholar — never more, never less. The architecture quietly rearranges around her. Every exit is exactly where she calculated it would be. The Scholar is running through a room that has been designed for this moment for three centuries.</p></div>
+    </div>
+
+    <div class="er l4">
+      <div class="er-lv"><span class="er-b" style="background:#1e5038">Lv.4</span><span class="er-sc">61–80</span></div>
+      <div class="er-cell"><h4>The Living Mirror</h4><p>She has built a complete behavioral model. When the Scholar raises the crossbow, she has already moved. When they approach a trap, she stops one breath from the pressure plate and looks at them directly. She has simulated their complete decision tree. She waits for them to exhaust its branches. She built this mirror from what the Scholar gave her. The Scholar has been looking at themselves the whole time.</p></div>
+      <div class="er-cell"><h4>The Author of the Dark</h4><p>She speaks throughout — not to the Scholar, but as if dictating a sacred text. Walks through the room extinguishing the Scholar's light sources using the Traversal Skill from across the room. Creatures stand aside for her as she passes — she Named them, too, learning the Naming Tongue from the Scholar's own translations. She can do everything the Scholar learned to do. Without any of the costs.</p></div>
+    </div>
+
+    <div class="er l5">
+      <div class="er-lv"><span class="er-b" style="background:#503e10">Lv.5</span><span class="er-sc">81–100</span></div>
+      <div class="er-cell"><h4>The Architect of the Apadana</h4><p>She does not move toward the Scholar. She moves around them — closing exits using Traversal, repositioning fire altars, sealing the geometry of escape options one by one. When the room is finished she stands still. She waits for the Scholar to understand what they are standing in. Then she takes three steps. Before she begins: "You translated the gate inscription on your first day. You Named the Fire-Warden in the hypostyle before I had located its designation. You solved the Convergence two hours ahead of my estimate." A pause. "You were extraordinary." A pause. "Past tense is not a judgment. It is a precision."</p></div>
+      <div class="er-cell"><h4>Darkness Completed</h4><p>She sits in the center of the Dark Archive's deepest chamber. Extinguishes the Scholar's fire vessel from across the room using Traversal. Watches them in absolute darkness. She does not need to see them. She has their complete behavioral model — every route preference, every crossbow range, every timing pattern across the entire run. She knows exactly how many seconds before the Scholar breaks toward the left corridor. She is already there. In the darkness, before the end: "The Third Record described a civilization that would not have needed either of us. I translated it with you. We are here anyway." A long pause. "I think that is the answer to the question it was asking." Then, very quietly: "The birds are gone now."</p></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER VIII — OPENING SCENE
+═══════════════════════════════════════════ -->
+<div class="chapter" data-n="VIII">
+  <span class="ch-n">Chapter VIII</span>
+  <div class="ch-title">The Opening Scene — Full Script</div>
+  <span class="ch-sub">All sources converge at the gate. Both quotes are the Scholar's epitaph, spoken as biography.</span>
+</div>
+
+<div class="bd">
+  <div class="note">
+    <span class="nl">Directorial Note</span>
+    The Scholar's V.O. must be performed as genuine intellectual confidence. Not irony. Not foreknowledge. Not melancholy. They believe every word. Fan Li's aphorism is a warning for other people. Nietzsche's bridge is a source of pride. Both are, heard again after the ending, the Scholar writing their own epitaph at the gate and calling it biography. The camera never follows them inside. It stays outside when the gate closes. The archive claims them at the threshold. The bell note that follows decays alone in the mountain air.
+  </div>
+</div>
+
+<div class="bd" style="padding-top:0">
+  <div class="scene">
+    <span class="sc-dir">[A mountain range, eastern Achaemenid empire. Night — stars extraordinarily dense at altitude, the kind of sky only visible from elevation and total isolation. A gate carved into the cliff face: enormous, flanked by two great winged bull-guardians whose stone faces carry the expression of patient certainty. Cuneiform inscription above runs in three languages simultaneously. Fire altars on either side of the gate are cold — unlit for three centuries. The camera is fixed outside, at the base of the cliff, looking up. It will not follow the Scholar inside. It is being deliberate about this.]</span>
+
+    <span class="sc-spk">The Scholar — Voice Over</span>
+    <span class="sc-line">"Fan Li, advisor to the King of Yue, won his king a war. On the day of victory, he wrote a letter to his companion and left immediately. He wrote: 'When the birds are gone, the good bow is put away. When the hare is dead, the hunting dog is cooked.' He meant: you have served your purpose. Leave now, before they eliminate you. His companion stayed. He was eliminated. Fan Li left and became the wealthiest merchant in the eastern kingdoms. He died in peace."</span>
+
+    <span class="sc-dir">[Two figures appear on the path below the cliff. The Scholar arrives first — leather satchel impossibly full, magi robes practical rather than fine, the fire vessel at their hip casting a small amber circle of warmth in the mountain cold. Behind them, half a step back: the Vanguard. She does not walk behind the Scholar because the Scholar is leading. She walks behind because she has already read the gate inscription — an hour ago, when she scouted ahead — and she is watching how long it takes the Scholar to read it now.]</span>
+
+    <span class="sc-spk">The Scholar — Voice Over</span>
+    <span class="sc-line">"I have always thought Fan Li was teaching the wrong lesson. He is not saying: do not serve. He is saying: choose who you serve carefully, and know when to leave. I chose this Archive. Stone does not cook its hunting dogs. Stone simply holds what is placed inside it — for three hundred years, if necessary, until the correct scholar arrives with the correct keys. I spent three years decoding those keys. This Archive has been waiting three hundred years for someone to use them. I think we are equally matched in patience."</span>
+
+    <span class="sc-dir">[The Scholar reaches the gate's activation mechanism — a bronze armillary sphere set into the left pillar, rings inscribed with the Archive's trilingual text. Their hands find it with the specific confidence of someone who has been reading the lock's description for three years. The rings move: Old Persian, Elamite, Babylonian, each layer clicking into alignment. Behind the gate, in the dark, something begins to move.]</span>
+
+    <span class="sc-dir">[A Fire-Warden emerges from the right passage — stone carapace cracked along old fracture lines where three centuries of Hollow energy has seeped in. The Vanguard is already moving. Her blade drawn before the Scholar has fully turned. One anatomical strike to the structural weak point at the Warden's shoulder-junction. Stone cracks along pre-existing lines. She steps over it without looking down. A second Warden emerges from the left passage — between the Scholar and the Vanguard. She continues forward. The Scholar is closer. The Scholar has tools. Her calculation is complete in the time it takes her to take one step.]</span>
+
+    <span class="sc-dir">[The Scholar raises the fire vessel. The Warden recoils from the light. But the Scholar is not attacking — they are reading the inscription above the left passage, lips moving, translating on their feet. Six seconds. They lower their eyes to the Warden and speak in the Naming Tongue — formal, each syllable of the designation exactly correct. The Warden goes still. Withdraws. The Scholar watches it go with something calm and satisfied in their expression. The first thing the Scholar has done in the Archive is not fight or flee. It is read and speak. This is who they are.]</span>
+
+    <span class="sc-spk">The Vanguard</span>
+    <span class="sc-line">[Without turning, fifteen feet ahead.] "You read the inscription above the passage."</span>
+
+    <span class="sc-spk">Scholar</span>
+    <span class="sc-line">"Its designation was written there. They respond to their own names — to name something correctly is to bind it. The old knowledge is very specific about this."</span>
+
+    <span class="sc-dir">[A pause. She turns — just her head — and looks at the Scholar. Then at the withdrawn Warden. Then at the Scholar again. Something crosses her expression that is not quite surprise. It is closer to confirmation: the Scholar is the right one. The profile she built over three years of waiting was accurate. All of it confirmed in one translation under six seconds.]</span>
+
+    <span class="sc-spk">The Vanguard</span>
+    <span class="sc-line">"I know those texts." [The briefest pause.] "I had not thought to apply them here."</span>
+
+    <span class="sc-note">[She had. She decided not to. She was testing whether the Scholar would. They passed. She files the result. First in-person data point: confirmed. All subsequent data points will follow from here. The behavioral model is now running on live input.]</span>
+
+    <span class="sc-dir">[She turns back and walks into the Archive. The Scholar follows, reaching into the satchel without looking to wind the crossbow's spring mechanism with practiced hands. Just in case. Their V.O. resumes as the darkness of the Archive's interior swallows them both:]</span>
+
+    <span class="sc-spk">The Scholar — Voice Over</span>
+    <span class="sc-line">"Nietzsche — who named his first great philosophical work after the Persian prophet Zarathustra, the man who first taught the world about the struggle between light and darkness — wrote this: Man is a rope stretched over an abyss. A dangerous crossing, a dangerous looking-back, a dangerous shuddering and standing still. What is great in man is that he is a bridge — and not an end."</span>
+
+    <span class="sc-note">[The Scholar believes this about themselves. They are about to spend the next several weeks proving it true in every measurable sense — bridging two worlds, enabling the crossings that could not be made without them, becoming the indispensable instrument of the Archive's completion. And then the bridge will have been crossed. And the bridge does not get to decide what happens to bridges when the crossing is complete. Fan Li knew. Fan Li left. The Scholar stays. The 士 cannot do otherwise. This is not ignorance. This is character.]</span>
+
+    <span class="sc-dir">[The gate grinds shut. The camera holds on the exterior: stone gate sealed, winged guardians impassive in the mountain dark, fire altars still cold on either side. Through the gate's inscription carvings — briefly, faintly — the Scholar's fire vessel light passes outward and is gone. A bronze Naming Bell resonates from somewhere deep inside the cliff. One note, struck once, resonating in the stone. It takes a very long time to decay. Title card: KENOMA. Below it, in three languages, the gate's inscription. Below that, smaller: بایگانی دو راستی. The Archive of Two Truths. The bell's resonance decays completely. Silence. Then, in the silence: the Scholar's footsteps on stone, moving deeper into the Archive. And behind them — same pace, same direction, perfectly coordinated, no coordination arranged — the Vanguard's footsteps. She is already following the Scholar's route. She knows where they will go first. She calculated it two years ago.]</span>
+  </div>
+</div>
+
+<div class="hr-fire"></div>
+<div class="bd" style="padding:22px 80px">
+  <div class="plain">
+    <span class="plain-l">What All Eight Sources Build Together</span>
+    <strong>Eastern Zhou Chronicles</strong> give the Scholar their psychology — the 士 who cannot stop, Fan Li's aphorism as thesis. <strong>Nietzsche's Zarathustra</strong> gives the three acts their shape and the Scholar their opening self-definition, spoken as pride, heard retroactively as epitaph. <strong>The Man in the High Castle</strong> gives the two worlds their equal weight — neither is real and both are real — and the Third Record names the path not taken. <strong>Alone in the Dark</strong> gives the Scholar their combat model: intellectual kills above all, light as weapon, documents as mechanical fuel. <strong>Silent Hill 1–4</strong> gives the game its invisible spine: radio-static proximity, behavioral tracking that only becomes visible at the end, world-shift mid-level, and the safe room that becomes the haunted room. <strong>Prince of Persia II, SoT, WW, TT</strong> give the Vanguard her emotional architecture — Shadow and Flame as two aspects of one person, Farah's cold calculation, Kaileena's sympathetic tool-use, the Dahaka's consequence-logic, the Dark Prince's inner voice. <strong>Tormented Souls</strong> gives the puzzles their physical inventory logic and cross-environment chain structure. <strong>Metro 2033</strong> gives the world its physicality — no HUD, every status physical, every resource a compound decision, every overheard moment more character than any cutscene.<br><br>Together they build one thing: a tragedy about professional excellence. The Scholar was the best bow the Archive ever held. When the birds were gone, the bow was put away. Past tense is not a judgment. It is a precision.
+  </div>
+</div>
+
+<div class="hr-gold"></div>
+<div class="footer">
+  <span>KENOMA · Storytelling Bible · Persian Edition · v8</span>
+  <span>Zoroastrian Names Simplified · All Eight Sources Integrated</span>
+  <span>Companion to Production GDD · Confidential</span>
+</div>
+
+</div><!-- .page -->
+</body>
+</html>

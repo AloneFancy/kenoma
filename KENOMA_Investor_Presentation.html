@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — Investor Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Barlow+Condensed:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:     #f5f2ec;
+  --bg2:    #eeead e;
+  --bg2:    #edeadd;
+  --bg3:    #e5e1d2;
+  --bg4:    #dad5c4;
+  --ink:    #1a1814;
+  --ink2:   #3a3630;
+  --ink3:   #6a6558;
+  --ink4:   #9a9488;
+  --ink5:   #c5c0b4;
+  --rule:   #d8d3c4;
+
+  --gold:   #b88010;
+  --gold2:  #d4a020;
+  --gold3:  #e8c060;
+  --goldbg: rgba(184,128,16,0.08);
+  --goldbdr:rgba(184,128,16,0.2);
+
+  --green:  #2a6040;
+  --green2: #3a8858;
+  --greenbg:rgba(42,96,64,0.07);
+
+  --red:    #8a2828;
+  --red2:   #b04040;
+
+  --blue:   #284878;
+  --blue2:  #3a68a8;
+  --bluebg: rgba(40,72,120,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--ink2);
+  font-family:'Barlow',sans-serif;
+  line-height:1.7;
+}
+.page{max-width:1080px;margin:0 auto;padding-bottom:100px;}
+
+/* ── COVER ─── */
+.cover{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  background:var(--ink);
+  position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 50%, rgba(184,128,16,0.12) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 90% 80%, rgba(184,128,16,0.06) 0%,transparent 50%);
+}
+.cover-top{
+  padding:40px 64px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  position:relative;z-index:1;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.cv-org{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:rgba(255,255,255,0.25);
+  display:flex;flex-direction:column;gap:4px;
+}
+.cv-org span{display:block;}
+.cv-org em{color:var(--gold3);font-style:normal;}
+.cv-stamp{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:5px 12px;
+}
+.cover-body{
+  flex:1;display:flex;flex-direction:column;
+  justify-content:center;
+  padding:80px 64px 60px;
+  position:relative;z-index:1;
+}
+.cv-pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:6px;text-transform:uppercase;
+  color:var(--gold3);opacity:0.6;
+  display:block;margin-bottom:20px;
+}
+.cv-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(56px,8vw,120px);
+  font-weight:900;
+  line-height:.9;
+  letter-spacing:-3px;
+  color:#ffffff;
+  margin-bottom:16px;
+}
+.cv-dash{
+  display:block;
+  width:60px;height:2px;
+  background:var(--gold2);
+  margin:24px 0;
+}
+.cv-tagline{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(16px,2.2vw,26px);
+  font-weight:400;font-style:italic;
+  color:rgba(255,255,255,0.45);
+  max-width:600px;line-height:1.5;
+  margin-bottom:48px;
+}
+.cv-metrics{
+  display:flex;gap:40px;
+}
+.cv-m{border-left:2px solid var(--gold2);padding-left:16px;}
+.cv-m-val{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:700;
+  color:var(--gold3);display:block;
+}
+.cv-m-label{
+  font-size:12px;color:rgba(255,255,255,0.3);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.cover-bottom{
+  padding:24px 64px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;justify-content:space-between;align-items:center;
+  position:relative;z-index:1;
+}
+.cv-bottom-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.18);
+}
+
+/* ── SECTION ANATOMY ─── */
+.section{
+  padding:72px 64px;
+  border-bottom:1px solid var(--rule);
+}
+.section.alt{background:var(--bg2);}
+.section.dark{background:var(--ink);color:rgba(255,255,255,0.7);}
+
+.s-eye{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--gold2);display:block;margin-bottom:14px;
+}
+.s-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(26px,4vw,48px);
+  font-weight:700;
+  color:var(--ink);
+  line-height:1.08;
+  letter-spacing:-.5px;
+  margin-bottom:10px;
+}
+.dark .s-title{color:#fff;}
+.s-sub{
+  font-size:17px;font-weight:300;font-style:italic;
+  color:var(--ink3);
+  max-width:680px;line-height:1.6;
+  margin-bottom:48px;
+}
+.dark .s-sub{color:rgba(255,255,255,0.4);}
+
+/* ── PROSE ─── */
+p{font-size:15px;color:var(--ink3);line-height:1.75;margin-bottom:12px;}
+p:last-child{margin:0;}
+p strong{color:var(--ink2);}
+.dark p{color:rgba(255,255,255,0.55);}
+.dark p strong{color:rgba(255,255,255,0.85);}
+
+/* ── STAT CARDS ─── */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:32px 0;}
+.stat-card{
+  padding:28px 26px;
+  background:var(--bg2);
+  border-top:3px solid;
+}
+.sc-gold{border-top-color:var(--gold2);}
+.sc-green{border-top-color:var(--green2);}
+.sc-blue{border-top-color:var(--blue2);}
+.stat-val{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,4vw,48px);
+  font-weight:900;
+  line-height:1;
+  display:block;margin-bottom:8px;
+}
+.sc-gold .stat-val{color:var(--gold);}
+.sc-green .stat-val{color:var(--green);}
+.sc-blue .stat-val{color:var(--blue);}
+.stat-label{font-size:13px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px;}
+.stat-sub{font-size:12.5px;color:var(--ink4);line-height:1.5;}
+
+/* ── COMPARISON TABLE ─── */
+.comp-table{width:100%;border-collapse:collapse;margin:28px 0;}
+.comp-table th{
+  background:var(--ink);color:#fff;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  padding:11px 16px;text-align:left;
+}
+.comp-table td{
+  padding:11px 16px;border-bottom:1px solid var(--rule);
+  font-size:14px;vertical-align:top;color:var(--ink3);
+}
+.comp-table td:first-child{font-weight:600;color:var(--ink2);}
+.comp-table tr:hover td{background:var(--goldbg);}
+.comp-table tr.highlight-row td{
+  background:var(--goldbg);
+  font-weight:600;color:var(--ink);
+}
+.comp-table tr.highlight-row td:first-child{color:var(--gold);}
+.tick{color:var(--green2);font-size:14px;}
+.cross{color:var(--red);font-size:14px;}
+.partial{color:var(--gold2);font-size:12px;}
+
+/* ── CASE STUDY CARD ─── */
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:28px 0;}
+.case-card{
+  padding:24px 26px;
+  background:var(--bg2);
+  border-left:4px solid var(--rule);
+}
+.case-card.featured{
+  border-left-color:var(--gold2);
+  background:var(--goldbg);
+}
+.case-name{
+  font-family:'Playfair Display',serif;
+  font-size:18px;font-weight:700;color:var(--ink);
+  display:block;margin-bottom:4px;
+}
+.case-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--ink4);display:block;margin-bottom:12px;
+}
+.case-num{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:900;color:var(--green);
+  display:block;margin-bottom:4px;
+}
+.case-num-label{font-size:12px;color:var(--ink4);display:block;margin-bottom:10px;}
+.case-body{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.case-body strong{color:var(--ink2);}
+
+/* ── CALL ─── */
+.call{
+  border-left:3px solid;
+  padding:14px 18px;margin:20px 0;
+  font-size:14.5px;line-height:1.72;
+  color:var(--ink3);
+}
+.cg{border-color:var(--gold2);background:var(--goldbg);}
+.cgr{border-color:var(--green2);background:var(--greenbg);}
+.cb{border-color:var(--blue2);background:var(--bluebg);}
+.call strong{color:var(--ink2);}
+.call-lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:5px;
+}
+.cg .call-lbl{color:var(--gold2);}
+.cgr .call-lbl{color:var(--green2);}
+.cb .call-lbl{color:var(--blue2);}
+
+/* ── ROADMAP ─── */
+.roadmap{margin:32px 0;}
+.rm-phase{
+  display:grid;grid-template-columns:180px 1fr;
+  gap:0;margin-bottom:2px;
+  border:1px solid var(--rule);
+  background:var(--bg);
+}
+.rm-phase.active{background:var(--goldbg);border-color:var(--goldbdr);}
+.rm-left{
+  padding:20px 22px;
+  border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.active .rm-left{border-right-color:var(--goldbdr);}
+.rm-phase-n{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--ink4);display:block;margin-bottom:4px;
+}
+.active .rm-phase-n{color:var(--gold);}
+.rm-phase-name{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;color:var(--ink);
+}
+.active .rm-phase-name{color:var(--gold);}
+.rm-budget{
+  font-size:20px;font-weight:700;
+  color:var(--green);display:block;margin-top:6px;
+}
+.rm-timeline{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--ink4);
+}
+.rm-right{padding:20px 24px;}
+.rm-right p{font-size:14px;color:var(--ink3);line-height:1.65;margin-bottom:6px;}
+.rm-right p:last-child{margin:0;}
+.rm-right p strong{color:var(--ink2);}
+.rm-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.rtag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:2px 9px;border:1px solid;
+}
+.rt-gold{border-color:var(--goldbdr);color:var(--gold2);}
+.rt-green{border-color:rgba(42,136,88,0.3);color:var(--green2);}
+.rt-blue{border-color:rgba(58,104,168,0.3);color:var(--blue2);}
+
+/* ── PIVOT TABLE ─── */
+.pivot-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2px;margin:24px 0;
+}
+.pivot-card{
+  padding:22px 24px;
+  background:var(--bg2);
+}
+.pivot-keep{border-top:2px solid var(--green2);}
+.pivot-change{border-top:2px solid var(--gold2);}
+.pv-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:10px;padding-bottom:8px;
+  border-bottom:1px solid var(--rule);
+}
+.pivot-keep .pv-label{color:var(--green2);}
+.pivot-change .pv-label{color:var(--gold2);}
+.pv-title{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:700;color:var(--ink);
+  display:block;margin-bottom:8px;
+}
+.pv-body{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.pv-body strong{color:var(--ink2);}
+.pv-item{
+  display:flex;gap:10px;align-items:flex-start;
+  margin-top:9px;font-size:13.5px;color:var(--ink3);
+}
+.pv-i-icon{flex-shrink:0;font-size:13px;margin-top:2px;}
+
+/* ── REVENUE MODEL ─── */
+.rev-bars{margin:24px 0;}
+.rev-bar-row{
+  display:grid;grid-template-columns:180px 1fr auto;
+  align-items:center;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--rule);
+}
+.rev-bar-row:last-child{border:none;}
+.rb-label{font-size:13.5px;color:var(--ink2);font-weight:500;}
+.rb-bar-wrap{background:var(--bg3);height:8px;border-radius:2px;overflow:hidden;}
+.rb-bar{height:100%;border-radius:2px;}
+.rb-b1{background:var(--gold2);}
+.rb-b2{background:var(--green2);}
+.rb-b3{background:var(--blue2);}
+.rb-b4{background:var(--ink3);}
+.rb-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink3);white-space:nowrap;}
+
+/* ── RISK TABLE ─── */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:24px 0;}
+.risk-card{padding:20px 22px;background:var(--bg2);}
+.risk-threat{border-top:2px solid var(--red2);}
+.risk-shield{border-top:2px solid var(--green2);}
+.risk-type{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:6px;
+}
+.risk-threat .risk-type{color:var(--red2);}
+.risk-shield .risk-type{color:var(--green2);}
+.risk-title{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:700;color:var(--ink);
+  display:block;margin-bottom:7px;
+}
+.risk-body{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.risk-body strong{color:var(--ink2);}
+
+/* ── FINAL CTA ─── */
+.cta{
+  background:var(--ink);
+  padding:80px 64px;
+  position:relative;overflow:hidden;
+}
+.cta::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 20% 50%, rgba(184,128,16,0.1) 0%,transparent 60%);
+}
+.cta-main{max-width:800px;position:relative;}
+.cta-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(24px,4vw,52px);
+  font-weight:900;color:#fff;
+  line-height:1.05;letter-spacing:-.5px;margin-bottom:24px;
+}
+.cta-sub{
+  font-family:'Barlow',sans-serif;
+  font-size:17px;font-weight:300;font-style:italic;
+  color:rgba(255,255,255,0.45);
+  line-height:1.65;max-width:640px;margin-bottom:40px;
+}
+.cta-numbers{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;border:1px solid rgba(255,255,255,0.1);margin:32px 0;
+}
+.cta-n{
+  padding:20px 24px;border-right:1px solid rgba(255,255,255,0.1);
+}
+.cta-n:last-child{border-right:none;}
+.cta-n-val{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:900;color:var(--gold3);
+  display:block;margin-bottom:4px;
+}
+.cta-n-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.cta-final{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-style:italic;
+  color:var(--gold3);opacity:.6;
+  border-top:1px solid rgba(255,255,255,0.1);
+  padding-top:24px;
+}
+
+/* ── UTILITY ─── */
+h3{
+  font-family:'Playfair Display',serif;
+  font-size:19px;font-weight:700;color:var(--ink);
+  margin:28px 0 12px;padding-bottom:8px;
+  border-bottom:1px solid var(--rule);
+}
+h3:first-child{margin-top:0;}
+.dark h3{color:#fff;border-bottom-color:rgba(255,255,255,0.1);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin:28px 0;}
+.two-col-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin:28px 0;}
+.divider{height:1px;background:var(--rule);margin:24px 0;}
+.foot{padding:20px 64px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.foot span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink5);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ COVER ══════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-top">
+    <div class="cv-org">
+      <span>KENOMA Studio</span>
+      <em>Investor Briefing · Confidential</em>
+    </div>
+    <div class="cv-stamp">March 2026 · Pre-Seed Round</div>
+  </div>
+
+  <div class="cover-body">
+    <span class="cv-pre">Investment Opportunity</span>
+    <div class="cv-title">KENOMA</div>
+    <div class="cv-dash"></div>
+    <div class="cv-tagline">
+      A storytelling game built on a mechanic no product in the industry has ever shipped — and a small-scale entry path that turns proof-of-concept into franchise IP.
+    </div>
+    <div class="cv-metrics">
+      <div class="cv-m">
+        <span class="cv-m-val">$22B</span>
+        <span class="cv-m-label">Market by 2032</span>
+      </div>
+      <div class="cv-m">
+        <span class="cv-m-val">12.5%</span>
+        <span class="cv-m-label">Annual Growth Rate</span>
+      </div>
+      <div class="cv-m">
+        <span class="cv-m-val">$200M+</span>
+        <span class="cv-m-label">Comparable title revenue</span>
+      </div>
+      <div class="cv-m">
+        <span class="cv-m-val">$350K</span>
+        <span class="cv-m-label">Phase 1 entry cost</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <span class="cv-bottom-label">Psychological horror · Narrative game · PC / Console · Episodic release model</span>
+    <span class="cv-bottom-label">Section index ↓ Market · Product · Breakthrough · Scale Path · Pivot · Numbers</span>
+  </div>
+</div>
+
+
+<!-- ══ 01. THE MARKET ══════════════════════════ -->
+<div class="section">
+  <span class="s-eye">01 · The Market</span>
+  <div class="s-title">A Growing Industry With a Proven Appetite for Exactly This</div>
+  <div class="s-sub">You don't need to understand games to understand this market. It behaves like any entertainment IP business — film, television, publishing — with one significant advantage: the product is interactive, which creates loyalty and word-of-mouth that passive entertainment cannot replicate.</div>
+
+  <div class="stat-row">
+    <div class="stat-card sc-gold">
+      <span class="stat-val">$22.4B</span>
+      <span class="stat-label">Horror game market by 2032</span>
+      <span class="stat-sub">Was $9.8B in 2025. Growing at 12.5% per year — faster than film or music streaming. Fueled by younger audiences, content creators on YouTube/Twitch, and the rise of story-driven experiences.</span>
+    </div>
+    <div class="stat-card sc-green">
+      <span class="stat-val">41%</span>
+      <span class="stat-label">Market share: single-player story games</span>
+      <span class="stat-sub">The dominant segment. Consumers pay a one-time price ($15–30) and tell their social networks about it. No ongoing cost to the developer. The highest-rated games on Steam are routinely indie narrative titles, not big-budget releases.</span>
+    </div>
+    <div class="stat-card sc-blue">
+      <span class="stat-val">#1 & #2</span>
+      <span class="stat-label">Narrative and Horror are the top indie genres in 2025</span>
+      <span class="stat-sub">Of all indie games that crossed 1,000 user reviews in 2025, "Narrative" and "Horror" were the top two categories. KENOMA sits at the exact intersection of both. This is not an underserved niche — it is the genre's fastest-growing center.</span>
+    </div>
+  </div>
+
+  <h3>Why Narrative Games Outperform — What the Numbers Show</h3>
+
+  <div class="case-grid">
+    <div class="case-card featured">
+      <span class="case-name">Disco Elysium</span>
+      <span class="case-sub">ZA/UM · 2019 · Small studio · Story-driven RPG</span>
+      <span class="case-num">$205M</span>
+      <span class="case-num-label">Gross revenue · Steam alone</span>
+      <div class="case-body">Started as a small Estonian studio's passion project. No action. No multiplayer. Just a story with choices that actually mattered. <strong>Won Game of the Year. Sold 5 million copies.</strong> Multiple spiritual successors now being developed by other studios — proving the IP generates ongoing market interest even after the original title. The developer's net revenue was approximately $60M after platform fees.</div>
+    </div>
+    <div class="case-card">
+      <span class="case-name">Balatro</span>
+      <span class="case-sub">LocalThunk · 2024 · 1-person team · Card strategy</span>
+      <span class="case-num">$100M+</span>
+      <span class="case-num-label">Estimated gross revenue · Year 1</span>
+      <div class="case-body">Made by one person. Simple visuals. Won multiple Game of the Year awards in 2024 over games with budgets 100× larger. Proved definitively that <strong>a novel mechanic beats a large budget.</strong> This is the most important reference point for KENOMA's investment thesis: the breakthrough idea, correctly executed, outperforms production scale.</div>
+    </div>
+    <div class="case-card">
+      <span class="case-name">Signalis</span>
+      <span class="case-sub">rose-engine · 2022 · 2-person team · Horror</span>
+      <span class="case-num">500K+</span>
+      <span class="case-num-label">Copies sold · 2 developers</span>
+      <div class="case-body">Two people built a horror game that reviewers called the best in the genre in a decade. <strong>Budget: approximately $0 outside their own time.</strong> Acquired a publisher after demonstrating proof-of-concept. Current trajectory: console ports, merchandise, franchise potential. The small-team model works in this genre specifically.</div>
+    </div>
+    <div class="case-card">
+      <span class="case-name">Dredge</span>
+      <span class="case-sub">Black Salt Games · 2023 · Small team</span>
+      <span class="case-num">1M+</span>
+      <span class="case-num-label">Copies sold in first year</span>
+      <div class="case-body">A fishing game with psychological horror elements. <strong>No prior IP, no franchise, no marketing budget comparable to large publishers.</strong> Succeeded entirely on word-of-mouth driven by its unique emotional concept. Now has a DLC, physical edition, and multiple platform releases. The compounding revenue model on a successful indie title: base game → expansion → porting → licensing.</div>
+    </div>
+  </div>
+
+  <div class="call cgr">
+    <span class="call-lbl">The Critical Insight for an Investor</span>
+    <strong>The gaming market does not reward budget size. It rewards novelty of concept.</strong> A $50M game with a familiar formula underperforms a $500K game with a fresh idea every year. KENOMA's investment thesis is not "spend more to compete with large publishers." It is "build something no one has built before, at a scale where the risk is manageable, and let the concept do the work."
+  </div>
+</div>
+
+
+<!-- ══ 02. THE PRODUCT ════════════════════════ -->
+<div class="section alt">
+  <span class="s-eye">02 · The Product — In Plain Terms</span>
+  <div class="s-title">What KENOMA Actually Is</div>
+  <div class="s-sub">Without any gaming background required. The concept explains itself in one paragraph — and that concept is why it matters.</div>
+
+  <div class="call cg">
+    <span class="call-lbl">The Concept — One Paragraph</span>
+    You play a scholar investigating a sealed Persian archive. During the first half of the game, you work alongside a companion — a general who has been alone in this place for 300 years. You teach her things. You share knowledge. You give her tools. She seems grateful. She genuinely cares about you. <strong>In the second half, she uses everything you gave her to eliminate you.</strong> How well she does this — how sophisticated her strategy is, how devastating her execution — depends entirely on what you invested in her. Players who gave her everything meet the most formidable version of her. Players who held back meet a lesser one. The game ends in a spectrum of 10 possible outcomes, ranging from a kind of mercy to a kind of perfection. None of them are "winning." All of them are earned.
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3>Why This Concept Has Commercial Legs</h3>
+      <p>The most successful narrative games share one property: they create a moment that players cannot stop talking about. The ending of <em>The Last of Us</em>. The twist in <em>Bioshock</em>. The true ending of <em>Undertale</em>. These moments generate enormous organic marketing — players tell other people, who buy the game specifically to experience the moment.</p>
+      <p>KENOMA's mechanic is designed to produce exactly this kind of moment — but with a crucial difference: <strong>the moment is personalized.</strong> Every player builds a slightly different version of the adversary, which means every player has a slightly different story to tell. Social media, content creators, and word-of-mouth work disproportionately hard for this type of experience.</p>
+      <p>Additionally: the 10-ending spectrum produces replay value that most story games lack. Players return to build the adversary differently. Each playthrough is a different experience of the same 4-hour structure.</p>
+    </div>
+    <div>
+      <h3>The IP — What Is Actually Being Built</h3>
+      <p>The game is the delivery vehicle. The asset is the intellectual property: specifically, the <strong>"protagonist-built antagonist" mechanic</strong> — a system where the player's investments throughout the game construct the quality of the final adversary. No product in the industry has shipped this mechanic. It is protectable, licensable, and applicable beyond a single game.</p>
+      <p>The Persian setting — the Archive, the two worlds, the dual civilization story — creates a franchise architecture. The first game (Chapter 1: The Scholar) establishes the world. The IP can support sequels in the same setting, adaptations in different settings using the same core mechanic, and licensing to other studios.</p>
+      <p>The comparables — Disco Elysium, Balatro — prove that <strong>novel mechanic + strong world = franchise IP that grows beyond its first product.</strong></p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ 03. THE BREAKTHROUGH ══════════════════ -->
+<div class="section">
+  <span class="s-eye">03 · The Breakthrough</span>
+  <div class="s-title">No Game Has Done This. This Is Verifiable.</div>
+  <div class="s-sub">We researched every comparable mechanism across the industry's full history. The conclusion is clear and specific.</div>
+
+  <p>The question is not whether KENOMA is a good game. The question is whether its core mechanic is genuinely new — because if it is, it creates first-mover advantage in a specific design space that the market will eventually fill. Being first in that space with a well-executed product is worth significantly more than being tenth with a better-executed one.</p>
+
+  <table class="comp-table">
+    <tr>
+      <th>Game / Title</th>
+      <th>What It Does Well</th>
+      <th>What It Doesn't Do</th>
+      <th>KENOMA's Advantage</th>
+    </tr>
+    <tr>
+      <td>Silent Hill 2</td>
+      <td>Tracks player psychology invisibly throughout the game. Ending reflects who the player is.</td>
+      <td>The "mirror" reflects the protagonist. No companion relationship. No antagonist built by investment.</td>
+      <td>The mirror is held by the antagonist. She reflects what the player gave her, not who the player is.</td>
+    </tr>
+    <tr>
+      <td>The Witcher 3 (Ciri)</td>
+      <td>How you mentor a character across the game changes her fate. Investment → outcome.</td>
+      <td>5 visible, declared choice points. Ciri is an ally, not an adversary. 3 binary endings only.</td>
+      <td>Invisible continuous tracking. 10 granular outcomes. The companion becomes the adversary.</td>
+    </tr>
+    <tr>
+      <td>Undertale</td>
+      <td>The antagonist remembers what you did. Behaves differently based on your history.</td>
+      <td>Binary route selection (genocide vs. pacifist). Cross-session memory, not within-run investment.</td>
+      <td>Within one run, continuously, every interaction builds the specific capability of one person.</td>
+    </tr>
+    <tr>
+      <td>Metal Gear Solid V</td>
+      <td>Enemy soldiers adapt to your tactics — helmet if you headshot, stimulants if you tranq.</td>
+      <td>Anonymous soldiers. No narrative relationship. No emotional investment. No ending impact.</td>
+      <td>One specific person. Full emotional arc. The tactical adaptation is also a relational devastation.</td>
+    </tr>
+    <tr class="highlight-row">
+      <td>KENOMA</td>
+      <td>All of the above: invisible tracking, investment → antagonist capability, companion → adversary, emotional resonance, 10 specific outcome states.</td>
+      <td>—</td>
+      <td><strong>First product to combine all five simultaneously. Verified through comprehensive research.</strong></td>
+    </tr>
+  </table>
+
+  <div class="call cg">
+    <span class="call-lbl">What First-Mover Advantage Means in This Context</span>
+    When Disco Elysium proved that "choices that actually change the world" could generate $200M in revenue, four other studios immediately began building spiritual successors. The original studio captured the cultural moment, the critical acclaim, and the audience loyalty. <strong>KENOMA's mechanic will eventually be copied.</strong> The question is whether KENOMA ships it first, earns the "original" designation in this design space, and builds the audience relationship that first-movers retain even after competitors arrive.
+  </div>
+</div>
+
+
+<!-- ══ 04. THE SMALL SCALE PATH ═══════════════ -->
+<div class="section alt">
+  <span class="s-eye">04 · The Right Entry Point</span>
+  <div class="s-title">Start Small. Prove the Concept. Scale on Evidence.</div>
+  <div class="s-sub">The original plan for KENOMA assumed a 20–35 person team and a multi-million dollar budget. That is the wrong starting point for an investor without a gaming background. Here is the right one.</div>
+
+  <p>The most successful indie games in the last five years followed a consistent pattern: <strong>build the smallest possible version that proves the core concept, release it, use the market response to justify the full investment.</strong> Disco Elysium released a shorter, rougher version to demonstrate the concept before expanding. Hades built small. Every case study above started lean.</p>
+  <p>KENOMA's core mechanic — the protagonist-built antagonist, the invisible tracking, the dynamic ending — can be demonstrated fully in a 3–4 hour experience. That is the product Phase 1 builds. Everything else is scale.</p>
+
+  <div class="roadmap">
+    <div class="rm-phase">
+      <div class="rm-left">
+        <span class="rm-phase-n">Pre-Phase</span>
+        <span class="rm-phase-name">Vertical Slice</span>
+        <span class="rm-budget">$50–80K</span>
+        <span class="rm-timeline">3–4 months · 2–3 people</span>
+      </div>
+      <div class="rm-right">
+        <p><strong>What it is:</strong> A 30–45 minute playable demo. World A only. First room, first puzzle, first contact with the companion. The core mechanic — her observing and filing the player's decisions — is fully implemented. This is the investor demo and the foundation for crowdfunding or publisher pitching.</p>
+        <p><strong>What it proves:</strong> The concept works. The atmosphere is compelling. The companion feels real. This demo exists to generate interest, not revenue.</p>
+        <div class="rm-tags">
+          <span class="rtag rt-gold">No public release</span>
+          <span class="rtag rt-blue">Investor demo</span>
+          <span class="rtag rt-blue">Publisher pitch material</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rm-phase active">
+      <div class="rm-left">
+        <span class="rm-phase-n">Phase 1 · The Entry</span>
+        <span class="rm-phase-name">Chapter One Release</span>
+        <span class="rm-budget">$250–350K</span>
+        <span class="rm-timeline">10–12 months · 5–7 people</span>
+      </div>
+      <div class="rm-right">
+        <p><strong>What it is:</strong> A complete, polished 3–4 hour experience. One world fully realized. The companion relationship built through Act I. The behavioral tracking running invisibly. Three ending states (simplified from the full 10) delivered in Act II. Released on Steam/Epic at $15–20 price point.</p>
+        <p><strong>Why this works:</strong> 3–4 hours is the exact length of successful narrative indie games (Disco Elysium's most acclaimed section is its first 4 hours). Players who complete it want more. The episodic model converts satisfied players into pre-orders for Chapter Two.</p>
+        <p><strong>Revenue target:</strong> 15,000–30,000 copies at $18 = $270K–$540K gross. After platform fees (30%), net: $190K–$380K. This recoups investment and funds Phase 2 partially or fully.</p>
+        <div class="rm-tags">
+          <span class="rtag rt-green">Public release · Steam + Epic</span>
+          <span class="rtag rt-gold">Revenue generating</span>
+          <span class="rtag rt-gold">Crowdfunding eligible</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rm-phase">
+      <div class="rm-left">
+        <span class="rm-phase-n">Phase 2 · The Scale</span>
+        <span class="rm-phase-name">Full Game</span>
+        <span class="rm-budget">$800K–1.5M</span>
+        <span class="rm-timeline">14–18 months · 10–15 people</span>
+      </div>
+      <div class="rm-right">
+        <p><strong>What it is:</strong> The complete KENOMA experience. Both worlds. Full companion arc. All 10 endings. Console ports (PS5, Xbox, Nintendo Switch). Built on the audience that Chapter One created and the systems already proven.</p>
+        <p><strong>Why this comes second:</strong> Phase 1's market response tells us exactly how to position and market Phase 2. We know which audiences responded. We know which elements resonated. <strong>We build Phase 2 with evidence, not assumptions.</strong></p>
+        <p><strong>Funding path:</strong> Phase 1 revenue + reinvestment, plus publisher partnership if appropriate (multiple publishers now actively seek narrative horror IP with demonstrated audience), plus second investment round on proven numbers.</p>
+        <div class="rm-tags">
+          <span class="rtag rt-green">Console ports · Publisher deal</span>
+          <span class="rtag rt-green">Full 10-ending spectrum</span>
+          <span class="rtag rt-blue">Franchise anchor product</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rm-phase">
+      <div class="rm-left">
+        <span class="rm-phase-n">Phase 3 · The Franchise</span>
+        <span class="rm-phase-name">IP Expansion</span>
+        <span class="rm-budget">Revenue-funded</span>
+        <span class="rm-timeline">Ongoing from Phase 2 success</span>
+      </div>
+      <div class="rm-right">
+        <p><strong>What becomes possible:</strong> DLC content extending the story. A second game in the same world or a new setting using the same core mechanic. Adaptation conversations (the "protagonist builds the antagonist" premise translates directly to interactive film/TV — Netflix's interactive format, for example). Licensing the behavioral tracking system to other studios. Physical merchandise for a world with strong visual identity.</p>
+        <p><strong>The compounding model:</strong> Each successful product in a franchise increases the value of every previous product. Disco Elysium's $9.99 original still sells because the franchise reputation built around it. <strong>Phase 1 revenue does not end when Phase 2 ships — it compounds.</strong></p>
+        <div class="rm-tags">
+          <span class="rtag rt-blue">DLC · Sequel · Licensing</span>
+          <span class="rtag rt-blue">Adaptation potential</span>
+          <span class="rtag rt-gold">Acquisition target</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="call cgr">
+    <span class="call-lbl">Why $350K is the Right Number</span>
+    <strong>It is the minimum to prove the concept commercially — and the maximum before you need certainty you don't yet have.</strong> $350K produces a complete, releasable product that tests market appetite with real consumer behavior rather than assumptions. If 15,000 people buy Chapter One, the case for Phase 2 investment is made by data. If fewer, the IP is preserved and Phase 2 can be repositioned. The risk is bounded. The upside is not.
+  </div>
+</div>
+
+
+<!-- ══ 05. PIVOT OPPORTUNITIES ════════════════ -->
+<div class="section">
+  <span class="s-eye">05 · Flexibility</span>
+  <div class="s-title">What Can Change Without Losing the Core</div>
+  <div class="s-sub">Smart investment requires understanding what is fixed and what is adaptable. Here is the honest breakdown.</div>
+
+  <p>KENOMA has a core that cannot change without losing what makes it valuable — and a surface that can adapt significantly to market conditions, audience feedback, or investor priorities. Knowing the difference between the two is the most important thing an investor can understand about this product.</p>
+
+  <div class="pivot-grid">
+    <div class="pivot-card pivot-keep">
+      <span class="pv-label">Must Keep — These Are the IP</span>
+      <span class="pv-title">The Core That Cannot Move</span>
+      <div class="pv-item"><span class="pv-i-icon">🔒</span><span class="pv-body"><strong>The protagonist-built antagonist mechanic.</strong> This is the product's unique value. Remove it and you have a standard horror game competing with hundreds of others. This is what investors are paying for.</span></div>
+      <div class="pv-item"><span class="pv-i-icon">🔒</span><span class="pv-body"><strong>The companion-to-adversary arc.</strong> The player must genuinely like the companion before the turn. This emotional investment is what makes the ending meaningful. Without it, the mechanic is just a difficulty slider.</span></div>
+      <div class="pv-item"><span class="pv-i-icon">🔒</span><span class="pv-body"><strong>Invisible behavioral tracking.</strong> The player must not know they are being evaluated. Announced choice points (like most games) produce strategic behavior. Invisible tracking produces authentic behavior — and authentic behavior produces the personalized ending the mechanic promises.</span></div>
+      <div class="pv-item"><span class="pv-i-icon">🔒</span><span class="pv-body"><strong>Granular outcome spectrum.</strong> The 10 endings (simplified to 3 in Phase 1) are what creates replay value and social media discussion. Binary good/bad endings are too common to generate the conversation that drives organic marketing.</span></div>
+    </div>
+    <div class="pivot-card pivot-change">
+      <span class="pv-label">Can Change — These Are Adaptable</span>
+      <span class="pv-title">The Surface That Can Flex</span>
+      <div class="pv-item"><span class="pv-i-icon">🔄</span><span class="pv-body"><strong>The setting.</strong> The Persian archive is the current setting — historically underrepresented in games, which is a differentiator. But the core mechanic works in any world: Japanese feudal + spirit world, Victorian mansion + underground, Egyptian living + dead. If market research suggests a different setting resonates better, the setting changes. The mechanic does not.</span></div>
+      <div class="pv-item"><span class="pv-i-icon">🔄</span><span class="pv-body"><strong>The horror intensity.</strong> Currently positioned as psychological horror. Can be repositioned as "psychological mystery" or "narrative thriller" to reach a broader audience. The core concept does not require horror elements — it requires an emotionally invested companion and a consequential ending.</span></div>
+      <div class="pv-item"><span class="pv-i-icon">🔄</span><span class="pv-body"><strong>The scope of Chapter 1.</strong> 3–4 hours is the current target. Could be 2 hours at a lower price point ($9.99) to reduce friction and maximize trial, then upsell to Chapter 2. Or 6 hours at $25 for a more complete first experience. This is a market positioning decision, not a design decision.</span></div>
+      <div class="pv-item"><span class="pv-i-icon">🔄</span><span class="pv-body"><strong>The medium itself.</strong> The "protagonist-built antagonist" mechanic is not exclusive to games. It translates to interactive film (Netflix format), graphic novel with reader-tracked reading behavior, or a tabletop experience. The IP is the mechanic. The delivery format is a business decision.</span></div>
+    </div>
+  </div>
+
+  <h3>The Adaptation Scenarios — If Market Conditions Shift</h3>
+  <div class="two-col-3">
+    <div class="call cg">
+      <span class="call-lbl">Scenario A · Broaden the Audience</span>
+      Remove the horror classification. Reposition as "psychological mystery drama." Same core mechanic. Same companion arc. Different marketing language. <strong>This opens the product to players who don't identify as horror fans — roughly 3× the addressable audience.</strong> Comparable: What Remains of Edith Finch reached non-gaming audiences by avoiding genre classification.
+    </div>
+    <div class="call cgr">
+      <span class="call-lbl">Scenario B · Partner with a Publisher</span>
+      Phase 1's commercial success makes KENOMA an attractive acquisition for mid-size publishers (Devolver Digital, Annapurna Interactive, Raw Fury) who specialize in narrative games with strong IP potential. <strong>A publisher deal funds Phase 2 in exchange for a revenue share</strong> — reducing investor risk while preserving upside. This is the most common path for successful indie Phase 1 products.
+    </div>
+    <div class="call cb">
+      <span class="call-lbl">Scenario C · The IP Play</span>
+      If Phase 1 generates significant critical attention but modest commercial numbers — common for genuinely innovative games in their first release — the IP is positioned for a strategic sale or licensing deal. <strong>The "protagonist-built antagonist" mechanic as licensed technology</strong> has value independent of any specific game. This is the downside protection.
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ 06. THE NUMBERS ════════════════════════ -->
+<div class="section dark">
+  <span class="s-eye" style="color:var(--gold3);opacity:.7;">06 · The Numbers</span>
+  <div class="s-title">Conservative, Realistic, and Optimistic Projections</div>
+  <div class="s-sub">Built from actual market data — Steam horror game performance, comparable title revenue, and platform fee structure. Not modeled on best-case assumptions.</div>
+
+  <h3>Phase 1 Revenue Model — Chapter One</h3>
+  <p><strong>Investment required:</strong> $250,000–$350,000 (team of 5–7, 10–12 months, including marketing budget of $30–40K)</p>
+  <p><strong>Price point:</strong> $18 USD · Platform: Steam (70% developer share after fees) + Epic Games Store (88% developer share)</p>
+
+  <div class="rev-bars">
+    <div class="rev-bar-row">
+      <div class="rb-label">Conservative · 8,000 copies</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b4" style="width:25%"></div></div>
+      <div class="rb-val">~$100K net · Recovers ~35% of investment</div>
+    </div>
+    <div class="rev-bar-row">
+      <div class="rb-label">Realistic · 20,000 copies</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b3" style="width:50%"></div></div>
+      <div class="rb-val">~$252K net · Recovers 80–100% of investment</div>
+    </div>
+    <div class="rev-bar-row">
+      <div class="rb-label">Strong · 50,000 copies</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b2" style="width:75%"></div></div>
+      <div class="rb-val">~$630K net · 2× return, funds Phase 2</div>
+    </div>
+    <div class="rev-bar-row">
+      <div class="rb-label">Breakout · 150,000+ copies</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b1" style="width:100%"></div></div>
+      <div class="rb-val">~$1.9M+ net · Publisher deal + full Phase 2 funded</div>
+    </div>
+  </div>
+
+  <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-top:8px;">Reference: In 2024, 59% of "successful" indie horror games on Steam generated $200K+ gross revenue. 20,000 copies at $18 puts KENOMA in the top 7% of indie horror releases. The realistic scenario is achievable with competent marketing.</p>
+
+  <h3>Revenue Streams Beyond Game Sales</h3>
+  <div class="rev-bars">
+    <div class="rev-bar-row">
+      <div class="rb-label">DLC / Chapter 2 pre-sales</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b1" style="width:65%"></div></div>
+      <div class="rb-val">30–40% of Ch.1 buyers convert at $12–15</div>
+    </div>
+    <div class="rev-bar-row">
+      <div class="rb-label">Console ports (PS5 / Xbox)</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b2" style="width:45%"></div></div>
+      <div class="rb-val">Typically 20–40% additional revenue per port</div>
+    </div>
+    <div class="rev-bar-row">
+      <div class="rb-label">Publisher/IP deal (if applicable)</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b3" style="width:55%"></div></div>
+      <div class="rb-val">Upfront advance against future royalties</div>
+    </div>
+    <div class="rev-bar-row">
+      <div class="rb-label">Content creator / streaming effect</div>
+      <div class="rb-bar-wrap"><div class="rb-bar rb-b4" style="width:35%"></div></div>
+      <div class="rb-val">Horror games are YouTube/Twitch's highest-viewed genre — free marketing</div>
+    </div>
+  </div>
+
+  <h3>Risk Assessment — Honest</h3>
+  <div class="risk-grid">
+    <div class="risk-card risk-threat">
+      <span class="risk-type">Risk · Discovery</span>
+      <span class="risk-title">Visibility on Steam is hard</span>
+      <div class="risk-body">778 indie horror games were released on Steam in 2024. Only 7.2% were "successful." <strong>Mitigation:</strong> Chapter 1's episodic model allows for targeted pre-launch community building. The mechanic's novelty is a natural PR story — game journalists actively cover "unprecedented mechanics." Budget includes $30–40K specifically for visibility.</div>
+    </div>
+    <div class="risk-card risk-threat">
+      <span class="risk-type">Risk · Execution</span>
+      <span class="risk-title">The mechanic must feel earned, not manipulative</span>
+      <div class="risk-body">If players feel deceived rather than moved, the word-of-mouth turns negative. <strong>Mitigation:</strong> This risk is entirely a design and writing quality question — not a budget question. The vertical slice demo exists specifically to test this before committing to full production.</div>
+    </div>
+    <div class="risk-card risk-shield">
+      <span class="risk-type">Protection · Downside</span>
+      <span class="risk-title">The IP retains value independent of commercial performance</span>
+      <div class="risk-body"><strong>A well-received but commercially modest Chapter 1 is an acquisition target.</strong> Publishers like Annapurna Interactive and Devolver Digital acquire narrative game studios based on critical reception and IP potential, not just sales figures. The downside scenario is not "the investment is lost" — it is "the IP sells at a price that recovers a portion of the investment."</div>
+    </div>
+    <div class="risk-card risk-shield">
+      <span class="risk-type">Protection · Upside</span>
+      <span class="risk-title">Horror games overperform on content platforms</span>
+      <div class="risk-body"><strong>Horror is the #1 genre for YouTube "let's play" content and Twitch streaming.</strong> A single popular content creator playing Chapter 1 can generate 50,000–500,000 views — equivalent to a significant marketing budget at zero cost. Disco Elysium, Signalis, and Dredge all attribute a substantial portion of their sales to content creator coverage they did not pay for.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ 07. WHY NOW ════════════════════════════ -->
+<div class="section">
+  <span class="s-eye">07 · Why This Moment</span>
+  <div class="s-title">The Window Is Specific and It Will Not Stay Open</div>
+  <div class="s-sub">First-mover advantage in a design space is time-sensitive. The relevant variables are converging now.</div>
+
+  <div class="two-col">
+    <div>
+      <h3>The Market Is at Its Most Receptive</h3>
+      <p>Narrative and horror are the top two indie genres by number of "hit" games in 2025. <strong>The audience exists, is actively seeking new products, and is underserved by large publishers</strong> who prioritize multiplayer and live-service models. The gap between what large publishers produce and what this audience wants has never been wider — and indie developers are filling it profitably.</p>
+      <p>The AI integration wave that the market research identifies as the next major driver (adaptive narrative systems, personalized horror) is coming. KENOMA's behavioral tracking system — built for a narrative purpose — is the manual precursor to what AI will eventually industrialize. <strong>Being early with a hand-crafted version of this experience positions the IP as the "original" in a space that will become crowded within 5 years.</strong></p>
+    </div>
+    <div>
+      <h3>The Team Cost Has Dropped</h3>
+      <p>Development tools (Unreal Engine 5, Unity) are now free until a product generates revenue. Distribution is near-zero cost on Steam. Marketing via content creators costs nothing if the product is genuinely novel. <strong>The actual cash requirement for this product is almost entirely personnel.</strong> 5–7 talented people for 10–12 months, plus marketing.</p>
+      <p>Remote work has made it possible to hire specifically the skills needed for a narrative horror game — writers, designers, one programmer, one artist — without geographic constraints that previously priced this type of production out of indie range. <strong>$350K in 2026 buys what $1.5M would have bought in 2015.</strong></p>
+    </div>
+  </div>
+
+  <div class="call cg">
+    <span class="call-lbl">The Honest Summary of the Opportunity</span>
+    <strong>This is a small-capital entry into a growing market, through a product with a genuinely novel concept, at a price point where the risk is bounded and the upside is real.</strong> It is not a lottery ticket — the comparable cases show a consistent pattern of modest narrative games generating $100K–$1M+ net returns on sub-$500K investments. It is not a guaranteed outcome — no product investment is. But the combination of novel mechanic + established market + small team + episodic model + clear scale path is as well-aligned as these opportunities get.
+  </div>
+</div>
+
+
+<!-- ══ FINAL CTA ════════════════════════════ -->
+<div class="cta">
+  <div class="cta-main">
+    <div class="cta-title">
+      The Player Who Invests<br>
+      Most Deeply Gets the<br>
+      Most Extraordinary Game.
+    </div>
+    <div class="cta-sub">
+      That is what KENOMA promises its players. The same logic applies here: the earlier the investment, the greater the position in what we believe will become a franchise IP in a market growing toward $22 billion.
+    </div>
+    <div class="cta-numbers">
+      <div class="cta-n">
+        <span class="cta-n-val">$350K</span>
+        <span class="cta-n-label">Phase 1 Total Investment</span>
+      </div>
+      <div class="cta-n">
+        <span class="cta-n-val">10–12mo</span>
+        <span class="cta-n-label">To commercial release</span>
+      </div>
+      <div class="cta-n">
+        <span class="cta-n-val">$22B</span>
+        <span class="cta-n-label">Market size by 2032</span>
+      </div>
+    </div>
+    <div class="cta-final">
+      "The game does not reward the player who holds back. It rewards the player who gives everything — because the thing they build is the most extraordinary version of what was possible." — That is the product. That is also the investment thesis.
+    </div>
+  </div>
+</div>
+
+<div class="foot">
+  <span>KENOMA · Investor Presentation · March 2026</span>
+  <span>Market data: Research & Markets · Deep Market Insights · WN Hub · Steam Analytics</span>
+  <span>Confidential · Pre-Seed Round</span>
+</div>
+
+</div>
+</body>
+</html>

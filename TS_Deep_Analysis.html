@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KENOMA Research — Tormented Souls I vs II Deep Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+
+/*
+  AESTHETIC DIRECTION:
+  A game designer's autopsy table.
+  Dense, exacting, cross-referenced.
+  The kind of document produced the night before a
+  production review when the lead designer
+  has been awake too long and the coffee is cold.
+
+  Ground: deep ink black — #0e0f0d
+  TS1 = tarnished gold · warmth · coherence
+  TS2 = muted cobalt · expansion · fragmentation
+  KENOMA = stark red signal on black
+  VERDICT lines: terminal green / warning amber / critical red
+
+  Typography:
+    Libre Baskerville — body (old-world authority, slightly cramped)
+    Space Mono — codes, labels, data (the analysis layer)
+    Barlow — callouts, comparisons (clarity cut through density)
+*/
+
+:root {
+  --bg:     #0e0f0d;
+  --bg2:    #141512;
+  --bg3:    #1a1b18;
+  --bg4:    #202120;
+  --bg5:    #292a27;
+  --ln:     #323330;
+
+  --body:   #c8c4b8;
+  --dim:    #8a8678;
+  --faint:  #4e4c46;
+  --ghost:  #2a2924;
+
+  /* TS1 — tarnished gold */
+  --g:      #b8920e;
+  --gl:     #d8aa28;
+  --gd:     #7a5e04;
+  --gbg:    rgba(184,146,14,0.08);
+  --gbrd:   rgba(184,146,14,0.2);
+
+  /* TS2 — cobalt */
+  --b:      #4c7ab0;
+  --bl:     #6c9cd0;
+  --bd:     #2c4870;
+  --bbg:    rgba(76,122,176,0.08);
+  --bbrd:   rgba(76,122,176,0.2);
+
+  /* KENOMA — crimson signal */
+  --r:      #b02828;
+  --rl:     #d04040;
+  --rd:     #681010;
+  --rbg:    rgba(176,40,40,0.1);
+  --rbrd:   rgba(176,40,40,0.25);
+
+  /* Verdicts */
+  --ok:     #4a8840;
+  --okl:    #68a858;
+  --warn:   #9a7020;
+  --warnl:  #c09040;
+  --bad:    #883030;
+  --badl:   #b05050;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:15px;}
+body{
+  background:var(--bg);
+  font-family:'Libre Baskerville',Georgia,serif;
+  line-height:1.8;color:var(--body);
+}
+.page{max-width:1060px;margin:0 auto;padding-bottom:80px;}
+
+/* ── COVER ─────────────────────────────── */
+.cover{
+  padding:64px 64px 48px;
+  border-bottom:1px solid var(--ln);
+  position:relative;
+}
+.cover::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--r),var(--g),var(--b));
+}
+.cv-meta{
+  font-family:'Space Mono',monospace;
+  font-size:9.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--faint);
+  margin-bottom:36px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+}
+.cv-docid{
+  border:1px solid var(--ln);
+  padding:5px 12px;color:var(--dim);
+}
+.cv-title{
+  font-family:'Libre Baskerville',serif;
+  font-size:48px;font-weight:700;
+  line-height:1.05;letter-spacing:-1.5px;
+  color:#ddd8cc;margin-bottom:14px;
+}
+.cv-title em{font-style:italic;color:var(--gl);}
+.cv-sub{
+  font-family:'Barlow',sans-serif;
+  font-size:16px;font-weight:300;
+  color:var(--dim);max-width:680px;
+  line-height:1.65;margin-bottom:30px;
+}
+.cv-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.pill{
+  font-family:'Space Mono',monospace;
+  font-size:8.5px;letter-spacing:2px;
+  text-transform:uppercase;padding:4px 11px;
+  border:1px solid;
+}
+.p1{border-color:var(--gd);color:var(--g);}
+.p2{border-color:var(--bd);color:var(--b);}
+.pk{border-color:var(--rd);color:var(--r);}
+.pn{border-color:var(--ln);color:var(--faint);}
+
+/* ── SECTION SYSTEM ─────────────────────── */
+.sec-hd{
+  padding:26px 64px 18px;
+  background:var(--bg2);
+  border-top:1px solid var(--ln);
+  border-bottom:1px solid var(--ln);
+  position:sticky;top:0;z-index:10;
+  display:flex;align-items:baseline;gap:16px;
+}
+.sec-n{
+  font-family:'Space Mono',monospace;
+  font-size:9.5px;letter-spacing:3px;
+  color:var(--faint);flex-shrink:0;
+}
+.sec-t{
+  font-family:'Libre Baskerville',serif;
+  font-size:20px;font-weight:700;color:#d8d4c8;
+}
+.sec-aside{
+  margin-left:auto;
+  font-family:'Space Mono',monospace;
+  font-size:9px;color:var(--faint);
+  font-style:italic;white-space:nowrap;
+}
+
+.body{padding:28px 64px 32px;}
+
+/* ── COMPARE SPLIT ─────────────────────── */
+.compare{
+  display:grid;grid-template-columns:1fr 1fr;
+  margin:20px -64px;
+}
+.ca{
+  padding:24px 64px;
+  background:var(--gbg);
+  border-top:2px solid var(--g);
+  border-right:1px solid var(--gbrd);
+}
+.cb{
+  padding:24px 64px;
+  background:var(--bbg);
+  border-top:2px solid var(--b);
+}
+.cmp-tag{
+  font-family:'Space Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;
+  text-transform:uppercase;display:block;margin-bottom:5px;
+}
+.ca .cmp-tag{color:var(--g);}
+.cb .cmp-tag{color:var(--b);}
+.cmp-title{
+  font-family:'Libre Baskerville',serif;
+  font-size:15px;font-weight:700;
+  display:block;margin-bottom:12px;
+}
+.ca .cmp-title{color:var(--gl);}
+.cb .cmp-title{color:var(--bl);}
+.ca p,.cb p{
+  font-family:'Barlow',sans-serif;
+  font-size:14px;line-height:1.72;
+  color:var(--dim);margin-bottom:10px;
+}
+.ca p:last-child,.cb p:last-child{margin:0;}
+.ca p strong,.cb p strong{color:var(--body);}
+
+/* ── MIRROR DIAGRAM ─────────────────────── */
+.mdiag{
+  background:var(--bg3);
+  border:1px solid var(--ln);
+  margin:18px 0;overflow:hidden;
+}
+.mdiag-hd{
+  background:var(--bg4);
+  padding:10px 20px;
+  border-bottom:1px solid var(--ln);
+  display:flex;align-items:center;gap:14px;
+}
+.mdtag{
+  font-family:'Space Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--faint);
+}
+.mdtitle{
+  font-family:'Barlow',sans-serif;
+  font-size:14px;font-weight:600;color:var(--body);
+}
+.mdiag-body{
+  display:grid;grid-template-columns:1fr 36px 1fr;
+}
+.mreal{padding:18px 20px;background:var(--gbg);}
+.mmirr{padding:18px 20px;background:var(--bbg);}
+.mdiv{
+  background:var(--bg4);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+}
+.mdarrow{color:var(--faint);font-size:16px;opacity:.5;}
+.mwtag{
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;display:block;margin-bottom:6px;
+}
+.mreal .mwtag{color:var(--g);}
+.mmirr .mwtag{color:var(--b);}
+.mwt{
+  font-family:'Barlow',sans-serif;
+  font-size:13px;font-weight:600;
+  display:block;margin-bottom:7px;
+}
+.mreal .mwt{color:var(--gl);}
+.mmirr .mwt{color:var(--bl);}
+.mwd{
+  font-family:'Barlow',sans-serif;
+  font-size:13px;line-height:1.62;color:var(--dim);
+}
+
+/* ── PUZZLE EVIDENCE CARDS ─────────────── */
+.pz-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2px;margin:16px 0;
+}
+.pz{padding:15px 17px;}
+.pz.ts1{background:var(--gbg);border-left:3px solid var(--g);}
+.pz.ts2{background:var(--bbg);border-left:3px solid var(--b);}
+.pz.note{background:var(--bg3);border-left:3px solid var(--ln);grid-column:span 2;}
+.pztag{
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;display:block;margin-bottom:4px;
+}
+.ts1 .pztag{color:var(--g);}
+.ts2 .pztag{color:var(--b);}
+.note .pztag{color:var(--faint);}
+.pzname{
+  font-family:'Barlow',sans-serif;
+  font-size:14px;font-weight:600;
+  color:var(--body);display:block;margin-bottom:7px;
+}
+.pzbody{
+  font-family:'Barlow',sans-serif;
+  font-size:13.5px;line-height:1.65;color:var(--dim);
+}
+.pzbody strong{color:var(--body);}
+.verdict{
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:1px;
+  text-transform:uppercase;padding:3px 9px;
+  border:1px solid;display:inline-block;margin-top:9px;
+}
+.v-ok{border-color:var(--ok);color:var(--okl);}
+.v-good{border-color:var(--gd);color:var(--gl);}
+.v-mix{border-color:var(--warn);color:var(--warnl);}
+.v-weak{border-color:var(--bad);color:var(--badl);}
+
+/* ── CALLOUT ────────────────────────────── */
+.call{
+  border-left:3px solid;padding:13px 18px;margin:16px 0;
+  font-family:'Barlow',sans-serif;font-size:14px;line-height:1.72;
+}
+.call-g{border-color:var(--g);background:var(--gbg);color:var(--dim);}
+.call-b{border-color:var(--b);background:var(--bbg);color:var(--dim);}
+.call-n{border-color:var(--ln);background:var(--bg3);color:var(--dim);}
+.call-r{border-color:var(--r);background:var(--rbg);color:var(--dim);}
+.clbl{
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;display:block;margin-bottom:5px;
+}
+.call-g .clbl{color:var(--g);}
+.call-b .clbl{color:var(--b);}
+.call-n .clbl{color:var(--faint);}
+.call-r .clbl{color:var(--r);}
+.call strong{color:var(--body);}
+.call em{font-style:italic;}
+
+/* ── HYPOTHESIS ─────────────────────────── */
+.hyp{
+  background:var(--bg3);
+  border:1px solid var(--ln);
+  border-top:2px solid;
+  margin:16px 0;overflow:hidden;
+}
+.hyp.h1{border-top-color:var(--g);}
+.hyp.h2{border-top-color:var(--b);}
+.hyp.hn{border-top-color:var(--ln);}
+.hyp-hd{
+  background:var(--bg4);
+  padding:10px 18px;border-bottom:1px solid var(--ln);
+  display:flex;align-items:center;gap:12px;
+}
+.hyp-n{
+  font-family:'Space Mono',monospace;
+  font-size:10px;font-weight:700;
+  background:var(--bg5);padding:2px 7px;
+  color:var(--dim);
+}
+.hyp-lbl{
+  font-family:'Space Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;
+  text-transform:uppercase;padding:2px 8px;border:1px solid;
+}
+.h1 .hyp-lbl{border-color:var(--gd);color:var(--g);}
+.h2 .hyp-lbl{border-color:var(--bd);color:var(--b);}
+.hn .hyp-lbl{border-color:var(--ln);color:var(--faint);}
+.hyp-title{
+  font-family:'Barlow',sans-serif;
+  font-size:14px;font-weight:600;color:var(--body);
+}
+.hyp-body{padding:14px 18px;}
+.hyp-body p{
+  font-family:'Barlow',sans-serif;
+  font-size:13.5px;color:var(--dim);line-height:1.7;margin-bottom:9px;
+}
+.hyp-body p:last-child{margin:0;}
+.hyp-body strong{color:var(--body);}
+.hyp-body em{font-style:italic;color:var(--body);}
+
+/* ── MATRIX TABLE ───────────────────────── */
+.mtx{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+.mtx th{
+  background:var(--bg4);
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--faint);
+  padding:9px 15px;text-align:left;
+  border-bottom:1px solid var(--ln);
+}
+.mtx td{
+  padding:9px 15px;
+  border-bottom:1px solid var(--ghost);
+  vertical-align:top;
+  font-family:'Barlow',sans-serif;
+}
+.mtx td:first-child{color:var(--body);font-weight:600;}
+.mtx td:nth-child(2){color:var(--gl);}
+.mtx td:nth-child(3){color:var(--bl);}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.bar{height:5px;border-radius:1px;flex-shrink:0;}
+.bg{background:var(--g);}
+.bb{background:var(--b);}
+.bscore{
+  font-family:'Space Mono',monospace;
+  font-size:10px;color:var(--faint);
+}
+
+/* ── KENOMA ZONE ────────────────────────── */
+.kn-zone{
+  background:var(--rbg);
+  border-top:2px solid var(--r);
+  margin:0 -64px;padding:28px 64px 32px;
+}
+.kn-hd{
+  display:flex;align-items:center;gap:12px;margin-bottom:22px;
+}
+.kn-icon{font-size:18px;opacity:.5;}
+.kn-title{
+  font-family:'Libre Baskerville',serif;
+  font-size:20px;font-weight:700;color:var(--rl);
+}
+.kn-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2px;margin-bottom:16px;
+}
+.kni{padding:15px 17px;background:rgba(0,0,0,0.25);}
+.kni.adopt{border-left:3px solid var(--ok);}
+.kni.avoid{border-left:3px solid var(--r);}
+.kni.adapt{border-left:3px solid var(--warn);}
+.ki-type{
+  font-family:'Space Mono',monospace;
+  font-size:8px;letter-spacing:3px;
+  text-transform:uppercase;display:block;margin-bottom:5px;
+}
+.adopt .ki-type{color:var(--okl);}
+.avoid .ki-type{color:var(--rl);}
+.adapt .ki-type{color:var(--warnl);}
+.ki-title{
+  font-family:'Barlow',sans-serif;
+  font-size:14px;font-weight:600;
+  color:var(--body);display:block;margin-bottom:6px;
+}
+.ki-body{
+  font-family:'Barlow',sans-serif;
+  font-size:13px;color:var(--dim);line-height:1.65;
+}
+.ki-body strong{color:var(--body);}
+
+/* ── PRINCIPLE CARD ─────────────────────── */
+.princ{
+  background:var(--bg3);
+  border:1px solid var(--ln);border-left:4px solid var(--r);
+  padding:15px 20px;margin:13px 0;
+}
+.pn{
+  font-family:'Space Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--r);
+  display:block;margin-bottom:4px;
+}
+.pt{
+  font-family:'Barlow',sans-serif;
+  font-size:15px;font-weight:600;
+  color:var(--body);display:block;margin-bottom:8px;
+}
+.pb{
+  font-family:'Barlow',sans-serif;
+  font-size:13.5px;color:var(--dim);line-height:1.7;
+}
+.pb strong{color:var(--body);}
+.pb em{font-style:italic;}
+
+/* ── QUOTE ──────────────────────────────── */
+.qb{
+  background:var(--bg3);
+  border-left:3px solid var(--ln);
+  padding:13px 20px;margin:16px 0;
+  font-family:'Libre Baskerville',serif;
+  font-size:14px;font-style:italic;
+  color:var(--dim);line-height:1.75;
+}
+.qs{
+  font-family:'Space Mono',monospace;
+  font-style:normal;font-size:9px;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--faint);display:block;margin-top:8px;
+}
+
+/* ── PROSE ──────────────────────────────── */
+p{margin-bottom:12px;font-size:15px;color:var(--dim);line-height:1.78;}
+p:last-child{margin:0;}
+p strong{color:var(--body);}
+p em{font-style:italic;color:var(--body);}
+h3{
+  font-family:'Libre Baskerville',serif;
+  font-size:17px;font-weight:700;
+  color:#d0ccc0;margin:24px 0 10px;
+  padding-bottom:6px;border-bottom:1px solid var(--ghost);
+}
+h3:first-child{margin-top:0;}
+
+.hr{height:1px;background:var(--ln);margin:20px 0;}
+
+/* ── FOOTER ─────────────────────────────── */
+.doc-foot{
+  padding:22px 64px;
+  border-top:1px solid var(--ln);
+  display:flex;justify-content:space-between;
+}
+.doc-foot span{
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--faint);
+}
+
+/* ── INDEX STRIP ────────────────────────── */
+.idx{
+  padding:11px 64px;background:var(--bg2);
+  border-bottom:1px solid var(--ln);
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+.idxi{
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;padding:3px 10px;
+  border:1px solid var(--ghost);color:var(--faint);
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER ─────────────────────────────────── -->
+<div class="cover">
+  <div class="cv-meta">
+    <div>
+      <div>KENOMA · Design Research Division</div>
+      <div style="margin-top:3px;color:var(--r)">Puzzle Systems — Comparative Deep Analysis</div>
+    </div>
+    <div class="cv-docid">DOC-PZD-003 · DEEP RESEARCH EDITION</div>
+  </div>
+
+  <div class="cv-title">Two Games.<br><em>One Mechanic.</em><br>Opposite Souls.</div>
+  <div class="cv-sub">A puzzle-by-puzzle, mirror-by-mirror analysis of Tormented Souls (2021) and Tormented Souls 2 (2025) — grounded in specific examples from both games' full puzzle sets, with developer intent hypotheses and direct conclusions for KENOMA's dual-world Archive design.</div>
+  <div class="cv-pills">
+    <span class="pill p1">TS1 · 2021 · Dual Effect + Abstract Digital</span>
+    <span class="pill p2">TS2 · 2025 · Dual Effect · 7 Zones</span>
+    <span class="pill pn">Fixed Camera · Tank Controls · Oil-Save</span>
+    <span class="pill pk">↳ KENOMA Application Below</span>
+  </div>
+</div>
+
+<div class="idx">
+  <span class="idxi">§1 — Foundations</span>
+  <span class="idxi">§2 — Mirror Mechanics</span>
+  <span class="idxi">§3 — Puzzle Anatomy</span>
+  <span class="idxi">§4 — Narrative Coherence</span>
+  <span class="idxi">§5 — Pros & Cons</span>
+  <span class="idxi">§6 — Developer Intent</span>
+  <span class="idxi">§7 — Score Matrix</span>
+  <span class="idxi">§8 — KENOMA Application</span>
+</div>
+
+
+<!-- §1 — FOUNDATIONS ──────────────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 01</span>
+  <span class="sec-t">Foundations — Two Games Built on Opposite Convictions</span>
+  <span class="sec-aside">What each game is fundamentally trying to do</span>
+</div>
+<div class="body">
+
+  <p>Both games share surface DNA: fixed cameras, limited resources, oil-based light survival, tape-based saves, and a mirror that transports Caroline Walker to an "Other Side." Beneath this surface they are built on different foundational convictions — convictions that cascade into every puzzle, every crossing, every document, every item that stays or leaves the inventory.</p>
+
+  <div class="compare">
+    <div class="ca">
+      <span class="cmp-tag">Tormented Souls 1 · 2021</span>
+      <span class="cmp-title">The puzzle is a wound left by the story</span>
+      <p>TS1 is built around a single mystery: <strong>what happened to the twin girls, Anna and Emma, at Wildberger Hospital?</strong> Caroline Walker is, without knowing it, Emma — one of those twins. Every room she enters is a room where something happened to or because of the family web: grandfather Bertran, cult leader Noah, the twins themselves. Puzzles exist because people who are now dead left their systems behind. The pocket watch stopped at 12:35 — twins' birth time, per the diary. The TV dial reconstructs an abusive relationship's biography. The broken heart doll is in the maternity ward where the twins were born. Each puzzle is also a discovery about the people who created it.</p>
+      <p>The single location — Wildberger Hospital — enforces coherence through constraint. One building, one thematic orbit, one gravity well pulling every puzzle inward.</p>
+      <p><strong>Core conviction:</strong> Solving a puzzle IS learning the story. Investigation and mechanics are the same act.</p>
+    </div>
+    <div class="cb">
+      <span class="cmp-tag">Tormented Souls 2 · 2025</span>
+      <span class="cmp-title">The puzzle is an atmospheric obstacle</span>
+      <p>TS2 is more ambitious: <strong>seven distinct zones</strong> (Convent, Prison, School, Cemetery, Town, Processing Plant, Bunker/Church), each with its own visual identity, creature types, and local lore. The story continues Caroline and Anna's journey to Villa Hess seeking help for Anna's condition. This ambition reveals a tension: seven zones with a presumably larger development team means puzzles no longer orbit a tight single narrative center. They orbit their <em>zone type</em> instead.</p>
+      <p>The Convent has religious puzzles. The School has academic puzzles. The Cemetery has death-symbol puzzles. These are thematically appropriate. They are not narratively necessary in the way TS1's puzzles are necessary.</p>
+      <p><strong>Core conviction:</strong> Solving a puzzle delivers an item and advances the player. The story is delivered separately, through documents and cutscenes that run parallel to — rather than through — the puzzle mechanics.</p>
+    </div>
+  </div>
+
+  <div class="call call-n">
+    <span class="clbl">The Root Split — One Sentence</span>
+    In TS1, <strong>the story produces the puzzle.</strong> In TS2, <strong>the zone produces the puzzle.</strong> This single distinction explains virtually every observation that follows.
+  </div>
+
+</div>
+
+
+<!-- §2 — MIRROR MECHANICS ─────────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 02</span>
+  <span class="sec-t">Mirror Mechanics — Identical Tool, Opposite Identity</span>
+  <span class="sec-aside">What "crossing" means in each game</span>
+</div>
+<div class="body">
+
+  <p>The mirror crossing is both games' most distinctive mechanic. Caroline lights candles beside a mirror, steps through, arrives in a distorted version of the same space. But what <em>is</em> that other space — and why does it contain different things — is answered completely differently in each game. This difference is the most consequential design divergence between TS1 and TS2.</p>
+
+  <h3>TS1 — The Mirror as Temporal Portal</h3>
+
+  <div class="mdiag">
+    <div class="mdiag-hd">
+      <span class="mdtag">TS1 Mirror Structure</span>
+      <span class="mdtitle">Present Hospital (1994) ↔ Corrupted Past (Era of the Experiments)</span>
+    </div>
+    <div class="mdiag-body">
+      <div class="mreal">
+        <span class="mwtag">Real World</span>
+        <span class="mwt">Current Wildberger Hospital — Aftermath</span>
+        <div class="mwd">The mansion as Caroline finds it: derelict, dark, partially functional. The tragedy has already happened. Items are missing, rooms are sealed, people are dead. The present is incomplete precisely because the past removed things from it.</div>
+      </div>
+      <div class="mdiv"><div class="mdarrow">⇄</div></div>
+      <div class="mmirr">
+        <span class="mwtag">Corrupted World — "Another Place in Time"</span>
+        <span class="mwt">A Warped Snapshot of the Hospital's Past</span>
+        <div class="mwd">Not merely "dark version" — the Steam description explicitly says mirrors provide "a path to another place in time." Items from the era of the experiments exist here. The twins' personal rooms are accessible. The past's physical evidence is retrievable. State changes here produce real-world effects.</div>
+      </div>
+    </div>
+  </div>
+
+  <p>TS1's temporal framing gives players a permanent, reliable mental model: <strong>"the corrupted world is the past, and the past holds what the present has lost."</strong> This model is teachable within the first two crossings and never violates itself. Once learned, it becomes a puzzle-solving tool the player applies with growing confidence. By the fourth or fifth crossing, the player doesn't discover the rule — they <em>use</em> it.</p>
+
+  <div class="pz-grid">
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Maternity Ward · First Crossing</span>
+      <span class="pzname">The Broken Heart Doll — Tutorial Crossing</span>
+      <div class="pzbody">Caroline has a plastic heart left half and right half collected from different rooms. She crosses to the corrupted Maternity Ward — which is identifiable as the room during the experimental era — and places the combined whole heart in the chest cavity of a doll on the table. Back in the real world, the patient on the table has shifted position, revealing the T-shaped handle needed to open the Waiting Room shutter. <strong>State change in past → physical change in present.</strong> The doll is a twin metaphor: two halves united to restore what was split apart.</div>
+      <span class="verdict v-ok">Narrative + Mechanic fused. Twin symbolism IS the solution logic.</span>
+    </div>
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Sewer Bedroom · TV Dial</span>
+      <span class="pzname">The Abusive Relationship Biography</span>
+      <div class="pzbody">Behind the sewer mirror (reached after draining the sewer water) is a corrupted bedroom — identifiable from the diary evidence as belonging to a family member. The TV dial puzzle presents channels in this sequence: hearts → rings → broken heart → noose → grave. This is a compressed emotional biography of an abusive relationship. The player must understand the <em>narrative progression</em> to solve it, then turn the dial through that biography. The safe opens and yields the sun medallion. No character's biography is explained anywhere in the game — it is reconstructed by the act of solving the puzzle.</div>
+      <span class="verdict v-ok">Investigation and mechanics are the same act. Understanding the life = the key.</span>
+    </div>
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Room 2D Corridor · Guillotine</span>
+      <span class="pzname">Monkey Thief Evidence From the Past</span>
+      <div class="pzbody">The corrupted world of the Intensive Care corridor contains a guillotine — in the present, this alcove is empty. In the past, the guillotine holds a wooden monkey with a metal casing. Opening it yields the Monkey Thief parchment scroll — the clue required to solve the Judge's Podium puzzle in the real world. The corrupted world is the evidence vault: it physically holds the documents and objects that explain the present building's locked systems. <strong>Past contains the keys to the present, literally and narratively.</strong></div>
+      <span class="verdict v-good">Past = evidence source. Consistent with the temporal logic established in crossing 1.</span>
+    </div>
+    <div class="pz ts1">
+      <span class="pztag">TS1 · VHS Tapes — Extended Mirror Logic</span>
+      <span class="pzname">The Past Walk-Through (Non-Mirror Variant)</span>
+      <div class="pzbody">TS1 also offers VHS tapes that transport Caroline physically into the past — a variation of the mirror mechanic using a different technology but the same principle. This is significant: the temporal-crossing rule is robust enough to extend across multiple mechanics. The mirror and the VHS tape are different objects encoding the same underlying logic. This consistency across different systems shows a design with a well-understood foundational rule rather than a mechanic invented per-room.</div>
+      <span class="verdict v-ok">Mirror rule extended to a second system. Architecture, not decoration.</span>
+    </div>
+  </div>
+
+  <div class="call call-g">
+    <span class="clbl">TS1 Mirror Iron Rule — Never Violated</span>
+    Corrupted world holds what the present needs. Every crossing follows this direction: find an item or state in the past, bring it or its effect forward. <strong>Zero exceptions in the full game.</strong> This predictability is not a limitation — it is a mechanical language that players speak fluently by mid-game.
+  </div>
+
+  <h3>TS2 — The Mirror as Zone Feature</h3>
+
+  <div class="mdiag">
+    <div class="mdiag-hd">
+      <span class="mdtag">TS2 Mirror Structure</span>
+      <span class="mdtitle">Normal World ↔ "Other Side" — A Hellish Alternate Reality</span>
+    </div>
+    <div class="mdiag-body">
+      <div class="mreal">
+        <span class="mwtag">Real World</span>
+        <span class="mwt">Villa Hess — Current Physical State</span>
+        <div class="mwd">The accessible, navigable version of each zone. Items, enemies, and puzzles that belong to Caroline's current investigation of the town.</div>
+      </div>
+      <div class="mdiv"><div class="mdarrow">⇄</div></div>
+      <div class="mmirr">
+        <span class="mwtag">Other Side — "Hellish Alternate Reality"</span>
+        <span class="mwt">Same Layout, Wrong Details</span>
+        <div class="mwd">Not a temporal crossing — a parallel reality. Different items exist, different routes are blocked or open, different enemies patrol. A reviewer noted the Other Side "mirrors the same layouts but twists them into something deeply wrong." The wrongness is atmospheric, not temporally explained. No consistent rule governs which items exist here vs. the real world.</div>
+      </div>
+    </div>
+  </div>
+
+  <p>TS2's mirror activation mechanic adds a layer before the crossing: <strong>Caroline must light a specific pattern of candles around the mirror</strong>, with the pattern derived from a nearby visual clue (usually a painting or inscription). This is a clever improvement in one sense — the activation itself is a puzzle. But it introduces a cost: players must now solve two puzzles per crossing (the activation and the crossing itself), and the activation clues are of uneven quality.</p>
+
+  <div class="pz-grid">
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Torture Museum · Teleport Mirror — Convent</span>
+      <span class="pzname">Candle Pattern from Portrait</span>
+      <div class="pzbody">A portrait on the Museum wall depicts a woman in front of the exact same mirror. The candles lit in the portrait show the solution. This is TS2's clearest mirror puzzle: the clue source is <em>a portrait of the puzzle's solution</em>, located in the same area. Light the bottom-left, top-left, and the bottom three on the right. Through the Other Side, Caroline finds a Bronze Bull torture device — from which she extracts the Angel Heart needed for the Museum's Angel Statue puzzle back in the real world. The crossing delivers a material item for a real-world puzzle. <strong>This one crossing instance replicates TS1's logic almost exactly.</strong></div>
+      <span class="verdict v-good">Best TS2 mirror use. Portrait-as-clue is intuitive. Item retrieval from Other Side follows TS1 logic.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Girls' Restroom · School — Good Ending</span>
+      <span class="pzname">Duct Tape on Mannequin = Heals Miguel</span>
+      <div class="pzbody">Through the School's girls' restroom mirror, Caroline reaches the Director's Office (Other Side). A mannequin sits on the chair where Miguel is sitting in the real world. Applying Duct Tape to the mannequin's neck wound in the Other Side correspondingly heals Miguel's real-world wound — this is required for the Good Ending. This is TS2's highest-stakes and most narratively sophisticated crossing: the Other Side is a space where Caroline can act indirectly on the real world, affecting a character's life through their symbolic proxy. <strong>Most direct emotional resonance of any crossing in either game.</strong></div>
+      <span class="verdict v-ok">Excellent. Other Side as metaphysical intervention. High narrative stakes, clear causal logic.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Church Mirror</span>
+      <span class="pzname">Christ Paintings as Candle Numbers</span>
+      <div class="pzbody">To activate the Church's Other Side mirror, Caroline studies the Christ paintings hung throughout the church — each depicts Christ at a different degree of burden from the cross. The candles that need lighting correspond to the paintings where Christ is <em>not</em> weighed down. The Other Side Church has sections blocked by fencing, routing Caroline to a specific altar. The clue source (religious iconography) and the puzzle location (a church) share tight thematic territory. This is one of TS2's stronger activations because the zone's identity and the clue's nature are genuinely aligned.</div>
+      <span class="verdict v-good">Thematic coherence between zone (church) and clue source (religious paintings). Above TS2 average.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Classroom 202 · School Other Side</span>
+      <span class="pzname">Opposite Symbols Rule</span>
+      <div class="pzbody">In the real-world Classroom 202, a framed picture shows specific symbols. In the Other Side version, a chalkboard drawing shows a rabbit — which has become a snail. This is the game's hint: <em>symbols are inverted in the Other Side.</em> The door panel must be set to the opposite of the symbols seen in the real world. This rule — Other Side inverts real-world logic — is one of the only times TS2 proposes a <em>consistent interpretive principle</em> for what the Other Side means. But this principle is only stated once, in one room, and never generalized across the game's other crossings.</div>
+      <span class="verdict v-mix">Clever local rule with zero follow-through. Should have been the game's unifying crossing principle.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Waste Disposal Furnace — Processing Plant</span>
+      <span class="pzname">Clock Times as Button Grid Positions</span>
+      <div class="pzbody">The mirror in the Waste Disposal Other Side contains a toy figurine that must be placed in the furnace. But first, the furnace controls must be configured — using a wall sign showing valve positions, and a switchboard where "the writing on the mirror shows times on a clock: 3 o'clock, quarter to, 20 past" to determine which buttons to press. The clock-time encoding rule is: read the clock time, translate to a button position in a 3x3 grid. This is one of TS2's most abstract encodings — the translation from "clock time" to "button position" has no intuitive logic, merely a consistent rule if the player determines it. Most players used a guide.</div>
+      <span class="verdict v-weak">Encoding layer (clock→grid) is arbitrary. Cross-world logic (figurine→furnace activation) is sound but buried.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Cemetery · Animal Dials Reliquary</span>
+      <span class="pzname">Bird/Turtle/Bat/Dog — Rotate 1/4/4/7</span>
+      <div class="pzbody">Four animal dials must be collected from scattered coffins throughout the cemetery grounds (Bird — bottom of center stairs, Turtle — right mausoleum north area, Bat — mausoleum near Grounds gate, Dog — hanging coffin). Once all four are assembled on the reliquary in a small building, each must be rotated the correct number of times: Bird×1, Turtle×4, Bat×4, Dog×7. The rotation numbers come from a document found in the area. The specific animals and their specific rotation counts have no narrative explanation connecting them to a character's story — they belong to "this is a cemetery, therefore grave-animal symbolism." Classic zone-brief design.</div>
+      <span class="verdict v-weak">Zone-themed, not character-driven. Numbers feel arbitrary without narrative motivation for those specific animals.</span>
+    </div>
+  </div>
+
+  <div class="call call-b">
+    <span class="clbl">TS2 Mirror Problem — No Unifying Rule</span>
+    TS2 has at least six distinct mirror situations across seven zones. Each has its own activation method, each has its own crossing logic (sometimes temporal via VHS/apple-seed time travel at the School, sometimes spatial redirection, sometimes metaphysical intervention). <strong>Players cannot build a reliable intuition about what to expect from a crossing.</strong> Each mirror becomes a novel encounter rather than an application of mastered knowledge. This is the opposite of TS1's effect.
+  </div>
+
+</div>
+
+
+<!-- §3 — PUZZLE ANATOMY ────────────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 03</span>
+  <span class="sec-t">Puzzle Anatomy — Specific Examples, Both Games</span>
+  <span class="sec-aside">Named puzzles, mechanics, narrative connection</span>
+</div>
+<div class="body">
+
+  <h3>Category A — Narrative / Biography Puzzles (Where the Story IS the Solution)</h3>
+  <div class="pz-grid">
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Judge's Podium — The Model</span>
+      <span class="pzname">The Monkey Thief Story</span>
+      <div class="pzbody">The Monkey Thief parchment scroll (found in the corrupted world's guillotine) tells a five-chapter story. To solve the podium, the player must understand that the three carved courtroom figures — judge, defense attorney, mother — are <em>not doing</em> what they should be doing. The judge reads Braille (his fingers bump along the rail) instead of watching. The defense attorney stares at lip movements instead of listening. The mother writes a hand-sign instead of screaming. <strong>All three are hearing-impaired.</strong> Understanding this family condition solves the puzzle. No one tells the player this. The character comprehension IS the mechanic.</div>
+      <span class="verdict v-ok">Peak TS1. Character biography understood through puzzle solving, not through reading about it.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Cemetery Grave — PEDRO</span>
+      <span class="pzname">Spelling a Character's Name</span>
+      <div class="pzbody">A fancy grave mechanism requires arranging gold, silver, and bronze octagon pieces to spell PEDRO. The name "Pedro" is a character referenced in the area's documents — a specific person buried there with significance to the cult's history. Players who have read all nearby lore find this satisfying. Players who haven't face an arbitrary name-spelling puzzle with three arbitrarily colored pieces. This is TS2's best narrative-puzzle integration in the Cemetery zone — but it requires heavy prior document reading rather than <em>producing</em> the character revelation through the act of solving.</div>
+      <span class="verdict v-mix">Narrative present, but document-dependent. Lore delivers the story; puzzle delivers the key.</span>
+    </div>
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Clock Puzzle — Twins' Birthday</span>
+      <span class="pzname">Christmas Morning, 8:15:25</span>
+      <div class="pzbody">The clock in the clock room is stopped at a specific time — Christmas morning at 8:15:25. The solution requires knowing this is the twins' birthday (December 25th) and the specific time noted in the diary. The puzzle is a memorial — someone stopped this clock deliberately at the moment that mattered most to the family. Finding and reading the diary entry (which mentions 12:35 as the birth time for the pocket watch, and the Christmas birthday separately) is the investigation that unlocks this. The clock is a grief object encoded as a puzzle.</div>
+      <span class="verdict v-ok">Every element has a person behind it. The puzzle is someone's loss.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Cryptex — Chess Piece Sequence</span>
+      <span class="pzname">Knight/Castle/Bishop/Queen/King/Pawn/Knight</span>
+      <div class="pzbody">A cryptex in the Convent's Chapter House requires a seven-symbol chess sequence. The solution is derived from chess notes found in the upper level of the Convent's Library — a chess mat showing piece movements. This is TS2's strongest narrative-adjacent puzzle: a scholarly convent <em>would have chess</em>; the library is the correct location for the clue; the sequence requires understanding chess piece movement patterns rather than an arbitrary rotation count. The clue source and puzzle subject share genuine thematic territory. <strong>One of TS2's consistently praised puzzles across multiple reviews.</strong></div>
+      <span class="verdict v-good">TS2 at its strongest. Zone identity and clue source genuinely aligned. No zone-brief feel here.</span>
+    </div>
+  </div>
+
+  <h3>Category B — Environmental / Multi-Step Mechanical Puzzles</h3>
+  <div class="pz-grid">
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Gasoline Pump Puzzle</span>
+      <span class="pzname">Industrial Infrastructure with Purpose</span>
+      <div class="pzbody">A gasoline pump in the bunker requires the player to cap three specific pipes, then route flow to fill a canister. Step-by-step instructions exist in nearby maintenance logs — the puzzle is presented as a <em>real industrial procedure</em> that workers at this facility actually needed to perform. The pump is in the bunker because the bunker needed fuel. The clue is a maintenance log because maintenance workers wrote them. Even utilitarian infrastructure puzzles in TS1 carry the implication that a person used this for a reason.</div>
+      <span class="verdict v-good">Even mechanical puzzles imply a person. Location, clue, and mechanic all share institutional context.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Church Elevator / Prison Power Box</span>
+      <span class="pzname">Switch Grid with Pattern-Match Encoding</span>
+      <div class="pzbody">The Church elevator requires attaching a Rubber Hose between pipes + Wire around the hose + Pliers to tighten — a three-step item combination. The Prison power box uses a switch grid: find a note inside a broken cell showing image pairs, then match them on the switchboard. Both work mechanically. The Prison switchboard grid abstraction (image-pairs to button presses) is a clean logical rule, but the note is small, easily missed, and the specific images on that specific box have no clear connection to who was in the Prison or why they installed that system. Functional but contextless.</div>
+      <span class="verdict v-mix">Mechanically sound but increasingly context-free. The puzzle is no longer a scar of someone's story.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · School — Apple Seed Time Travel</span>
+      <span class="pzname">Plant in Past → Harvest in Present</span>
+      <div class="pzbody">One of TS2's most inventive puzzle chains: Caroline uses a VHS tape to travel to the School's past, plants Apple Seeds in a flower tub in the Playground, pushes a stretcher under a leaky faucet to water it, then returns to the present to collect the grown apple from the tree. This apple is then placed in the Dead Teacher's hand in Classroom 103. The multi-step temporal logic is genuinely satisfying and demonstrates that TS2's designers are capable of TS1-quality cross-world puzzle construction. It stands out precisely because it is rarer than it should be.</div>
+      <span class="verdict v-ok">TS2's best multi-step puzzle. Temporal logic clear, causal chain satisfying, thematic resonance present.</span>
+    </div>
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Floppy Disk Rotation</span>
+      <span class="pzname">Physical Item Knowledge as Mechanic</span>
+      <div class="pzbody">A floppy disk must be physically rotated in the 3D inventory to unlock its write-protect tab before it can be used on the computer — a detail accurate to real floppy disk design. Players who remember floppy disks solve this instantly. Players who don't must experiment. No hint is needed because the real-world knowledge IS the hint. TS1 occasionally uses genuine external knowledge (not game-internal lore, but physical-world facts) as puzzle mechanics. This is risky design — some reviewers flagged "what does the inside of a beehive look like?" as crossing a line — but the floppy disk example works because it is universal and physical-intuitive.</div>
+      <span class="verdict v-good">Real-world knowledge as mechanic. Works when physical-intuitive. Fails when too specific (beehive).</span>
+    </div>
+  </div>
+
+  <h3>Category C — The Inventory as Puzzle System</h3>
+
+  <div class="pz-grid">
+    <div class="pz ts1">
+      <span class="pztag">TS1 · Item Economy Model</span>
+      <span class="pzname">Items Consumed = Problems Solved</span>
+      <div class="pzbody">TS1's items are predominantly single-use. Once the plastic heart halves are combined and placed in the doll, they're gone. Once the Monkey Thief scroll is read and applied to the podium, the problem it solved is closed. The player's inventory at any given moment is a live register of open questions — every item still carried corresponds to an unsolved puzzle. This gives the inventory a narrative function: it is a map of the investigation's remaining threads. Carrying the combined sun and moon medallion is a reminder that their application point exists somewhere ahead.</div>
+      <span class="verdict v-ok">Inventory as active investigation register. Each item = one open question.</span>
+    </div>
+    <div class="pz ts2">
+      <span class="pztag">TS2 · Multi-Use Item Model</span>
+      <span class="pzname">The Hardware Collection Problem</span>
+      <div class="pzbody">TS2 introduced multi-use items — the Hammer, Crowbar, Lighter, Plant Sprayer, and others are used across multiple puzzles throughout the entire game. Reviewers specifically flagged this: <em>"Probably the biggest issue I have with Tormented Souls 2's puzzles is that your inventory never really shrinks."</em> (Digitally Downloaded, 2025.) When items persist across the full run, the inventory shifts from "map of open questions" to "toolkit of available functions." The cognitive model changes from mystery to craft — the player is no longer an investigator carrying evidence, they are a handyman carrying tools. This subtle shift undermines the investigative atmosphere both games are built to create.</div>
+      <span class="verdict v-weak">Multi-use items break the inventory-as-investigation model. The satchel becomes a hardware store.</span>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- §4 — NARRATIVE COHERENCE ──────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 04</span>
+  <span class="sec-t">Narrative Coherence — The Thread Between Story and Mechanic</span>
+  <span class="sec-aside">Why puzzles feel earned or arbitrary</span>
+</div>
+<div class="body">
+
+  <h3>TS1 — Gravitational Coherence: Everything Orbits the Twins</h3>
+  <p>TS1's backstory is complete before the first puzzle is placed: the Wildberger family genealogy, the cult's twin-sacrifice ritual, Noah's long-running scheme, the grandmother who escaped with Emma (Caroline). <strong>Every single room in the hospital was used by someone in this family web.</strong> When a puzzle exists in the Maternity Ward, it's because the Maternity Ward was where the twins were born. When a puzzle exists in the Judge's Podium area, it's because a judge was involved in this family's institutional history. The surgical, courtroom, religious, and domestic spaces of the hospital are not zones — they are the physical residue of specific people's specific actions.</p>
+
+  <div class="call call-g">
+    <span class="clbl">TS1 Narrative Architecture</span>
+    The twin-story has gravitational pull. Every puzzle is in orbit around it. Even the most mechanical puzzles — the gasoline pump, the generator valve — are set in rooms that served the family's institutional operations. The <strong>maintenance puzzle implies a working institution, which implies the people who ran it, which implies their history</strong>. TS1 never loses this chain.
+  </div>
+
+  <p>The four diary collections (William's, Bertram's, Anna's, Maria's — 32 diary entries across 4 characters) are not separate from the puzzles. They are the evidence base from which puzzle solutions are derived. The pocket watch reads 12:35 because Maria's diary mentions 12:35 as the birth time. The clock is set to Christmas because the family celebrated it as the twins' birthday. Reading and solving are the same investigation.</p>
+
+  <h3>TS2 — Fragmented Coherence: Seven Threads, No Center</h3>
+  <p>TS2 has Caroline's immediate story (rescuing Anna), Villa Hess's historical background (the cult, the Puppet Virus, the town's dark history), zone-specific histories (the Convent's institutional past, the School's specific horror), and sequel-continuation of TS1's unresolved threads. <strong>This is not too much story — it is too many stories without a single gravity well pulling the puzzles inward.</strong></p>
+
+  <div class="qb">
+    "The narrative is just terrible... The pacing is the biggest problem, with just about every cut scene coming across as something written to get the cut scene out of the way as quickly as possible... I wasn't being given enough about the characters and situation to really care for them."
+    <span class="qs">— Digitally Downloaded Review, 2025</span>
+  </div>
+
+  <div class="qb">
+    "Its narrative feels more like a vehicle for the gameplay — a reason for you to keep solving puzzles and fighting monsters rather than something meant to be psychoanalyzed."
+    <span class="qs">— Game8 Review, 2025</span>
+  </div>
+
+  <p>The contrast is precise: TS1's puzzles are psychoanalyzable. The TV dial sequence that reconstructs an abusive relationship requires the player to psychoanalyze a character's emotional history in order to solve it. TS2's puzzles — even the strong ones — generally don't require understanding a character's inner life. They require understanding a zone's thematic logic.</p>
+
+  <h3>Where TS2's Narrative Puzzle Integration Succeeds</h3>
+  <p>TS2's narrative-puzzle integration is not uniformly weak. It clusters: the Convent zone (the game's opening, most developed zone) contains the most coherent puzzle-story connections. The Cryptex requires scholarly knowledge (appropriate for a convent library). The Church mirror activation uses religious iconography (appropriate for a church). The Convent boss fight requires a puzzle-logic defeat condition rather than damage attrition. <strong>These feel like TS1.</strong></p>
+  <p>The later zones — Cemetery, Bunker — show dilution. Animal dials with arbitrary rotation counts, furnace switchboards with abstract clock-time encoding. These feel like zone-brief design executed competently but without the character-story grounding of the Convent's best work.</p>
+
+</div>
+
+
+<!-- §5 — PROS & CONS ────────────────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 05</span>
+  <span class="sec-t">Pros &amp; Cons — Honest Assessment of Both Games</span>
+  <span class="sec-aside">Neither game is only one thing</span>
+</div>
+<div class="body">
+
+  <div class="compare">
+    <div class="ca">
+      <span class="cmp-tag">Tormented Souls 1 — Strengths</span>
+      <span class="cmp-title">What it does exceptionally well</span>
+      <p><strong>Story-puzzle fusion:</strong> Investigation and mechanics are the same act. Solving is understanding. The investigation model at its finest.</p>
+      <p><strong>Mirror as temporal system:</strong> One rule, one direction, applied universally. Players develop reliable intuition that accelerates mid-game solving.</p>
+      <p><strong>Item economy discipline:</strong> Single-use items keep the inventory as a live investigation register. Every carried item is an open question.</p>
+      <p><strong>Clue proximity:</strong> Almost every puzzle's primary clue lives in the same room or its mirror equivalent. Minimal cross-location backtracking for clues.</p>
+      <p><strong>Character-sourced puzzles:</strong> Even the most mechanical-seeming puzzle (gasoline pump) is set in a location that was genuinely used by a real person in the game's history.</p>
+      <p><strong>Thematic consistency:</strong> Single location, single mystery, single thematic orbit. Every detail reinforces the same story.</p>
+    </div>
+    <div class="cb">
+      <span class="cmp-tag">Tormented Souls 2 — Strengths</span>
+      <span class="cmp-title">What it improves on TS1</span>
+      <p><strong>Scope and variety:</strong> Seven zones generate genuine puzzle-type variety — acoustic bell sequences, time-travel gardening, chess cryptex, candle-pattern activations, acoustic xylophone play. TS1 could not generate this range from one location.</p>
+      <p><strong>Boss-puzzle integration:</strong> Each boss has a specific logical defeat condition. You do not fight for dominance — you fight for the right to move forward. Consistently praised across reviews.</p>
+      <p><strong>Mirror activation layer:</strong> The candle-lighting activation system adds a puzzle-before-the-puzzle. The portrait hint (Torture Museum) is one of the most intuitive clue systems in either game.</p>
+      <p><strong>Level design and backtracking:</strong> Maps loop back on themselves intelligently. Spaces evolve on revisit. The Processing Plant is specifically praised as a masterclass in level design and tension-building.</p>
+      <p><strong>Best individual puzzles (School mannequin, Cryptex):</strong> When TS2 achieves narrative-puzzle integration, it does so at high quality — comparable to TS1's best.</p>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="ca">
+      <span class="cmp-tag">Tormented Souls 1 — Weaknesses</span>
+      <span class="cmp-title">Where it falls short</span>
+      <p><strong>External knowledge requirements:</strong> Two puzzles require knowledge from outside the game ("what day is Christmas?" / "what does a beehive look like?"). Reviewers flagged this as a design failure — the game should provide what it needs players to know.</p>
+      <p><strong>Combination Key door system:</strong> The four combination key doors use an abstract geometric subtraction rule — shapes on the key determining which door symbol they unlock. Internally consistent but imported from a different design tradition. These are TS1's clearest "puzzle variety" insertion without narrative grounding.</p>
+      <p><strong>Stethoscope puzzle (door knocker pattern):</strong> The Library door knocker solution — Slow, Fast, Fast, Fast, Slow, Slow — is heard via stethoscope on a statue in the Main Hall. The clue and the puzzle work, but the connection between a stethoscope, a statue, and a door rhythm is the kind of leap that requires adventure-game lateral thinking rather than investigation logic.</p>
+      <p><strong>Limited scope (by design):</strong> Single location's discipline produces coherence but also limits puzzle type variety. Some mechanical repetition in code and combination puzzles.</p>
+    </div>
+    <div class="cb">
+      <span class="cmp-tag">Tormented Souls 2 — Weaknesses</span>
+      <span class="cmp-title">Where the ambition costs coherence</span>
+      <p><strong>No unifying mirror rule:</strong> Six crossing situations, six different local logics. Players cannot build reliable intuition. Each mirror is a surprise rather than a mastered system.</p>
+      <p><strong>Inventory bloat:</strong> Multi-use items throughout the full run shift the inventory from investigation register to hardware collection. The player-as-investigator model is undermined.</p>
+      <p><strong>Zone-brief puzzle design:</strong> Weaker puzzles feel designed by zone type ("this is a cemetery") rather than character history. The puzzle earns thematic coherence but not narrative necessity.</p>
+      <p><strong>Narrative fragmentation:</strong> Multiple active story threads across seven zones without a single gravity well. Reviewers consistently identify narrative as the weakest element.</p>
+      <p><strong>Abstract encoding in late-game puzzles:</strong> Clock-time-to-button-grid, animal-dial rotation counts, switchboard image-pair matching — these are arbitrary encodings requiring guide usage even after the solution is known. The difficulty is from encoding obscurity, not from the depth of the story being decoded.</p>
+      <p><strong>Clue distance increases in later zones:</strong> Documents are scattered across zones. Solving a Cemetery puzzle sometimes requires a note found much earlier in the Convent. Cross-zone backtracking for clues increases as the game expands.</p>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- §6 — DEVELOPER INTENT ─────────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 06</span>
+  <span class="sec-t">Developer Intent — What Were They Actually Trying to Build?</span>
+  <span class="sec-aside">Reading design choices as hypotheses about authorial intention</span>
+</div>
+<div class="body">
+
+  <div class="hyp h1">
+    <div class="hyp-hd">
+      <span class="hyp-n">H-01</span>
+      <span class="hyp-lbl h1">TS1 Hypothesis</span>
+      <div class="hyp-title">TS1 was designed Story-Bible first, then puzzled into rooms — by a small cohesive team with a shared narrative document</div>
+    </div>
+    <div class="hyp-body">
+      <p>TS1 was co-developed by <strong>Dual Effect and Abstract Digital</strong> — two Chilean studios. The evidence suggests a small, cohesive authorial team that designed from a complete backstory outward. The Wildberger family genealogy, the cult's twin-sacrifice ritual, Noah's decades-long scheme, every diary entry across four characters — this backstory is complete and internally consistent before the first puzzle is placed. Every puzzle placement answers: <em>"Given that this room was used for this purpose by these people, what did they leave behind that could block or enable an investigator's progress?"</em></p>
+      <p>The hypothesis is supported by the puzzle coherence ratio: approximately 75-80% of TS1's puzzles have clear narrative-character grounding. This consistency would be nearly impossible to achieve by accident or by committee. It suggests that whoever placed the puzzles had the story document open while doing so.</p>
+      <p>The two weakest puzzle categories (combination key doors, external knowledge requirements) are also TS1's clearest "design variety" insertions — moments where the team reached for a different puzzle type without the narrative-integration process that governed the rest. These exceptions prove the rule by being the exceptions.</p>
+      <p><strong>Intended experience:</strong> A pure investigation game where the act of solving is the act of understanding. Players should finish TS1 feeling like they have reconstructed the Wildberger family's complete tragedy — not just beaten the game.</p>
+    </div>
+  </div>
+
+  <div class="hyp h2">
+    <div class="hyp-hd">
+      <span class="hyp-n">H-02</span>
+      <span class="hyp-lbl h2">TS2 Hypothesis</span>
+      <div class="hyp-title">TS2 was designed zone-by-zone, with multiple designers working in parallel — the expanded team broke the single-narrative-owner model</div>
+    </div>
+    <div class="hyp-body">
+      <p>The user's original observation — "the second one may have been designed by many people which makes the puzzles seem off-track and irrelevant to the main story" — is well-supported. TS2 is a solo Dual Effect production (Abstract Digital not credited as co-developer) across seven zones. Seven zones imply parallel development tracks. The puzzle quality distribution is not random — it <strong>clusters by zone</strong>:</p>
+      <p>The Convent (opening zone, presumably developed first and most thoroughly): TS2's strongest puzzle-narrative integration. Cryptex, Church mirror, boss-puzzle logic. The School: strong narrative moments (mannequin/Miguel) alongside weaker ones (Classroom 202 symbol inversion inconsistently applied). The Cemetery: TS2's clearest zone-brief design. Animal dials, grave spelling, constellation pieces — atmospheric and competent, but narratively thin. The Bunker: late-game pressure-designed content with the most abstract encoding puzzles.</p>
+      <p><strong>The mirror mechanic inconsistency is the clearest indicator:</strong> If a single designer owned the Other Side mechanic, they would apply one consistent rule. Instead, each zone has its own crossing logic — suggesting each zone's designer independently solved how crossing would work in their area, without coordination around a shared mechanic definition. The Classroom 202 "opposites" rule is genuinely clever and could have been the game's unifying crossing principle. That it exists in one room and is never generalized suggests it was a zone-level invention rather than a game-wide design decision.</p>
+      <p><strong>Intended experience:</strong> A bigger, more varied game that preserved TS1's core feel while expanding the survival horror world-building. This was not a mistake — it was a deliberate trade-off. A reviewer noted: <em>"Where the game really separates from its predecessor is in a broader variety of locations... It really is the difference between Resident Evil 1 and 2."</em> Dual Effect consciously chose the RE2 expansion model. The coherence cost was accepted in exchange for scope.</p>
+    </div>
+  </div>
+
+  <div class="hyp hn">
+    <div class="hyp-hd">
+      <span class="hyp-n">H-03</span>
+      <span class="hyp-lbl hn">Both Games</span>
+      <div class="hyp-title">TS2's best puzzles were designed by whoever held the story bible — its weakest by zone artists working from atmospheric briefs</div>
+    </div>
+    <div class="hyp-body">
+      <p>The quality distribution within TS2 implies two different puzzle design pipelines: one connected to the game's narrative core (producing the Cryptex, the mannequin/Miguel crossing, the apple-seed time travel), and one connected to zone artistic identity (producing the animal dials, the furnace switchboard clock encoding, the symbol-grid power boxes). The first pipeline produces what the user calls "still good in story telling." The second produces what they call "off-track and irrelevant."</p>
+      <p><strong>Practical implication for identifying which is which:</strong> Narrative-pipeline puzzles have a character behind them. Someone chose those chess pieces because scholars play chess. Someone chose Miguel's mannequin because Miguel is wounded. Zone-pipeline puzzles have an atmosphere behind them. Someone chose those four cemetery animals because cemeteries have grave symbolism. The distinction is always: <em>is there a person behind this puzzle, or is there a mood?</em></p>
+      <p>Both pipelines produce functional puzzles. Only one produces discovery. Only one makes the player feel like an investigator rather than a problem-solver. TS1 had only the first pipeline. TS2 had both, and the second gradually dominated as production expanded.</p>
+    </div>
+  </div>
+
+  <div class="hyp h2">
+    <div class="hyp-hd">
+      <span class="hyp-n">H-04</span>
+      <span class="hyp-lbl h2">TS2 Hypothesis</span>
+      <div class="hyp-title">The Convent was designed as "TS1 with better scope" — the subsequent zones were designed as "more survival horror zones"</div>
+    </div>
+    <div class="hyp-body">
+      <p>Structurally, TS2's Convent zone has the tightest relationship between zone history and puzzle design. It also has the most developed supporting character dynamics (Joseph the NPC, Isabella's story, Miguel's wound). The Convent feels authored the way TS1 is authored: by someone who knew the full character web and placed puzzles according to it.</p>
+      <p>The School zone shows a transition: strong narrative integration for Miguel-connected puzzles (the mannequin crossing is the game's most emotionally resonant moment) alongside zone-themed content (Beethoven xylophone, symbol-grid classroom). The Cemetery and later zones feel increasingly like production was racing ahead of narrative authorship — competent zone designers filling the space with thematically appropriate content but without the character-story grounding that makes puzzles feel necessary rather than merely appropriate.</p>
+      <p><strong>Production timeline hypothesis:</strong> The Convent was finished and iterated when the story bible was freshest and the lead designers were most directly involved. Later zones were finished under deadline pressure by teams who had the zone brief and the atmosphere document but not the full character history in front of them while placing puzzles.</p>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- §7 — MATRIX ─────────────────────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 07</span>
+  <span class="sec-t">Comparative Score Matrix</span>
+  <span class="sec-aside">Numeric summary of the analysis</span>
+</div>
+<div class="body">
+
+  <table class="mtx">
+    <tr>
+      <th style="width:220px">Dimension</th>
+      <th style="width:240px">Tormented Souls 1</th>
+      <th>Tormented Souls 2</th>
+    </tr>
+    <tr>
+      <td>Narrative-Puzzle Coherence</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:84px"></div><span class="bscore">84</span></div>~75-80% of puzzles character-grounded. Near-consistent story-mechanic fusion.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:54px"></div><span class="bscore">54</span></div>~50% strong (Convent, key School moments). ~50% zone-brief or atmospheric only.</td>
+    </tr>
+    <tr>
+      <td>Mirror Mechanic Consistency</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:92px"></div><span class="bscore">92</span></div>One iron rule. Zero violations. Players speak the mechanic fluently by crossing 4.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:56px"></div><span class="bscore">56</span></div>Six distinct crossing logics across seven zones. No reliable player intuition possible.</td>
+    </tr>
+    <tr>
+      <td>Clue Proximity</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:80px"></div><span class="bscore">80</span></div>Clue usually in same room or mirror equivalent. Rare long-distance clues are memorable outliers.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:58px"></div><span class="bscore">58</span></div>Increasingly variable as game expands. Late-zone puzzles reference early-zone documents.</td>
+    </tr>
+    <tr>
+      <td>Puzzle Variety</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:58px"></div><span class="bscore">58</span></div>Single location limits type range. Narrative depth compensates. Some mechanical repetition in code puzzles.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:86px"></div><span class="bscore">86</span></div>Seven zones generate genuine variety. Acoustic, temporal, symbolic, spatial, metaphysical. TS2's clearest win.</td>
+    </tr>
+    <tr>
+      <td>Item Economy Discipline</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:82px"></div><span class="bscore">82</span></div>Predominantly single-use. Inventory = investigation register. Open items = open questions.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:50px"></div><span class="bscore">50</span></div>Multi-use items throughout. Inventory becomes toolkit. "Never really shrinks" (Digitally Downloaded).</td>
+    </tr>
+    <tr>
+      <td>Boss-Puzzle Integration</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:62px"></div><span class="bscore">62</span></div>Bosses present but not all have logic-defeat conditions. Some require damage attrition.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:80px"></div><span class="bscore">80</span></div>Each boss has specific logical defeat condition. Combat is a puzzle to solve, not overcome. Consistent across zones.</td>
+    </tr>
+    <tr>
+      <td>Cross-World Puzzle Logic</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:90px"></div><span class="bscore">90</span></div>Causal direction always: past state change → present effect. Extends to VHS mechanic. Never contradicted.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:55px"></div><span class="bscore">55</span></div>Best instances match TS1 logic (mannequin → Miguel). Weakest are arbitrary (clock times → buttons).</td>
+    </tr>
+    <tr>
+      <td>Developer Cohesion (Hypothesized)</td>
+      <td><div class="bar-row"><div class="bar bg" style="width:88px"></div><span class="bscore">88</span></div>Small co-dev team (Dual Effect + Abstract Digital). Single narrative owner. Story bible → puzzle placement.</td>
+      <td><div class="bar-row"><div class="bar bb" style="width:60px"></div><span class="bscore">60</span></div>Larger solo team. Multiple zone designers. Story narrative authority diluted across expansion. Convent zone shows what cohesion looks like; later zones show its absence.</td>
+    </tr>
+  </table>
+
+  <div class="call call-n">
+    <span class="clbl">Summary Judgment</span>
+    TS1 is the superior <strong>puzzle-as-investigation</strong> experience. TS2 is the superior <strong>puzzle-as-variety</strong> experience. No game in either series achieves both simultaneously. <strong>Achieving both is KENOMA's design challenge — and the research above maps exactly how to do it.</strong>
+  </div>
+
+</div>
+
+
+<!-- §8 — KENOMA APPLICATION ──────────────── -->
+<div class="sec-hd">
+  <span class="sec-n">§ 08</span>
+  <span class="sec-t">KENOMA Application — Take, Avoid, Solve</span>
+  <span class="sec-aside">What this means for the Archive's dual-world puzzle architecture</span>
+</div>
+<div class="body">
+  <div class="kn-zone">
+
+    <div class="kn-hd">
+      <span class="kn-icon">◆</span>
+      <span class="kn-title">From TS1 — These Four Principles Must Be Adopted Wholesale</span>
+    </div>
+    <div class="kn-grid">
+      <div class="kni adopt">
+        <span class="ki-type">Adopt · Core Architecture</span>
+        <span class="ki-title">Every puzzle is a scar left by a specific person's specific decision</span>
+        <div class="ki-body">Before any puzzle is placed in the Archive, answer: <em>Who built this mechanism? Why? What were they protecting or controlling?</em> The Grand Armillary's activation sequence exists because the Archive's founders knew they had created something that could be used as a weapon against its own enforcers — and encoded the dissolution protocol in the cosmological sequence. The puzzle is not in the Archive because the room is "astronomical." It is there because a specific scholar in 330 BCE made a specific precautionary decision. <strong>This is the difference between TS1 and TS2 in one sentence.</strong></div>
+      </div>
+      <div class="kni adopt">
+        <span class="ki-type">Adopt · Cross-World Rule</span>
+        <span class="ki-title">One iron crossing rule — taught in PZ-002, never violated thereafter</span>
+        <div class="ki-body">TS1's temporal crossing rule is: the corrupted world holds what the present needs. KENOMA's Archive crossing rule: <strong>knowledge acquired in World B enables action in World A; material objects from World A produce physical change in World B.</strong> Scholar reads Hollow classification logic (WB-004) → can navigate Sacred Fire's restricted archive differently (WA-003). Scholar brings oil-flame from World A → first warm light in World B in three centuries, changes creature behavior. This rule is teachable within PZ-002 (first required crossing) and must be applied identically in every subsequent cross-world puzzle. Any crossing that requires rethinking the rule is a design failure.</div>
+      </div>
+      <div class="kni adopt">
+        <span class="ki-type">Adopt · Item Economy</span>
+        <span class="ki-title">The Scholar's satchel is always an investigation register, never a toolkit</span>
+        <div class="ki-body">TS1: single-use items, inventory = map of open problems. KENOMA: 15-slot satchel, every carried item should correspond to a puzzle the Scholar either knows about or has discovered evidence of. Design rule for every item placed in the Archive: <em>If the Scholar has been carrying this for more than two rooms without a visible open puzzle connection, the item's introduction was mistimed.</em> Multi-use tools (fire vessel, crossbow, astrolabe) are exceptions and clearly identified as tools, not keys. Key-class items should always be consumed by their purpose.</div>
+      </div>
+      <div class="kni adopt">
+        <span class="ki-type">Adopt · Clue Architecture</span>
+        <span class="ki-title">Primary clue lives in the puzzle's room, its mirror, or one room adjacent</span>
+        <div class="ki-body">TS1: Judge's Podium clue found in the corrupted world's guillotine in the adjacent corridor. Birthday clock clue found in the diary in the adjacent room. KENOMA: the Grand Armillary operating manual (PZ-001) is in the Eastern Treasury, adjacent to where its information becomes relevant. The Dark Library cosmological sequence (PZ-004) is in WB-004, which is the World B mirror of where the Armillary puzzle fires. Cross-Archive backtracking for a clue should be designed deliberately and foreshadowed — never the product of a clue being placed wherever it was convenient during production.</div>
+      </div>
+    </div>
+
+    <div class="kn-hd" style="margin-top:28px;">
+      <span class="kn-icon">✕</span>
+      <span class="kn-title">From TS2 — These Four Patterns Must Be Actively Avoided</span>
+    </div>
+    <div class="kn-grid">
+      <div class="kni avoid">
+        <span class="ki-type">Avoid · Zone Brief Design</span>
+        <span class="ki-title">Never: "This room is astronomical, therefore astronomical puzzles"</span>
+        <div class="ki-body">TS2's Cemetery zone puts death-symbol puzzles in a cemetery because cemeteries have death symbols. TS2's animal dials have no character motivation — no person chose those four specific animals for a reason connected to a life that was lived. KENOMA's Grand Armillary Gallery must have its puzzle not because it is an astronomical space, but because the scholars who built it encoded a specific emergency protocol in astronomical language for a specific reason. <strong>Every puzzle room must pass the test: remove the puzzle — does the room still make sense as a space that was used by real people? If yes, the puzzle has no character necessity. Redesign it until the puzzle and the room are inseparable.</strong></div>
+      </div>
+      <div class="kni avoid">
+        <span class="ki-type">Avoid · Mirror Rule Proliferation</span>
+        <span class="ki-title">Never: Each crossing location defines its own logic</span>
+        <div class="ki-body">TS2's six different crossing logics break player intuition. KENOMA has one crossing mechanism and must apply one rule consistently. The Traversal Focal Points must all operate on the same principle. If WA-003's focal point works by "knowledge from World B unlocks World A chamber," then WB-002's must work by the same principle in reverse — "material from World A produces World B physical change." No zone-designer should ever invent a new crossing rule for their zone. The crossing rule is locked at PZ-002 and applies everywhere. Period.</div>
+      </div>
+      <div class="kni avoid">
+        <span class="ki-type">Avoid · Parallel Lore Delivery</span>
+        <span class="ki-title">Never: Documents explain the story; puzzles deliver the item</span>
+        <div class="ki-body">TS2's worst habit: a character diary explains who someone was, and then a nearby puzzle uses that character's name as a combination. The reading and the solving are sequential but separate. TS1's best habit: the act of solving IS the act of discovering the character. KENOMA's translation mechanic is designed to enforce this — the Scholar translating a document IS solving the puzzle. The translation's content is simultaneously: (a) the story delivery, and (b) the mechanical key. Designing a puzzle where the solution is in a separate document rather than in the puzzle itself is always the wrong approach for KENOMA.</div>
+      </div>
+      <div class="kni avoid">
+        <span class="ki-type">Avoid · Abstract Encoding Layers</span>
+        <span class="ki-title">Never: Arbitrary rules between clue and solution</span>
+        <div class="ki-body">TS2's furnace puzzle: clock times → button grid positions. The encoding rule is consistent and learnable, but it is arbitrary — no narrative reason exists for clock times to correspond to that grid layout. KENOMA's puzzles should be hard because the <em>history they encode is complex</em>, not because the <em>encoding rule is obscure</em>. The Grand Armillary seven-ring sequence is hard because a Scholar who skimmed PZ-001 doesn't have it memorized when it matters — not because the sequence was encrypted in a code requiring multiple decoding steps. Difficulty from understanding, not from ciphering.</div>
+      </div>
+    </div>
+
+    <div class="kn-hd" style="margin-top:28px;">
+      <span class="kn-icon">◈</span>
+      <span class="kn-title">From TS2 — These Three Specific Innovations Must Be Adapted for KENOMA</span>
+    </div>
+    <div class="kn-grid">
+      <div class="kni adapt">
+        <span class="ki-type">Adapt · From TS2's Best</span>
+        <span class="ki-title">The mannequin → Miguel principle: Other Side intervention on a character, not an object</span>
+        <div class="ki-body">TS2's most emotionally resonant crossing: applying Duct Tape to a mannequin in the Other Side heals Miguel in the real world. This elevates the crossing mechanic from object-retrieval to <em>character-intervention</em>. KENOMA should have at least one crossing where the Scholar's action in World B directly affects something about a character in World A — not an item they retrieve, but a condition they change. The Archive's three-hundred-year history contains Vanguard-relevant moments in World B whose resolution in World A could shift the Vanguard's behavior in the Camel Phase. Design this intentionally.</div>
+      </div>
+      <div class="kni adapt">
+        <span class="ki-type">Adapt · From TS2's Mechanics</span>
+        <span class="ki-title">Boss-puzzle integration: every Guardian defeat must require intellectual comprehension</span>
+        <div class="ki-body">TS2's consistent improvement: each boss has a specific logical defeat condition. TS1's bosses are more combat-oriented. KENOMA's design already includes this — the Boundary's only permanent resolution is Grand Armillary activation, derived from a World B document translated during the game. But this principle should extend to creature categories too: Fire-Wardens are permanently neutralized by Naming, not by damage. Shadow-Walkers are stilled by correct three-category designation. Every permanent creature resolution should require comprehension of the Archive's content. <strong>Damage attrition is never the permanent solution for anything.</strong></div>
+      </div>
+      <div class="kni adapt">
+        <span class="ki-type">Adapt · From TS2's Scope Solution</span>
+        <span class="ki-title">Two worlds generate KENOMA's variety — not two zones, two philosophical puzzle vocabularies</span>
+        <div class="ki-body">TS2 solved variety through multiple geographic zones. KENOMA cannot (single Archive building). KENOMA's variety must come from something TS2 never fully utilized: <strong>two different civilizations with different relationships to truth generate two different puzzle-logic languages.</strong> Sacred Fire classification: most dangerous documents are most restricted. Hollow classification: most dangerous documents appear most accessible. A Scholar who has mastered World A classification logic fails World B classification logic on first attempt — exactly as the Classroom 202 "opposite symbols" rule in TS2 gestured at but never systematized. The Archive's two worlds are KENOMA's equivalent of TS2's seven zones, achieved through philosophical divergence rather than geographic expansion.</div>
+      </div>
+    </div>
+
+    <div class="hr" style="margin:28px 0;"></div>
+
+    <div class="princ">
+      <span class="pn">KENOMA Puzzle Design Law · Derived from Both Games</span>
+      <span class="pt">The Five Unbreakable Puzzle Principles</span>
+      <div class="pb">
+        <strong>1 — Every puzzle is a scar.</strong> Find who left it and why before designing it.<br><br>
+        <strong>2 — One crossing rule, applied everywhere.</strong> Knowledge from Hollow → action in Sacred Fire. Material from Sacred Fire → physical change in Hollow. Taught in PZ-002, never reconsidered thereafter.<br><br>
+        <strong>3 — The satchel is a mystery register, not a toolbox.</strong> Every item carried = one open question. No item should stay for more than two rooms without a visible unsolved connection.<br><br>
+        <strong>4 — The primary clue lives close to its puzzle.</strong> Same room, mirror equivalent, or one room adjacent. Cross-Archive clue backtracking is designed deliberately or not at all.<br><br>
+        <strong>5 — Difficulty comes from understanding history, not from decoding abstractions.</strong> The Grand Armillary sequence is hard because the Scholar didn't read the manual — not because the sequence is encrypted. The Monkey Thief Podium is hard because understanding a hearing-impaired family requires empathy — not because the symbols are encoded. <em>Always this kind of hard.</em>
+      </div>
+    </div>
+
+    <p style="font-size:13px;color:var(--faint);font-style:italic;margin-top:16px;">The failure mode to avoid above all others: <strong>puzzles that exist because the Archive is "a kind of place."</strong> The Archive is a specific place, built by specific people, encoding specific decisions made in the face of specific historical pressures. The Scholar is here to read those decisions. That reading is the puzzle. That puzzle is the story. That story is why the Scholar stays — past all the warnings, past all the aphorisms about hunting dogs and kings who no longer need their tools.</p>
+
+  </div>
+</div>
+
+
+<div class="doc-foot">
+  <span>KENOMA · Design Research · DOC-PZD-003</span>
+  <span>Tormented Souls I & II · Deep Comparative Analysis</span>
+  <span>For Production GDD v6 · Storytelling Bible v8</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — The Complete Story · Narrative Synthesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:    #050608;
+  --g1:      #090b0e;
+  --g2:      #0e1014;
+  --g3:      #13151a;
+  --g4:      #191c22;
+  --g5:      #20232c;
+  --rule:    #282c36;
+  --rule2:   #343846;
+
+  --ink:     #e8e0cc;
+  --ink2:    #b8b09c;
+  --ink3:    #706860;
+  --ink4:    #444048;
+  --ink5:    #282630;
+
+  /* Sacred Fire — warm amber-gold */
+  --fire:    #c89828;
+  --fire2:   #e8b840;
+  --fire3:   #886808;
+  --firebg:  rgba(200,152,40,0.08);
+  --firebdr: rgba(200,152,40,0.2);
+
+  /* Hollow — cold lapis */
+  --lapis:   #3868b0;
+  --lapis2:  #5898e0;
+  --lapis3:  #204878;
+  --lapisbg: rgba(56,104,176,0.09);
+
+  /* Scholar — warm ivory/amber */
+  --sc:      #c8a068;
+  --sc2:     #e8c090;
+  --scbg:    rgba(200,160,104,0.08);
+
+  /* Nietzsche — deep violet, the philosopher's color */
+  --nz:      #7848a8;
+  --nz2:     #a870e0;
+  --nzbg:    rgba(120,72,168,0.08);
+
+  /* Film/Lit reference — sepia */
+  --ref:     #a87848;
+  --ref2:    #d0a068;
+  --refbg:   rgba(168,120,72,0.08);
+
+  /* Climax — blood-amber, the convergence color */
+  --climax:  #b84828;
+  --climax2: #e07040;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--ink3);
+  font-family:'Barlow',sans-serif;
+  line-height:1.78;
+}
+.page{max-width:1060px;margin:0 auto;padding-bottom:120px;}
+
+/* ─── COVER ─────────────────────────────── */
+.cover{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  background:var(--void);
+  position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 60% 80% at 15% 50%, rgba(200,152,40,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 85% 50%, rgba(56,104,176,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 30% 40% at 50% 80%, rgba(120,72,168,0.04) 0%,transparent 50%);
+  pointer-events:none;
+}
+/* Grain */
+.cover::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+.cv-top{
+  padding:40px 64px;border-bottom:1px solid rgba(255,255,255,0.04);
+  display:flex;justify-content:space-between;align-items:flex-start;
+  position:relative;z-index:1;
+}
+.cv-brand{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.15);
+  display:flex;flex-direction:column;gap:4px;
+}
+.cv-brand em{color:var(--fire2);font-style:normal;opacity:.5;}
+.cv-stamp{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;
+  color:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.06);
+  padding:5px 12px;
+}
+
+.cv-body{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:72px 64px 56px;position:relative;z-index:1;
+}
+.cv-epigraph{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-style:italic;font-weight:300;
+  color:rgba(255,255,255,0.18);
+  max-width:520px;line-height:1.7;
+  margin-bottom:48px;
+  border-left:2px solid rgba(200,152,40,0.2);
+  padding-left:18px;
+}
+.cv-epigraph cite{
+  font-style:normal;font-size:11px;
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,0.1);
+  display:block;margin-top:8px;
+}
+.cv-title{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(46px,8vw,108px);
+  font-weight:900;
+  color:#ffffff;
+  line-height:.9;letter-spacing:-3px;
+  margin-bottom:10px;
+}
+.cv-title .the{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,3.5vw,50px);
+  font-weight:300;font-style:italic;
+  color:rgba(255,255,255,0.25);
+  display:block;margin-bottom:4px;
+  letter-spacing:0;
+}
+.cv-sub-title{
+  font-family:'Cinzel',serif;font-size:clamp(12px,1.8vw,22px);
+  font-weight:400;letter-spacing:8px;
+  color:rgba(200,152,40,0.3);margin-bottom:32px;
+}
+.cv-three{
+  display:flex;gap:28px;margin-bottom:44px;
+}
+.cv-char{
+  display:flex;align-items:center;gap:10px;
+}
+.cv-char-dot{width:8px;height:8px;border-radius:50%;}
+.cv-char-name{
+  font-family:'Cinzel',serif;font-size:12px;font-weight:600;
+  color:rgba(255,255,255,0.2);letter-spacing:2px;
+}
+.cv-bottom{
+  padding:22px 64px;border-top:1px solid rgba(255,255,255,0.04);
+  position:relative;z-index:1;
+  display:flex;justify-content:space-between;
+}
+.cv-bot-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.08);}
+
+/* ─── SECTION HEADERS ───────────────────── */
+.sh{
+  padding:22px 64px 16px;
+  background:var(--g1);
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:baseline;gap:14px;
+}
+.sh-n{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--ink4);}
+.sh-t{font-family:'Cinzel',serif;font-size:19px;font-weight:700;color:var(--ink);}
+.sh-sub{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink4);font-style:italic;white-space:nowrap;}
+.body{padding:28px 64px 32px;}
+
+/* ─── CHAPTER DIVIDERS ──────────────────── */
+.ch-div{
+  padding:40px 64px 28px;
+  border-top:2px solid;
+  position:relative;overflow:hidden;
+}
+.ch-fire{border-top-color:var(--fire);}
+.ch-lapis{border-top-color:var(--lapis);}
+.ch-nz{border-top-color:var(--nz);}
+.ch-climax{border-top-color:var(--climax);}
+.ch-sc{border-top-color:var(--sc);}
+.ch-div::after{
+  content:attr(data-roman);
+  position:absolute;right:48px;top:50%;transform:translateY(-50%);
+  font-family:'Cinzel Decorative',serif;font-size:130px;font-weight:900;
+  color:rgba(255,255,255,0.02);line-height:1;pointer-events:none;
+}
+.ch-eye{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;display:block;margin-bottom:10px;}
+.ch-fire .ch-eye{color:rgba(200,152,40,0.35);}
+.ch-lapis .ch-eye{color:rgba(56,104,176,0.35);}
+.ch-nz .ch-eye{color:rgba(120,72,168,0.35);}
+.ch-climax .ch-eye{color:rgba(184,72,40,0.35);}
+.ch-sc .ch-eye{color:rgba(200,160,104,0.35);}
+.ch-title{
+  font-family:'Cinzel',serif;font-size:clamp(22px,3.5vw,42px);
+  font-weight:700;color:var(--ink);line-height:1.1;margin-bottom:6px;
+}
+.ch-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:300;font-style:italic;
+  color:rgba(255,255,255,0.2);
+  display:block;
+}
+
+/* ─── PROSE ─────────────────────────────── */
+p{font-size:14.5px;color:var(--ink3);line-height:1.78;margin-bottom:11px;}
+p:last-child{margin:0;}
+p strong{color:var(--ink2);}
+p em{font-style:italic;color:var(--ink2);}
+h3{
+  font-family:'Cinzel',serif;font-size:15px;font-weight:700;
+  color:var(--ink2);margin:26px 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--rule2);
+}
+h3:first-child{margin-top:0;}
+
+/* ─── CALLOUTS ──────────────────────────── */
+.call{
+  border-left:3px solid;padding:14px 18px;margin:16px 0;
+  font-size:14.5px;line-height:1.72;color:var(--ink3);
+}
+.cf{border-color:var(--fire);background:var(--firebg);}
+.cl{border-color:var(--lapis);background:var(--lapisbg);}
+.cn{border-color:var(--rule2);background:var(--g3);}
+.cs{border-color:var(--sc);background:var(--scbg);}
+.cnz{border-color:var(--nz);background:var(--nzbg);}
+.cr{border-color:var(--ref);background:var(--refbg);}
+.cclx{border-color:var(--climax);background:rgba(184,72,40,0.07);}
+.call strong{color:var(--ink2);}
+.call em{font-style:italic;color:var(--ink);}
+.call-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;
+}
+.cf .call-lbl{color:var(--fire);}
+.cl .call-lbl{color:var(--lapis);}
+.cn .call-lbl{color:var(--ink4);}
+.cs .call-lbl{color:var(--sc);}
+.cnz .call-lbl{color:var(--nz);}
+.cr .call-lbl{color:var(--ref);}
+.cclx .call-lbl{color:var(--climax);}
+
+/* ─── EPIGRAPH / QUOTE ──────────────────── */
+.epigraph{
+  background:var(--void);
+  border-left:3px solid rgba(255,255,255,0.06);
+  padding:18px 22px;margin:20px 0;
+}
+.ep-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:300;font-style:italic;
+  color:rgba(255,255,255,0.3);line-height:1.65;
+  display:block;
+}
+.ep-cite{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,0.1);display:block;margin-top:10px;
+}
+
+/* ─── FILM / LIT REFERENCE CARDS ───────── */
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:18px 0;}
+.ref-card{
+  background:var(--refbg);
+  border:1px solid rgba(168,120,72,0.14);
+  border-left:4px solid var(--ref);
+  padding:20px 22px;
+}
+.ref-card.wide{grid-column:span 2;}
+.ref-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;font-weight:700;
+  color:var(--ref2);display:block;margin-bottom:2px;
+}
+.ref-from{
+  font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--ink4);display:block;margin-bottom:10px;
+}
+.ref-body{font-size:13.5px;color:var(--ink3);line-height:1.65;}
+.ref-body strong{color:var(--ink2);}
+.ref-body em{font-style:italic;color:var(--ink);}
+.ref-apply{
+  margin-top:10px;padding-top:9px;
+  border-top:1px solid rgba(168,120,72,0.1);
+  font-size:13px;color:var(--ink4);line-height:1.58;font-style:italic;
+}
+.ref-apply strong{color:var(--ink3);font-style:normal;}
+
+/* ─── NIETZSCHE CONCEPT BLOCKS ──────────── */
+.nz-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:18px 0;}
+.nz-card{
+  background:var(--nzbg);
+  border:1px solid rgba(120,72,168,0.15);
+  padding:20px 22px;
+}
+.nz-name{
+  font-family:'Cinzel',serif;font-size:16px;font-weight:700;
+  color:var(--nz2);display:block;margin-bottom:4px;
+}
+.nz-german{
+  font-family:'Cormorant Garamond',serif;
+  font-size:13.5px;font-style:italic;
+  color:rgba(168,112,224,0.35);display:block;margin-bottom:10px;
+}
+.nz-body{font-size:14px;color:var(--ink3);line-height:1.65;}
+.nz-body strong{color:var(--ink2);}
+.nz-body em{font-style:italic;color:var(--ink);}
+.nz-game{
+  margin-top:10px;padding:9px 12px;
+  background:rgba(120,72,168,0.08);
+  border-left:2px solid var(--nz);
+  font-size:13px;color:var(--ink4);font-style:italic;line-height:1.55;
+}
+.nz-game strong{color:var(--ink3);font-style:normal;}
+
+/* ─── THREE-CHARACTER DYNAMIC ───────────── */
+.triad{
+  background:var(--g2);
+  border:1px solid var(--rule2);
+  margin:18px 0;overflow:hidden;
+}
+.triad-head{
+  background:var(--g4);padding:12px 20px;
+  border-bottom:1px solid var(--rule2);
+  display:flex;align-items:center;gap:14px;
+}
+.triad-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:var(--ink4);}
+.triad-title{font-family:'Cinzel',serif;font-size:14.5px;font-weight:700;color:var(--ink);}
+.triad-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.tc{padding:20px 20px;border-right:1px solid var(--rule);}
+.tc:last-child{border-right:none;}
+.tc-fire{background:rgba(200,152,40,0.05);}
+.tc-sc{background:rgba(200,160,104,0.05);}
+.tc-lapis{background:rgba(56,104,176,0.05);}
+.tc-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--rule2);}
+.tc-fire .tc-lbl{color:var(--fire);}
+.tc-sc .tc-lbl{color:var(--sc);}
+.tc-lapis .tc-lbl{color:var(--lapis);}
+.tc-title{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--ink);display:block;margin-bottom:8px;}
+.tc-body{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.tc-body strong{color:var(--ink2);}
+
+/* ─── ACT SCENES ────────────────────────── */
+.act-scene{
+  background:var(--g2);
+  border:1px solid var(--rule2);
+  border-left:4px solid;
+  margin:18px 0;overflow:hidden;
+}
+.as-fire{border-left-color:var(--fire);}
+.as-lapis{border-left-color:var(--lapis);}
+.as-sc{border-left-color:var(--sc);}
+.as-nz{border-left-color:var(--nz);}
+.as-climax{border-left-color:var(--climax);}
+.as-head{
+  background:var(--g3);padding:11px 20px;border-bottom:1px solid var(--rule2);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.as-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;}
+.as-fire .as-lbl{color:var(--fire);}
+.as-lapis .as-lbl{color:var(--lapis);}
+.as-sc .as-lbl{color:var(--sc);}
+.as-nz .as-lbl{color:var(--nz);}
+.as-climax .as-lbl{color:var(--climax);}
+.as-title{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--ink);}
+.as-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border:1px solid var(--rule2);color:var(--ink4);}
+.as-body{padding:18px 20px;}
+
+/* Dialogue inside scenes */
+.d-a{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--fire);display:block;margin-top:14px;}
+.d-b{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--lapis2);display:block;margin-top:14px;}
+.d-sc{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--sc);display:block;margin-top:14px;}
+.d-dv{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--nz2);display:block;margin-top:14px;}
+.d-dir{
+  font-family:'Cormorant Garamond',serif;
+  font-size:14px;font-style:italic;
+  color:rgba(200,152,40,0.22);display:block;margin:8px 0 4px;line-height:1.6;
+}
+.d-line{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;font-style:italic;
+  color:rgba(224,200,140,0.62);line-height:1.75;display:block;
+}
+.d-note{font-family:'Barlow',sans-serif;font-size:12px;color:rgba(200,152,40,0.2);display:block;margin-top:5px;font-style:normal;line-height:1.5;}
+
+/* ─── TRIBUTE CARDS ─────────────────────── */
+.tribute-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:18px 0;}
+.tribute-card{
+  background:var(--g2);
+  border:1px solid var(--rule2);
+  border-top:2px solid;
+  padding:18px 20px;
+}
+.t-fire{border-top-color:var(--fire);}
+.t-lapis{border-top-color:var(--lapis);}
+.t-nz{border-top-color:var(--nz);}
+.t-ref{border-top-color:var(--ref);}
+.t-sc{border-top-color:var(--sc);}
+.tr-name{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--ink);display:block;margin-bottom:4px;}
+.tr-src{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);display:block;margin-bottom:10px;}
+.tr-body{font-size:13.5px;color:var(--ink3);line-height:1.65;}
+.tr-body strong{color:var(--ink2);}
+.tr-body em{font-style:italic;color:var(--ink);}
+
+/* ─── TIMELINE ──────────────────────────── */
+.act-timeline{
+  display:grid;grid-template-columns:120px 1fr;gap:0;
+  margin:16px 0;
+}
+.atl-phase{
+  background:var(--g3);
+  padding:14px 12px;
+  border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;justify-content:flex-start;
+  border-bottom:2px solid var(--rule);
+}
+.atl-ph-label{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:3px;
+}
+.atl-ph-name{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--ink2);line-height:1.2;}
+.atl-ph-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink4);margin-top:4px;}
+.phase-camel .atl-ph-label{color:var(--fire3);}
+.phase-lion  .atl-ph-label{color:var(--fire);}
+.phase-child .atl-ph-label{color:var(--lapis);}
+.atl-event{
+  padding:14px 16px;background:var(--g2);
+  border-bottom:1px solid var(--rule);
+  font-size:14px;color:var(--ink3);line-height:1.65;
+}
+.atl-event strong{color:var(--ink2);}
+.atl-event em{font-style:italic;color:var(--ink);}
+
+/* Foot */
+.foot{padding:20px 64px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.foot span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══ COVER ═══════════════════════════════ -->
+<div class="cover">
+  <div class="cv-top">
+    <div class="cv-brand">
+      <span>KENOMA · Complete Narrative Synthesis</span>
+      <em>Scholar · Vanguard A · Vanguard B · Story Bible Expansion</em>
+    </div>
+    <div class="cv-stamp">NRS-001 · Confidential</div>
+  </div>
+
+  <div class="cv-body">
+    <div class="cv-epigraph">
+      "Man is a rope stretched over an abyss — a dangerous crossing, a dangerous looking-back, a dangerous shuddering and standing still. What is great in man is that he is a bridge, and not an end."
+      <cite>— Nietzsche · Thus Spoke Zarathustra · The Scholar's first and last line</cite>
+    </div>
+
+    <div class="cv-title">
+      <span class="the">The Archive of</span>
+      Two Truths
+    </div>
+    <div class="cv-sub-title">Three Characters · One Engine · Every Philosophy Earned</div>
+
+    <div class="cv-three">
+      <div class="cv-char">
+        <div class="cv-char-dot" style="background:var(--sc)"></div>
+        <span class="cv-char-name">The Scholar</span>
+      </div>
+      <div class="cv-char">
+        <div class="cv-char-dot" style="background:var(--fire)"></div>
+        <span class="cv-char-name">Vanguard A · Sacred Fire</span>
+      </div>
+      <div class="cv-char">
+        <div class="cv-char-dot" style="background:var(--lapis)"></div>
+        <span class="cv-char-name">Vanguard B · The Hollow</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cv-bottom">
+    <span class="cv-bot-txt">Scholar Archetypes · Nietzsche Architecture · Three-Character Dynamic · Full Story · Climax · Tribute Inventory</span>
+    <span class="cv-bot-txt">Companion to Storytelling Bible v8 · Vanguard Expansion v1</span>
+  </div>
+</div>
+
+
+<!-- ═══ CH I — THE SCHOLAR EXPANDED ═══════ -->
+<div class="ch-div ch-sc" data-roman="I">
+  <span class="ch-eye">Chapter I · The Scholar</span>
+  <div class="ch-title">Lawrence. Faust. Prospero. Sisyphus.</div>
+  <span class="ch-sub">The character who was always all four simultaneously — and never knew it until the last page.</span>
+</div>
+
+<div class="sh"><span class="sh-n">1.1</span><span class="sh-t">Who the Scholar Is — The Film & Literature Archetypes</span><span class="sh-sub">Each reference contributes one specific layer of the character</span></div>
+<div class="body">
+
+  <p>The Scholar is not one archetype. They are four archetypes in the same body, each running simultaneously, each contributing a different reason for the same choices. This is what makes them extraordinary — and what makes their fate inevitable. Simple characters can leave. Complex ones cannot, because every layer of who they are finds a reason to stay.</p>
+
+  <div class="ref-grid">
+    <div class="ref-card">
+      <span class="ref-name">T.E. Lawrence</span>
+      <span class="ref-from">Lawrence of Arabia · Peter O'Toole · David Lean · 1962</span>
+      <div class="ref-body">Lawrence goes to Arabia as an outsider — a scholar-soldier with no emotional stake — and becomes, over two years of mapping and learning and fighting, the most inside person there is. He learns the languages. He earns the trust. He becomes the instrument of a liberation he believes in completely. <strong>And then the liberation happens, and the people who used him as their instrument move on, and he discovers that he has given everything and the thing he gave it for did not need him as much as he needed it.</strong> The tragedy of Lawrence is not that he failed. It is that he succeeded — and success used him up. He didn't know he was the hunting dog until the hare was caught.</div>
+      <div class="ref-apply"><strong>In KENOMA:</strong> The Scholar becomes the Archive's most fluent reader. They translate what no living person can. They solve what no one else could solve. They are, in every measurable way, exactly what the Archive needed. And then the Archive is complete. And Clause 18 has always said: this moment is the end of the appointment.</div>
+    </div>
+
+    <div class="ref-card">
+      <span class="ref-name">Doctor Faustus</span>
+      <span class="ref-from">Marlowe · 1592 · Goethe · 1808 · The bargain that was always already made</span>
+      <div class="ref-body">Faust is not deceived. He reads every book, reaches the limit of human knowledge, and makes a deliberate bargain: I will trade what I am for what I can know. The deal is transparent. The terms are explicit. He knows what he is trading. He trades it anyway — because the knowledge on the other side of the deal is worth the cost, and he would rather have the knowledge and pay the cost than live safely in ignorance. <strong>What makes Faust tragic is not naivety. It is the fully-informed, fully-considered, fully-deliberate choice to trade everything for one thing — because the one thing is genuinely worth everything.</strong></div>
+      <div class="ref-apply"><strong>In KENOMA:</strong> The Scholar did not stumble into the Archive. They prepared for it for years. They accepted the invitation knowing — as any intelligent scholar would know — that sealed archives with single surviving custodians are not straightforward propositions. They traded safety for the finest puzzle they would ever encounter. The price is what they agreed to, implicitly, the moment they walked through the gate.</div>
+    </div>
+
+    <div class="ref-card">
+      <span class="ref-name">Prospero</span>
+      <span class="ref-from">The Tempest · Shakespeare · ~1610</span>
+      <div class="ref-body">Prospero has been on his island for twelve years, studying, building, orchestrating. When the ship arrives, every event in the play is something he arranged in advance — the storm, the separation, the reconciliations, the love story. He is the Scholar who became the author of everyone else's experience while believing he was merely responding to circumstances. <strong>At the play's end, he gives up his books and his magic — the tools of his orchestration — because the work is done and what remains is only himself.</strong> He is powerful in his domain and powerless the moment the play ends. The island was the condition of his greatness.</div>
+      <div class="ref-apply"><strong>In KENOMA:</strong> The Scholar, late in Act I, begins to understand that they have been the instrument of an orchestration rather than the author of an exploration. The Archive is Prospero's island. The Scholar's expertise is Prospero's magic. Both were real. Both belonged to a specific place and time. When the work is done, neither the island nor the expertise can accompany the person past the ending.</div>
+    </div>
+
+    <div class="ref-card">
+      <span class="ref-name">Sisyphus</span>
+      <span class="ref-from">Myth · As interpreted by Albert Camus · The Myth of Sisyphus · 1942</span>
+      <div class="ref-body">Camus's Sisyphus chooses the rock. The boulder is not punishment in the interpretation that matters — it is <em>his boulder</em>, the one he was made for. "One must imagine Sisyphus happy," Camus says, because the struggle itself is enough. Sisyphus is not defeated by the futility of his task. He owns the futility. The descent back down the mountain — the empty-handed return, the knowing what comes — is "his hour." <strong>The absurd hero knows the outcome and chooses the work anyway, not despite the knowledge, but with it.</strong></div>
+      <div class="ref-apply"><strong>In KENOMA:</strong> The Scholar, by the mid-point of Act I, has heard enough from the Dark Voice to understand the likely structure of their situation. They choose to continue working. This is not denial. It is the Sisyphean choice: the work is worth doing even if the ending is already written. Imagine the Scholar happy. They are. They have the finest archive in the ancient world and three weeks to read all of it. One must imagine them happy.</div>
+    </div>
+
+    <div class="ref-card">
+      <span class="ref-name">Henry Jones Senior</span>
+      <span class="ref-from">Indiana Jones and the Last Crusade · Sean Connery · 1989</span>
+      <div class="ref-body">Henry Jones Sr. spent his entire career preparing for the Grail — a lifetime of notebooks, languages, dead ends, cross-references. He is dry in a way that is also somehow warm. He corrects his son's Latin mid-crisis. He loses his diary and is devastated not because it is his diary but because it is the work. He kept a thirty-year journal because he genuinely believed the knowledge had to be preserved whether or not he reached the Grail. <strong>He is the academic who loves the methodology as much as the discovery — possibly more.</strong> The moment he reads an inscription correctly under pressure, his face is the face of someone who has been waiting thirty years to use that skill in a context that actually matters.</div>
+      <div class="ref-apply"><strong>In KENOMA:</strong> The Scholar's deep-read translations are Henry Jones Sr. moments. The academic training that took decades, applied under pressure, in a place where it genuinely matters. When the Scholar names a creature using an inscription from the gate — in under six seconds, while the Vanguard watches — that is the Henry Jones Sr. face. The Vanguard filing the result makes it even more so.</div>
+    </div>
+
+    <div class="ref-card">
+      <span class="ref-name">Hamlet</span>
+      <span class="ref-from">Shakespeare · ~1600 · The one who knows and waits too long — or acts exactly on time</span>
+      <div class="ref-body">Hamlet knows the truth very early. The problem is not knowledge — it is the translation of knowledge into action, and more precisely, the translation of knowledge into the <em>right</em> action at the <em>right</em> moment. He delays not from cowardice but from intellectual completeness: he will not act on insufficient evidence. <strong>He is the scholar who refuses to stop being a scholar when the moment calls for something else.</strong> By the time he acts, the act is correct — and also too late, and also exactly on time, depending on what you think the play is about. He dies having done everything correctly. The correctness is the tragedy.</div>
+      <div class="ref-apply"><strong>In KENOMA:</strong> The Scholar's Act I→II turn — setting down the translation tablet and picking up the crossbow — is Hamlet's "Now might I do it pat." The Scholar finally acts. They are correct. The Dark Voice was right all along. The action is exactly right and exactly what was always going to happen. Whether it is too late is not a question the game answers. It is a question the player sits with.</div>
+    </div>
+  </div>
+
+  <div class="call cs">
+    <span class="call-lbl">The Synthesis — What All Six Produce Together</span>
+    Lawrence's total investment in something that will use him up. Faust's deliberate bargain made with full information. Prospero's orchestration that was always an island he cannot leave. Sisyphus's chosen boulder, carried happily. Henry Jones Sr.'s thirty-year preparation finally meeting the context that required it. Hamlet's intellectually complete delay that is also the structurally correct ending. <strong>Every layer of the Scholar's character finds a reason to stay in the Archive. Every layer makes the staying the right choice. The archive is worth their total investment. The bargain is worth the cost. The work is genuinely their finest hour. They are genuinely happy doing it. And they know — in the Hamlet sense — what the last act requires.</strong>
+  </div>
+
+  <h3>New Character Texture — What Must Be Visible</h3>
+  <p>The Scholar's dynamic quality must be legible in the game's first 30 minutes. Three specific behaviors establish all four archetypes simultaneously without announcing them:</p>
+
+  <div class="act-scene as-sc">
+    <div class="as-head">
+      <span class="as-lbl">Character Beat · Day One · WA-001</span>
+      <span class="as-title">The Scholar Reads the Gate Before Looking for Danger</span>
+      <span class="as-badge">Henry Jones Sr. + Lawrence</span>
+    </div>
+    <div class="as-body">
+      <p>When the Scholar approaches the Gate of All Nations, the correct survival response is to scan for threats. Instead, they stop four meters from the gate and read the inscription. All three languages. Their lips move slightly on the Babylonian — it's their third language, acquired deliberately for exactly this. They finish. Then they look for danger. The Vanguard has been watching this. The Fire-Warden is already moving. The Scholar is, structurally, a person who will read the sign before looking for the danger it announces. This is not a flaw. It is a nature.</p>
+      <span class="d-dir">[The Vanguard, watching from the eastern approach, makes no move to warn the Scholar about the Warden that is already behind them. She is watching how the Scholar responds when they finally notice it. This is the first data point on a model that will take weeks to complete.]</span>
+    </div>
+  </div>
+
+  <div class="act-scene as-sc">
+    <div class="as-head">
+      <span class="as-lbl">Character Beat · Day Three · Scholar's Journal</span>
+      <span class="as-title">The Entry That Reveals Everything About Who They Are</span>
+      <span class="as-badge">Faust + Sisyphus · Missable</span>
+    </div>
+    <div class="as-body">
+      <p>The Scholar's journal is a physical object the player opens and pages through. Three days in, a full journal entry is visible — the Scholar's own words, in their own handwriting, about the Archive. The entry ends:</p>
+      <span class="d-sc">Scholar's Journal · Day 3</span>
+      <span class="d-line">"The Grand Armillary's calibration sequence alone contains forty-seven sub-systems I haven't fully mapped yet. The Dark Archive translation backlog is approximately six weeks of work. The creature ecology requires systematic documentation before I can safely approach the lower chambers. This is more than I can complete in any reasonable stay. I wrote Fan Li's warning in the margin of this page two years ago when I first read the invitation. I can see it from here. I'm going to turn the page now."</span>
+      <span class="d-note">He turns the page. The next entry is a creature classification table. He has already moved on. The Sisyphean choice was made in one line and left behind in the next. This is who he is: someone who acknowledges the rock and picks it up anyway, and is already thinking about the rock while he writes about the rock. One must imagine him happy. He is.</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ CH II — NIETZSCHE'S COMPLETE PRESENCE ══ -->
+<div class="ch-div ch-nz" data-roman="II">
+  <span class="ch-eye">Chapter II · Nietzsche</span>
+  <div class="ch-title">Philosophy as Architecture</div>
+  <span class="ch-sub">Not a theme. Not a reference. The game is structured on his ideas the way the Archive is structured on its foundations — underneath everything, weight-bearing, invisible until the whole thing moves.</span>
+</div>
+
+<div class="sh"><span class="sh-n">2.1</span><span class="sh-t">The Six Ideas and Where They Live</span><span class="sh-sub">Nietzsche's philosophy made structural, not decorative</span></div>
+<div class="body">
+
+  <div class="epigraph">
+    <span class="ep-text">"The secret for harvesting from existence the greatest fruitfulness and the greatest enjoyment is — to live dangerously! Build your cities on the slopes of Vesuvius!"</span>
+    <span class="ep-cite">— Nietzsche · The Gay Science · The Scholar built their camp at the foot of exactly the right mountain</span>
+  </div>
+
+  <div class="nz-grid">
+    <div class="nz-card">
+      <span class="nz-name">The Three Metamorphoses</span>
+      <span class="nz-german">Die drei Verwandlungen des Geistes — Camel · Lion · Child</span>
+      <div class="nz-body">Zarathustra's first teaching: the spirit must pass through three stages. The Camel (burden-bearer) says yes to everything, kneels, asks to be loaded, carries the heaviest things into the desert. The Lion (the conqueror) roars "I will" in the face of "thou shalt" and fights for freedom. The Child creates new values from nothing — innocent, forgetting, a new beginning. These are not moral categories. They are states of being. All three can be admired. All three are necessary.</div>
+      <div class="nz-game"><strong>In KENOMA:</strong> Act I is the Camel Phase — the Scholar carries every Archive burden willingly. Act II is the Lion Phase — the Scholar turns and fights. Act III belongs to the Vanguard — she is the Child, creating new values in the Archive that is now hers. The three stages are assigned to different characters. The Scholar completes two. The Vanguard completes the third. The game shows all three are necessary for the Archive to be complete.</div>
+    </div>
+
+    <div class="nz-card">
+      <span class="nz-name">The Eternal Recurrence</span>
+      <span class="nz-german">Ewige Wiederkehr — The heaviest thought</span>
+      <div class="nz-body">Nietzsche's "heaviest thought": if you had to live your life exactly as it is, every moment, every joy, every suffering, infinitely repeated — would you be able to say yes? The test is not whether life is pleasant. The test is whether you would choose it again, knowing everything. It is the ultimate test of Amor Fati — love of fate. A person who can say yes to eternal recurrence has genuinely affirmed their existence. Those who cannot are living a life they are not fully claiming.</div>
+      <div class="nz-game"><strong>In KENOMA:</strong> The Archive has been running the same 90-second calibration cycle for 300 years. The Vanguard has been performing the same maintenance tasks. The same creatures on the same patrol routes. And she stayed. She said yes to the recurrence. The Scholar, who has read the Dark Voice's analysis and knows the structure of their situation, continues working. They are also saying yes. Both characters embody amor fati — the love of the specific fate they have chosen, including its end.</div>
+    </div>
+
+    <div class="nz-card">
+      <span class="nz-name">Beyond Good and Evil</span>
+      <span class="nz-german">Jenseits von Gut und Böse — The critique of moral categories</span>
+      <div class="nz-body">Nietzsche's argument: the categories "good" and "evil" are not discovered truths but invented weapons — tools by which the weak limit the strong. What looks like evil is often simply the will to power, the drive toward self-overcoming and growth, unmediated by sentiment. A truly noble character does not ask "is this good?" but "does this serve life? Does this produce growth? Does this affirm existence?" The Vanguard is not evil. She is a force of nature with a project. These are not the same thing.</div>
+      <div class="nz-game"><strong>In KENOMA:</strong> The game refuses to frame the Vanguard as villain or the Scholar as victim. The surviving Vanguard's final line — "Past tense is not a judgment. It is a precision." — is explicitly beyond good and evil. She is not celebrating. She is not cruel. She is being exact. The game asks the player to hold this without resolving it into easier categories. That discomfort is Nietzschean.</div>
+    </div>
+
+    <div class="nz-card">
+      <span class="nz-name">Will to Power</span>
+      <span class="nz-german">Wille zur Macht — Not domination. Self-overcoming.</span>
+      <div class="nz-body">The most misunderstood Nietzschean concept: Will to Power is not the desire to dominate others. It is the drive toward self-overcoming — the imperative to become more than you currently are, to surpass your own limitations, to grow in capacity. The scholar who pushes past their knowledge limit is exercising Will to Power. The soldier who adapts and survives and becomes the most capable person in the building over 300 years is exercising Will to Power. Both characters are Nietzschean heroes: they are continuously overcoming themselves.</div>
+      <div class="nz-game"><strong>In KENOMA:</strong> The Scholar's intellectual combat model — the Naming tier, where understanding replaces force — is Will to Power expressed as game mechanics. The Vanguard learning Babylonian for 8 years to be able to understand her Scholar when they arrived is Will to Power expressed as patience. Both push past limitation. Both become more than they were. The game rewards self-overcoming at every tier.</div>
+    </div>
+
+    <div class="nz-card">
+      <span class="nz-name">Amor Fati</span>
+      <span class="nz-german">Love of Fate — Not resignation. Affirmation.</span>
+      <div class="nz-body">"My formula for greatness in a human being is amor fati: that one wants nothing to be different, not forward, not backward, not in all eternity. Not merely bear what is necessary, still less conceal it — but love it." This is not acceptance of suffering. It is the active, joyful affirmation of everything that happens, including and especially the hard things, as the necessary condition for becoming who you are. The person who practices amor fati does not merely survive their life. They claim it.</div>
+      <div class="nz-game"><strong>In KENOMA:</strong> The Scholar, on Day Three, turns the page on Fan Li's warning and starts a creature taxonomy. That is amor fati. The Vanguard, at the Act II threshold, placing her officer's disc against the gate for three seconds — saying goodbye to who she was before she begins the irreversible — and then replacing it and going back in. That is amor fati. Both characters are practicing it simultaneously, for opposite reasons, with the same quality of deliberate ownership.</div>
+    </div>
+
+    <div class="nz-card">
+      <span class="nz-name">The Rope Over the Abyss</span>
+      <span class="nz-german">The Übermensch as destination, the bridge as method</span>
+      <div class="nz-body">"Man is a rope stretched over an abyss." Zarathustra's most famous image: humanity is not the destination but the crossing. What is great in man is not his achievement but his function as a bridge — toward something greater, toward the Übermensch (the person who creates their own values, who is not bound by the herd morality). The bridge does not reach the destination. The bridge enables others to reach it. The bridge is great precisely because it is expendable in the service of the crossing.</div>
+      <div class="nz-game"><strong>In KENOMA:</strong> The Scholar is the rope. Literally — they cross between the worlds, they are the only person who can, and they carry knowledge back and forth until the Archive is complete. The Vanguard, who never crosses, reaches the destination the Scholar made possible. The Scholar's opening V.O. calls this a source of pride. They are speaking with full self-knowledge and full amor fati. They are the bridge. They are happy to be the bridge. The bridge does not survive the crossing. The bridge was never meant to.</div>
+    </div>
+  </div>
+
+  <div class="call cnz">
+    <span class="call-lbl">The Hidden Sixth Idea — "Become What You Are"</span>
+    <em>Werde, was du bist</em> — Nietzsche's supreme command, lifted from Pindar. Not "become better" or "achieve more." <strong>Become what you already are.</strong> Discover the shape of your nature and grow toward it deliberately. Both characters are doing this across the game. The Scholar was always the bridge — they are becoming what they were made to be, at maximum intensity, in the finest possible context for it. The Vanguard was always the keeper of both truths — she is becoming exactly that, finally, in Act III. The tragedy is not that they failed to become something else. The tragedy is that they succeeded in becoming exactly what they were.
+  </div>
+</div>
+
+
+<!-- ═══ CH III — THE THREE-CHARACTER DYNAMIC ═══ -->
+<div class="ch-div ch-fire" data-roman="III">
+  <span class="ch-eye">Chapter III · The Dynamic</span>
+  <div class="ch-title">The Archive Needs All Three</div>
+  <span class="ch-sub">The Scholar is not a visitor to a two-person story. They are the third element without which the two-person story cannot complete.</span>
+</div>
+
+<div class="sh"><span class="sh-n">3.1</span><span class="sh-t">Why the Archive Requires Three — The System They Form</span></div>
+<div class="body">
+
+  <p>The two Vanguards have been in the Archive for 300 years. They have extensive knowledge, formidable capability, and total commitment. And the Archive is still not complete — because knowledge that crosses between worlds requires a crossing agent. The Archive's Clause 18 specifies a Scholar capable of reading both registries. The Vanguards, alone, cannot complete the work they were assigned to keep.</p>
+  <p>This is not a flaw. It is the Archive's design: one person cannot hold both truths simultaneously. The civilization that built it believed you needed two world-sides and a bridge between them. The three-person structure is baked into the building. The Scholar is not arriving into a completed situation — they are completing a three-body system that has been waiting for its third element for 312 years.</p>
+
+  <div class="triad">
+    <div class="triad-head">
+      <span class="triad-lbl">The Three-Body System</span>
+      <span class="triad-title">What Each Brings That Neither Other Can Provide</span>
+    </div>
+    <div class="triad-cols">
+      <div class="tc tc-fire">
+        <span class="tc-lbl">Vanguard A · World A · Sacred Fire</span>
+        <span class="tc-title">The Keeper of What Is Known</span>
+        <div class="tc-body">She has 300 years of institutional knowledge of the Sacred Fire Archive: its creature ecology, its administrative systems, its structural degradation patterns, and — crucially — the calibration procedures for the Grand Armillary that require a second body to execute. She cannot translate the Dark Archive's documents. She cannot cross. She cannot complete the Armillary's calibration without someone on the other side of the crossing point. <strong>Her knowledge is total within her domain and stops precisely at its boundary.</strong></div>
+      </div>
+      <div class="tc tc-sc">
+        <span class="tc-lbl">The Scholar · Both Worlds</span>
+        <span class="tc-title">The Crossing Agent</span>
+        <div class="tc-body">The Scholar brings what neither Vanguard can provide: the ability to move between worlds, the linguistic range to translate both archives, the academic framework to integrate knowledge from two different cosmological traditions, and — critically — the capacity to read Clause 18, which requires simultaneous knowledge of both notation systems. <strong>They are the only element of the three-body system that belongs fully to neither world and therefore to both.</strong> The rope cannot be tied to one bank. It must connect both.</div>
+      </div>
+      <div class="tc tc-lapis">
+        <span class="tc-lbl">Vanguard B · World B · The Hollow</span>
+        <span class="tc-title">The Keeper of What Is Hidden</span>
+        <div class="tc-body">She has 300 years of knowledge of the Dark Archive: its counter-resonance systems, the Loop-Walker's orbital mechanics, the Hollow's inverted classification logic, and the cosmological sequence that completes the Grand Armillary's activation. She cannot translate the Sacred Fire texts. She cannot cross. The Archive's Hollow knowledge — stored in a world that cannot be read from the outside — was inaccessible until the Scholar arrived to carry it across. <strong>Her knowledge is also total within her domain. The two domains are complementary halves of the same truth.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>The Knowledge Economy — How Information Flows Between Three People</h3>
+  <p>Act I operates as a knowledge economy with three participants and a shared goal. Each transaction builds the Archive and simultaneously builds the Vanguards' understanding of the Scholar:</p>
+
+  <div class="act-scene as-fire">
+    <div class="as-head">
+      <span class="as-lbl">Knowledge Flow · Early Camel</span>
+      <span class="as-title">Scholar → Vanguard A (Translation)</span>
+      <span class="as-badge">Active teaching</span>
+    </div>
+    <div class="as-body">
+      <p>The Scholar translates Sacred Fire tablets Vanguard A has been sitting with for 300 years. She files each translation immediately: methodology, approach sequence, time taken. She is not storing the content. She is storing how the Scholar produces it. By Week Three, she can predict which translation approach the Scholar will take before they begin. She never tells the Scholar this.</p>
+      <span class="d-dir">[First translation session, WA-003. The Scholar translates a mid-period administrative cuneiform. Vanguard A watches, entirely still, for eleven minutes without speaking.]</span>
+      <span class="d-a">Vanguard A</span>
+      <span class="d-line">"You reached the administrative clause before I expected. I assumed you would translate from top-to-bottom. You read the structure first."</span>
+      <span class="d-sc">Scholar</span>
+      <span class="d-line">"Administration always announces itself in the clause structure before the opening line. It's faster to read the architecture."</span>
+      <span class="d-a">Vanguard A</span>
+      <span class="d-line">"I know. I didn't know if you knew." [She returns to her position.] "Faster than I thought."</span>
+      <span class="d-note">She is not complimenting the Scholar. She is updating the behavioral model. "Faster than I thought" means the previous estimate had a margin of error that has now been corrected. She files this and moves on. The Scholar, who cannot hear this distinction, files it as a compliment and keeps working.</span>
+    </div>
+  </div>
+
+  <div class="act-scene as-lapis">
+    <div class="as-head">
+      <span class="as-lbl">Knowledge Flow · Mid Camel</span>
+      <span class="as-title">Scholar → Vanguard B (Dark Library First Session)</span>
+      <span class="as-badge">Discovery as gift</span>
+    </div>
+    <div class="as-body">
+      <p>The Scholar's first deep session in the Dark Library produces a translation of a 250-year-old Hollow philosophical text — a document Vanguard B wrote herself, during a period of solitude, never expecting anyone to read it. The Scholar doesn't know its authorship. They read it aloud to check the cadence.</p>
+      <span class="d-dir">[A long silence from the far alcove where Vanguard B has been working.]</span>
+      <span class="d-b">Vanguard B</span>
+      <span class="d-line">"Your translation is better than the original."</span>
+      <span class="d-sc">Scholar</span>
+      <span class="d-line">"I'm not sure I understand the middle section. The notation shifts — it's almost like two different scribal hands."</span>
+      <span class="d-b">Vanguard B</span>
+      <span class="d-line">"It is. I wrote the second section fifty years after the first. I had reconsidered some of it." [A pause that contains 250 years.] "The first section was written when I was still certain about most things."</span>
+      <span class="d-note">The Scholar is holding 250 years of her private thought in their hands. She is watching someone read something that was written for no reader and is now, for the first time, being read. The translation is better than the original — she genuinely believes this. The Scholar, who reads it as an anonymous philosophical text, has given her something she did not know she needed: a good translation of herself.</span>
+    </div>
+  </div>
+
+  <div class="act-scene as-sc">
+    <div class="as-head">
+      <span class="as-lbl">Knowledge Flow · Late Camel · WB-∞</span>
+      <span class="as-title">The Third Record — All Three Present</span>
+      <span class="as-badge">The convergence point</span>
+    </div>
+    <div class="as-body">
+      <p>Both Vanguards arrive at the Chamber of Convergence as the Scholar nears the Third Record's final passage — one from each entrance, arriving at the same moment from opposite sides. This is the first time all three are in the same space simultaneously. The Scholar reads the final passage aloud. The Third Record describes the civilization that integrated both worlds. Vanguard B speaks first:</p>
+      <span class="d-b">Vanguard B</span>
+      <span class="d-line">"That civilization would not have needed me."</span>
+      <span class="d-dir">[No inflection. She leaves. Vanguard A watches her go. For five seconds, it is only the Scholar and Vanguard A in the Chamber. Then:]</span>
+      <span class="d-a">Vanguard A</span>
+      <span class="d-line">"It would have needed you." [She is looking at the Scholar.] "Both of them. One scholar capable of reading both registries. That's what Clause 18 says."</span>
+      <span class="d-dir">[She turns and follows Vanguard B. The Scholar stands with the Third Record for a long time. Vanguard A just told them, in the clearest possible terms, what Clause 18 means. And then walked away to execute it.]</span>
+      <span class="d-note">This is the moment the Scholar understands completely. Not the Dark Voice's analysis. Not Fan Li. The Vanguard herself, in the most precise language available, told them exactly what the Archive was built for and who was going to complete it. And then she walked away to begin Act II. The Scholar stays in the Chamber and reads the Third Record again. They already know what it says. They are reading it because they need a moment before they go back.</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ CH IV — THE FULL STORY ════════════ -->
+<div class="ch-div ch-fire" data-roman="IV">
+  <span class="ch-eye">Chapter IV · The Story</span>
+  <div class="ch-title">Act by Act — With All Three Present</div>
+  <span class="ch-sub">The tragedy does not begin with the Act II turn. It begins at the gate, in the first minute, when the Scholar reads the inscription and the Vanguard begins timing them.</span>
+</div>
+
+<div class="sh"><span class="sh-n">4.1</span><span class="sh-t">The Full Act Structure</span><span class="sh-sub">Camel → Lion → Child · Three characters · One engine</span></div>
+<div class="body">
+
+  <div class="act-timeline">
+    <div class="atl-phase phase-camel">
+      <span class="atl-ph-label">Act I</span>
+      <span class="atl-ph-name">The Camel</span>
+      <span class="atl-ph-meta">Nietzsche · "Thou Shalt"</span>
+    </div>
+    <div class="atl-event">
+      <strong>The Scholar says yes to every burden the Archive presents.</strong> Every translation, every crossing, every resource donation is a "yes" spoken with full competence and genuine joy. The Archive is the finest problem the Scholar has ever encountered. Both Vanguards are the finest colleagues. The Camel is not tragic in itself — it is the most alive the Scholar has ever been. The tragedy is not that the Camel's joy is false. It is that the Camel's joy is real, and joy is not armor. <em>The Camel finds meaning in service. It cannot imagine not serving. That is its glory and its trap simultaneously.</em>
+    </div>
+
+    <div class="atl-phase phase-camel">
+      <span class="atl-ph-label">Act I sub</span>
+      <span class="atl-ph-name">Three-Body Knowledge Economy</span>
+    </div>
+    <div class="atl-event">
+      Scholar translates → Vanguard A models methodology → Vanguard B reveals herself through what she lets be translated. All three participants are simultaneously building the Archive's completion and the conditions for Act II. The Scholar is the only one not aware that both are happening. The Dark Voice, when it begins, offers the Scholar the awareness they are choosing not to complete for themselves. Three response options. The Scholar who suppresses the Dark Voice is not naive — they are choosing the joy of the work over the fear of its conclusion. This is Amor Fati in real time.
+    </div>
+
+    <div class="atl-phase phase-camel">
+      <span class="atl-ph-label">Camel Peak</span>
+      <span class="atl-ph-name">The Three Resonance Moments</span>
+    </div>
+    <div class="atl-event">
+      The Recognition: Vanguard A acknowledges the Scholar's translation of Eastern Zhou text. Genuine. Also: she chose that text because she knew they would recognize it. Both true. <strong>The Flask</strong>: one standard measure of oil, no words, back turned. Calculated to restore combat capacity without expending more than required. Also: an act of care in the only language she knows how to speak it. <strong>The Admission of Hope</strong>: "I thought that was what it would say." Not knew. Thought. She hoped. The hoping and the strategy were never separate in her. This is the most intimate thing she has said in 300 years. It was said to a person she is going to eliminate.
+    </div>
+
+    <div class="atl-phase phase-lion">
+      <span class="atl-ph-label">Act I→II</span>
+      <span class="atl-ph-name">The Turn</span>
+    </div>
+    <div class="atl-event">
+      Eight seconds of silence from Vanguard A's resonance channel. When it speaks: a position report on Vanguard B. <em>Not a betrayal. A completion.</em> The Vanguard is not turning against the Scholar. She is proceeding to the phase she always planned to proceed to. The Scholar's hands pause on the puzzle they are currently working. They set it down. They pick up the crossbow. This transition is the game's most important piece of body language — the Scholar is not surprised. They are choosing. The Camel phase is over. The Lion begins.
+    </div>
+
+    <div class="atl-phase phase-lion">
+      <span class="atl-ph-label">Act II</span>
+      <span class="atl-ph-name">The Lion</span>
+      <span class="atl-ph-meta">Nietzsche · "I Will"</span>
+    </div>
+    <div class="atl-event">
+      The Scholar says "I will" — finally, loudly, through action rather than words. They use every trap the Camel set. Every translation they completed. Every documented creature weakness. Every saved resource. The Camel built a perfect toolkit and the Lion uses it with the same precision. But: the Scholar is not trying to escape the Archive. <strong>They are trying to complete what they came to complete before the completion catches them.</strong> The final translations. The Third Record archival. The Armillary calibration finish. The Scholar who understands what Clause 18 means is not fighting for survival — they are fighting to finish the work before the work finishes them. This reframes the entire Lion Phase: it is the Scholar's most active commitment to the Archive they have always served. The 士 in the Lion Phase is still the 士. They just finally said "I will" to themselves.
+    </div>
+
+    <div class="atl-phase phase-child">
+      <span class="atl-ph-label">Act III</span>
+      <span class="atl-ph-name">The Child</span>
+      <span class="atl-ph-meta">Nietzsche · Vanguard's phase</span>
+    </div>
+    <div class="atl-event">
+      The Child does not belong to the Scholar. The Scholar's three metamorphoses end at the Lion. The Child — the one who creates new values, who forgets, who plays, who begins — that is the Vanguard. After the False Victory, after the fold in the air, after she steps through and performs the world-appropriate ritual over the fallen Vanguard — she straightens her tunic and turns. <em>And becomes the first person in 312 years who has both the knowledge to operate the Archive's two worlds simultaneously and the will to decide what the Archive becomes next.</em> This is the Nietzschean Child: not innocent, but new. Not soft, but unconstrained by what came before. The Scholar made her possible. That is the tragic honor of the Camel.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ CH V — THE CLIMAX ═════════════════ -->
+<div class="ch-div ch-climax" data-roman="V">
+  <span class="ch-eye">Chapter V · The Climax</span>
+  <div class="ch-title">The False Victory & The True End</div>
+  <span class="ch-sub">The most carefully designed 25 seconds in the game. Everything else was preparation for this. Preparation the Scholar and player underwent together, not knowing it was preparation.</span>
+</div>
+
+<div class="sh"><span class="sh-n">5.1</span><span class="sh-t">The Climax Redesign — Three Character Versions</span><span class="sh-sub">What changes based on who the Scholar built during the Camel Phase</span></div>
+<div class="body">
+
+  <div class="call cclx">
+    <span class="call-lbl">The Design Law of the Climax</span>
+    <strong>The climax must honor the Scholar's greatest achievement simultaneously with their elimination.</strong> This is not irony. It is the specific truth of their situation: they were extraordinary, they did remarkable work, and the work's completion is the thing that ends them. The Vanguard's final line must be the most sincere thing she has said in the entire game. And it is. "You were extraordinary." She believes this. She has believed it since Day Three. It has never stopped being true.
+  </div>
+
+  <h3>The Structural Climax — What Always Happens</h3>
+
+  <div class="act-scene as-climax">
+    <div class="as-head">
+      <span class="as-lbl">The False Victory Sequence · T+0 to T+25</span>
+      <span class="as-title">The 25 Seconds</span>
+      <span class="as-badge">Fixed · Cannot be altered · Can be prepared for</span>
+    </div>
+    <div class="as-body">
+      <p><strong>T+0:</strong> The combat resolves. One Vanguard eliminated — the Scholar won the Act II chess match using every resource the Camel Phase built. The cello theme — which has been in anxious counterpoint with the Vanguard's stone-percussion theme throughout Act II — resolves to major key. The tension completes its phrase. The Scholar breathes normally for the first time since the turn.</p>
+      <p><strong>T+2.5:</strong> "The Archive Reclaimed." Achievement notification, identical in every visual detail to all 18 previous ones. The Scholar reclaimed the Archive. They did. This is true. The notification is not lying. It is being precise in a way that will be understood differently in twenty seconds.</p>
+      <p><strong>T+6:</strong> Save prompt. The Scholar is standing in the Throne Hall. Many players will save here. The save is valid. It records a specific moment in time. That is what saves do.</p>
+      <p><strong>T+9:</strong> The fold. The stone wall behind the Scholar folds like a page turning — 1.8 seconds, no sound event. The absence of sound is the sound. Every previous major event in this game has had sound. The fold has none. A player who has been paying attention will hear this absence before they understand it.</p>
+      <p><strong>T+11–22:</strong> She enters. Coat dry. Blade sheathed. She walks to the fallen Vanguard. Kneels. Performs the world-appropriate burial ritual — not a gesture, a complete ceremony: she removes the officer's disc from the fallen Vanguard, holds it for three seconds (the same three seconds from the Gate scene), places it correctly according to military tradition. Then she stands. The Traversal Skill — the ability to cross between worlds without physical mechanics — transfers. The Scholar's astrolabe spins briefly in their hands and then is still.</p>
+      <p><strong>T+23:</strong> The astrolabe goes permanently silent. For the first time in the entire game, there is no creature warning signal. No threat. No measurement. There is nothing left to warn against. The Scholar is the only remaining item on her agenda.</p>
+      <p><strong>T+25:</strong> She straightens her tunic. Not nervously. The gesture of someone settling their clothes before returning to work. She looks at the Scholar. At their face. Not past them. <em>At them.</em></p>
+
+      <span class="d-dir">[What happens next is determined entirely by the behavioral scores accumulated across the full run. But before the ending-specific content begins, she says one thing that is in every ending:]</span>
+      <span class="d-a">Vanguard A (or B — the surviving Vanguard)</span>
+      <span class="d-line">"You were extraordinary."</span>
+      <span class="d-dir">[A full beat of silence. Then:]</span>
+      <span class="d-a">Vanguard A (or B)</span>
+      <span class="d-line">"Past tense is not a judgment. It is a precision."</span>
+      <span class="d-note">She believes this. She has believed it since she found the Scholar's published monograph and said "this is the one." She has believed it through every week of the Camel Phase, through every behavioral model update, through the Act I→II turn that she executed not from anger or malice but from the completion of a 312-year plan. The Scholar was extraordinary. She is being precise. Both of these things are completely true.</span>
+    </div>
+  </div>
+
+  <h3>The Score-Dependent Layers — What Changes</h3>
+
+  <div class="triad">
+    <div class="triad-head">
+      <span class="triad-lbl">Three Climax Variants · Same Structure · Different Weight</span>
+      <span class="triad-title">What the Scholar's Investments Produced</span>
+    </div>
+    <div class="triad-cols">
+      <div class="tc tc-fire">
+        <span class="tc-lbl">Low Score · 0–40</span>
+        <span class="tc-title">The Incomplete Ending</span>
+        <div class="tc-body">The Vanguard moves efficiently. She has what she needs. The Scholar gave enough to complete the Archive but not enough to build her full capability. The final approach is fast, tactical, slightly ungraceful — she accounts for the Scholar's demonstrated crossbow range and the traps she observed being set, but improvises for the ones she didn't. It takes longer than she planned. When she straightens her tunic afterward and looks at the Scholar, there is something in her face that is close to regret — not for what she is doing, but for what the Scholar was and what they could have been if they had given everything. <strong>"You were extraordinary" lands here as a thing that was true and didn't have to stop being true so soon.</strong></div>
+      </div>
+      <div class="tc tc-sc">
+        <span class="tc-lbl">Mid Score · 41–60</span>
+        <span class="tc-title">The Complete Ending</span>
+        <div class="tc-body">The Vanguard proceeds with complete precision. She accounts for everything the Scholar demonstrated — which is most of what was necessary. The final phase is the one she planned in year 268, refined against three weeks of live behavioral data. It is a masterwork of tactical execution. When she looks at the Scholar afterward, there is satisfaction in her expression that is absolutely genuine. She did everything correctly. So did they. Both of them completed something remarkable. <strong>"Past tense is not a judgment. It is a precision" lands here as the truest statement in the game.</strong></div>
+      </div>
+      <div class="tc tc-lapis">
+        <span class="tc-lbl">High Score · 81–100</span>
+        <span class="tc-title">The Architect's Ending</span>
+        <div class="tc-body">The Scholar gave everything. She has the Scholar's complete behavioral model — every route preference, every timing pattern, every resource allocation decision across the full run. She does not move toward the Scholar. She moves around them — closing exits using Traversal, repositioning the geometry of escape options one by one. When the room is finished she stands still and waits for the Scholar to understand what they are standing in. <strong>She built a room using everything the Scholar taught her.</strong> "You were extraordinary" here is the highest acknowledgment available. The Scholar built their best nemesis. She built her best work from their best gifts. This is the Nietzschean summit: two people becoming exactly what they were, at the same moment, through each other.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>The Camus Addendum — One Must Imagine Them Both Happy</h3>
+
+  <div class="epigraph">
+    <span class="ep-text">"I leave Sisyphus at the foot of the mountain. One always finds his burden again. But Sisyphus teaches the higher fidelity that negates the gods and raises rocks. He too considers things to be good. This universe henceforth without a master seems to him neither sterile nor futile. Each atom of that stone, each mineral flake of that night-filled mountain, in itself forms a world. The struggle itself toward the heights is enough to fill a man's heart."</span>
+    <span class="ep-cite">— Camus · The Myth of Sisyphus · The final lines · Applied to both characters simultaneously</span>
+  </div>
+
+  <p>The Scholar, in the last seconds of their time in the Archive, is not in despair. They translated the finest archive in the ancient world. They crossed between two worlds that no one had crossed between in 300 years. They named creatures that no one had named in three centuries. They read the Third Record and understood what the civilization could have been. They lit 72 fire altars in the order the Vanguard predicted — except three, because they came from the east instead of the south, and that small divergence from someone else's prediction is the most themselves they have ever been.</p>
+
+  <p>And the Vanguard, straightening her tunic before she begins the last thing: she has been in this building for 312 years. She knows every crack in every column. She taught herself Babylonian. She kept twelve weapons clean in a rack where one slot was empty for 296 years. She is the most competent person who has ever stood in this room. <strong>The struggle itself toward the heights is enough to fill her heart. And it does. And now she goes north.</strong></p>
+
+  <div class="call cnz">
+    <span class="call-lbl">What Nietzsche Would Say About This Ending</span>
+    <em>These two people became exactly what they were.</em> At the highest intensity, in the finest possible context, with everything they had. The Scholar was the bridge. The Vanguard was the keeper. Both completed their nature. Neither compromised it. Neither was reduced by the other — the Scholar's extraordinary work is not diminished by being the means to another person's end, any more than the bridge is diminished by being crossed. Zarathustra says: what is great in man is that he is a bridge, and not an end. <strong>The Scholar is great. This is stated precisely. Past tense is not a judgment.</strong>
+  </div>
+</div>
+
+
+<!-- ═══ CH VI — THE TRIBUTE INVENTORY ════ -->
+<div class="ch-div ch-lapis" data-roman="VI">
+  <span class="ch-eye">Chapter VI · Sources</span>
+  <div class="ch-title">The Full Tribute Inventory</div>
+  <span class="ch-sub">Where every referenced work lives in the finished game — not as decoration, but as structural contribution that could not be removed without the game collapsing in that location.</span>
+</div>
+
+<div class="sh"><span class="sh-n">6.1</span><span class="sh-t">Every Source · Precisely Placed</span><span class="sh-sub">The tribute is not "influenced by." It is "this specific mechanic exists because of this specific work."</span></div>
+<div class="body">
+
+  <div class="tribute-grid">
+
+    <div class="tribute-card t-fire">
+      <span class="tr-name">Eastern Zhou Chronicles · Fan Li · Sun Tzu</span>
+      <span class="tr-src">Literature · Scholar's Psychology</span>
+      <div class="tr-body">Fan Li's aphorism ("when the birds are gone, the hunting dog is cooked") is the game's thesis — the Scholar knows it and stays anyway. Sun Tzu's strategic vocabulary is the Dark Voice's language: the Voice does not invent new warnings, it applies the Scholar's own intellectual toolkit to the situation they are choosing not to calculate. The 士 archetype is the precise word for the Scholar's constitution. <strong>The tribute: every time the Scholar picks up the work after acknowledging the Dark Voice and declining to follow it, they are citing Fan Li. Every time they name a creature instead of shooting it, they are citing Sun Tzu.</strong> The citations are in the actions, not the dialogue.</div>
+    </div>
+
+    <div class="tribute-card t-nz">
+      <span class="tr-name">Thus Spoke Zarathustra · Nietzsche</span>
+      <span class="tr-src">Philosophy · Structural Architecture</span>
+      <div class="tr-body">The three metamorphoses are the game's three-act structure, assigned across three characters. The rope-over-abyss image is the Scholar's opening V.O. and closing truth. The Eternal Recurrence is the Archive's calibration cycle — the same 90 seconds, 300 years. Beyond Good and Evil is the game's refusal to frame either Vanguard as villain. Amor Fati is the Scholar turning the page on Fan Li's warning. Will to Power is the Naming tier — comprehension replacing force as the highest expression of capability. <strong>The tribute: Zarathustra is not a reference. It is the frame through which every other reference is organized.</strong></div>
+    </div>
+
+    <div class="tribute-card t-fire">
+      <span class="tr-name">Silent Hill 2 · Team Silent · 2001</span>
+      <span class="tr-src">Game · Invisible Behavioral Spine</span>
+      <div class="tr-body">SH2 proved that a game can watch the player invisibly and produce an ending that reflects who the player actually was across the entire run. KENOMA extends this in one direction: the behavioral tracking is legible through the Vanguard's observable behavior changes. The tracking is not a black box — it shows up in Stage 1 (she asks), Stage 3 (she stops asking), Stage 5 (she pre-positions). Players who pay attention can see the model accumulating. This was SH2's mechanic with the awareness made visible. <strong>The tribute: the moment the astrolabe goes permanently silent is SH2's ending mechanic — the score reveals itself — expressed in a single sound event that changes the game's entire sensory experience.</strong></div>
+    </div>
+
+    <div class="tribute-card t-ref">
+      <span class="tr-name">The Man in the High Castle · Philip K. Dick</span>
+      <span class="tr-src">Novel · The Two Equally Real Worlds</span>
+      <div class="tr-body">Dick's book-within-a-book (The Grasshopper Lies Heavy) describes a history so internally consistent that readers can't determine which world is real. The Third Record is KENOMA's version: a document describing the civilization that integrated both worlds, so precisely realized that the Scholar cannot determine whether it describes something that happened or something that should have. The Scholar reads it and cannot resolve the question of which Archive is the real one — Sacred Fire or Hollow — and understands finally that the question was the wrong question. <strong>The tribute: the Third Record produces the same epistemological vertigo as Dick's book-within-a-book, in an archaeological rather than literary context.</strong></div>
+    </div>
+
+    <div class="tribute-card t-fire">
+      <span class="tr-name">Alone in the Dark Trilogy + The New Nightmare · Infogrames</span>
+      <span class="tr-src">Game · Intellectual Kill Tier · Fixed Camera</span>
+      <div class="tr-body">Aline Cedrac's combat model — environment first, light second, intellectual kill as the highest tier — is the Scholar's combat model rebuilt for a Persian archive. The Armillary sequence (no weapon fired, no oil spent, comprehension as the killing blow) is the direct equivalent of Aline using the laboratory's lightning rod. The fixed camera is AitD's signature — each room's camera position is art-directed to tell the story of that specific room. <strong>The tribute: every Naming combat resolution is an Aline moment. The Scholar speaks a creature's true designation and it becomes permanently still. Understanding as the permanent solution. The most powerful action costs only reading.</strong></div>
+    </div>
+
+    <div class="tribute-card t-lapis">
+      <span class="tr-name">Silent Hill 1 · 2 · 3 · 4 · Team Silent</span>
+      <span class="tr-src">Game · Architecture of the Interior</span>
+      <div class="tr-body">SH1: radio static as creature proximity (astrolabe model). SH2: the behavioral spine and the ending as revelation. SH3: world-shift mid-level without cutscene or warning — the corridor is fine and then it isn't. SH4: Room 302 starts safe and becomes haunted (Observatory lifecycle). The Archive operates on the SH principle: the building is not just a place, it is the expression of what everyone inside it carries. The Archive's corruption lifecycle mirrors the player's behavioral score — the more the Scholar withholds from the Vanguard, the more erratic the Archive's ambient behavior. <strong>The tribute: the Observatory's corruption begins at the exact moment the Scholar first declines the Dark Voice's counsel. The building notices.</strong></div>
+    </div>
+
+    <div class="tribute-card t-fire">
+      <span class="tr-name">Prince of Persia · Warrior Within · The Two Thrones</span>
+      <span class="tr-src">Game · Companion Betrayal · Dark Prince</span>
+      <div class="tr-body">Farah (SoT): the companion who runs an independent calculation and reaches a different conclusion. Her calculation is correct. Kaileena (WW): uses the protagonist as a tool and genuinely cares about them, simultaneously. The Dahaka (WW): appears because of the protagonist's crossings — the law pursuing the one who breaks it. The Dark Prince (TT): the protagonist's shadow-self who speaks the strategic truths they are suppressing. All four are direct character models. <strong>The tribute: the Vanguard is Farah's calculation + Kaileena's warmth. The Boundary is the Dahaka. The Dark Voice is the Dark Prince. These are not influences. They are specific design inheritances stated explicitly.</strong></div>
+    </div>
+
+    <div class="tribute-card t-lapis">
+      <span class="tr-name">Tormented Souls 1 · Dual Effect + Abstract Digital · 2021</span>
+      <span class="tr-src">Game · Story-First Puzzle Design · Physical Inventory</span>
+      <div class="tr-body">TS1 proved that puzzles can be scars of specific character decisions — that the act of solving IS the act of discovering the person who left the problem. Every puzzle in KENOMA follows this principle: the Grand Armillary puzzle exists because the Archive's founders feared what they had created and built an emergency dissolution protocol. The physical 3D inventory is TS1's model rebuilt for a satchel. The candle-save is the fire altar-save. <strong>The tribute: every room in the Archive passes the TS1 test — the puzzle can be explained by a person who made a decision here. No puzzle exists because the Archive needed a puzzle. Every puzzle exists because someone who is now dead needed it to exist.</strong></div>
+    </div>
+
+    <div class="tribute-card t-ref">
+      <span class="tr-name">Metro 2033 · 4A Games · 2010</span>
+      <span class="tr-src">Game · Diegetic Everything · Overheard Moments</span>
+      <div class="tr-body">Metro proved that status information delivered physically — through in-world objects, ambient sound, visible wear — creates immersion that UI numbers cannot replicate. The scholar's robe as health, flame size as oil level, astrolabe position as Traversal Debt. The overheard moments (Vanguard A issuing patrol schedules in administrative Elamite to dormant Fire-Wardens; Vanguard B speaking to a void pit in the Dark Library) are Metro's crew moments: more character revealed in a private act than in any scripted exchange. <strong>The tribute: both Vanguard overheard scenes are designed specifically to be missable — not all players will hear them. The players who do hear them carry a different relationship to the Vanguard through the rest of the game. Metro taught us this.</strong></div>
+    </div>
+
+    <div class="tribute-card t-nz">
+      <span class="tr-name">Indiana Jones — The Last Crusade · 1989 · Spielberg</span>
+      <span class="tr-src">Film · Henry Jones Sr. · The Scholar's Warmth</span>
+      <div class="tr-body">Henry Jones Sr.'s quality — the academic who corrects Latin mid-crisis, who kept thirty years of research notebooks because the knowledge had to be preserved regardless — is the Scholar's baseline warmth. The Scholar's hands always busy (translating, winding the crossbow, pouring oil) is the Henry Jones Sr. quality of someone whose hands know what they're doing and never stop doing it even under pressure. <strong>The tribute: when the Scholar names a Fire-Warden in under six seconds using the gate inscription — in the game's first combat encounter — and the Vanguard notes the timing for her behavioral model, that is exactly the Last Crusade scene where Henry Sr. tells Indy the Grail's Latin inscription. The scholar with the right knowledge, applied precisely, in the moment that requires it.</strong></div>
+    </div>
+
+    <div class="tribute-card t-ref">
+      <span class="tr-name">Lawrence of Arabia · Mad Max: Fury Road · The Silence of the Lambs</span>
+      <span class="tr-src">Film · Character Architecture · Scholar and Vanguard</span>
+      <div class="tr-body">Lawrence: the Scholar's total investment and the structure of being used up by the thing you gave everything to. Furiosa: the Vanguard's economy of expression, the one moment of grief she never stopped to have, the north she goes toward at the end. Clarice Starling: the Vanguard's sustained, relentless, respectful attention — she built a 3-year behavioral model of a Scholar she hadn't met because the person was worth understanding completely. <strong>The tribute: every scene in which the Vanguard says exactly as much as needs to be said and nothing more is Furiosa. Every scene in which she does something massive without announcing it is Ripley. Every scene in which she pays complete attention to the Scholar is Clarice. She is all three simultaneously in every room.</strong></div>
+    </div>
+
+    <div class="tribute-card t-lapis">
+      <span class="tr-name">Camus · The Myth of Sisyphus · 1942</span>
+      <span class="tr-src">Philosophy · Absurdism · The Scholar's Happiness</span>
+      <div class="tr-body">Camus's absurd hero knows the outcome and chooses the work anyway — not despite the knowledge but with it, in full ownership of the futility. The Scholar's Day Three journal entry (turning the page on Fan Li's warning and starting the creature taxonomy) is the Sisyphean choice: the rock is acknowledged and picked up cheerfully. <strong>The tribute: the game does not frame the Scholar's choice to continue as tragic denial. It frames it as the highest form of freedom — the choice to do the work that is worth doing, knowing everything, owning everything, saying yes. One must imagine the Scholar happy. They are. That is the point.</strong></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══ CODA ═══════════════════════════════ -->
+<div class="ch-div ch-nz" data-roman="∞">
+  <span class="ch-eye">Coda · The Final Statement</span>
+  <div class="ch-title">What This Game Is About</div>
+  <span class="ch-sub">In one paragraph. After everything.</span>
+</div>
+
+<div class="body">
+  <div class="epigraph">
+    <span class="ep-text">KENOMA is about what happens when a person becomes exactly what they were made to be — at full intensity, in the finest possible context — and the world that made them has no more use for them after the becoming is complete. It is not about betrayal. It is not about evil. It is about three people completing the same work from three necessary positions, and one of those positions is the crossing point, and the crossing point is not a place where anyone lives. The Scholar was a bridge. Bridges are great because they are crossed, not because they are stayed on. They were extraordinary. Past tense is not a judgment. It is a precision. And north of the mountain range, 312 years of patience is finally done waiting, and there is bread, and she is already thinking about what comes next.</span>
+    <span class="ep-cite">— The game, in full</span>
+  </div>
+</div>
+
+<div class="foot">
+  <span>KENOMA · Complete Narrative Synthesis · NRS-001</span>
+  <span>Scholar · Vanguard A · Vanguard B · Nietzsche · All Sources</span>
+  <span>For Storytelling Bible v9 · GDD v7</span>
+</div>
+
+</div>
+</body>
+</html>

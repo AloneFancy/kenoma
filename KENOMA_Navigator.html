@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — Navigator & Document Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   KENOMA NAVIGATOR
+   
+   The Scholar's working journal —
+   warm, annotated, alive.
+   Production notes written in the 
+   margins of the original manuscript.
+══════════════════════════════════════ */
+:root {
+  /* Paper tones */
+  --p0: #f5edda;   /* brightest surface */
+  --p1: #ede4cc;   /* main paper */
+  --p2: #e4d8b8;   /* secondary */
+  --p3: #d8c89a;   /* tertiary */
+  --p4: #c8b480;   /* borders, deep */
+
+  /* Ink tones */
+  --i0: #18100a;   /* darkest ink */
+  --i1: #2e1e0e;   /* primary text */
+  --i2: #4a3018;   /* body text */
+  --i3: #7a5830;   /* muted text */
+  --i4: #a88048;   /* faint text */
+  --i5: #c8a868;   /* very faint */
+
+  /* World A — Sacred Fire (amber-gold) */
+  --a:  #8a3808;
+  --a2: #c05818;
+  --a3: #e88030;
+  --abg: rgba(138,56,8,.06);
+
+  /* World B — The Hollow (cold lapis) */
+  --b:  #0e2860;
+  --b2: #1e4898;
+  --b3: #4878d0;
+  --bbg: rgba(14,40,96,.07);
+
+  /* Scholar amber (warm center) */
+  --s:  #7a5010;
+  --s2: #b07828;
+  --sbg: rgba(122,80,16,.06);
+
+  /* Vanguard rose-red */
+  --v:  #5a0e10;
+  --v2: #922020;
+  --vbg: rgba(90,14,16,.05);
+
+  /* System rules */
+  --r1: rgba(160,128,72,.22);
+  --r2: rgba(160,128,72,.1);
+  --r3: rgba(160,128,72,.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 15px; scroll-behavior: smooth; }
+
+body {
+  background: #1a1510;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: var(--i2);
+  line-height: 1.72;
+}
+
+/* ── PAGE ── */
+.page {
+  background: var(--p1);
+  max-width: 1120px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(160,128,72,.25);
+}
+
+/* Horizontal ruled lines — journal paper */
+.page::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background: repeating-linear-gradient(
+    transparent, transparent 29px,
+    rgba(160,128,72,.07) 29px, rgba(160,128,72,.07) 30px
+  );
+}
+
+/* Left margin line */
+.page::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; left: 56px;
+  width: 1px;
+  background: rgba(220,80,40,.12);
+  pointer-events: none; z-index: 0;
+}
+
+.rel { position: relative; z-index: 1; }
+
+/* ── COVER ── */
+.cover {
+  min-height: 80vh;
+  display: flex; flex-direction: column;
+  padding: 64px 72px 52px 84px;
+  border-bottom: 2px solid var(--r1);
+  position: relative;
+}
+
+/* Persian arch ornament */
+.cover-ornament {
+  position: absolute; top: 40px; right: 52px;
+  width: 80px; height: 100px;
+  border: 1px solid rgba(160,128,72,.15);
+  border-radius: 40px 40px 0 0;
+  pointer-events: none;
+}
+.cover-ornament::after {
+  content: '';
+  position: absolute; top: 10px; left: 10px; right: 10px; bottom: -10px;
+  border: 1px solid rgba(160,128,72,.1);
+  border-radius: 30px 30px 0 0;
+}
+
+.cv-pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--i4); display: block; margin-bottom: 18px;
+}
+
+.cv-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(32px, 5vw, 62px);
+  font-weight: 700; color: var(--i0);
+  line-height: 1.0; letter-spacing: -1.5px;
+  margin-bottom: 8px;
+}
+
+.cv-farsi {
+  font-size: 18px; font-weight: 300;
+  color: var(--i3); margin-bottom: 28px; display: block;
+  font-style: italic;
+}
+
+.cv-game {
+  font-size: 19px; font-weight: 300; font-style: italic;
+  color: var(--i2); max-width: 580px; line-height: 1.65;
+  margin-bottom: 32px;
+  border-left: 3px solid var(--a);
+  padding-left: 18px;
+}
+
+.cv-game em { font-style: normal; color: var(--i0); font-weight: 600; }
+
+.cv-legend {
+  display: flex; gap: 20px; flex-wrap: wrap; margin-top: auto;
+}
+.cl-item { display: flex; align-items: center; gap: 7px; }
+.cl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cl-txt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--i4);
+}
+
+/* ── SECTION HEADS ── */
+.sh {
+  padding: 18px 72px 14px 84px;
+  background: rgba(160,128,72,.06);
+  border-top: 1px solid var(--r1);
+  border-bottom: 1px solid var(--r1);
+}
+.sh-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--i5); display: block; margin-bottom: 3px;
+}
+.sh-t {
+  font-family: 'Cinzel', serif;
+  font-size: 16.5px; font-weight: 700; color: var(--i0); display: block;
+}
+.sh-sub { font-size: 13px; color: var(--i4); font-style: italic; margin-top: 2px; }
+
+.bd { padding: 22px 72px 26px 84px; }
+
+/* ── PROSE ── */
+p { font-size: 15px; color: var(--i2); line-height: 1.75; margin-bottom: 10px; }
+p:last-child { margin: 0; }
+p strong { color: var(--i1); }
+p em { font-style: italic; color: var(--i1); }
+h3 {
+  font-family: 'Cinzel', serif; font-size: 13.5px; font-weight: 700;
+  color: var(--i2); margin: 20px 0 9px; padding-bottom: 5px;
+  border-bottom: 1px solid var(--r2);
+}
+h3:first-child { margin-top: 0; }
+
+/* ── CORE IDEAS (the heartbeat) ── */
+.core-ideas {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; margin: 16px 0;
+}
+.ci {
+  background: var(--p0);
+  padding: 20px 22px;
+  border: 1px solid var(--r2);
+}
+.ci-wide { grid-column: span 2; }
+.ci-n {
+  font-family: 'Cinzel', serif; font-size: 48px; font-weight: 900;
+  color: var(--p3); display: block; line-height: 1; margin-bottom: 6px;
+  -webkit-text-stroke: 1px rgba(160,128,72,.3);
+}
+.ci-title {
+  font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700;
+  color: var(--i1); display: block; margin-bottom: 8px;
+}
+.ci-body { font-size: 14px; color: var(--i2); line-height: 1.65; }
+.ci-body strong { color: var(--i0); }
+.ci-body em { font-style: italic; color: var(--i1); }
+.ci-never {
+  margin-top: 9px; padding: 7px 11px;
+  background: var(--vbg);
+  border-left: 2px solid var(--v2);
+  font-size: 12.5px; color: var(--i3); font-style: italic; line-height: 1.5;
+}
+.ci-never strong { color: var(--v2); font-style: normal; }
+
+/* ── THE FEELING (story-first section) ── */
+.feeling-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px; margin: 16px 0;
+}
+.fg-card {
+  background: var(--p1); padding: 18px 20px;
+  border-top: 3px solid;
+}
+.fg-a { border-top-color: var(--a); }
+.fg-s { border-top-color: var(--s2); }
+.fg-b { border-top-color: var(--b2); }
+.fg-act {
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px;
+  letter-spacing: 3px; text-transform: uppercase; display: block; margin-bottom: 5px;
+}
+.fg-a .fg-act { color: var(--a2); }
+.fg-s .fg-act { color: var(--s2); }
+.fg-b .fg-act { color: var(--b2); }
+.fg-title {
+  font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700;
+  color: var(--i0); display: block; margin-bottom: 8px;
+}
+.fg-body { font-size: 13.5px; color: var(--i2); line-height: 1.62; }
+.fg-body em { font-style: italic; color: var(--i1); }
+.fg-body strong { color: var(--i0); }
+.fg-quote {
+  margin-top: 10px; padding: 8px 12px;
+  background: rgba(0,0,0,.04); border-left: 2px solid;
+  font-style: italic; font-size: 14px; color: var(--i3); line-height: 1.6;
+}
+.fg-a .fg-quote { border-color: var(--a2); }
+.fg-s .fg-quote { border-color: var(--s2); }
+.fg-b .fg-quote { border-color: var(--b2); }
+
+/* ── RELATIONSHIP MAP ── */
+.map-box {
+  background: var(--p2); border: 1px solid var(--r1);
+  overflow: hidden; margin: 16px 0;
+}
+.map-label {
+  padding: 10px 20px; border-bottom: 1px solid var(--r1);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ml-t {
+  font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--i1);
+}
+.ml-n { font-size: 12px; color: var(--i4); font-style: italic; }
+
+/* ── FILE ACCORDION ── */
+.layers { margin: 16px 0; }
+.layer { margin-bottom: 2px; }
+
+.lh {
+  padding: 12px 20px; display: flex; align-items: center; gap: 12px;
+  cursor: pointer; border-left: 4px solid; border: 1px solid var(--r2);
+  border-left: 4px solid; transition: background .12s; user-select: none;
+  background: var(--p0);
+}
+.lh:hover { background: var(--p2); }
+.l-heart .lh { border-left-color: var(--a); }
+.l-char  .lh { border-left-color: var(--b); }
+.l-world .lh { border-left-color: var(--s2); }
+.l-make  .lh { border-left-color: var(--i3); }
+.l-pitch .lh { border-left-color: var(--i5); }
+.l-arch  .lh { border-left-color: var(--r1); }
+
+.lh-icon { font-size: 16px; flex-shrink: 0; }
+.lh-main { flex: 1; }
+.lh-name {
+  font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; display: block;
+}
+.l-heart .lh-name { color: var(--a2); }
+.l-char  .lh-name { color: var(--b2); }
+.l-world .lh-name { color: var(--s2); }
+.l-make  .lh-name { color: var(--i2); }
+.l-pitch .lh-name { color: var(--i3); }
+.l-arch  .lh-name { color: var(--i4); }
+.lh-desc { font-size: 12.5px; color: var(--i4); font-style: italic; }
+.lh-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px;
+  padding: 2px 9px; border-radius: 9px; flex-shrink: 0;
+}
+.l-heart .lh-badge { background: rgba(138,56,8,.1); color: var(--a2); }
+.l-char  .lh-badge { background: rgba(14,40,96,.1); color: var(--b2); }
+.l-world .lh-badge { background: rgba(122,80,16,.1); color: var(--s2); }
+.l-make  .lh-badge { background: rgba(74,48,24,.08); color: var(--i2); }
+.l-pitch .lh-badge { background: rgba(74,48,24,.05); color: var(--i4); }
+.l-arch  .lh-badge { background: rgba(160,128,72,.07); color: var(--i5); }
+
+.l-files { display: none; }
+.layer.open .l-files { display: block; }
+
+.fr {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 12px; align-items: start;
+  padding: 11px 20px; margin-top: 1px;
+  background: var(--p1); border-bottom: 1px solid var(--r2);
+  text-decoration: none; color: inherit; transition: background .1s;
+}
+.fr:hover { background: var(--p0); }
+.fr-main {}
+.fr-name {
+  font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 500;
+  color: var(--i2); display: block; margin-bottom: 4px;
+}
+.fr-q {
+  font-size: 13.5px; color: var(--i1);
+  font-style: italic; display: block; margin-bottom: 3px;
+}
+.fr-when { font-size: 12.5px; color: var(--i3); line-height: 1.55; }
+.fr-when strong { color: var(--i2); font-style: normal; }
+.fr-right { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+.fr-status {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 2px; white-space: nowrap;
+}
+.st-heart { background: rgba(138,56,8,.1); color: var(--a2); }
+.st-use   { background: rgba(14,40,96,.1); color: var(--b2); }
+.st-ref   { background: rgba(122,80,16,.08); color: var(--s2); }
+.st-arch  { background: rgba(160,128,72,.07); color: var(--i4); }
+.fr-link {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: 1px; color: var(--i4); text-decoration: underline;
+  white-space: nowrap;
+}
+.fr:hover .fr-link { color: var(--i2); }
+/* Plain row for archive items */
+.fr-plain {
+  padding: 8px 20px; margin-top: 1px;
+  background: var(--p2); border-bottom: 1px solid var(--r2);
+  display: flex; align-items: center; gap: 10px;
+}
+.fr-plain .fr-name { color: var(--i4); margin: 0; }
+.fr-plain .fr-status { flex-shrink: 0; }
+
+/* ── CRITICAL PATH (7 story beats) ── */
+.path { margin: 16px 0; }
+.path-item {
+  display: grid; grid-template-columns: 60px 1fr;
+  gap: 0; margin-bottom: 1px;
+}
+.pi-num {
+  background: var(--p3); display: flex; align-items: center;
+  justify-content: center; border-right: 1px solid var(--r1); padding: 14px 10px;
+}
+.pi-n {
+  font-family: 'Cinzel', serif; font-size: 22px; font-weight: 900; color: var(--i3);
+}
+.pi-c {
+  background: var(--p1); padding: 13px 18px;
+  border-bottom: 1px solid var(--r2);
+}
+.pi-when {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--i5);
+  display: block; margin-bottom: 3px;
+}
+.pi-title {
+  font-family: 'Cinzel', serif; font-size: 13.5px; font-weight: 700;
+  color: var(--i1); display: block; margin-bottom: 5px;
+}
+.pi-body { font-size: 13.5px; color: var(--i2); line-height: 1.62; }
+.pi-body strong { color: var(--i0); }
+.pi-body em { font-style: italic; }
+.pi-docs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+.pi-doc {
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px;
+  padding: 2px 7px; border: 1px solid var(--r1); color: var(--i4);
+  background: var(--p2);
+}
+
+/* ── CALLOUT ── */
+.call {
+  border-left: 4px solid; padding: 12px 16px; margin: 12px 0;
+  font-size: 14px; line-height: 1.7; color: var(--i2);
+}
+.ca  { border-color: var(--a);  background: var(--abg); }
+.cb  { border-color: var(--b2); background: var(--bbg); }
+.cs  { border-color: var(--s2); background: var(--sbg); }
+.cn  { border-color: var(--r1); background: var(--r3); }
+.call strong { color: var(--i1); }
+.call em { font-style: italic; color: var(--i0); }
+.c-lbl {
+  font-family: 'JetBrains Mono', monospace; font-size: 7.5px;
+  letter-spacing: 3px; text-transform: uppercase;
+  display: block; margin-bottom: 4px;
+}
+.ca .c-lbl { color: var(--a2); }
+.cb .c-lbl { color: var(--b2); }
+.cs .c-lbl { color: var(--s2); }
+.cn .c-lbl { color: var(--i4); }
+
+/* ── DIVIDER ── */
+.div { height: 1px; background: var(--r1); margin: 6px 0; }
+
+/* ── FOOTER ── */
+.foot {
+  padding: 16px 72px 16px 84px;
+  border-top: 2px solid var(--r1);
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--p3);
+}
+.f-main { font-family: 'Cinzel', serif; font-size: 13px; color: var(--i2); }
+.f-meta {
+  font-family: 'JetBrains Mono', monospace; font-size: 8.5px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--i4);
+}
+</style>
+</head>
+<body>
+<div class="page rel">
+
+<!-- ══ COVER ═══════════════════════════════════ -->
+<div class="cover rel">
+  <div class="cover-ornament"></div>
+  <span class="cv-pre">KENOMA · Self-Review & Document Map · Everything Needed to Build This Game</span>
+  <div class="cv-title">The Archive of<br>Two Truths</div>
+  <span class="cv-farsi">بایگانی دو راستی — Document Navigator</span>
+  <div class="cv-game">
+    A scholar crosses between two versions of the same dead civilization — giving everything to both.
+    A general has been waiting for this specific person for 300 years.
+    <em>Everything the Scholar teaches her becomes the instrument of their elimination.</em>
+    The more completely they invested, the more formidable the ending they built for themselves.
+    This is not a betrayal. It is a completion. Both of them did everything correctly.
+  </div>
+  <div class="cv-legend">
+    <div class="cl-item"><div class="cl-dot" style="background:#c05818"></div><span class="cl-txt">Story Heart</span></div>
+    <div class="cl-item"><div class="cl-dot" style="background:#1e4898"></div><span class="cl-txt">Character</span></div>
+    <div class="cl-item"><div class="cl-dot" style="background:#b07828"></div><span class="cl-txt">World & Design</span></div>
+    <div class="cl-item"><div class="cl-dot" style="background:#7a5030"></div><span class="cl-txt">Production</span></div>
+    <div class="cl-item"><div class="cl-dot" style="background:#c8a868"></div><span class="cl-txt">Archive (old versions)</span></div>
+  </div>
+</div>
+
+
+<!-- ══ §00 · FIVE CORE IDEAS ══════════════════ -->
+<div class="sh rel"><span class="sh-n">§ 00 · The Game's DNA</span><span class="sh-t">Five Core Ideas — Everything Flows From These</span><div class="sh-sub">If a document, mechanic, or dialogue line doesn't serve one of these, it shouldn't exist</div></div>
+<div class="bd rel">
+
+  <div class="core-ideas">
+    <div class="ci">
+      <span class="ci-n">01</span>
+      <span class="ci-title">The Tragedy of Competence</span>
+      <div class="ci-body">The Scholar is exactly good enough to be used completely. Not despite their brilliance — because of it. They translate what only they can translate, cross what only they can cross, and build the thing that will outlive them with genuine joy. <strong>The tragedy is that they were exactly right for this.</strong> The Archive needed them. They needed the Archive. Both things were true.</div>
+      <div class="ci-never"><strong>Guard against:</strong> Making the Scholar feel passive or victimized. They chose this. Every single day, they chose it.</div>
+    </div>
+    <div class="ci">
+      <span class="ci-n">02</span>
+      <span class="ci-title">Warmth and Calculation Are the Same Thing</span>
+      <div class="ci-body">The Vanguard places an exact measure of oil in the Scholar's hands — not one drop more than their demonstrated consumption rate requires. This is a calculation. It is also an act of care. <strong>Both are completely true in the same gesture.</strong> The game does not resolve this. It holds both. The oil flask is the game.</div>
+      <div class="ci-never"><strong>Guard against:</strong> Resolving the warmth into either pure manipulation or pure sentiment. She genuinely cares. She also always knew how it would end.</div>
+    </div>
+    <div class="ci">
+      <span class="ci-n">03</span>
+      <span class="ci-title">Understanding Is the Weapon</span>
+      <div class="ci-body">The Vanguard is not tracking the Scholar to eliminate them. She is tracking them to understand them. <em>Elimination is the consequence of understanding, not the goal.</em> The more the Scholar invests, the more completely they are understood. A complete model is a Vanguard who knows exactly when the work is done. <strong>The Scholar who gives everything builds the most formidable ending.</strong></div>
+      <div class="ci-never"><strong>Guard against:</strong> The BMS becoming visible. The player must read the model through the Vanguard's behavior — never through a UI element.</div>
+    </div>
+    <div class="ci">
+      <span class="ci-n">04</span>
+      <span class="ci-title">The Scholar Is the Only Bridge</span>
+      <div class="ci-body">The Archive was built for three. The two Vanguards have everything except the ability to cross. The Scholar has everything except the ability to stay. <strong>The three-body system is the building's architecture — baked into Clause 18, 300 years before the Scholar arrived.</strong> Nietzsche's rope over the abyss. The bridge is great because it is crossed, not because it survives.</div>
+      <div class="ci-never"><strong>Guard against:</strong> The Iron Rule ever bending. Knowledge from World B enables action in World A. Material from World A changes World B physically. One rule. Everywhere. Always.</div>
+    </div>
+    <div class="ci ci-wide" style="border-top: 3px solid var(--a);">
+      <span class="ci-title" style="font-size:16px; margin-bottom:12px; color:var(--a2);">The Ending Is Not a Twist. It Is a Completion.</span>
+      <div class="ci-body" style="font-size:15px;">"<em>You were extraordinary. Past tense is not a judgment. It is a precision.</em>" — Five scenario archetypes. Each one a different story about what these two people were to each other. Level 5 is not the good ending. It is the ending where both became fully what they were — at the same moment — through each other. A player who reaches Level 5 built the thing that eliminated them. No game has done this before. This is why KENOMA exists.</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══ §01 · THE THREE ACTS MUST FEEL LIKE ════ -->
+<div class="sh rel"><span class="sh-n">§ 01 · The Experience</span><span class="sh-t">What Each Act Must Feel Like — Before Any System Is Built</span><div class="sh-sub">Story first. If a mechanic doesn't produce this feeling, the mechanic is wrong</div></div>
+<div class="bd rel">
+  <div class="feeling-grid">
+    <div class="fg-card fg-a">
+      <span class="fg-act">Act I · The Camel</span>
+      <span class="fg-title">Professional Delight Shading Into Dread</span>
+      <div class="fg-body">The Archive is the finest library the Scholar has ever entered. Every puzzle is the correct use of a life's training. The Vanguard is efficient and strange and familiar in a way the Scholar cannot place. <em>Both things feel like gifts.</em> The player is warm and comfortable and belonging here — and the dread enters so quietly they don't notice it arriving. They only notice it when it's already been there for twenty minutes. <strong>The warmth must be genuine before the turn can devastate.</strong></div>
+      <div class="fg-quote">"I had a translation. Yours is better." — She means it. She also chose that text deliberately. Both things are true.</div>
+    </div>
+    <div class="fg-card fg-s">
+      <span class="fg-act">Act II · The Lion</span>
+      <span class="fg-title">Urgent, Intelligent, Slightly Sad</span>
+      <div class="fg-body">The Scholar is very good at this too. Environmental chess using everything the Camel Phase built. The Dark Voice stops surprising them — they've started agreeing before it finishes speaking. <em>This is not a horror chase.</em> This is two brilliant people in the same building, both doing everything correctly, one trying to finish before the other finishes first. <strong>The sadness is that neither of them is wrong.</strong></div>
+      <div class="fg-quote">The Scholar sets down the tablet. Picks up the crossbow. The game does not cut away.</div>
+    </div>
+    <div class="fg-card fg-b">
+      <span class="fg-act">Act III · The Child</span>
+      <span class="fg-title">Aftermath — A Different Kind of Silence</span>
+      <div class="fg-body">The player watches rather than acts. The Vanguard moves through rooms the Scholar worked in, reading the residue of who they were. <em>The three-second silence is the same gesture in every scenario — only its weight changes.</em> In Scenario I it feels like emptiness. In Scenario V it feels like prayer. The Archive registers completion. She straightens her tunic. She goes north. The fire altars stay lit behind her. <strong>This is the Nietzschean Child: not innocent, but new.</strong></div>
+      <div class="fg-quote">"The birds are gone now." — Level 5, World B. The Fan Li aphorism, completed. By her, not the Scholar.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ §02 · DOCUMENT RELATIONSHIP MAP ════════ -->
+<div class="sh rel"><span class="sh-n">§ 02 · The Map</span><span class="sh-t">Document Relationship — How 22 Files Connect</span><div class="sh-sub">Concentric rings: story at center · character next · world & design · production outer · archived outside</div></div>
+<div class="bd rel">
+  <div class="map-box">
+    <div class="map-label">
+      <span class="ml-t">From Story to Production — Rings of Authority</span>
+      <span class="ml-n">If outer ring contradicts inner ring — outer ring changes. Never inner.</span>
+    </div>
+    <svg viewBox="0 0 1020 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#ede4cc;">
+      <defs>
+        <marker id="ar1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0,0 7,3.5 0,7" fill="rgba(90,40,10,.3)"/>
+        </marker>
+        <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(138,56,8,.15)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+        <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(14,40,96,.12)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Faint horizontal rules -->
+      <line x1="0" y1="60" x2="1020" y2="60" stroke="rgba(160,128,72,.06)" stroke-width="1"/>
+      <line x1="0" y1="90" x2="1020" y2="90" stroke="rgba(160,128,72,.05)" stroke-width="1"/>
+
+      <!-- Ring labels left -->
+      <text x="12" y="54" fill="rgba(138,56,8,.35)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="2">STORY HEART</text>
+      <text x="12" y="150" fill="rgba(14,40,96,.3)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="2">CHARACTER</text>
+      <text x="12" y="244" fill="rgba(122,80,16,.3)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="2">WORLD</text>
+      <text x="12" y="330" fill="rgba(74,48,24,.28)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="2">PRODUCTION</text>
+      <text x="12" y="418" fill="rgba(160,128,72,.25)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="2">ARCHIVE</text>
+
+      <!-- ── STORY HEART (ring 1) ── -->
+      <!-- Bible v8 — THE CENTER, larger -->
+      <rect x="335" y="14" width="350" height="52" rx="4" fill="rgba(138,56,8,.12)" stroke="rgba(138,56,8,.55)" stroke-width="2.5"/>
+      <text x="345" y="28" fill="rgba(138,56,8,.45)" font-family="JetBrains Mono,monospace" font-size="7.5" letter-spacing="1">THE CENTER — ALL AUTHORITY FLOWS FROM HERE</text>
+      <text x="345" y="44" fill="#18100a" font-family="Cinzel,serif" font-size="14" font-weight="700">Storytelling Bible v8</text>
+      <text x="345" y="58" fill="rgba(90,50,15,.4)" font-family="JetBrains Mono,monospace" font-size="7">World · Creatures · Rooms · All dialogue · Puzzle grounding · 10 endings</text>
+
+      <!-- Complete Narrative (soul companion) -->
+      <rect x="64" y="18" width="232" height="42" rx="3" fill="rgba(138,56,8,.07)" stroke="rgba(138,56,8,.3)" stroke-width="1.5"/>
+      <text x="74" y="32" fill="rgba(138,56,8,.4)" font-family="JetBrains Mono,monospace" font-size="7">PHILOSOPHY + ARCHETYPES</text>
+      <text x="74" y="46" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">Complete Narrative</text>
+      <text x="74" y="56" fill="rgba(90,50,15,.32)" font-family="JetBrains Mono,monospace" font-size="7">Nietzsche · Scholar archetypes · Tribute map</text>
+
+      <!-- Phase Design (soul companion) -->
+      <rect x="726" y="18" width="232" height="42" rx="3" fill="rgba(138,56,8,.07)" stroke="rgba(138,56,8,.3)" stroke-width="1.5"/>
+      <text x="736" y="32" fill="rgba(138,56,8,.4)" font-family="JetBrains Mono,monospace" font-size="7">DRAMATIC STRUCTURE</text>
+      <text x="736" y="46" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">Phase Design Doc</text>
+      <text x="736" y="56" fill="rgba(90,50,15,.32)" font-family="JetBrains Mono,monospace" font-size="7">Camel · Lion · Child · 5 ending archetypes</text>
+
+      <!-- DEFS: connecting arrows from bible outward -->
+      <defs><marker id="dep" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0,0 6,3 0,6" fill="rgba(90,40,10,.25)"/></marker></defs>
+      <line x1="296" y1="40" x2="333" y2="40" stroke="rgba(138,56,8,.2)" stroke-width="1.2" marker-end="url(#dep)"/>
+      <line x1="685" y1="40" x2="724" y2="40" stroke="rgba(138,56,8,.2)" stroke-width="1.2" marker-end="url(#dep)"/>
+
+      <!-- ── CHARACTER (ring 2) ── -->
+      <rect x="64" y="118" width="226" height="42" rx="3" fill="rgba(14,40,96,.07)" stroke="rgba(14,40,96,.3)" stroke-width="1.5"/>
+      <text x="74" y="131" fill="rgba(14,40,96,.4)" font-family="JetBrains Mono,monospace" font-size="7">CHARACTER DEPTH</text>
+      <text x="74" y="146" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">Vanguard Expansion</text>
+      <text x="74" y="156" fill="rgba(20,50,100,.3)" font-family="JetBrains Mono,monospace" font-size="7">300yr journey · 5 new scenes · Sequel seed</text>
+
+      <rect x="310" y="118" width="256" height="42" rx="3" fill="rgba(14,40,96,.07)" stroke="rgba(14,40,96,.3)" stroke-width="1.5"/>
+      <text x="320" y="131" fill="rgba(14,40,96,.4)" font-family="JetBrains Mono,monospace" font-size="7">WARMTH AS MECHANICS</text>
+      <text x="320" y="146" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">Interference Puzzles</text>
+      <text x="320" y="156" fill="rgba(20,50,100,.3)" font-family="JetBrains Mono,monospace" font-size="7">4 puzzles · Both Vanguards · Score consequences</text>
+
+      <rect x="588" y="118" width="216" height="42" rx="3" fill="rgba(14,40,96,.05)" stroke="rgba(14,40,96,.2)" stroke-width="1"/>
+      <text x="598" y="131" fill="rgba(14,40,96,.33)" font-family="JetBrains Mono,monospace" font-size="7">WHY THIS IS NEW</text>
+      <text x="598" y="146" fill="#382410" font-family="Cinzel,serif" font-size="11.5" font-weight="600">Uniqueness Analysis</text>
+      <text x="598" y="156" fill="rgba(20,50,100,.25)" font-family="JetBrains Mono,monospace" font-size="7">5 criteria · No game scores all 5 · KENOMA first</text>
+
+      <line x1="335" y1="66" x2="185" y2="116" stroke="rgba(14,40,96,.15)" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#dep)"/>
+      <line x1="510" y1="66" x2="442" y2="116" stroke="rgba(14,40,96,.15)" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#dep)"/>
+
+      <!-- ── WORLD (ring 3) ── -->
+      <rect x="64" y="210" width="196" height="42" rx="3" fill="rgba(122,80,16,.07)" stroke="rgba(122,80,16,.28)" stroke-width="1.5"/>
+      <text x="74" y="223" fill="rgba(122,80,16,.45)" font-family="JetBrains Mono,monospace" font-size="7">SPATIAL REFERENCE</text>
+      <text x="74" y="238" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">Maps · Both Worlds</text>
+      <text x="74" y="248" fill="rgba(100,65,15,.3)" font-family="JetBrains Mono,monospace" font-size="7">WA + WB · Room IDs · TFPs</text>
+
+      <rect x="280" y="210" width="220" height="42" rx="3" fill="rgba(122,80,16,.09)" stroke="rgba(122,80,16,.38)" stroke-width="2"/>
+      <text x="290" y="223" fill="rgba(122,80,16,.5)" font-family="JetBrains Mono,monospace" font-size="7">PUZZLE TEMPLATE</text>
+      <text x="290" y="238" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">Calibration Channel</text>
+      <text x="290" y="248" fill="rgba(100,65,15,.35)" font-family="JetBrains Mono,monospace" font-size="7">AitD DNA · 3 states · Build this first</text>
+
+      <rect x="520" y="210" width="210" height="42" rx="3" fill="rgba(122,80,16,.07)" stroke="rgba(122,80,16,.28)" stroke-width="1.5"/>
+      <text x="530" y="223" fill="rgba(122,80,16,.42)" font-family="JetBrains Mono,monospace" font-size="7">DESIGN DOCTRINE</text>
+      <text x="530" y="238" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">TS Deep Analysis</text>
+      <text x="530" y="248" fill="rgba(100,65,15,.3)" font-family="JetBrains Mono,monospace" font-size="7">5 principles · What TS1 proved · The gap</text>
+
+      <rect x="750" y="210" width="196" height="42" rx="3" fill="rgba(122,80,16,.05)" stroke="rgba(122,80,16,.2)" stroke-width="1"/>
+      <text x="760" y="223" fill="rgba(122,80,16,.35)" font-family="JetBrains Mono,monospace" font-size="7">RULES REFERENCE</text>
+      <text x="760" y="238" fill="#382410" font-family="Cinzel,serif" font-size="11.5" font-weight="600">GDD v5 Production</text>
+      <text x="760" y="248" fill="rgba(100,65,15,.25)" font-family="JetBrains Mono,monospace" font-size="7">Combat · Creatures · Mechanics</text>
+
+      <!-- ── PRODUCTION (ring 4) ── -->
+      <rect x="64" y="298" width="224" height="42" rx="3" fill="rgba(74,48,24,.06)" stroke="rgba(74,48,24,.25)" stroke-width="1.5"/>
+      <text x="74" y="311" fill="rgba(74,48,24,.42)" font-family="JetBrains Mono,monospace" font-size="7">SYSTEMS SPEC</text>
+      <text x="74" y="326" fill="#18100a" font-family="Cinzel,serif" font-size="12" font-weight="700">Game Loop + Systems</text>
+      <text x="74" y="336" fill="rgba(60,38,18,.28)" font-family="JetBrains Mono,monospace" font-size="7">8 systems · Build order · Team matrix · 12 risks</text>
+
+      <rect x="308" y="298" width="212" height="42" rx="3" fill="rgba(74,48,24,.05)" stroke="rgba(74,48,24,.2)" stroke-width="1"/>
+      <text x="318" y="311" fill="rgba(74,48,24,.35)" font-family="JetBrains Mono,monospace" font-size="7">TEAM REFERENCE</text>
+      <text x="318" y="326" fill="#382410" font-family="Cinzel,serif" font-size="11.5" font-weight="600">Team Presentation</text>
+      <text x="318" y="336" fill="rgba(60,38,18,.25)" font-family="JetBrains Mono,monospace" font-size="7">Maps + puzzles · Meetings · Onboarding</text>
+
+      <rect x="540" y="298" width="200" height="42" rx="3" fill="rgba(74,48,24,.04)" stroke="rgba(74,48,24,.18)" stroke-width="1"/>
+      <text x="550" y="311" fill="rgba(74,48,24,.3)" font-family="JetBrains Mono,monospace" font-size="7">PITCH</text>
+      <text x="550" y="326" fill="#382410" font-family="Cinzel,serif" font-size="11.5" font-weight="600">Product Presentation</text>
+      <text x="550" y="336" fill="rgba(60,38,18,.22)" font-family="JetBrains Mono,monospace" font-size="7">For game-literate audiences</text>
+
+      <rect x="760" y="298" width="196" height="42" rx="3" fill="rgba(74,48,24,.04)" stroke="rgba(74,48,24,.18)" stroke-width="1"/>
+      <text x="770" y="311" fill="rgba(74,48,24,.3)" font-family="JetBrains Mono,monospace" font-size="7">INVESTOR PITCH</text>
+      <text x="770" y="326" fill="#382410" font-family="Cinzel,serif" font-size="11.5" font-weight="600">Investor Presentation</text>
+      <text x="770" y="336" fill="rgba(60,38,18,.22)" font-family="JetBrains Mono,monospace" font-size="7">Non-gaming investors · Market data</text>
+
+      <!-- ── ARCHIVE (outer) ── -->
+      <rect x="64" y="386" width="880" height="42" rx="3" fill="rgba(160,128,72,.04)" stroke="rgba(160,128,72,.15)" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="504" y="400" fill="rgba(160,128,72,.35)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="2">ARCHIVED — DO NOT REVISE — READ ONLY FOR HISTORICAL CONTEXT</text>
+      <text x="504" y="416" fill="rgba(160,128,72,.25)" font-family="JetBrains Mono,monospace" font-size="7.5" text-anchor="middle">GDD v1–v4 · Storytelling Bible Persian · Bible Revised · TS Comparative Analysis</text>
+
+      <!-- Center glow hint -->
+      <ellipse cx="510" cy="40" rx="180" ry="28" fill="url(#glow1)" opacity="0.5"/>
+
+      <!-- Rule at bottom -->
+      <text x="510" y="452" fill="rgba(160,128,72,.18)" font-family="JetBrains Mono,monospace" font-size="7.5" text-anchor="middle" letter-spacing="2">AUTHORITY FLOWS INWARD · IF OUTER CONTRADICTS INNER · OUTER CHANGES</text>
+    </svg>
+  </div>
+
+  <div class="call ca">
+    <span class="c-lbl">The One Rule of This Map</span>
+    The <strong>Storytelling Bible v8</strong> is the center of gravity. Every other document orbits it. The Complete Narrative and Phase Design document are its closest companions — the philosophy and the dramatic structure of the same story. The Game Loop & Systems document is the outermost production ring that translates all of it into what the team builds. <strong>When a systems document and a story document disagree, the story document is correct.</strong>
+  </div>
+</div>
+
+
+<!-- ══ §03 · ALL FILES REVIEWED ══════════════ -->
+<div class="sh rel"><span class="sh-n">§ 03 · File Review</span><span class="sh-t">Every File — What It Is, What It Answers, When to Open It</span><div class="sh-sub">Click any group to expand · Heart = read first · Use = working document · Reference = when needed · Archive = history only</div></div>
+<div class="bd rel">
+<div class="layers">
+
+<!-- STORY HEART -->
+<div class="layer l-heart open">
+  <div class="lh" onclick="this.parentElement.classList.toggle('open')">
+    <span class="lh-icon">🔥</span>
+    <div class="lh-main">
+      <span class="lh-name">Story Heart — Read Before Touching Anything Else</span>
+      <span class="lh-desc">These files are what the game is. If a production decision contradicts them, the production decision changes.</span>
+    </div>
+    <span class="lh-badge">3 files</span>
+  </div>
+  <div class="l-files">
+    <a class="fr" href="Kenoma_Storytelling_Bible_v8.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">Kenoma_Storytelling_Bible_v8.html</span>
+        <span class="fr-q">"What is the complete world, and who lives in it?"</span>
+        <div class="fr-when">The source of truth for everything. World A and World B architecture. Every room's description, purpose, and story. All creature types and how they behave. The two Vanguards' full history. Every puzzle grounded in the person who left it. All dialogue arcs. The 10-ending structure. The overheard scenes. The resonance moments. The crossing system. <strong>If something feels wrong anywhere in the project — come back here first.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-heart">Heart</span>
+        <a class="fr-link" href="Kenoma_Storytelling_Bible_v8.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_Complete_Narrative.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Complete_Narrative.html</span>
+        <span class="fr-q">"Why does this story work philosophically, and what does it owe to everything that came before it?"</span>
+        <div class="fr-when">The intellectual architecture. Six Scholar archetypes — Lawrence (total investment), Faust (deliberate bargain), Prospero (island-dependent power), Sisyphus (chosen boulder, carried happily), Henry Jones Sr. (thirty years waiting to use the right knowledge), Hamlet (correct action, exact moment). Nietzsche's six ideas as structural bones. The three-character dynamic as a working engine. The climax scene with all five score variants written out. The complete tribute inventory — every referenced game and film placed precisely where it lives in KENOMA. The game in one paragraph at the end. <strong>Open when a team member asks "why is this the way it is?"</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-heart">Heart</span>
+        <a class="fr-link" href="KENOMA_Complete_Narrative.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_Phase_Design.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Phase_Design.html</span>
+        <span class="fr-q">"How do the three acts actually work — mechanically and dramatically?"</span>
+        <div class="fr-when">The dramatic structure with its mechanics. The five problems with earlier act designs and their solutions. How warmth works mechanically (not just scenically — the Vanguard's behavior must change based on what the Scholar actually did, not time passing). Five recognition stages per Vanguard with specific observable behavioral shifts. The Utility Score system as Lion Phase engine — each Vanguard has independent thresholds, and the gap between when they decide is the Lion Phase's most valuable strategic space. Four Scholar route archetypes. Five Child Phase scenario archetypes — each its own genre, its own emotional register, its own closing line. <strong>Open at the beginning of any sprint that touches any of the three acts.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-heart">Heart</span>
+        <a class="fr-link" href="KENOMA_Phase_Design.html" target="_blank">Open →</a>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- CHARACTER -->
+<div class="layer l-char open">
+  <div class="lh" onclick="this.parentElement.classList.toggle('open')">
+    <span class="lh-icon">🏛️</span>
+    <div class="lh-main">
+      <span class="lh-name">Character — Who the Vanguard Actually Is</span>
+      <span class="lh-desc">She must be so clearly realized that every team member writes her consistently — in dialogue, behavior, and the design of every system she inhabits.</span>
+    </div>
+    <span class="lh-badge">3 files</span>
+  </div>
+  <div class="l-files">
+    <a class="fr" href="KENOMA_Vanguard_Expansion.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Vanguard_Expansion.html</span>
+        <span class="fr-q">"Who is she, and what did 300 years actually do to a person?"</span>
+        <div class="fr-when">Six film archetypes with exact contributions: Marion's warmth without performance, Furiosa's economy of expression with one enormous contained grief, Evelyn's scholar-warrior as one thing not two, Leia's self-sourced authority and deferred mourning, Ripley's actions-as-portrait (you learn who she is by watching what she does), Clarice's total sustained attention. Five new scenes written fully: The Map (she tracked her own movements to keep the habit — two sets of footprints on Day One), The Grief (12 funeral records written simultaneously, she was 70 hours late, she has been counting those hours for 300 years), The Calculation (Armillary by memory in the dark for 270 years), The Fire She Saved (72 altars prepared and numbered in the order she predicted the Scholar would light them), The Moment Before (the officer's disc, 3 seconds, before anything irreversible). The sequel architecture. She buys bread for the first time in 312 years. <strong>Open when writing any Vanguard dialogue or designing any scene she's in.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-use">Use</span>
+        <a class="fr-link" href="KENOMA_Vanguard_Expansion.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_Vanguard_Interference_Puzzles.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Vanguard_Interference_Puzzles.html</span>
+        <span class="fr-q">"How does the warmth actually become gameplay?"</span>
+        <div class="fr-when">Four puzzles where both Vanguards have been attempting the same mechanism for 300 years and failing because of each other's invisible presence — and the Scholar, seeing both attempts, can finally resolve what neither could alone. Shadow Well (light interference), Resonance Obelisk (destructive acoustic interference — they've been canceling each other out for three centuries), Still-Water Oracle (both Vanguards unknowingly disturbing the same oracle since year 12), Translation Obelisk (the Scholar is the interference — Clause 18 is written there). Each puzzle has a choice spectrum with behavioral score consequences that reach into Act II. The Translation Obelisk is ±10 points — the game's highest single weight. <strong>Open when designing any Camel Phase puzzle or scene involving both Vanguards.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-use">Use</span>
+        <a class="fr-link" href="KENOMA_Vanguard_Interference_Puzzles.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_Uniqueness_Analysis.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Uniqueness_Analysis.html</span>
+        <span class="fr-q">"Has anyone done this before, and why is KENOMA the first?"</span>
+        <div class="fr-when">Every comparable game analyzed against 5 criteria. SH2 gets C2 only (invisible tracking). Witcher 3 gets C1+C4. Undertale gets C2 partial. MGSV gets C2 only. Bayonetta/Jeanne gets C3 partial. KENOMA scores all 5. "The player who reaches Level 5 built the thing that eliminated them" — no game has made this the primary mechanic. <strong>Open when convincing the team or an external party that the core mechanic is worth protecting.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-ref">Reference</span>
+        <a class="fr-link" href="KENOMA_Uniqueness_Analysis.html" target="_blank">Open →</a>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- WORLD + DESIGN -->
+<div class="layer l-world open">
+  <div class="lh" onclick="this.parentElement.classList.toggle('open')">
+    <span class="lh-icon">🗺️</span>
+    <div class="lh-main">
+      <span class="lh-name">World & Design — The Archive, Its Rooms, Its Rules</span>
+      <span class="lh-desc">The physical reality of the Archive and the doctrine behind every decision in it. The puzzle template. The spatial map.</span>
+    </div>
+    <span class="lh-badge">4 files</span>
+  </div>
+  <div class="l-files">
+    <a class="fr" href="KENOMA_Maps.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Maps.html</span>
+        <span class="fr-q">"Where is everything, and how do the two worlds mirror each other?"</span>
+        <div class="fr-when">Full SVG maps for World A and World B. Every room has a WA- or WB- ID. Every TFP crossing point is marked. Every interference puzzle location is labeled with its scenario letter. World A ascends from the Gate of All Nations to the Grand Armillary summit. World B descends from the Inverted Gate to the Chamber of Convergence (WB-∞). The elevation relationship between the two worlds is visible. <strong>Pin this up. Level designers need it constantly. The room IDs in every other document refer to this map.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-use">Use</span>
+        <a class="fr-link" href="KENOMA_Maps.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_Calibration_Channel.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Calibration_Channel.html</span>
+        <span class="fr-q">"What does a fully designed KENOMA puzzle actually look like?"</span>
+        <div class="fr-when">The most completely designed room in the project. AitD: The New Nightmare's Lightning Conductor design DNA transplanted into KENOMA's dual-world structure. The 90-second Armillary's Breath cycle — audible in brass harmonics before it's visible, astrolabe vibration as non-optional warning. Two creatures that can only be handled through the environment, not combat. Three solution states depending on which Vanguards interfere. The sealed center chamber that only opens in State 2 — where both Vanguards see each other through glass for the first time in 300 years. All 12 design injection requirements verified. <strong>Build this room first. Every subsequent puzzle is reviewed against it. If a puzzle can't be explained by naming the person who built it and why, it doesn't belong.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-use">Use</span>
+        <a class="fr-link" href="KENOMA_Calibration_Channel.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_TS_Deep_Analysis.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_TS_Deep_Analysis.html</span>
+        <span class="fr-q">"What did the research into Tormented Souls prove about puzzle design?"</span>
+        <div class="fr-when">The document that produced KENOMA's five design principles. TS1 analyzed puzzle by puzzle — why its story-first design makes each puzzle feel like discovery rather than obstacle. TS2 analyzed zone by zone — why parallel development broke narrative coherence and produced six different crossing logics. The three TS2 mechanics worth adapting. The five unbreakable KENOMA laws. <strong>Read before designing any puzzle. The five principles are the standard every room must meet.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-ref">Reference</span>
+        <a class="fr-link" href="KENOMA_TS_Deep_Analysis.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="Kenoma_GDD_v5_Production.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">Kenoma_GDD_v5_Production.html</span>
+        <span class="fr-q">"What are the mechanical rules — combat, creatures, saving, inventory?"</span>
+        <div class="fr-when">The most recent full GDD. Contains complete combat system (three tiers: environmental → fire/crossbow/bell → Naming), creature ecology, full puzzle list with solutions, save system (fire altars), physical inventory (15-slot leather satchel), all mechanical rules. Valid reference for anything the Bible v8 doesn't duplicate. <em>Note: the Phase Design and Game Loop documents supersede this for act structure and AI systems.</em> <strong>Open when designing combat encounters, creature behaviors, or inventory rules.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-ref">Reference</span>
+        <a class="fr-link" href="Kenoma_GDD_v5_Production.html" target="_blank">Open →</a>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- PRODUCTION -->
+<div class="layer l-make">
+  <div class="lh" onclick="this.parentElement.classList.toggle('open')">
+    <span class="lh-icon">⚙️</span>
+    <div class="lh-main">
+      <span class="lh-name">Production — Building It</span>
+      <span class="lh-desc">Story translated into systems. Specific enough to start sprints from. For the team building this game.</span>
+    </div>
+    <span class="lh-badge">2 files</span>
+  </div>
+  <div class="l-files">
+    <a class="fr" href="KENOMA_Game_Loop_Systems.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Game_Loop_Systems.html</span>
+        <span class="fr-q">"What does the team actually build, in what order, with what data structures?"</span>
+        <div class="fr-when">The production specification. The master game loop (READ → ACT → OBSERVE → ADAPT — one structure, three phase expressions). Eight core systems with exact data fields: BMS (behavioral model spine), RSS (recognition stages), TDS (translation depth), TVS (traversal/crossing), RES (resource economy), USS (utility score / lion phase engine), TCS (terrain control), SRS (scenario resolution). Three beat charts — minute-by-minute for all three acts. System dependency graph (BMS first, USS last). Team ownership matrix. 12 risk flags with mitigations. <strong>Open at the start of any engineering sprint. The build order matters — BMS before everything, USS only after RSS, TDS, and TVS are stable.</strong></div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-use">Use</span>
+        <a class="fr-link" href="KENOMA_Game_Loop_Systems.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_Team_Presentation.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Team_Presentation.html</span>
+        <span class="fr-q">"How do I show the whole design to someone in a meeting?"</span>
+        <div class="fr-when">Visual team reference. Both world maps with navigation sidebar. All four TFP crossings explained with diagrams. All four interference puzzles presented as interactive cards with full choice spectrums and score consequence tables. Good for onboarding new team members or walking through the core design in a meeting without needing any other document open.</div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-ref">Reference</span>
+        <a class="fr-link" href="KENOMA_Team_Presentation.html" target="_blank">Open →</a>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- PITCH -->
+<div class="layer l-pitch">
+  <div class="lh" onclick="this.parentElement.classList.toggle('open')">
+    <span class="lh-icon">📊</span>
+    <div class="lh-main">
+      <span class="lh-name">Pitch & Investment — External Audiences</span>
+      <span class="lh-desc">The business case and market context. Not the story — the opportunity.</span>
+    </div>
+    <span class="lh-badge">2 files</span>
+  </div>
+  <div class="l-files">
+    <a class="fr" href="KENOMA_Product_Presentation.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Product_Presentation.html</span>
+        <span class="fr-q">"How do I pitch this to someone who plays games?"</span>
+        <div class="fr-when">Market gap diagram. Five-sentence thesis. Design doctrine comparison (TS1 vs TS2 vs KENOMA). The interference puzzles as proof of concept. "No game scores more than 2 of 5 criteria. KENOMA scores all 5." Full scroll format. For publishers, developers, and game-literate investors.</div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-ref">Reference</span>
+        <a class="fr-link" href="KENOMA_Product_Presentation.html" target="_blank">Open →</a>
+      </div>
+    </a>
+    <a class="fr" href="KENOMA_Investor_Presentation.html" target="_blank">
+      <div class="fr-main">
+        <span class="fr-name">KENOMA_Investor_Presentation.html</span>
+        <span class="fr-q">"How do I pitch this to someone who doesn't play games?"</span>
+        <div class="fr-when">The concept in one paragraph without gaming jargon. Horror game market $9.8B → $22.4B by 2032. Real comparable case studies (Disco Elysium $205M, Balatro $100M single developer, Signalis 2-person team 500K+ copies). Phase 1 at $250–350K with four revenue scenarios. What can flex without losing the core IP. Pivot scenarios. Honest risk table.</div>
+      </div>
+      <div class="fr-right">
+        <span class="fr-status st-ref">Reference</span>
+        <a class="fr-link" href="KENOMA_Investor_Presentation.html" target="_blank">Open →</a>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ARCHIVE -->
+<div class="layer l-arch">
+  <div class="lh" onclick="this.parentElement.classList.toggle('open')">
+    <span class="lh-icon">📦</span>
+    <div class="lh-main">
+      <span class="lh-name">Archive — Iteration History</span>
+      <span class="lh-desc">Superseded versions. Don't revise. Open only to understand why a decision was made.</span>
+    </div>
+    <span class="lh-badge">8 files</span>
+  </div>
+  <div class="l-files">
+    <div class="fr-plain">
+      <span class="fr-name">Kenoma_GDD.html · Kenoma_GDD_Enhanced.html · Kenoma_GDD_v3.html · Kenoma_GDD_v4.html</span>
+      <span class="fr-status st-arch">Archive</span>
+    </div>
+    <div class="fr-plain" style="margin-top:1px;">
+      <span class="fr-name">Kenoma_Production_GDD_Persian.html · Kenoma_Storytelling_Bible_Persian.html · Kenoma_Storytelling_Bible_Revised.html</span>
+      <span class="fr-status st-arch">Archive · lore backup</span>
+    </div>
+    <div class="fr-plain" style="margin-top:1px;">
+      <span class="fr-name">KENOMA_TS_Comparative_Analysis.html — superseded by TS Deep Analysis</span>
+      <span class="fr-status st-arch">Archive</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layers -->
+</div>
+
+
+<!-- ══ §04 · CRITICAL PATH ════════════════════ -->
+<div class="sh rel"><span class="sh-n">§ 04 · The Path</span><span class="sh-t">Seven Creative Decisions — From First Read to Playable Story</span><div class="sh-sub">Not a sprint plan. A sequence of commitments, each one unlocking the next.</div></div>
+<div class="bd rel">
+
+  <div class="call ca">
+    <span class="c-lbl">Before Any of This</span>
+    The whole team reads three things aloud together. First: the Scholar's Day Three journal entry — they turn the page on Fan Li's warning and start the creature taxonomy. Second: the oil flask scene (mid-Camel, WA-002 corridor). Third: the Clause 18 declaration — Vanguard A to the Scholar, Stage 4+. <strong>If the room goes quiet after the Clause 18 scene, the team is ready to build.</strong> If it doesn't, more time with the material before production starts.
+  </div>
+
+  <div class="path">
+    <div class="path-item">
+      <div class="pi-num"><span class="pi-n">1</span></div>
+      <div class="pi-c">
+        <span class="pi-when">Weeks 1–2 · Everyone · No tools yet</span>
+        <span class="pi-title">Know the Characters Well Enough to Defend Them</span>
+        <div class="pi-body">The Vanguard taught herself Babylonian for 8 years so she could understand her Scholar when they arrived. The Scholar wrote Fan Li's warning in the margin of their journal and turned the page. Every team member must understand these two people well enough to know when a proposed dialogue line, mechanic, or room behavior contradicts who they are. <em>This takes longer than it seems and is worth every minute.</em></div>
+        <div class="pi-docs">
+          <span class="pi-doc">Bible v8</span><span class="pi-doc">Complete Narrative</span><span class="pi-doc">Vanguard Expansion</span>
+        </div>
+      </div>
+    </div>
+    <div class="path-item">
+      <div class="pi-num"><span class="pi-n">2</span></div>
+      <div class="pi-c">
+        <span class="pi-when">Weeks 2–3 · Engineering + Design</span>
+        <span class="pi-title">Build the Behavioral Model System First — Everything Writes to It</span>
+        <div class="pi-body">The BMS is the invisible connective tissue of the game. 12 core event types. Batched per room-session, not per frame. WarmthRegister per Vanguard. Before any graphics, any combat, any room — define the data structure. <strong>If BMS isn't right, the whole game produces the wrong output regardless of how good everything else is.</strong> The Vanguard's five recognition stages run on BMS data. The five ending scenarios are read from BMS data. Build this first.</div>
+        <div class="pi-docs">
+          <span class="pi-doc">Game Loop · SYS-01</span><span class="pi-doc">Phase Design · §1.2</span>
+        </div>
+      </div>
+    </div>
+    <div class="path-item">
+      <div class="pi-num"><span class="pi-n">3</span></div>
+      <div class="pi-c">
+        <span class="pi-when">Weeks 3–6 · Art + Audio + Design</span>
+        <span class="pi-title">Make the Deep Read Feel Like the Best Moment in the Game</span>
+        <div class="pi-body">The Scholar reading a tablet deeply — 25 to 40 seconds — is KENOMA's primary player action. Everything downstream depends on players choosing to do it. <strong>The Scholar's voice murmuring the translation. Cuneiform characters illuminating as they're parsed. The ambient world narrowing to focus around one warm light.</strong> If this interaction feels slow or unrewarding, players skim. If they skim, the BMS receives shallow data, the Vanguard's recognition stages stall, the endings collapse into adjacent indistinctions. Art and audio must prioritize this above everything else in the vertical slice.</div>
+        <div class="pi-docs">
+          <span class="pi-doc">Game Loop · SYS-03 · RISK-04</span><span class="pi-doc">Bible v8 · tablet content</span>
+        </div>
+      </div>
+    </div>
+    <div class="path-item">
+      <div class="pi-num"><span class="pi-n">4</span></div>
+      <div class="pi-c">
+        <span class="pi-when">Weeks 4–8 · Engineering + Design</span>
+        <span class="pi-title">Vanguard A Must Change Based on What the Scholar Did — Not on Time</span>
+        <div class="pi-body">Gate the three resonance moments behind RSS stage thresholds. A Scholar who skims everything must receive a noticeably flatter Recognition scene. A Scholar who deep-reads and shares receives "Yours is better." <strong>Playtester language test:</strong> if testers describe the difference between their two runs in terms of the Vanguard's behavior — "she was warmer when I did X" — the RSS is working. If they describe it only in terms of their own choices — "I translated more" — the system is running but not surfacing. The Vanguard must visibly respond.</div>
+        <div class="pi-docs">
+          <span class="pi-doc">Phase Design · §1.2–1.3</span><span class="pi-doc">Game Loop · SYS-02</span>
+        </div>
+      </div>
+    </div>
+    <div class="path-item">
+      <div class="pi-num"><span class="pi-n">5</span></div>
+      <div class="pi-c">
+        <span class="pi-when">Weeks 6–10 · Level Design</span>
+        <span class="pi-title">Build the Calibration Channel First — It Is the Puzzle Standard</span>
+        <div class="pi-body">WA/B-CC-01. Every design principle operating simultaneously. The mechanic is taught at low stakes before it's demanded under pressure. Failure resets diegetically — "The Empty Shot," 30 seconds of silence, Scholar's face. The 90-second cycle is readable through audio before visual. Three solution states from Vanguard interference, the rarest of which opens a chamber where both Vanguards see each other through glass for the first time in 300 years. <strong>Every subsequent puzzle is reviewed against this room. Not for complexity — for story grounding. Who built this? Why? What did they need it to hold?</strong></div>
+        <div class="pi-docs">
+          <span class="pi-doc">Calibration Channel · full</span><span class="pi-doc">TS Deep Analysis · 5 principles</span>
+        </div>
+      </div>
+    </div>
+    <div class="path-item">
+      <div class="pi-num"><span class="pi-n">6</span></div>
+      <div class="pi-c">
+        <span class="pi-when">Weeks 8–14 · Full Team</span>
+        <span class="pi-title">Vertical Slice — One Test, One Verdict</span>
+        <div class="pi-body">30–45 minutes. WA-001 through WA-003. VA Stages 1–3. One crossing. One creature with Naming available after a deep read. One resonance moment — the Recognition scene, either the full version ("Yours is better") or the flat version. <strong>Players must be able to describe, without being told, that their choices affected how the Vanguard treated them.</strong> That is the only verdict that matters for the vertical slice. If they can't, the BMS is running but not surfacing through behavior.</div>
+        <div class="pi-docs">
+          <span class="pi-doc">Game Loop · Tier 0</span><span class="pi-doc">All heart documents for every decision</span>
+        </div>
+      </div>
+    </div>
+    <div class="path-item">
+      <div class="pi-num"><span class="pi-n">7</span></div>
+      <div class="pi-c">
+        <span class="pi-when">Months 4–10 · Full Team</span>
+        <span class="pi-title">Chapter One — The Turn Must Land as Completion, Not Betrayal</span>
+        <div class="pi-body">Both Vanguards through all five recognition stages. Full Camel Phase with all three resonance moments and all four interference puzzles. Full Act II with VA Utility Score dynamic. Three Child Phase scenarios (I, III, V). The Act I→II turn — the Scholar's hands pause on the puzzle, they set it down, they pick up the crossbow — must pass one playtester test: <strong>players say "I knew it was coming and it still landed."</strong> If they say "I didn't see that coming," the Camel Phase failed to prepare them. That sentence is the most important diagnostic in the project.</div>
+        <div class="pi-docs">
+          <span class="pi-doc">Phase Design · full</span><span class="pi-doc">Game Loop · Tier 1</span><span class="pi-doc">All 4 Interference Puzzles</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ §05 · WHAT THIS GAME MUST NEVER DO ════ -->
+<div class="sh rel"><span class="sh-n">§ 05 · Constraints</span><span class="sh-t">What KENOMA Must Never Do — The Lines That Protect the Core</span><div class="sh-sub">Four rules. Break any one and the game becomes something that already exists.</div></div>
+<div class="bd rel">
+  <div class="core-ideas">
+    <div class="ci" style="border-top: 2px solid rgba(90,14,16,.3);">
+      <span class="ci-title" style="color: var(--v2);">Never Make the Turn a Betrayal</span>
+      <div class="ci-body">The Vanguard was always this person. The Act I→II turn is not a reveal. It is a completion. If any team member describes it as a betrayal, reread the Clause 18 scene. VA looks at the Scholar and says, in the clearest possible terms, exactly what is about to happen — and then walks away to execute it. She told them. She has always told them. The Scholar heard it and stayed anyway. <strong>The turn is the final gift of the Camel Phase.</strong></div>
+      <div class="ci-never">If playtesters say "I didn't see that coming" — the Camel Phase failed. If they say "I knew and it still landed" — the game worked.</div>
+    </div>
+    <div class="ci" style="border-top: 2px solid rgba(90,14,16,.3);">
+      <span class="ci-title" style="color: var(--v2);">Never Break the Iron Rule</span>
+      <div class="ci-body">Knowledge from World B enables action in World A. Material from World A produces physical change in World B. One rule. Taught in PZ-002. Consistent everywhere. <em>TS2 had six different crossing logics across seven zones — it destroyed player intuition completely.</em> KENOMA has one. If a puzzle design requires bending the rule, <strong>the puzzle design changes</strong>. The rule does not.</div>
+      <div class="ci-never">Not even once, not even with good intentions. The moment the rule bends, every subsequent crossing becomes uncertain.</div>
+    </div>
+    <div class="ci" style="border-top: 2px solid rgba(90,14,16,.3);">
+      <span class="ci-title" style="color: var(--v2);">Never Show the Behavioral Model</span>
+      <div class="ci-body">No dialogue wheels. No "your choice has been remembered." No score counter. No UI element of any kind that references the BMS. The player reads the behavioral model through one channel only: <strong>the Vanguard's observed behavior changes.</strong> Stage 5 is the most frightening moment in the game — it must arrive through a player noticing that she has stopped asking questions she used to ask. Never through a notification.</div>
+      <div class="ci-never">The moment the tracking is visible, every prior warmth retroactively becomes a checkbox. The relationship collapses.</div>
+    </div>
+    <div class="ci" style="border-top: 2px solid rgba(90,14,16,.3);">
+      <span class="ci-title" style="color: var(--v2);">Never Make a Puzzle That Doesn't Have an Author</span>
+      <div class="ci-body">Every puzzle in the Archive exists because a real person made a real decision in that space. "This room needs a puzzle" is never a valid reason. The question is always: <em>who was here, what did they need, what did they leave?</em> The Grand Armillary's activation sequence is in the manual in WA-003 because the people who built it feared what they had created and included an emergency dissolution protocol. <strong>That is why the puzzle is hard — because it was designed for an emergency.</strong></div>
+      <div class="ci-never">If a puzzle can't be explained by naming the person who designed it and why, it doesn't belong in the Archive.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ FOOT ══════════════════════════════════ -->
+<div class="foot rel">
+  <span class="f-main">KENOMA · بایگانی دو راستی · The Archive of Two Truths</span>
+  <span class="f-meta">Navigator v2 · 22 Files · 11 Active · 3 Reference · 8 Archive</span>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// Keep soul/char/world open; close production and archive by default
+document.querySelectorAll('.l-make, .l-pitch, .l-arch').forEach(l => l.classList.remove('open'));
+</script>
+</body>
+</html>

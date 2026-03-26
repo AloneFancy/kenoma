@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA · Demo Scene Design · The Resonance Obelisk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fire: #e8863a;
+    --ember: #c45c1a;
+    --gold: #d4a843;
+    --ash: #8a7a6a;
+    --stone: #221e1a;
+    --deep: #181410;
+    --hollow: #0d0b09;
+    --cold: #4a6a8a;
+    --cold-light: #7aadcc;
+    --text: #d4c8b8;
+    --text-dim: #6a5a4a;
+    --border: rgba(212,168,67,0.12);
+    --border-fire: rgba(232,134,58,0.35);
+    --border-cold: rgba(74,106,138,0.35);
+    --strength: #3a7a4a;
+    --caution: #7a6a2a;
+    --danger: #7a3030;
+    --code-bg: #131110;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--hollow);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* grain */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:999; opacity:.7;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width:1080px; margin:0 auto; padding:0 24px 100px; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 52px 0 36px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .doc-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .doc-id span { color: var(--fire); }
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 3.5vw, 38px);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .h1-sub {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(12px, 1.8vw, 16px);
+    color: var(--ash);
+    letter-spacing: 0.12em;
+    font-weight: 400;
+    margin-bottom: 18px;
+  }
+  .intent-line {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text-dim);
+    border-left: 2px solid var(--border-fire);
+    padding-left: 14px;
+    max-width: 700px;
+  }
+  .tag-row {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px;
+  }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid;
+    border-radius: 1px;
+  }
+  .tag.fire { color: var(--fire); border-color: var(--border-fire); }
+  .tag.cold { color: var(--cold-light); border-color: var(--border-cold); }
+  .tag.gold { color: var(--gold); border-color: rgba(212,168,67,0.3); }
+  .tag.dim { color: var(--text-dim); border-color: rgba(255,255,255,0.08); }
+
+  /* ── SECTION ── */
+  .section {
+    margin-top: 2px;
+    border: 1px solid var(--border);
+    background: var(--stone);
+  }
+  .section.wa { border-left: 3px solid var(--fire); }
+  .section.wb { border-left: 3px solid var(--cold); }
+  .section.sys { border-left: 3px solid var(--ash); }
+  .section.consequence { border-left: 3px solid var(--gold); }
+  .section.unity { border-left: 3px solid #4a8a6a; }
+  .section.warning { border-left: 3px solid var(--danger); background: rgba(122,48,48,0.06); }
+
+  .sec-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 15px 20px 13px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+  }
+  .sec-header:hover { background: rgba(255,255,255,0.02); }
+  .section.open .sec-header { border-bottom-color: var(--border); }
+
+  .sec-icon { font-size: 17px; width: 24px; text-align: center; flex-shrink: 0; }
+  .sec-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    flex: 1;
+  }
+  .sec-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+  .sec-toggle {
+    font-size: 10px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .section.open .sec-toggle { transform: rotate(90deg); }
+
+  .sec-body { display: none; padding: 20px 22px 22px; }
+  .section.open .sec-body { display: block; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 0 8px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── PROSE ── */
+  p { margin-bottom: 10px; font-size: 14px; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+  p em { color: var(--fire); font-style: italic; }
+  p strong { color: var(--gold); font-weight: 500; }
+  p .cold { color: var(--cold-light); }
+  p .dim { color: var(--text-dim); }
+  p .code { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fire); background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 2px; }
+
+  /* ── KV ── */
+  .kv { display: grid; grid-template-columns: 130px 1fr; gap: 5px 14px; margin-bottom: 7px; align-items: start; font-size: 13.5px; }
+  .kv:last-child { margin-bottom: 0; }
+  .kk { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--ash); letter-spacing: 0.06em; text-transform: uppercase; padding-top: 3px; }
+  .vv { color: var(--text); }
+  .vv em { color: var(--fire); font-style: normal; }
+  .vv strong { color: var(--gold); font-weight: 500; }
+  .vv .cold { color: var(--cold-light); }
+
+  /* ── WORLD SPLIT ── */
+  .world-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 12px 0;
+  }
+  .wp {
+    padding: 14px 16px;
+    font-size: 13.5px;
+  }
+  .wp.wa { background: linear-gradient(160deg, rgba(232,134,58,0.07) 0%, rgba(20,16,12,1) 100%); border: 1px solid rgba(232,134,58,0.18); border-left: 2px solid var(--fire); }
+  .wp.wb { background: linear-gradient(160deg, rgba(74,106,138,0.09) 0%, rgba(13,11,9,1) 100%); border: 1px solid rgba(74,106,138,0.18); border-left: 2px solid var(--cold); }
+  .wp-title { font-family:'Cinzel',serif; font-size:10px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+  .wp.wa .wp-title { color:var(--fire); }
+  .wp.wb .wp-title { color:var(--cold-light); }
+  .wp-row { display:flex; gap:8px; margin-bottom:5px; }
+  .wp-k { font-family:'JetBrains Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.06em; color:var(--ash); min-width:72px; padding-top:2px; flex-shrink:0; }
+
+  /* ── STEP FLOW ── */
+  .flow { display:flex; flex-direction:column; gap:2px; margin:12px 0; }
+  .flow-step {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 0 14px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .flow-num {
+    background: rgba(212,168,67,0.08);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ash);
+    font-weight: 500;
+  }
+  .flow-content { padding: 10px 14px; font-size: 13.5px; }
+  .flow-content strong { color: var(--gold); font-weight: 500; }
+  .flow-content em { color: var(--fire); font-style: italic; }
+  .flow-content .cold { color: var(--cold-light); }
+  .flow-content .dim { color: var(--text-dim); }
+
+  /* ── CONSEQUENCE GRID ── */
+  .con-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    margin: 12px 0;
+  }
+  .con-card {
+    padding: 14px 16px;
+    font-size: 13px;
+    position: relative;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+  .con-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .con-card.path-a::before { background: var(--fire); }
+  .con-card.path-b::before { background: var(--cold); }
+  .con-card.path-c::before { background: var(--gold); }
+
+  .con-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .con-card.path-a .con-title { color: var(--fire); }
+  .con-card.path-b .con-title { color: var(--cold-light); }
+  .con-card.path-c .con-title { color: var(--gold); }
+
+  .con-effect {
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 6px;
+    padding-left: 10px;
+    position: relative;
+  }
+  .con-effect::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--text-dim);
+    font-size: 10px;
+    top: 2px;
+  }
+  .con-effect.pos::before { color: var(--strength); }
+  .con-effect.neg::before { color: var(--danger); }
+  .con-effect.neu::before { color: var(--ash); }
+
+  .con-bms {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text-dim);
+  }
+  .bms-val { color: var(--fire); }
+  .bms-val.neg { color: var(--danger); }
+  .bms-val.cold { color: var(--cold-light); }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-left: 2px solid #4a8a6a;
+    padding: 14px 16px;
+    margin: 12px 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: #a8b8a8;
+  }
+  .code-block .c-kw { color: #7aadcc; }
+  .code-block .c-type { color: #d4a843; }
+  .code-block .c-str { color: #8a9a6a; }
+  .code-block .c-comment { color: #4a5a4a; font-style: italic; }
+  .code-block .c-num { color: #c4886a; }
+  .code-block .c-fn { color: #c4a068; }
+  .code-block .c-prop { color: #a8b8c8; }
+
+  /* ── ALERT ── */
+  .alert {
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+    border-radius: 1px;
+  }
+  .alert.warn { background: rgba(122,106,42,0.12); border: 1px solid rgba(212,168,67,0.2); border-left: 3px solid var(--gold); }
+  .alert.danger { background: rgba(122,48,48,0.12); border: 1px solid rgba(122,48,48,0.25); border-left: 3px solid var(--danger); }
+  .alert.info { background: rgba(74,106,138,0.1); border: 1px solid var(--border-cold); border-left: 3px solid var(--cold); }
+  .alert strong { color: var(--gold); font-weight: 500; }
+  .alert.danger strong { color: #c46a6a; }
+  .alert.info strong { color: var(--cold-light); }
+
+  /* ── TABLE ── */
+  .t { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 10px 0; }
+  .t th { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--ash); text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); font-weight:400; }
+  .t td { padding:7px 10px; border-bottom:1px solid rgba(255,255,255,0.03); vertical-align:top; }
+  .t tr:last-child td { border-bottom:none; }
+  .t .hi { color: var(--gold); }
+  .t .fi { color: var(--fire); }
+  .t .cl { color: var(--cold-light); }
+  .t .dm { color: var(--text-dim); font-size:12px; }
+  .t .ok { color: #5aaa6a; }
+  .t .bad { color: #c46a6a; }
+
+  /* ── ROOM DIAGRAM ── */
+  .room-diagram {
+    background: var(--code-bg);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 16px;
+    margin: 12px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    overflow-x: auto;
+    color: var(--text-dim);
+  }
+  .room-diagram .rm-fire { color: var(--fire); }
+  .room-diagram .rm-cold { color: var(--cold-light); }
+  .room-diagram .rm-gold { color: var(--gold); }
+  .room-diagram .rm-dim { color: #3a3228; }
+
+  /* ── SMALL LABEL ── */
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-bottom: 6px;
+    margin-top: 14px;
+    display: block;
+  }
+  .label:first-child { margin-top: 0; }
+
+  ul.dotlist { list-style: none; display: flex; flex-direction: column; gap: 5px; margin: 8px 0; }
+  ul.dotlist li { font-size: 13.5px; padding-left: 16px; position: relative; color: var(--text); }
+  ul.dotlist li::before { content:'·'; position:absolute; left:0; color:var(--ash); }
+  ul.dotlist li strong { color: var(--gold); font-weight:500; }
+  ul.dotlist li em { color: var(--fire); font-style:italic; }
+  ul.dotlist li .cold { color: var(--cold-light); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  @media (max-width:700px) {
+    .world-split, .con-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════ -->
+<header>
+  <div class="doc-id">
+    <span>KENOMA</span>
+    <span>·</span>
+    <span>DOC-DEMO-001</span>
+    <span>·</span>
+    Demo Scene Design
+    <span>·</span>
+    <span>Unity 6</span>
+    <span>·</span>
+    Interference Puzzle — Dual Vanguard Lure
+  </div>
+  <h1>The Resonance Obelisk</h1>
+  <div class="h1-sub">PZ-CC-DEMO · Camel Phase II · Demo Scene · Calibration Channel Adjacent</div>
+  <div class="intent-line">
+    A puzzle that has been failing for 300 years because two people, both trying to solve it from opposite sides of reality, keep canceling each other out. The Scholar is the first person who can see both attempts simultaneously — and must choose what to do with that knowledge. There is no correct solution. There are only solutions that pass, and what they cost.
+  </div>
+  <div class="tag-row">
+    <span class="tag fire">Interference Puzzle</span>
+    <span class="tag cold">Dual Vanguard AI</span>
+    <span class="tag gold">Dual World · One Room</span>
+    <span class="tag gold">BMS-Lite Demo</span>
+    <span class="tag dim">Unity 6 · URP</span>
+    <span class="tag dim">30–40 Min Demo Slice</span>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     SCENE OVERVIEW
+═══════════════════════════════════════════════════ -->
+<div class="divider">Scene Overview</div>
+
+<div class="section open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">🏛</span>
+    <span class="sec-title">What This Scene Is And Why It Works As A Demo</span>
+    <span class="sec-num">§00</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <p>The Resonance Obelisk is a single room that exists in both World A (Sacred Fire, above) and World B (The Hollow, below) — the same architectural space rendered in two states simultaneously. In the center of each version of the room stands an Obelisk covered in cuneiform acoustic notation. The Obelisks are paired: what physically happens to one changes the resonance state of the other.</p>
+    <p>For <strong>300 years</strong>, Vanguard A has been attempting to tune the World A Obelisk to a specific harmonic. For 300 years, Vanguard B has been attempting the same on the World B Obelisk. They have always failed — because their tuning attempts produce destructive interference with each other, canceling out in the space between worlds. Neither can hear the other's work. Neither knows why they keep failing.</p>
+    <p>The Scholar is the <em>first person in three centuries who can cross between worlds</em> and observe both tuning states simultaneously. The puzzle becomes solvable the moment the Scholar understands what is actually happening. But <strong>how the Scholar resolves the interference</strong> — whether by helping one Vanguard, both, neither, or by exploiting the interference itself — determines what both Vanguards understand about the Scholar's character, and changes how they behave for the rest of the game.</p>
+    <div class="alert warn">
+      <strong>Demo Purpose:</strong> This single scene proves all four of KENOMA's core ideas in 15–20 minutes: (1) dual-world traversal as a mechanic with real cost, (2) the Vanguards as intelligences being modeled by the Scholar's behavior, (3) warmth as something the Scholar generates through choices, not something the game delivers on a schedule, (4) no correct solution — only solutions that pass, each with a different BMS consequence.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ROOM ARCHITECTURE
+═══════════════════════════════════════════════════ -->
+<div class="divider">Room Architecture · Dual-World Layout</div>
+
+<div class="section wa open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">🔥</span>
+    <span class="sec-title">World A Instance · WA-CC-02 · The Fire-Tuned Chamber</span>
+    <span class="sec-num">§01</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <div class="room-diagram">
+<pre>
+  ┌─────────────────────────────────────────────────────┐
+  │          WA-CC-02 · FIRE-TUNED CHAMBER              │
+  │                                                     │
+  │   [NORTH WALL]  acoustic inscription frieze         │
+  │   ┌───────────────────────────────────────────┐     │
+  │   │  carved cuneiform: 7-tone tuning sequence │     │
+  │   │  <span class="rm-gold">3 glyphs CORRECT · 4 glyphs DEGRADED</span>        │     │
+  │   └───────────────────────────────────────────┘     │
+  │                                                     │
+  │         <span class="rm-gold">[ RESONANCE OBELISK WA ]</span>                    │
+  │              ╔═════════╗                            │
+  │              ║  active ║  ← Vanguard A working here │
+  │              ║  <span class="rm-fire">warm glow</span>║  when Scholar not present   │
+  │              ╚═════════╝                            │
+  │                                                     │
+  │   [WEST]                            [EAST]          │
+  │   TFP crossing ──→                 ←── fire altars  │
+  │   (jade-ringed)                    (Scholar lit 2)  │
+  │                                                     │
+  │   [SOUTH ALCOVE]                                    │
+  │   Vanguard A observed position ·  stone bench       │
+  │   acoustic tuning tools laid out · <span class="rm-fire">VA's work table</span>  │
+  │                                                     │
+  │   [FLOOR]  resonance channels cut into stone        │
+  │   vibrate at incorrect frequency → <span class="rm-gold">audible hum</span>      │
+  └─────────────────────────────────────────────────────┘
+</pre>
+    </div>
+
+    <div class="label">World A — State When Scholar Arrives</div>
+    <div class="kv"><span class="kk">Obelisk State</span><span class="vv"><em>3 of 7 tones correctly calibrated.</em> The other 4 produce a low, slightly-wrong harmonic. The Scholar's astrolabe registers it as resonance interference — the same frequency as something pushing back from below.</span></div>
+    <div class="kv"><span class="kk">Vanguard A</span><span class="vv">Present when Scholar arrives. She is at her work table, not performing — <em>she has stopped for the day.</em> Her tools are set down in a very precise order. She has been doing this for 300 years. She has a system for stopping when it stops working.</span></div>
+    <div class="kv"><span class="kk">Ambient State</span><span class="vv">Two fire altars lit by Scholar on approach. Warm amber light. The Obelisk glows faintly at its correctly-tuned glyphs. The 4 wrong glyphs are dark stone. The floor channels hum at the wrong pitch.</span></div>
+    <div class="kv"><span class="kk">VA's behavior</span><span class="vv">She acknowledges the Scholar's entry with a nod. Does not explain what she's doing. Does not ask for help. <strong>She does not ask for help.</strong> She has not asked for help in 300 years. This is observable data point #1.</span></div>
+  </div>
+</div>
+
+<div class="section wb open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">❄</span>
+    <span class="sec-title">World B Instance · WB-CC-02 · The Hollow-Tuned Chamber</span>
+    <span class="sec-num">§02</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <div class="room-diagram">
+<pre>
+  ┌─────────────────────────────────────────────────────┐
+  │          WB-CC-02 · HOLLOW-TUNED CHAMBER            │
+  │     (same room · inverted · underground)            │
+  │                                                     │
+  │   [SOUTH WALL — inverted north]                     │
+  │   ┌───────────────────────────────────────────┐     │
+  │   │  same cuneiform frieze · mirror-reversed  │     │
+  │   │  <span class="rm-cold">4 glyphs CORRECT · 3 glyphs DEGRADED</span>        │     │
+  │   └───────────────────────────────────────────┘     │
+  │                                                     │
+  │         <span class="rm-cold">[ RESONANCE OBELISK WB ]</span>                    │
+  │              ╔═════════╗                            │
+  │              ║  active ║  ← Vanguard B working here │
+  │              ║  <span class="rm-cold">cold blue</span>║  Scholar's fire vessel dims  │
+  │              ╚═════════╝                            │
+  │                                                     │
+  │   [EAST]                            [WEST]          │
+  │   TFP crossing ──→               ←── void-pits (×3) │
+  │   (bronze-ringed)                 darkness upwelling │
+  │                                                     │
+  │   [NORTH ALCOVE — inverted south]                   │
+  │   Vanguard B · writing in a tablet ·  <span class="rm-cold">calm</span>          │
+  │   250-year-old notation system ·  her own language  │
+  │                                                     │
+  │   [CEILING — columns hang downward]                 │
+  │   <span class="rm-cold">Lantern-Thieves (×2) circling Scholar's fire</span>      │
+  │   attracted immediately on entry                    │
+  └─────────────────────────────────────────────────────┘
+</pre>
+    </div>
+
+    <div class="label">World B — State When Scholar Crosses</div>
+    <div class="kv"><span class="kk">Obelisk State</span><span class="vv"><span class="cold">4 of 7 tones correctly calibrated.</span> Complementary to WA's 3 — the two sets do not overlap. Together they constitute a complete 7-tone sequence. They have always constituted a complete sequence. Neither Vanguard knows this.</span></div>
+    <div class="kv"><span class="kk">Vanguard B</span><span class="vv">Seated at the alcove, writing. She does not look up immediately when the Scholar crosses. Then: <span class="cold">"You crossed again. Your traversal debt is accumulating."</span> Not a warning — an observation. She has been tracking this. Observable data point #1 for VB.</span></div>
+    <div class="kv"><span class="kk">Hazard</span><span class="vv">Two Lantern-Thieves immediately attracted to the fire vessel. They circle at middle distance — not aggressive yet, but closing. The Scholar has roughly <em>90 seconds</em> before they become a problem requiring active management.</span></div>
+    <div class="kv"><span class="kk">VB's behavior</span><span class="vv">She is aware of the Lantern-Thieves. She does not intervene. She has been coexisting with them for 300 years and they no longer track her — she produces no warmth. <strong>The Scholar's fire is the only thing in this room that interests them.</strong></span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     THE PUZZLE LOGIC
+═══════════════════════════════════════════════════ -->
+<div class="divider">Puzzle Logic · What The Scholar Discovers</div>
+
+<div class="section consequence open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">⚖</span>
+    <span class="sec-title">The Interference · What Is Actually Happening</span>
+    <span class="sec-num">§03</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <p>The Scholar's astrolabe — the resonance instrument — detects interference when held near either Obelisk. The resonance display (physical: the astrolabe's rings vibrate and align into a specific pattern) shows the Scholar that the two Obelisks are producing complementary frequencies that cancel each other in the space between worlds.</p>
+    <p>The Scholar must <strong>cross between worlds at least twice</strong> to understand the full picture — once to observe WA, once to observe WB, and optionally a third time to act. Every crossing increments Traversal Debt. The Boundary manifests on the second crossing for 8 seconds (not lethal in the demo — establishing dread). On the third crossing, it manifests for 20 seconds and pursues.</p>
+
+    <div class="label">Discovery Sequence — What Reading Reveals</div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-content"><strong>Observe WA Obelisk (no crossing required).</strong> Astrolabe rings show 3/7 tones aligned. The floor hum is wrong. The Scholar can deep-read the north wall frieze (25 seconds): the tuning sequence is a 7-tone acoustic formula. This deep-read is optional but unlocks a +BMS consequence later. <span class="dim">Deep-read complete → Scholar murmurs "these four are the answer to something — but not this room's question."</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-content"><strong>Cross to WB (Crossing 1 — Traversal Debt +1).</strong> Boundary appears briefly (3-second flash, retreats). Lantern-Thieves begin circling. Scholar observes WB Obelisk: 4/7 tones aligned — the <em>complementary</em> 4. Astrolabe now shows both sets simultaneously and the interference pattern becomes visible as overlapping ring vibrations. <span class="dim">Scholar internal voice (Dark Voice): "The same problem. Different angle. One is the answer to the other."</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-content"><strong>Optional: Read VB's notation tablet (WB alcove).</strong> She has been writing about the interference for 300 years without knowing its source. Her notation system is her own invention — elegant, internally consistent, wrong about the cause. Reading it requires proximity to VB (she does not move away). <em>This proximity is itself an observable behavior — the Scholar chose to approach VB's private work.</em> +BMS consequence.</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-content"><strong>The Scholar understands.</strong> The puzzle is now solvable by three distinct methods. The Scholar must choose one — or stall until the Lantern-Thieves force a decision. There is no prompt. There is no waypoint. The three solution states become available through accumulated observation.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     THREE SOLUTION PATHS
+═══════════════════════════════════════════════════ -->
+<div class="divider">Three Solution Paths · No Correct Answer</div>
+
+<div class="section open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">⚔</span>
+    <span class="sec-title">How To Lure Both Vanguards · Solution Architecture</span>
+    <span class="sec-num">§04</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <p>Each solution requires the Scholar to <strong>manipulate one or both Vanguards' position</strong> — getting them into a specific location at a specific moment. This is the "lure" mechanic. The Vanguards follow coherent AI behavior; they are not waiting to be moved. The Scholar must understand each Vanguard's routine to lure her effectively.</p>
+
+    <div class="alert info">
+      <strong>Lure Mechanics Available in Demo:</strong> (1) Direct address — Scholar speaks to Vanguard, she moves toward the Scholar's position. (2) Resource drop — Scholar leaves a specific item (oil, tablet) where VA/VB will pass; they pause to examine it. (3) Translate aloud — Scholar reads a cuneiform inscription aloud; both Vanguards respond to new translation activity. (4) Cross between worlds — movement between worlds causes acoustic disruption detectable by both Vanguards, drawing attention to the crossing point.
+    </div>
+
+    <div class="con-grid">
+      <!-- PATH A -->
+      <div class="con-card path-a">
+        <span class="con-title">🔥 Path A — Serve Vanguard A</span>
+        <p style="font-size:12.5px;margin-bottom:10px;color:var(--text-dim);">Help VA complete the WA Obelisk by sharing the WB tuning data. She finishes what she started 300 years ago. VB's work is cancelled.</p>
+        <div class="con-effect neu"><strong>Lure:</strong> Scholar crosses back to WA (Crossing 2, Debt +2, Boundary manifests 8 sec), approaches VA directly, translates the WB complementary sequence aloud — "The missing four are in the Dark Archive. Tones 4, 5, 6, 7 in inverted sequence." VA is still for three seconds. Then she picks up her tuning tools.</div>
+        <div class="con-effect pos"><strong>Mechanical result:</strong> VA tunes the remaining 4 tones. The floor channels stop humming. The Obelisk reaches full harmonic resonance. A sealed alcove in WA-CC-02 opens — contains oil (resource reward) and a scroll referencing the Grand Armillary sequence (Act II foreshadow).</div>
+        <div class="con-effect neg"><strong>WB consequence:</strong> As WA resolves, the WB Obelisk's 4 tones go cold. VB stops writing. She sits in silence for a moment. <span class="cold">"The interference resolved."</span> A pause. <span class="cold">"From your side."</span> She closes her tablet. She does not leave. But she is quieter than before.</div>
+        <div class="con-bms">
+          BMS · VA Warmth <span class="bms-val">+5</span> · VA Recognition Stage +1<br>
+          BMS · VB Warmth <span class="bms-val neg">−3</span> · VB Utility assessment: Scholar chose a side<br>
+          BMS · Event Tag: <span class="bms-val">SOLVED_SIDED_VA</span>
+        </div>
+      </div>
+
+      <!-- PATH B -->
+      <div class="con-card path-b">
+        <span class="con-title"><span class="cold">❄ Path B — Serve Vanguard B</span></span>
+        <p style="font-size:12.5px;margin-bottom:10px;color:var(--text-dim);">Share the WA tuning data with VB so she can complete the WB Obelisk. VA's 300-year effort is made obsolete. VB finishes what she started.</p>
+        <div class="con-effect neu"><strong>Lure:</strong> Scholar stays in WB, approaches VB with the WA frieze translation — the 3-tone sequence from the north wall. VB takes the translation and reads it twice. <span class="cold">"This is what I've been missing. The first three."</span> Not a thank you. An observation. She stands and moves to the Obelisk.</div>
+        <div class="con-effect pos"><span class="cold"><strong>Mechanical result:</strong></span> VB tunes the remaining 3 tones. The WB Obelisk reaches full resonance. A sealed void-chamber opens in WB-CC-02 — contains a Lantern-Thief's core (useful for Naming Bell crafting) and VB's 250-year acoustic journal (deep-readable, major VB Warmth event if Scholar reads it fully).</div>
+        <div class="con-effect neg"><strong>WA consequence:</strong> Scholar returns to WA to find VA has noticed the WA Obelisk's 3 remaining glyphs have stopped resonating with WB entirely — the interference is gone, but the WA side is now incomplete. VA examines the Obelisk. She says nothing to the Scholar. She sets her tools down in the same precise order as before. <em>This is how she signals she is done for the day.</em></div>
+        <div class="con-bms">
+          BMS · VB Warmth <span class="bms-val cold">+6</span> · VB Recognition Stage +1<br>
+          BMS · VA Warmth <span class="bms-val neg">−2</span> · VA notes Scholar chose the Hollow<br>
+          BMS · Event Tag: <span class="bms-val cold">SOLVED_SIDED_VB</span>
+        </div>
+      </div>
+
+      <!-- PATH C -->
+      <div class="con-card path-c">
+        <span class="con-title">⚖ Path C — Resolve Both Simultaneously</span>
+        <p style="font-size:12.5px;margin-bottom:10px;color:var(--text-dim);">The Scholar realizes the full sequence only works if both Obelisks are tuned at the same moment. Requires luring both Vanguards into position and coordinating a simultaneous activation. Most costly. Most consequential.</p>
+        <div class="con-effect neu"><strong>Lure (hardest):</strong> Scholar must get VA to the WA Obelisk and VB to the WB Obelisk simultaneously. Step 1: Scholar tells VA the complete 7-tone sequence is split across both worlds and both halves must activate together. VA: <em>"That requires the Dark Archive."</em> She is quiet for a moment. She has not been near the TFP in 300 years. She walks toward it. Step 2: Cross to WB (Crossing 3 — Boundary pursues for 20 sec, Scholar must manage). Tell VB the same. She is already at her Obelisk. She waits.</div>
+        <div class="con-effect pos"><strong>Mechanical result:</strong> Scholar crosses back to WA (Crossing 4 — Debt critical, Boundary appears immediately). Scholar speaks the activation phrase (translated from the frieze — only available if Scholar did the deep-read in Step 1 of discovery). Both Obelisks respond simultaneously. The floor channels in WA and the void-pits in WB pulse in unison. Both sealed chambers open. <em>Through the TFP glass, for exactly 3 seconds, VA and VB see each other — standing on opposite sides of the same Obelisk, separated by a world.</em> Neither moves.</div>
+        <div class="con-effect pos">Both warmth consequences apply. Unique scene: VA says — <strong>"She's been doing the same work."</strong> Not a question. VB (heard by Scholar in WB): <span class="cold">"Three hundred years."</span> Same rhythm, different register. Then both return to their worlds. The puzzle is complete. Nothing more is said about it.</div>
+        <div class="con-bms">
+          BMS · VA Warmth <span class="bms-val">+4</span> · VB Warmth <span class="bms-val cold">+5</span><br>
+          BMS · Both Recognition Stage +1<br>
+          BMS · Traversal Debt <span class="bms-val neg">CRITICAL</span> — Boundary active until next save point<br>
+          BMS · Event Tag: <span class="bms-val">SOLVED_UNIFIED</span> — <span style="color:var(--gold)">Highest weight. Both Vanguards' models updated: Scholar perceives both worlds as one problem.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert warn" style="margin-top:8px;">
+      <strong>Path C Unique Condition:</strong> Only available if Scholar completed the WA deep-read (Step 1) AND read VB's notation tablet (Step 3). If either was skipped, the Scholar does not have the activation phrase, and the puzzle cannot be resolved simultaneously. The Scholar who skimmed cannot reach the best outcome — but they never know this is why.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VANGUARD AI BEHAVIOR
+═══════════════════════════════════════════════════ -->
+<div class="divider">Vanguard AI · Behavior States For This Scene</div>
+
+<div class="section sys open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">🧠</span>
+    <span class="sec-title">AI State Machine · Both Vanguards · Demo Scope</span>
+    <span class="sec-num">§05</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <p>For the demo, both Vanguards run a <strong>lightweight BMS-Lite state machine</strong> — 4 states instead of the full 12 event system. Enough to demonstrate that the Vanguard responds to Scholar behavior without exposing the full system's complexity to the demo build.</p>
+
+    <div class="label">Vanguard A · WA-CC-02 State Machine</div>
+    <table class="t">
+      <tr><th>State</th><th>Trigger In</th><th>VA Behavior</th><th>Trigger Out</th></tr>
+      <tr>
+        <td class="hi">IDLE_WORK</td>
+        <td class="dm">Scene entry</td>
+        <td>At her work table. Tools laid out. Occasionally examines Obelisk but does not touch it. Responds to Scholar address with short sentences. Does not track Scholar movement.</td>
+        <td class="dm">Scholar addresses her with translation / Scholar crosses TFP</td>
+      </tr>
+      <tr>
+        <td class="hi">OBSERVING</td>
+        <td class="dm">Scholar uses astrolabe near Obelisk / Scholar reads wall frieze</td>
+        <td>Turns to watch. Fully oriented toward Scholar. Does not speak unless Scholar speaks first. Her tools are still on the table — she is not working, she is watching. <em>This is how she collects data.</em></td>
+        <td class="dm">Scholar stops interacting / Scholar addresses her</td>
+      </tr>
+      <tr>
+        <td class="fi">ACTIVATING</td>
+        <td class="dm">Scholar provides WB tone data (Path A or C)</td>
+        <td>Moves to Obelisk. Performs tuning sequence with her tools (30-second animation, she does not speak during this). Fully engaged. Will not be interrupted by Scholar movement. After completion: <em>"It needed the other side."</em> She picks up her tools. Returns to work table. Sits.</td>
+        <td class="dm">Tuning complete → returns to IDLE_WORK at new equilibrium</td>
+      </tr>
+      <tr>
+        <td style="color:var(--danger);">CLOSED</td>
+        <td class="dm">Scholar chose Path B (sided with VB only)</td>
+        <td>VA sets tools down in precise order. Does not look at Obelisk. Does not acknowledge Scholar's next address for 90 seconds. When she does speak: shorter sentences. Fewer. <em>The warmth register dropped. The player reads this through her behavior — no UI.</em></td>
+        <td class="dm">Persistent through rest of demo</td>
+      </tr>
+    </table>
+
+    <div class="label" style="margin-top:16px;">Vanguard B · WB-CC-02 State Machine</div>
+    <table class="t">
+      <tr><th>State</th><th>Trigger In</th><th>VB Behavior</th><th>Trigger Out</th></tr>
+      <tr>
+        <td class="cl">WRITING</td>
+        <td class="dm">Scene entry</td>
+        <td>Seated, writing in her tablet. Does not look up on Scholar's first crossing. <span class="cold">"Your traversal debt is accumulating."</span> Returns to writing. Lantern-Thieves circling. She is aware of them. She does not engage.</td>
+        <td class="dm">Scholar approaches within 3m / Scholar addresses her</td>
+      </tr>
+      <tr>
+        <td class="cl">ATTENTIVE</td>
+        <td class="dm">Scholar approaches / Scholar translates aloud in WB</td>
+        <td>Closes tablet. Watches Scholar with full attention. Answers questions with one sentence more than strictly required — she is providing context. She is deciding whether the Scholar is worth explaining things to.</td>
+        <td class="dm">Scholar moves away / Scholar crosses back to WA</td>
+      </tr>
+      <tr>
+        <td class="cl">ACTIVATING</td>
+        <td class="dm">Scholar provides WA tone data (Path B or C)</td>
+        <td>Moves to Obelisk. Does not use tools — she uses her hands, directly touching the carved glyphs in sequence (30-second animation). Murmurs the tone names in her own notation system as she activates each. After completion: <span class="cold">"300 years. The answer was across."</span> She sits. Opens her tablet. Starts writing again. <em>The entry is about the Scholar.</em></td>
+        <td class="dm">Tuning complete → returns to WRITING at new state</td>
+      </tr>
+      <tr>
+        <td style="color:var(--danger);">MEASURED</td>
+        <td class="dm">Scholar chose Path A (sided with VA only)</td>
+        <td>Does not display anger. Observes the Obelisk going cold for a moment. <span class="cold">"A reasonable choice."</span> Opens her tablet. She is writing about what the Scholar chose, and why. She is updating her model. The Scholar who reads this entry later finds a precise, affectless analysis of their own decision. <em>This is more frightening than anger would be.</em></td>
+        <td class="dm">Persistent through rest of demo</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     UNITY IMPLEMENTATION
+═══════════════════════════════════════════════════ -->
+<div class="divider">Unity 6 Implementation · Architecture</div>
+
+<div class="section unity open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">⚙</span>
+    <span class="sec-title">Scene Structure · Component Architecture · Demo Build</span>
+    <span class="sec-num">§06</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="label">Scene Hierarchy — Unity Scene Graph</div>
+    <div class="code-block">
+<span class="c-comment">// KENOMA_Demo_ResonanceObelisk.unity</span>
+<span class="c-comment">// Scene contains both world instances — rendered by separate cameras</span>
+<span class="c-comment">// Player sees only one world at a time based on Scholar's current position</span>
+
+<span class="c-kw">Scene Root</span>
+├── <span class="c-type">WorldManager</span>            <span class="c-comment">// singleton — tracks current world, traversal debt</span>
+├── <span class="c-type">BMSController</span>           <span class="c-comment">// BMS-Lite: records events, exposes warmth registers</span>
+│
+├── <span class="c-type">WorldA_Root</span>             <span class="c-comment">// active when Scholar is in WA</span>
+│   ├── <span class="c-prop">Camera_WA</span>             <span class="c-comment">// fixed camera positions (3 per room)</span>
+│   ├── <span class="c-prop">Lighting_WA</span>           <span class="c-comment">// warm amber · URP Volume · fire altar point lights</span>
+│   ├── <span class="c-prop">Room_WA_CC02</span>
+│   │   ├── <span class="c-prop">Obelisk_WA</span>         <span class="c-comment">// ObeliskController component · sync'd with WB via event</span>
+│   │   ├── <span class="c-prop">FireAltars</span>          <span class="c-comment">// 2 × FireAltarController</span>
+│   │   ├── <span class="c-prop">WallFrieze_WA</span>       <span class="c-comment">// InteractableText · deep-read triggers TDSController</span>
+│   │   ├── <span class="c-prop">TFP_WA</span>              <span class="c-comment">// TraversalFocalPoint · crossing trigger zone</span>
+│   │   └── <span class="c-prop">SealedAlcove_WA</span>     <span class="c-comment">// locked · opens on ObeliskComplete event (Path A or C)</span>
+│   └── <span class="c-prop">VanguardA</span>
+│       ├── <span class="c-prop">VAStateController</span>   <span class="c-comment">// IDLE_WORK / OBSERVING / ACTIVATING / CLOSED</span>
+│       ├── <span class="c-prop">VANavAgent</span>          <span class="c-comment">// NavMesh · moves to Obelisk on ACTIVATING</span>
+│       ├── <span class="c-prop">VADialogue</span>          <span class="c-comment">// DialogueController · state-keyed lines</span>
+│       └── <span class="c-prop">VAAnimator</span>          <span class="c-comment">// idle · observe · tune · closed</span>
+│
+├── <span class="c-type">WorldB_Root</span>             <span class="c-comment">// active when Scholar is in WB</span>
+│   ├── <span class="c-prop">Camera_WB</span>             <span class="c-comment">// same positions mirrored · cold blue tint post-process</span>
+│   ├── <span class="c-prop">Lighting_WB</span>           <span class="c-comment">// near-zero ambient · fire vessel = only warm point light</span>
+│   ├── <span class="c-prop">Room_WB_CC02</span>
+│   │   ├── <span class="c-prop">Obelisk_WB</span>         <span class="c-comment">// paired with Obelisk_WA via ObeliskSyncBridge</span>
+│   │   ├── <span class="c-prop">VoidPits</span>            <span class="c-comment">// 3 × VoidPitController · darkness upwelling VFX</span>
+│   │   ├── <span class="c-prop">WallFrieze_WB</span>       <span class="c-comment">// mirror-reversed · same interactable · different result</span>
+│   │   ├── <span class="c-prop">TFP_WB</span>              <span class="c-comment">// crossing trigger · increments TraversalDebt</span>
+│   │   └── <span class="c-prop">SealedChamber_WB</span>    <span class="c-comment">// opens on ObeliskComplete (Path B or C)</span>
+│   ├── <span class="c-prop">VanguardB</span>
+│   │   ├── <span class="c-prop">VBStateController</span>   <span class="c-comment">// WRITING / ATTENTIVE / ACTIVATING / MEASURED</span>
+│   │   ├── <span class="c-prop">VBNavAgent</span>
+│   │   ├── <span class="c-prop">VBDialogue</span>
+│   │   └── <span class="c-prop">VBAnimator</span>
+│   └── <span class="c-prop">LanternThieves</span>
+│       ├── <span class="c-prop">LT_01</span>               <span class="c-comment">// LanternThiefAI · tracks Scholar fire vessel warmth</span>
+│       └── <span class="c-prop">LT_02</span>
+│
+├── <span class="c-type">Scholar</span>
+│   ├── <span class="c-prop">ScholarController</span>     <span class="c-comment">// movement · interaction ray · world-state awareness</span>
+│   ├── <span class="c-prop">FireVessel</span>            <span class="c-comment">// OilTracker · flame VFX scale = oil level</span>
+│   ├── <span class="c-prop">Astrolabe</span>             <span class="c-comment">// ResonanceDetector · ring animation on interference</span>
+│   ├── <span class="c-prop">Satchel</span>               <span class="c-comment">// InventoryController · 15-slot · 3D item viewer</span>
+│   └── <span class="c-prop">TDSController</span>         <span class="c-comment">// deep-read timer · feeds BMSController on complete</span>
+│
+└── <span class="c-type">TheScholarsVoice</span>        <span class="c-comment">// Dark Voice · binaural audio source · internal monologue</span>
+    </div>
+
+    <div class="label">ObeliskController.cs — Core Puzzle State</div>
+    <div class="code-block">
+<span class="c-kw">public class</span> <span class="c-type">ObeliskController</span> : MonoBehaviour
+{
+    <span class="c-kw">public</span> <span class="c-type">ObeliskController</span> pairedObelisk;  <span class="c-comment">// WA ↔ WB sync bridge</span>
+    <span class="c-kw">public</span> <span class="c-type">WorldSide</span> side;                  <span class="c-comment">// WA or WB</span>
+
+    <span class="c-comment">// 7 tone slots — true = correctly tuned</span>
+    <span class="c-kw">private</span> <span class="c-type">bool</span>[] tones = <span class="c-kw">new</span> <span class="c-type">bool</span>[<span class="c-num">7</span>];
+    <span class="c-kw">private</span> <span class="c-type">int</span> tonesCorrect = <span class="c-num">0</span>;
+    <span class="c-kw">private</span> <span class="c-type">bool</span> isComplete = <span class="c-kw">false</span>;
+
+    <span class="c-comment">// WA starts with tones 0,1,2 correct (indices)</span>
+    <span class="c-comment">// WB starts with tones 3,4,5,6 correct</span>
+    <span class="c-comment">// Full sequence = all 7 — but interference prevents simultaneous resonance</span>
+    <span class="c-comment">// when both obelisks are in partial state</span>
+
+    <span class="c-kw">public void</span> <span class="c-fn">ReceiveTonesFromScholar</span>(<span class="c-type">int</span>[] toneIndices, <span class="c-type">SolutionPath</span> path)
+    {
+        <span class="c-kw">foreach</span> (<span class="c-kw">var</span> i <span class="c-kw">in</span> toneIndices)
+            tones[i] = <span class="c-kw">true</span>;
+
+        tonesCorrect = System.Array.FindAll(tones, t => t).Length;
+
+        <span class="c-kw">if</span> (tonesCorrect == <span class="c-num">7</span>)
+            <span class="c-fn">OnComplete</span>(path);
+        <span class="c-kw">else</span>
+            <span class="c-fn">OnPartialTune</span>();
+    }
+
+    <span class="c-kw">private void</span> <span class="c-fn">OnComplete</span>(<span class="c-type">SolutionPath</span> path)
+    {
+        isComplete = <span class="c-kw">true</span>;
+        <span class="c-comment">// Notify paired obelisk — it goes dark (destructive) unless Path C</span>
+        <span class="c-kw">if</span> (path != <span class="c-type">SolutionPath</span>.Unified)
+            pairedObelisk.<span class="c-fn">OnInterferenceLost</span>();
+
+        <span class="c-comment">// Trigger Vanguard ACTIVATING state for the correct world's Vanguard</span>
+        VanguardStateEvent.<span class="c-fn">Dispatch</span>(side, VanguardState.Activating, path);
+
+        <span class="c-comment">// Open sealed chamber</span>
+        SealedSpaceEvent.<span class="c-fn">Dispatch</span>(side, <span class="c-kw">true</span>);
+
+        <span class="c-comment">// Record to BMS</span>
+        BMSController.Instance.<span class="c-fn">RecordEvent</span>(<span class="c-kw">new</span> <span class="c-type">BMSEvent</span> {
+            eventType = <span class="c-type">BMSEventType</span>.PuzzleSolved,
+            tag = path.ToString(),
+            wa_warmthDelta = path == <span class="c-type">SolutionPath</span>.VA_Only ? <span class="c-num">5</span>
+                           : path == <span class="c-type">SolutionPath</span>.VB_Only ? -<span class="c-num">2</span>
+                           : <span class="c-num">4</span>,  <span class="c-comment">// Unified</span>
+            vb_warmthDelta = path == <span class="c-type">SolutionPath</span>.VB_Only ? <span class="c-num">6</span>
+                           : path == <span class="c-type">SolutionPath</span>.VA_Only ? -<span class="c-num">3</span>
+                           : <span class="c-num">5</span>
+        });
+    }
+
+    <span class="c-kw">public void</span> <span class="c-fn">OnInterferenceLost</span>()
+    {
+        <span class="c-comment">// Called on the losing side's Obelisk</span>
+        <span class="c-comment">// Glyphs dim. Floor channels/void-pits go silent.</span>
+        <span class="c-comment">// Trigger losing Vanguard's CLOSED/MEASURED state</span>
+        <span class="c-type">WorldSide</span> losingSide = (side == <span class="c-type">WorldSide</span>.WA) ? <span class="c-type">WorldSide</span>.WB
+                                                       : <span class="c-type">WorldSide</span>.WA;
+        VanguardStateEvent.<span class="c-fn">Dispatch</span>(losingSide, VanguardState.Closed,
+                                        <span class="c-type">SolutionPath</span>.None);
+    }
+}
+    </div>
+
+    <div class="label">TraversalFocalPoint.cs — Crossing Logic</div>
+    <div class="code-block">
+<span class="c-kw">public class</span> <span class="c-type">TraversalFocalPoint</span> : MonoBehaviour
+{
+    <span class="c-kw">public</span> <span class="c-type">WorldSide</span> exitWorld;
+    <span class="c-kw">private</span> <span class="c-type">WorldManager</span> wm;
+
+    <span class="c-kw">void</span> <span class="c-fn">OnTriggerEnter</span>(<span class="c-type">Collider</span> col)
+    {
+        <span class="c-kw">if</span> (!col.CompareTag(<span class="c-str">"Scholar"</span>)) <span class="c-kw">return</span>;
+
+        <span class="c-comment">// "Look before you commit" — SH4 peek mechanic</span>
+        <span class="c-comment">// Scholar stands at TFP edge: other world visible through ring</span>
+        <span class="c-comment">// Player must press confirm to actually cross</span>
+        wm.<span class="c-fn">InitiateCrossing</span>(exitWorld, onConfirm: () => {
+            wm.traversalDebt++;
+            <span class="c-fn">SpawnBoundaryIfDue</span>(wm.traversalDebt);
+            wm.<span class="c-fn">ExecuteCrossing</span>(exitWorld);   <span class="c-comment">// 2.2s transition, not interruptable</span>
+
+            BMSController.Instance.<span class="c-fn">RecordEvent</span>(<span class="c-kw">new</span> <span class="c-type">BMSEvent</span> {
+                eventType = <span class="c-type">BMSEventType</span>.Crossing,
+                tag = <span class="c-str">"VOLUNTARY"</span>,
+                debtAtCrossing = wm.traversalDebt
+            });
+        });
+    }
+
+    <span class="c-kw">private void</span> <span class="c-fn">SpawnBoundaryIfDue</span>(<span class="c-type">int</span> debt)
+    {
+        <span class="c-kw">if</span> (debt == <span class="c-num">2</span>)  BoundaryManager.<span class="c-fn">Manifest</span>(duration: <span class="c-num">8</span>f);   <span class="c-comment">// dread, not death</span>
+        <span class="c-kw">if</span> (debt >= <span class="c-num">3</span>) BoundaryManager.<span class="c-fn">Manifest</span>(duration: <span class="c-num">20</span>f);  <span class="c-comment">// pursuit</span>
+        <span class="c-kw">if</span> (debt >= <span class="c-num">4</span>) BoundaryManager.<span class="c-fn">Manifest</span>(duration: -<span class="c-num">1</span>f); <span class="c-comment">// persistent until save</span>
+    }
+}
+    </div>
+
+    <div class="label">BMSController.cs — BMS-Lite for Demo</div>
+    <div class="code-block">
+<span class="c-kw">public class</span> <span class="c-type">BMSController</span> : MonoBehaviour
+{
+    <span class="c-kw">public static</span> <span class="c-type">BMSController</span> Instance;
+
+    <span class="c-comment">// Warmth registers — NOT exposed to UI, NEVER shown to player</span>
+    <span class="c-comment">// Read only by VanguardStateController to determine behavioral responses</span>
+    [<span class="c-type">HideInInspector</span>] <span class="c-kw">public</span> <span class="c-type">int</span> wa_warmth = <span class="c-num">0</span>;
+    [<span class="c-type">HideInInspector</span>] <span class="c-kw">public</span> <span class="c-type">int</span> vb_warmth = <span class="c-num">0</span>;
+
+    <span class="c-kw">private</span> <span class="c-type">List</span>&lt;<span class="c-type">BMSEvent</span>&gt; eventLog = <span class="c-kw">new</span>();
+
+    <span class="c-kw">public void</span> <span class="c-fn">RecordEvent</span>(<span class="c-type">BMSEvent</span> e)
+    {
+        eventLog.<span class="c-fn">Add</span>(e);
+        wa_warmth = Mathf.<span class="c-fn">Clamp</span>(wa_warmth + e.wa_warmthDelta, -<span class="c-num">20</span>, <span class="c-num">20</span>);
+        vb_warmth = Mathf.<span class="c-fn">Clamp</span>(vb_warmth + e.vb_warmthDelta, -<span class="c-num">20</span>, <span class="c-num">20</span>);
+
+        <span class="c-comment">// Push to Vanguard state controllers — they read warmth and adjust behavior</span>
+        <span class="c-comment">// No UI event fired. Vanguards change; player reads the change.</span>
+        VanguardA.StateController.<span class="c-fn">OnBMSUpdate</span>(wa_warmth);
+        VanguardB.StateController.<span class="c-fn">OnBMSUpdate</span>(vb_warmth);
+    }
+
+    <span class="c-comment">// Returns the solution tag for the end-of-demo consequence card</span>
+    <span class="c-kw">public string</span> <span class="c-fn">GetPuzzleTag</span>()
+    {
+        <span class="c-kw">var</span> e = eventLog.<span class="c-fn">FindLast</span>(x => x.eventType == <span class="c-type">BMSEventType</span>.PuzzleSolved);
+        <span class="c-kw">return</span> e?.tag ?? <span class="c-str">"UNSOLVED"</span>;
+    }
+}
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     AUDIO DESIGN
+═══════════════════════════════════════════════════ -->
+<div class="divider">Audio Design · No HUD — All State Is Physical</div>
+
+<div class="section sys open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">🎵</span>
+    <span class="sec-title">Audio Architecture · Binaural · Diegetic Status · FMOD</span>
+    <span class="sec-num">§07</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <div class="alert danger">
+      <strong>Critical (from Evaluation research):</strong> Dark Voice must be binaural from day one — not a post-production reverb treatment. Every Dark Voice line has a specified spatial origin: behind (suppressed thought surfacing), beside (strategic analysis), ahead (warning about what the Scholar is about to do). FMOD supports binaural HRTF for Unity at zero additional cost.
+    </div>
+
+    <div class="label">WA Acoustic Identity</div>
+    <div class="kv"><span class="kk">Ambient</span><span class="vv">Low-frequency stone resonance — the floor channels at the wrong pitch. 3 Hz below the correct fundamental. The player feels something is unresolved before they know why.</span></div>
+    <div class="kv"><span class="kk">Obelisk (partial)</span><span class="vv">3 tones played in warm brass harmonics, slightly dissonant against each other. The 4 missing tones are <em>audible as absence</em> — gaps in the chord where the ear expects resolution.</span></div>
+    <div class="kv"><span class="kk">Obelisk (complete)</span><span class="vv">All 7 tones lock. The floor channels shift pitch — 3 Hz resolving upward — and stop. The room is, for the first time in 300 years, quiet in the right way.</span></div>
+    <div class="kv"><span class="kk">VA presence</span><span class="vv">Her tools make specific sounds on stone — deliberate, unhurried. When she is in CLOSED state, the tool sounds stop. Silence marks the warmth drop.</span></div>
+
+    <div class="label">WB Acoustic Identity</div>
+    <div class="kv"><span class="kk">Ambient</span><span class="vv">Near-total silence. Scholar's fire vessel produces a small crackling presence that becomes the only sonic anchor. The Lantern-Thieves produce a faint crystalline tone as they circle — beautiful, wrong, getting closer.</span></div>
+    <div class="kv"><span class="kk">Obelisk (partial)</span><span class="vv">4 cold tones — stone resonance, not brass. No warmth in the timbre. The complementary gaps mirror WA's resolved tones. The chord wants the same answer from the other direction.</span></div>
+    <div class="kv"><span class="kk">Traversal debt escalation</span><span class="vv">At Debt 1: silence after crossing. At Debt 2: a low pressure wave before the Boundary manifests — felt before heard. At Debt 3+: the Boundary's presence has a sound like stone grinding against itself very slowly, at extreme distance, growing.</span></div>
+
+    <div class="label">Dark Voice Lines — This Scene (Binaural Spatial Origin Specified)</div>
+    <table class="t">
+      <tr><th>Trigger</th><th>Origin</th><th>Line</th></tr>
+      <tr><td class="dm">Scholar enters WA and reads astrolabe near Obelisk</td><td class="fi">Beside</td><td>"Wrong. But specifically wrong. Three tones present. Four absent. The absent ones are somewhere."</td></tr>
+      <tr><td class="dm">Scholar crosses to WB for first time</td><td style="color:var(--danger)">Behind</td><td>"You're paying for this crossing. You knew that before you stepped through."</td></tr>
+      <tr><td class="dm">Scholar sees WB Obelisk resonance after seeing WA's</td><td class="fi">Beside</td><td>"The same sequence. The other half. They've been answering each other for three hundred years without knowing it."</td></tr>
+      <tr><td class="dm">Scholar reads VB's private notation tablet</td><td style="color:var(--cold-light)">Ahead</td><td>"She named the interference but not its source. She's been right about the symptom for two hundred and fifty years."</td></tr>
+      <tr><td class="dm">Scholar chooses Path A (helps only VA)</td><td style="color:var(--danger)">Behind</td><td>"Fan Li would have noted this choice."</td></tr>
+      <tr><td class="dm">Scholar chooses Path B (helps only VB)</td><td style="color:var(--danger)">Behind</td><td>"Fan Li would have noted this choice."</td></tr>
+      <tr><td class="dm">Scholar chooses Path C (unified)</td><td class="fi">Beside</td><td>"Three hundred years. And the only person who could see both sides arrived six weeks ago."</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     CAMERA
+═══════════════════════════════════════════════════ -->
+<div class="divider">Fixed Camera System · AitD Model</div>
+
+<div class="section sys">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">🎬</span>
+    <span class="sec-title">Camera Positions · Transition Logic</span>
+    <span class="sec-num">§08</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <p>Three fixed camera positions per world instance. Cameras are composed for maximum dramatic information — the Scholar's position relative to the Vanguard, the Obelisk state, and the TFP crossing point are all legible in a single frame wherever possible.</p>
+
+    <table class="t">
+      <tr><th>Cam</th><th>Position</th><th>Frames</th><th>When Active</th></tr>
+      <tr><td class="hi">WA-1</td><td>High angle, south wall, looking north toward Obelisk</td><td>Scholar + Obelisk + VA at work table (all three in frame)</td><td>Default WA entry · shows full room state</td></tr>
+      <tr><td class="hi">WA-2</td><td>Low angle, Obelisk base, looking up at north frieze</td><td>Scholar reading frieze fills frame · VA visible as background figure</td><td>Scholar near north wall / interacting with frieze</td></tr>
+      <tr><td class="hi">WA-3</td><td>Side angle from TFP, looking across room</td><td>Scholar at TFP edge · WB visible distorted through the ring</td><td>Scholar approaching or returning from crossing</td></tr>
+      <tr><td class="cl">WB-1</td><td>High angle, north alcove, looking south toward Obelisk</td><td>Scholar + Obelisk + VB writing (Lantern-Thieves circling in bg)</td><td>Default WB entry</td></tr>
+      <tr><td class="cl">WB-2</td><td>Close, VB's alcove, looking over VB's shoulder</td><td>Scholar in proximity to VB · VB's tablet visible</td><td>Scholar within 3m of VB</td></tr>
+      <tr><td class="cl">WB-3</td><td>From void-pit edge, looking up at hanging columns</td><td>Lantern-Thieves moving across ceiling · Scholar's fire below</td><td>Lantern-Thieves enter aggressive range</td></tr>
+    </table>
+
+    <div class="alert info">
+      <strong>Path C — The Unified Moment:</strong> A 7th special camera activates only on the Path C resolution — a medium shot through the TFP glass, holding VA in WA foreground and VB in WB background simultaneously, separated by the ring's distortion. 3 seconds. Neither moves. This is the only shot in the demo where both Vanguards are in frame at the same time. It is not announced. It simply happens.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     END-OF-SCENE CONSEQUENCE CARD
+═══════════════════════════════════════════════════ -->
+<div class="divider">End-of-Scene · Demo Consequence Display</div>
+
+<div class="section consequence">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">◎</span>
+    <span class="sec-title">Post-Puzzle Consequence Card · BMS Readout (Demo Only)</span>
+    <span class="sec-num">§09</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <div class="alert warn">
+      <strong>Demo-only exception:</strong> The full game never reveals BMS data. For the demo, after the puzzle resolves and the Scholar reaches the next save point, a consequence card is displayed — a single screen that shows what each Vanguard now understands about the Scholar, in the Vanguard's own voice. This is not a score. It is a behavioral readout in character. It teaches players that their choices were observed and interpreted — without breaking the "never show the BMS" rule, because the card appears outside active gameplay as a demo-context teaching moment.
+    </div>
+
+    <div class="label">Consequence Card — Path A (SOLVED_SIDED_VA)</div>
+    <div class="world-split">
+      <div class="wp wa">
+        <div class="wp-title">Vanguard A's Assessment</div>
+        <p style="font-size:13.5px;font-style:italic;color:var(--text);">"The Scholar shared information from the Dark Archive without being asked. The assessment: they understand that the two worlds are one problem. They chose to resolve this problem on the side of Sacred Fire. This tells me something about their priorities."</p>
+        <p style="font-size:12px;color:var(--ash);margin-top:8px;">Warmth register: trust extended. Routes adjusted. Resources pre-staged.</p>
+      </div>
+      <div class="wp wb">
+        <div class="wp-title">Vanguard B's Assessment</div>
+        <p style="font-size:13.5px;font-style:italic;color:var(--cold-light);">"The Scholar chose which world mattered. I have recorded this. My analysis of their intellectual priorities was slightly incorrect. I have updated it. A reasonable choice. I do not require them to be otherwise."</p>
+        <p style="font-size:12px;color:var(--ash);margin-top:8px;">Warmth register: recalibrated. Model updated. Observation continues.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:12px; font-size:13px; color:var(--text-dim); font-style:italic;">Card closes after 8 seconds or on player input. No score shown. No "good choice / bad choice" framing. Two people observed what the Scholar did and understood it. That is all.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     DESIGN VERIFICATION
+═══════════════════════════════════════════════════ -->
+<div class="divider">Design Verification · Does This Scene Prove What It Claims?</div>
+
+<div class="section warning open">
+  <div class="sec-header" onclick="tog(this)">
+    <span class="sec-icon">⚠</span>
+    <span class="sec-title">Verification Checklist · Iron Laws · Design Tests</span>
+    <span class="sec-num">§10</span>
+    <span class="sec-toggle">▶</span>
+  </div>
+  <div class="sec-body">
+    <table class="t">
+      <tr><th>Test</th><th>Pass Condition</th><th>Fail Condition</th></tr>
+      <tr>
+        <td class="hi">Iron Law I — Turn is a completion, not betrayal</td>
+        <td class="ok">N/A for this scene (Camel Phase — no turn yet)</td>
+        <td class="dm">—</td>
+      </tr>
+      <tr>
+        <td class="hi">Iron Law II — Iron Rule holds</td>
+        <td class="ok">Knowledge from WB (complementary tones) enables action in WA. No exceptions. All three paths use this rule.</td>
+        <td class="bad">Any path that lets Scholar solve WA without crossing to WB first.</td>
+      </tr>
+      <tr>
+        <td class="hi">Iron Law III — BMS never shown</td>
+        <td class="ok">Consequence card appears outside gameplay as demo context. No in-play UI. Player reads Vanguard behavior changes, not numbers.</td>
+        <td class="bad">Any in-play notification, warmth bar, or dialogue acknowledging a "choice was recorded."</td>
+      </tr>
+      <tr>
+        <td class="hi">Iron Law IV — Puzzle has an author</td>
+        <td class="ok">The Obelisk was built by the Archive's original scholars as a harmonic synchronization mechanism — its purpose is to maintain acoustic coherence between the two world layers. The interference is a side effect of the civilization's split, not a design decision. Who built it, why, and what went wrong are all recoverable from the friezes.</td>
+        <td class="bad">The puzzle exists because "this room needs a puzzle."</td>
+      </tr>
+      <tr>
+        <td class="hi">Core Demo Test</td>
+        <td class="ok">Playtesters describe, without prompting, that the Vanguard behaved differently after their choice. They should say "she seemed colder" or "she was watching me more." Not "I made a choice."</td>
+        <td class="bad">Playtesters describe only their own actions — "I chose to help one side." If they don't notice the Vanguard changed, the BMS is running but not surfacing.</td>
+      </tr>
+      <tr>
+        <td class="hi">No Correct Solution</td>
+        <td class="ok">All three paths complete the puzzle. The sealed chambers in each world open on any solution. The consequences differ — but there is no "failed" outcome, only different readings of the Scholar's character.</td>
+        <td class="bad">Path C described or hinted as "the right answer" anywhere in the demo experience.</td>
+      </tr>
+      <tr>
+        <td class="hi">Binaural Audio</td>
+        <td class="ok">Dark Voice lines have specified spatial origins implemented in FMOD. Playtesters describe the voice as coming from "behind" or "beside" — not as an echo or overlay.</td>
+        <td class="bad">Dark Voice implemented as reverb on the Scholar's VO audio channel.</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<footer>
+  KENOMA · DOC-DEMO-001 · The Resonance Obelisk · Demo Scene Design<br>
+  PZ-CC-DEMO · Camel Phase II · Unity 6 URP<br>
+  <span style="color:var(--fire);margin-top:4px;display:block;">No correct solution. Only solutions that pass, and what they cost.</span>
+</footer>
+
+</div>
+
+<script>
+  function tog(header) {
+    header.closest('.section').classList.toggle('open');
+  }
+</script>
+</body>
+</html>

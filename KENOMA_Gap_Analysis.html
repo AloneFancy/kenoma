@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — What the Archive Still Needs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   KENOMA GAP ANALYSIS
+   
+   An incomplete archive examining itself.
+   Warm, honest, specific about absence.
+   The Scholar finding the blank tablets.
+══════════════════════════════════════ */
+:root {
+  --p0: #f4ead6;
+  --p1: #ece0c8;
+  --p2: #e2d4b0;
+  --p3: #d4c098;
+  --p4: #c0a878;
+  --ink:  #181008;
+  --ink2: #2c1c0c;
+  --ink3: #5a3a1c;
+  --ink4: #8a6030;
+  --ink5: #b09050;
+  --r1: rgba(144,96,32,.24);
+  --r2: rgba(144,96,32,.1);
+
+  /* Gap severity colors */
+  --sev1: #7a1010;   /* Blocking — can't proceed */
+  --sev2: #7a4010;   /* Critical — vertical slice */
+  --sev3: #5a6010;   /* Important — Chapter One */
+  --sev4: #1a4a70;   /* Full game */
+
+  /* Thematic colors per gap category */
+  --audio:  #4a1a6a;  /* The Silence — violet */
+  --text:   #6a3a10;  /* The Blank Tablets — amber */
+  --inner:  #1a4060;  /* The Scholar's Interior — blue */
+  --rooms:  #2a5a30;  /* The Unmapped Rooms — green */
+  --eyes:   #5a2a10;  /* The Unseen Archive — copper */
+  --found:  #383040;  /* The Foundation — slate */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  background: #181008;
+  font-family: 'Barlow', sans-serif;
+  color: var(--ink3);
+  line-height: 1.72;
+}
+
+.page {
+  background: var(--p1);
+  max-width: 1120px;
+  margin: 0 auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,.7);
+  position: relative; overflow: hidden;
+}
+.page::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(transparent, transparent 29px, rgba(144,96,32,.06) 29px, rgba(144,96,32,.06) 30px);
+}
+.page::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; left: 54px;
+  width: 1px; background: rgba(200,60,30,.1); pointer-events: none;
+}
+.z { position: relative; z-index: 1; }
+
+/* ── COVER ── */
+.cover { padding: 52px 68px 40px 76px; border-bottom: 2px solid var(--r1); }
+.cv-pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--ink4); display: block; margin-bottom: 12px;
+}
+.cv-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(26px, 4vw, 52px); font-weight: 700;
+  color: var(--ink); line-height: 1.0; letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+.cv-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 300; font-style: italic;
+  color: var(--ink3); max-width: 600px; line-height: 1.58;
+  margin-bottom: 22px;
+}
+.sev-legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 18px; }
+.sl { display: flex; align-items: center; gap: 7px; }
+.sl-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.sl-txt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--ink4);
+}
+.cv-summary {
+  padding: 14px 18px; background: rgba(122,16,16,.05);
+  border-left: 4px solid var(--sev1); border: 1px solid rgba(122,16,16,.12);
+  border-left: 4px solid var(--sev1);
+  font-size: 14px; color: var(--ink2); line-height: 1.7;
+}
+.cv-summary strong { color: var(--ink); }
+
+/* ── SECTION HEAD ── */
+.sh { padding: 18px 68px 14px 76px; background: rgba(144,96,32,.06); border-top: 1px solid var(--r1); border-bottom: 1px solid var(--r1); }
+.sh-n { font-family: 'JetBrains Mono', monospace; font-size: 8.5px; letter-spacing: 4px; text-transform: uppercase; color: var(--ink5); }
+.sh-t { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 700; color: var(--ink); display: block; margin-top: 3px; }
+.sh-sub { font-size: 13px; color: var(--ink4); font-style: italic; margin-top: 2px; }
+.bd { padding: 22px 68px 26px 76px; }
+
+/* ── GAP CATEGORY BANNER ── */
+.gap-banner {
+  padding: 28px 68px 20px 76px;
+  border-top: 3px solid;
+  position: relative; overflow: hidden;
+}
+.gb-audio  { border-top-color: var(--audio); background: rgba(74,26,106,.04); }
+.gb-text   { border-top-color: var(--text);  background: rgba(106,58,16,.04); }
+.gb-inner  { border-top-color: var(--inner); background: rgba(26,64,96,.04);  }
+.gb-rooms  { border-top-color: var(--rooms); background: rgba(42,90,48,.04);  }
+.gb-eyes   { border-top-color: var(--eyes);  background: rgba(90,42,16,.04);  }
+.gb-found  { border-top-color: var(--found); background: rgba(56,48,64,.04);  }
+.gb-eye {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px; letter-spacing: 5px; text-transform: uppercase;
+  display: block; margin-bottom: 6px;
+}
+.gb-audio .gb-eye { color: rgba(140,80,200,.5); }
+.gb-text  .gb-eye { color: rgba(180,120,40,.5); }
+.gb-inner .gb-eye { color: rgba(50,120,180,.5); }
+.gb-rooms .gb-eye { color: rgba(60,160,80,.5);  }
+.gb-eyes  .gb-eye { color: rgba(160,90,40,.5);  }
+.gb-found .gb-eye { color: rgba(120,110,140,.5);}
+.gb-title { font-family: 'Cinzel', serif; font-size: clamp(18px, 2.5vw, 32px); font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: 5px; }
+.gb-sub   { font-size: 14px; color: var(--ink3); font-style: italic; line-height: 1.55; max-width: 680px; }
+
+/* ── PROSE ── */
+p { font-size: 14.5px; color: var(--ink3); line-height: 1.75; margin-bottom: 10px; }
+p:last-child { margin: 0; }
+p strong { color: var(--ink2); }
+p em { font-style: italic; color: var(--ink2); }
+h3 { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: var(--ink2); margin: 22px 0 10px; padding-bottom: 5px; border-bottom: 1px solid var(--r2); }
+h3:first-child { margin-top: 0; }
+
+/* ── GAP CARDS ── */
+.gaps { display: flex; flex-direction: column; gap: 2px; margin: 16px 0; }
+.gap-card {
+  background: var(--p0);
+  border: 1px solid var(--r2);
+  border-left: 5px solid;
+  overflow: hidden;
+}
+.gc-sev1 { border-left-color: var(--sev1); }
+.gc-sev2 { border-left-color: var(--sev2); }
+.gc-sev3 { border-left-color: var(--sev3); }
+.gc-sev4 { border-left-color: var(--sev4); }
+.gap-head {
+  padding: 10px 16px; background: rgba(0,0,0,.03);
+  border-bottom: 1px solid var(--r2);
+  display: flex; align-items: center; gap: 12px;
+}
+.gh-sev {
+  font-family: 'JetBrains Mono', monospace; font-size: 7.5px;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 2px; flex-shrink: 0;
+}
+.gc-sev1 .gh-sev { background: rgba(122,16,16,.1); color: var(--sev1); }
+.gc-sev2 .gh-sev { background: rgba(122,64,16,.1); color: var(--sev2); }
+.gc-sev3 .gh-sev { background: rgba(90,96,16,.1); color: var(--sev3); }
+.gc-sev4 .gh-sev { background: rgba(26,74,112,.1); color: var(--sev4); }
+.gh-title { font-family: 'Cinzel', serif; font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.gap-body { padding: 14px 16px; }
+.gap-body p { font-size: 14px; margin-bottom: 9px; }
+.gap-body p:last-child { margin: 0; }
+
+/* Story implication */
+.story-impact {
+  margin: 10px 0; padding: 10px 14px;
+  background: rgba(0,0,0,.04); border-left: 3px solid var(--ink4);
+  font-size: 13.5px; color: var(--ink3); line-height: 1.6; font-style: italic;
+}
+.story-impact strong { font-style: normal; color: var(--ink2); }
+
+/* What it needs */
+.gap-needs {
+  margin-top: 10px; padding: 9px 13px;
+  background: rgba(144,96,32,.05); border: 1px solid var(--r2);
+  font-size: 12.5px; color: var(--ink3); line-height: 1.58;
+}
+.gn-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 7.5px;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--ink4);
+  display: block; margin-bottom: 4px;
+}
+
+/* ── CALLOUT ── */
+.call {
+  border-left: 4px solid; padding: 12px 16px; margin: 12px 0;
+  font-size: 14px; line-height: 1.7; color: var(--ink3);
+}
+.call strong { color: var(--ink2); }
+.call em { font-style: italic; color: var(--ink); }
+.c-lbl {
+  font-family: 'JetBrains Mono', monospace; font-size: 7.5px;
+  letter-spacing: 3px; text-transform: uppercase;
+  display: block; margin-bottom: 4px;
+}
+.c-sev1 { border-color: var(--sev1); background: rgba(122,16,16,.04); }
+.c-sev1 .c-lbl { color: var(--sev1); }
+.c-n    { border-color: var(--r1); background: rgba(144,96,32,.04); }
+.c-n .c-lbl { color: var(--ink4); }
+.c-audio { border-color: var(--audio); background: rgba(74,26,106,.04); }
+.c-audio .c-lbl { color: rgba(140,80,200,.7); }
+
+/* ── SEQUENCE TABLE ── */
+.seq-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+.seq-table th {
+  background: var(--p3); font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--ink4); padding: 8px 13px; text-align: left;
+  border-bottom: 1px solid var(--r1);
+}
+.seq-table td {
+  padding: 9px 13px; border-bottom: 1px solid var(--r2);
+  vertical-align: top; color: var(--ink3);
+}
+.seq-table td:first-child { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--ink2); white-space: nowrap; }
+.seq-table tr:hover td { background: var(--p0); }
+.seq-table td strong { color: var(--ink2); }
+.seq-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 1px 6px; border-radius: 2px; white-space: nowrap;
+}
+.st-block { background: rgba(122,16,16,.1); color: var(--sev1); }
+.st-crit  { background: rgba(122,64,16,.1); color: var(--sev2); }
+.st-imp   { background: rgba(90,96,16,.1);  color: var(--sev3); }
+.st-full  { background: rgba(26,74,112,.1); color: var(--sev4); }
+
+/* ── TWO COL ── */
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin: 14px 0; }
+.tc { background: var(--p0); padding: 16px 18px; border: 1px solid var(--r2); border-top: 2px solid; }
+
+/* ── FOOT ── */
+.foot { padding: 16px 68px 16px 76px; border-top: 2px solid var(--r1); display: flex; justify-content: space-between; background: var(--p3); }
+.f-main { font-family: 'Cinzel', serif; font-size: 13px; color: var(--ink3); }
+.f-meta { font-family: 'JetBrains Mono', monospace; font-size: 8.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink4); }
+</style>
+</head>
+<body>
+<div class="page z">
+
+<!-- ══ COVER ════════════════════════════════ -->
+<div class="cover z">
+  <span class="cv-pre">KENOMA · Pre-Production Gap Analysis · What the Archive Still Needs · Deep Research</span>
+  <div class="cv-title">What the Archive<br>Still Needs</div>
+  <div class="cv-sub">An honest inventory of what is absent from the project before production can begin. Six categories of incompleteness — some of which are structural, some of which are surprising, all of which matter to the story before they matter to the schedule.</div>
+  <div class="sev-legend">
+    <div class="sl"><div class="sl-dot" style="background:var(--sev1)"></div><span class="sl-txt">Blocking — cannot produce without</span></div>
+    <div class="sl"><div class="sl-dot" style="background:var(--sev2)"></div><span class="sl-txt">Critical — vertical slice requires</span></div>
+    <div class="sl"><div class="sl-dot" style="background:var(--sev3)"></div><span class="sl-txt">Important — Chapter One requires</span></div>
+    <div class="sl"><div class="sl-dot" style="background:var(--sev4)"></div><span class="sl-txt">Full game — before ship</span></div>
+  </div>
+  <div class="cv-summary">
+    <strong>The central finding:</strong> KENOMA has the finest narrative architecture of any game in this project's scope — and is almost completely silent about the experience of actually playing it. The <em>story of the game</em> is rich. The <em>sensory content of the game</em> — what the player hears, reads, touches, and discovers — is largely absent. Six categories, 34 specific gaps. Three of them are blocking.
+  </div>
+</div>
+
+
+<!-- ══ GAP 1: THE SILENCE ════════════════════ -->
+<div class="gap-banner gb-audio z">
+  <span class="gb-eye">Gap Category 01 · Most Critical Single Absence</span>
+  <div class="gb-title">The Silence — Audio Has No Design</div>
+  <div class="gb-sub">The game is structurally built on sound. The Act I→II turn is a silence. The astrolabe going quiet is the most devastating event. The Calibration Channel is audio-first. Not one sound has been specified.</div>
+</div>
+
+<div class="sh z"><span class="sh-n">1.1</span><span class="sh-t">Why Audio Is the Most Critical Gap</span><div class="sh-sub">A game this dependent on sound cannot be designed without an audio direction</div></div>
+<div class="bd z">
+
+  <p>KENOMA describes audio with unusual precision throughout the design documents — more precisely, arguably, than any visual element. The astrolabe "emits resonance static — volume equals distance, timbre distinguishes creature type." The Calibration Channel is explicitly "audio-first design: brass harmonic audible before visible." The Dark Voice is "the Scholar's own voice + reverb." The Act I→II turn is triggered by eight seconds of silence from a communication channel. The astrolabe going permanently silent in Act III is called "the most devastating single audio event in the game."</p>
+
+  <p>Every one of these descriptions establishes a dramatic and mechanical role for sound — and <strong>not one of them is followed by an audio specification</strong>. There is no audio bible. No music brief. No composer note. No sound design document. No recording direction. The game's most important emotional moments are defined almost entirely by what they sound like, and the audio design for those moments does not exist.</p>
+
+  <div class="call c-sev1">
+    <span class="c-lbl">Why This Is Blocking</span>
+    You cannot prototype the Act I→II turn without the eight-second silence and what precedes it. You cannot design the Calibration Channel without its 30s/35s/10s/2s/13s audio cycle. You cannot direct the Dark Voice recording session without an audio brief. <strong>The game's three most important emotional moments are defined entirely by what they sound like. None of those sounds have been designed.</strong>
+  </div>
+
+  <div class="gaps">
+    <div class="gap-card gc-sev1">
+      <div class="gap-head">
+        <span class="gh-sev">Blocking</span>
+        <span class="gh-title">The Audio Bible — Does Not Exist</span>
+      </div>
+      <div class="gap-body">
+        <p>There is no audio direction document for KENOMA. No music brief. No sound design language. No composer brief. For a game where audio functions as the primary interface layer — the astrolabe replaces a threat-proximity HUD, the fire vessel's sputtering is the health indicator, the resonance instrument is the Vanguard communication system — this is structurally equivalent to not having a visual design document for a primarily visual game.</p>
+        <div class="story-impact"><strong>Story impact:</strong> The three-second silence at the start of every Child Phase scenario — the document says "in Scenario I it feels like emptiness, in Scenario V it feels like prayer." These are the same three seconds of physical silence. The difference in emotional register comes entirely from what the audio has established in the preceding 150 minutes. Without an audio direction, these three seconds are identical in every scenario, and the game's ending spectrum collapses.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          A full audio direction document covering: (1) music brief per phase — Camel Phase warmth, Lion Phase urgency-with-grief, Child Phase genre-shift; (2) composer brief; (3) sound design language for World A (stone resonance, fire, warmth) vs World B (cold, depth, absolute absence); (4) audio function map — every system that uses sound as its primary communication medium; (5) the Dark Voice recording direction.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev1">
+      <div class="gap-head">
+        <span class="gh-sev">Blocking</span>
+        <span class="gh-title">The Music Architecture — Three Phases, No Direction</span>
+      </div>
+      <div class="gap-body">
+        <p>The Camel Phase must feel "professional delight shading into dread." The Lion Phase must feel "urgent, intelligent, slightly sad." The Child Phase must be "something that doesn't have a genre name." These are vivid emotional targets. Music is the primary carrier of these emotions in a fixed-camera horror game where the player cannot control pacing. But there is no musical direction, no style reference, no composer brief, and no specification of how music transitions between phases.</p>
+        <p>Consider the specific moment when the cello theme — which has been in anxious counterpoint with Vanguard's stone-percussion throughout Act II — resolves to major key at the False Victory. This moment is mentioned in the Phase Design document as structurally important. But there is no cello theme. There is no stone-percussion Vanguard leitmotif. There is no musical architecture these themes belong to.</p>
+        <div class="story-impact"><strong>Story impact:</strong> The False Victory relies on a major-key resolution to signal "the Scholar won." The Camel Phase's warmth relies on music that makes the Archive feel like a gift. The Scholar's Day Three journal entry — "I'm going to turn the page now" — lands differently if it has a private, quiet musical signature. All of these are currently silence.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Music architecture document: leitmotifs per character (Scholar, Vanguard A, Vanguard B, the Archive itself), phase transitions, the False Victory musical sequence, the Child Phase's intentionally unclassifiable register, and 5–10 reference tracks that establish the emotional target for each phase.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">The Astrolabe Sound System — The Primary HUD</span>
+      </div>
+      <div class="gap-body">
+        <p>The astrolabe replaces the threat-proximity HUD entirely. "Volume equals distance, timbre distinguishes creature type." This is an audio design specification that implies at minimum: a unique base timbre per creature category (Fire-Warden vs Lantern-Thief vs Shadow-Walker vs Loop-Walker vs the Boundary), a volume curve mapped to distance, and a mixing priority that ensures it's always audible under ambient sound. None of this is specified.</p>
+        <p>Additionally: the astrolabe goes permanently silent in Act III after the Boundary dissolves. The document calls this "the most devastating single audio event in the game." A sound event being devastating through absence requires the presence to have been established as safety across the preceding 150 minutes. This cannot be designed retroactively — the astrolabe sound system must be designed first, so that its disappearance has weight.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Astrolabe audio specification: base frequency per creature type, distance curve behavior, Traversal Debt indication (three physical ring positions have corresponding audio states), the permanent silence event specification, and the Act III mixing brief (what fills the silence after it's gone — and it must be filled with something that makes the absence feel different from mere quiet).
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">World A vs World B — Acoustic Identity</span>
+      </div>
+      <div class="gap-body">
+        <p>The game's two worlds have completely different cosmological identities — Sacred Fire (visible, ordered, luminous, warm) and the Hollow (hidden, cold, absolute darkness). These identities should be immediately apparent through their acoustic character, not just their visual character. But the acoustic difference is never specified.</p>
+        <p>What does a 72-column Persepolis-scale hypostyle hall sound like? It has a specific reverb profile — massive stone, tall ceilings, fire crackling in channels. What does the Dark Archive sound like? The Scholar's fire vessel is the only warm light and presumably the only warm sound. Everything else is cold stone, infinite depth, and things that move silently in the dark. These are completely different sonic worlds. Their design is absent.</p>
+        <div class="story-impact"><strong>Story impact:</strong> The Scholar's first crossing into World B should feel physically wrong — not just visually. The acoustic shift from World A's resonant warmth to World B's cold silence IS the crossing experience.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Acoustic identity brief per world: reverb profiles, ambient sound layer specification, what silence sounds like (World B is not silent — absence of warmth is its own sound), and the specific audio experience of the 2.2-second crossing transition.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">The Fire Vessel Audio — The Physical Health System</span>
+      </div>
+      <div class="gap-body">
+        <p>The fire vessel's flame size is the oil level indicator. "Below 20 units it spits. Below 5 it sputters." This is a diegetic health bar replacement. The spitting and sputtering are the player's primary resource warning system in World B. But there is no audio specification for what "spitting" and "sputtering" actually sound like at each threshold — how frequently, at what volume, with what urgency. This affects gameplay directly.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Fire vessel audio states: normal burn (ambient presence), 20-unit warning (irregular pop, not yet urgent), 5-unit critical (continuous irregular sputter, player understands this is bad), near-empty (distinctive sound that also triggers the Scholar's expression change). These are all the same fire — the sound design determines whether players read the warning correctly.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ GAP 2: THE BLANK TABLETS ══════════════ -->
+<div class="gap-banner gb-text z">
+  <span class="gb-eye">Gap Category 02 · Content That Players Actually Experience</span>
+  <div class="gb-title">The Blank Tablets — The Text Doesn't Exist</div>
+  <div class="gb-sub">The Scholar spends 90 minutes reading the Archive. Not one piece of actual tablet content has been written. The game's core experience is currently a reading game with no text.</div>
+</div>
+
+<div class="sh z"><span class="sh-n">2.1</span><span class="sh-t">The Written Content Gap</span><div class="sh-sub">Everything the Scholar reads — the primary player activity — is absent</div></div>
+<div class="bd z">
+
+  <p>The Camel Phase is defined by translation: the Scholar reads tablets, and the depth of reading drives the Behavioral Model System, the Recognition Stage System, the Naming tier, and the five Child Phase scenario outcomes. Reading is the game's primary mechanic and the Scholar's defining act. The game has been designed around the act of reading in extraordinary detail — and there is nothing to read.</p>
+
+  <div class="gaps">
+    <div class="gap-card gc-sev1">
+      <div class="gap-head">
+        <span class="gh-sev">Blocking</span>
+        <span class="gh-title">Creature Origin Inscriptions — The Naming Tier Requires Specific Text</span>
+      </div>
+      <div class="gap-body">
+        <p>The Naming Tier is the game's highest combat action. The Scholar deep-reads a creature's origin inscription, learns its designation in the Naming Tongue, and speaks it aloud — permanently neutralizing the creature. This is both the game's most powerful mechanic and its most elegant: the Scholar's scholarly act as the ultimate weapon.</p>
+        <p>But the inscription must actually say something. What is a Fire-Warden's origin inscription? What does it reveal about the creature — about how they were created, what function they served, what name the Archive gave them? The game's doctrine is that every puzzle has an author and a reason. A creature's Naming inscription is that creature's biography — it must be specific, historically grounded, and worth reading for its own sake before it becomes a combat resource.</p>
+        <p>Currently: no inscription content exists for any creature type. The Naming tier cannot be built without it.</p>
+        <div class="story-impact"><strong>Story impact:</strong> When the Scholar names the Fire-Warden at WA-001 in the opening 90 seconds — "the Naming combat tutorial" — what do they actually say? What is the Warden's designation in the Naming Tongue, and what does that designation mean? This moment introduces the game's highest combat tier and its core theme (comprehension as power). It cannot be a placeholder.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Origin inscriptions for each creature type: Fire-Warden (Administrative Elamite — they were bureaucratic functionaries given physical form), Lantern-Thief (Hollow script — they were drawn from cold stellar phenomena), Shadow-Walker (bilingual — they predate the Archive's split), the Boundary (if nameable — and whether it can be named is an interesting design question), the Loop-Walker. Each inscription: 3–5 sentences in Scholar's translation, historically grounded, revealing something about the Archive's pre-history.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev1">
+      <div class="gap-head">
+        <span class="gh-sev">Blocking</span>
+        <span class="gh-title">The Tablets — 90 Minutes of Primary Content, None Written</span>
+      </div>
+      <div class="gap-body">
+        <p>The Scholar is an academic. They translate tablets. This is not flavor — it is the game's primary player activity across Act I. The Translation Depth System (SKIM vs DEEP) only has mechanical meaning if the tablets contain actual content that rewards deep reading. A tablet that says "Sacred Fire administrative record" teaches players nothing and gives the Deep Read interaction no reason to exist.</p>
+        <p>Specific tablets that are referenced as structurally important but have no actual content:</p>
+        <p><strong>The Grand Armillary Manual</strong> (WA-003): Contains the 28-second Armillary activation sequence. The Scholar who memorizes it survives PZ-007. What does this manual actually describe? What does the sequence look like in text — is it a series of ring positions, a timing notation, a mathematical sequence? The Scholar must be shown reading something specific.</p>
+        <p><strong>Clause 18</strong>: Referenced constantly as "the Archive's completion trigger." What does it actually say? We know it requires "a Scholar capable of reading both registries." But what is the precise legal language? The Vanguard has read this clause and acted on it for 300 years — its exact wording matters to her character.</p>
+        <p><strong>The Third Record</strong>: Described as describing "a civilization that integrated Sacred Fire and the Hollow." What does it actually say? This is the Archive's most important document — the one Vanguard B says "that civilization would not have needed me" about. Its content must be extraordinary enough to justify that response.</p>
+        <p><strong>The Vanguard's Archive Entry Record</strong>: We know the last line: "Scholar profile identified. Arrival estimated within two generations." But what are the other lines? What was her formal mission brief? Written in administrative Elamite — the formal language she uses for everything she can't afford to make personal.</p>
+        <div class="story-impact"><strong>Story impact:</strong> The Deep Read interaction is described as "the most important 25-40 seconds in the game" — the single interaction that everything downstream depends on. If the reward for deep reading is more interesting, more historically specific, more emotionally resonant text than the reward for skimming — players will deep read. If the content is generic placeholders, they won't, and the entire Behavioral Model System produces uniform shallow data.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          A content brief for each structurally significant tablet: actual translated content (Scholar's voice, first-person translation, not description), the SKIM version (what players get from surface reading) vs the DEEP version (what players get from full engagement), and the specific knowledge or implication that the DEEP version reveals. Minimum 12 fully written tablets before vertical slice. The Armillary Manual, Clause 18, and the Vanguard's Entry Record are non-negotiable priority.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">The Previous Scholar's Journal — An Unfinished Mirror</span>
+      </div>
+      <div class="gap-body">
+        <p>The previous scholar's journal, found in WB-004, is described as potentially "the most unsettling document in the Archive." Its final entry: "The Boundary appeared at the fourteenth crossing. I did not have enough time at the Armillary. I needed six more seconds." The document notes that finding it is optional — but its narrative function is structural: it tells the current Scholar that they are the second attempt, and that Vanguard B recalibrated her selection criteria after the first scholar died.</p>
+        <p>This character deserves more than a final entry. The previous scholar — unnamed, academic, presumably brilliant enough to have gotten as far as the fourteenth crossing — is the current Scholar's shadow: who they would have been if they were slightly less capable, or slightly less fortunate, or slightly less whatever made Vanguard B select again. Their journal is a mirror the current Scholar holds up to themselves.</p>
+        <p>We have: one final entry. We do not have: their name, their academic specialty, their approach to the Archive (was it different from the current Scholar's?), how many tablets they translated, how many creatures they Named, what their last weeks were like, and what made Vanguard B decide the selection criteria needed to change. This character exists and their journal is findable. Their characterization is minimal.</p>
+        <div class="story-impact"><strong>Story impact:</strong> This is the moment in WB-004 that most directly confronts the Scholar with the structure of their situation — not through the Dark Voice, not through a Vanguard scene, but through the recorded experience of someone who failed exactly the same test. The journal's quality determines whether this moment lands as genuine horror or is merely noted.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          The previous scholar's characterization: academic background, name (or deliberate namelessness and its implication), how their journal differs from the current Scholar's style (similar enough to be a mirror, different enough to show how Vanguard B improved her selection), 4–6 journal entries showing their progression through the Archive, the specific failure that let Vanguard B recalibrate — and crucially: what she changed.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">The Scholar's Published Monograph — The Document That Changed Everything</span>
+      </div>
+      <div class="gap-body">
+        <p>The Vanguard found the Scholar's published monograph in Year 267 and said "This is the one." Seventeen drafts of an invitation followed. She read the monograph in one sitting. It proved the Scholar was the person she had been selecting for since Year 28. What was the monograph about? This document — the Scholar's most important prior work — does not exist. It is referenced as decisive but never described.</p>
+        <p>This matters for two reasons. First, the monograph defines what kind of scholar the Scholar is — their methodology, their intellectual obsessions, their particular strengths. Second, the monograph is indirectly present in the game: it's what the Vanguard prepared for. Every translation approach the Scholar uses, every creature they name, every puzzle they solve — the Vanguard had modeled this from reading one document. That document should be specific enough to explain why she was right.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Title, abstract (one paragraph), and the specific argument that would explain why Vanguard B recognized it as the work of someone with the exact capability she needed. This doesn't need to be a full academic paper — but it needs to be specific enough that the Scholar's behavior in the Archive is consistent with having written it.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ GAP 3: THE SCHOLAR'S INTERIOR ═════════ -->
+<div class="gap-banner gb-inner z">
+  <span class="gb-eye">Gap Category 03 · The Protagonist's Private Self</span>
+  <div class="gb-title">The Scholar's Interior — Who They Are When No One Is Watching</div>
+  <div class="gb-sub">The Scholar's archetypes are extraordinary. Their private voice — the Dark Voice's tree, the journal entries, the performance direction — is almost entirely absent. The character exists as philosophy. They still need to exist as a person.</div>
+</div>
+
+<div class="sh z"><span class="sh-n">3.1</span><span class="sh-t">The Dark Voice Dialogue Tree — Explicitly Pending</span></div>
+<div class="bd z">
+
+  <div class="call c-sev1">
+    <span class="c-lbl">Status: Pending from Session Summary</span>
+    "Design Dark Voice dialogue tree — specific Eastern Zhou aphorisms mapped to behavioral triggers (full tree)" — listed as PENDING in every session summary. This is not a minor dialogue task. The Dark Voice IS the Scholar's interiority in Act I. Without the dialogue tree, the Scholar's psychological arc in the Camel Phase doesn't exist.
+  </div>
+
+  <div class="gaps">
+    <div class="gap-card gc-sev1">
+      <div class="gap-head">
+        <span class="gh-sev">Blocking</span>
+        <span class="gh-title">The Dark Voice Dialogue Tree — The Scholar's Full Psychology</span>
+      </div>
+      <div class="gap-body">
+        <p>The Dark Voice is the Scholar's strategic intelligence surfacing against their will — the same voice, the same vocabulary, speaking the analysis the Scholar is choosing not to complete. It is explicitly modeled on the Dark Prince from Prince of Persia: The Two Thrones. The Dark Prince did not invent new information — he completed the Prince's thoughts. The Dark Voice works identically: it speaks in Fan Li and Sun Tzu aphorisms because those are the Scholar's private analytical language.</p>
+        <p>What exists: three response options (Suppress/Acknowledge/Follow), one sample scene, and a description of how it evolves ("the Scholar starts agreeing before it finishes speaking"). What does not exist: the actual aphorisms, the specific behavioral triggers, the progression logic, the full dialogue across Act I and II, or the performance direction.</p>
+        <p>The Dark Voice needs: (1) a complete trigger map — what specific events cause it to speak; (2) the actual Fan Li and Sun Tzu aphorisms used at each trigger, with translation; (3) how the Voice's vocabulary reflects the Scholar's specific DEEP reading history (it can only cite texts the Scholar has actually read); (4) the progression from being surprising to being anticipated to being agreed with before completion; (5) performance direction (how much reverb, what emotional register — the Voice is not threatening, it is uncomfortably correct).</p>
+        <div class="story-impact"><strong>Story impact:</strong> The Dark Voice is the single most important tool for showing the Scholar's self-knowledge. A Scholar who hears the Voice and Suppresses it, then Acknowledges it, then finally starts agreeing before it speaks — that arc is the Scholar's internal act structure within Act I. Without the dialogue tree, that arc doesn't exist.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Full Dark Voice dialogue tree: trigger map (minimum 12 triggers across Camel Phase), aphorism bank (8–12 Fan Li / Sun Tzu passages with translations selected for their specific resonance with the Scholar's situation), three response branches per trigger (Suppress/Acknowledge/Follow each with consequences), progression notes, and 2-page performance brief for the recording session.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">The Scholar's Full Journal — Not the Philosophy, the Person</span>
+      </div>
+      <div class="gap-body">
+        <p>The Scholar's clay tablet journal is a physical in-game object. Players open it to review objectives. Three things are described about its content: the Day Three entry (turning the page on Fan Li's warning), the creature taxonomy that follows, and the late-game entry "I think she was saying goodbye to something" (describing the Gate scene). This is not a journal — it is three notes with gaps of weeks between them.</p>
+        <p>The journal should be the Scholar's private voice throughout the game: what they notice, what they choose not to say to the Vanguard, what the Archive makes them feel, how their relationship to the Dark Voice changes, what they think about their situation at each stage. This content is the most intimate portrait of the Scholar in the game and virtually none of it exists.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Journal entries for each week of the Camel Phase (10–14 entries total), structured around the Scholar's emotional progression: professional delight → the Dark Voice beginning → genuine warmth → the Dark Voice becoming familiar → understanding what Stage 5 means. Entries should be brief (3–6 sentences each), in the Scholar's specific intellectual voice, and reveal things about their experience of the Archive that no other game text contains.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">The Scholar's Identity — Name, Gender, Appearance</span>
+      </div>
+      <div class="gap-body">
+        <p>Three questions about the Scholar that have never been answered: What is their name? What is their gender? What do they look like? The documents consistently use "the Scholar" and "they/them" — which may be a deliberate gender-neutralization for player projection, or may simply be unresolved. "Travel-worn magi robes that accumulate visible damage" is the only physical description.</p>
+        <p>These questions have different urgency. Gender specification affects the Vanguard's dialogue (subtle but present), casting for the voice, and marketing. Name specification affects whether the Scholar can ever be directly addressed by the Vanguard (currently she doesn't address them by name, which may be intentional). Appearance affects all concept art, character design, and the way the Scholar is framed in fixed-camera shots.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          A deliberate decision on each question and its rationale. If the Scholar is intentionally gender-neutral for player projection — that is a design choice that should be explicit and consistent. If they have a name that the Vanguard never uses — why? If the appearance is intentionally understated — to what degree? These decisions must be made before voice casting, character design, or concept art.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">Voice Performance Direction — Three Characters, No Brief</span>
+      </div>
+      <div class="gap-body">
+        <p>The game has three vocal presences: Vanguard A (military precision, certainties, asks once), Vanguard B (expansive, patient, philosophical), and the Dark Voice (Scholar's voice + reverb, Eastern Zhou strategic vocabulary). Each requires a voice direction brief for casting and recording. None of these briefs exist.</p>
+        <p>The Vanguard's voice direction is particularly important. Her warmth must feel genuine. Her precision must feel natural. The difference between her Stage 1 voice (evaluating) and Stage 4 voice (trusting) must be audible without being theatrical. This requires an extremely specific performance direction that understands who she is.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          3-page voice direction brief per character: performance range (closest equivalent voices, what to avoid), emotional baseline and how it shifts across phases, the specific lines that represent each character at their most essential, and casting brief for auditions.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ GAP 4: THE UNMAPPED ROOMS ══════════════ -->
+<div class="gap-banner gb-rooms z">
+  <span class="gb-eye">Gap Category 04 · The Spaces That Don't Exist Yet</span>
+  <div class="gb-title">The Unmapped Rooms — Half the Archive Is Empty</div>
+  <div class="gb-sub">The map shows every room. But six World A rooms and six World B rooms have no content, no story function, no puzzle, and no Vanguard presence. The map is a skeleton. Most of the body hasn't been built.</div>
+</div>
+
+<div class="sh z"><span class="sh-n">4.1</span><span class="sh-t">Room Design Inventory</span><div class="sh-sub">What exists vs what the Archive needs to function</div></div>
+<div class="bd z">
+
+  <div class="two">
+    <div class="tc" style="border-top-color:var(--sev2);">
+      <h3>World A — Designed Rooms (3 of ~9)</h3>
+      <p><strong>WA-001</strong> — Gate of All Nations. Fully designed. Opening scene, Naming tutorial, Vanguard first contact.</p>
+      <p><strong>WA-003</strong> — Eastern Treasury. Fully designed. Primary translation hub, Grand Armillary manual, Vanguard's entry record.</p>
+      <p><strong>WA-007</strong> — Grand Armillary Gallery. Fully designed. PZ-007, Act II climax, the six-minute window.</p>
+      <p><strong>WA/B-CC-01</strong> — Calibration Channel. Fully designed. Puzzle template for all others.</p>
+      <p><strong>Observatory</strong> — mentioned as safe room, SH4 model. Not designed.</p>
+    </div>
+    <div class="tc" style="border-top-color:var(--sev1);">
+      <h3>World A — Missing Rooms (~5 undesigned)</h3>
+      <p><strong>WA-002</strong> — Hypostyle Forest. Partially described (columns, cold altars, the Flask scene happens here). Not fully designed. The Flask — one of three essential resonance moments — requires this room to be complete.</p>
+      <p><strong>WA-004</strong> — Unnamed. On the map. No content.</p>
+      <p><strong>WA-005</strong> — Unnamed. On the map. No content.</p>
+      <p><strong>WA-006</strong> — Unnamed. On the map. No content.</p>
+      <p>The <strong>Observatory safe room</strong> — central to the SH4 model (safety built before corruption), not designed.</p>
+    </div>
+    <div class="tc" style="border-top-color:var(--sev2);">
+      <h3>World B — Designed Rooms (3 of ~8)</h3>
+      <p><strong>WB-001</strong> — Inverted Gate. Designed. Mirror of WA-001, reversed inscription, Vanguard B presence.</p>
+      <p><strong>WB-004</strong> — Dark Library. Designed. Primary WB translation hub, previous scholar's journal, Vanguard B overheard scene.</p>
+      <p><strong>WB-∞</strong> — Chamber of Convergence. Designed. Third Record, both Vanguards present, the five-crossing path.</p>
+    </div>
+    <div class="tc" style="border-top-color:var(--sev1);">
+      <h3>World B — Missing Rooms (~5 undesigned)</h3>
+      <p><strong>WB-002</strong> — Hollow Hypostyle. Mirror of WA-002. The cold inverse of the Hypostyle Forest. Not designed — but required, because the Iron Rule mandates that World B has every room World A has, mirrored and inverted.</p>
+      <p><strong>WB-003, WB-005, WB-006, WB-007</strong> — On the map. No content, no story function, no creature placement, no puzzle.</p>
+    </div>
+  </div>
+
+  <div class="gaps" style="margin-top:16px;">
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">WA-002 — Hypostyle Forest — The Flask Scene Requires This Room</span>
+      </div>
+      <div class="gap-body">
+        <p>The Flask scene — one of the three essential resonance moments, the most physically immediate expression of the warmth-and-calculation simultaneous truth — happens in the WA-002 corridor. The Scholar returns from their first serious Dark Archive encounter, fire vessel nearly drained, robe visibly torn. Vanguard A assesses them in half a second and places an oil flask in their hands. This is the game's most important single scene before the Act I→II turn.</p>
+        <p>WA-002 is described generally (the Hypostyle Forest, 72 cold stone columns that light up gradually as the Scholar lights altars) but not designed as a room. We don't know: where the Flask scene happens within the space, what creatures the Scholar just survived in the Dark Archive that sent them back in this condition, how far into the room the Vanguard is standing when she sees them, what the space looks like at that specific stage of the Scholar's Act I progression (some altars lit, others cold).</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Full WA-002 design: spatial description, creature placement and patrol routes, specific location of the Flask scene within the room, the lighting state at the relevant Act I stage, and at least two additional story functions (what puzzles or story beats belong to this space besides the Flask).
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">The Observatory Safe Room — Safety That Corrupts</span>
+      </div>
+      <div class="gap-body">
+        <p>The Observatory is mentioned as KENOMA's SH4 safe room model: "warmth built before corruption." Silent Hill 4's Room 302 begins as the only safe place in the game — the one space exempt from horror — and gradually becomes haunted, its safety dissolving. The Observatory presumably works similarly: it starts safe and becomes corrupted as the Scholar's behavioral score increases the Vanguard's capability.</p>
+        <p>This is structurally important because it means the one safe place in the Archive is also a behavioral tracking point — the Vanguard can see how the Scholar uses their safe room. How often they rest. What they write in the journal. Whether they light the fire altars around it or conserve oil. The corruption lifecycle is mentioned but never designed.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Observatory design: location in the Archive (above the Hypostyle? Between WA zones?), initial safe state and what makes it feel genuinely safe, corruption lifecycle mapped to behavioral score thresholds, and the specific moment when the Scholar first notices something has changed. This room is the game's emotional home — it deserves full design attention.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ GAP 5: THE UNSEEN ARCHIVE ══════════════ -->
+<div class="gap-banner gb-eyes z">
+  <span class="gb-eye">Gap Category 05 · Visual Design, Creatures, Camera</span>
+  <div class="gb-title">The Unseen Archive — Visual Design Has No Direction</div>
+  <div class="gb-sub">The game's visual identity is described in vivid prose. Amber fire above, cold lapis below, 72 carved columns, seven bronze rings. But there is no art direction document, no camera specification, and no creature visual design. The game exists in language, not in image.</div>
+</div>
+
+<div class="bd z">
+
+  <div class="gaps">
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">Art Direction Document — The Visual Language Has No Standard</span>
+      </div>
+      <div class="gap-body">
+        <p>The visual language of KENOMA is extraordinarily evocative in prose: the amber warmth of fire altars lighting up one by one, the cold lapis void of the Dark Archive, 72 columns with double-bull capitals revealed gradually as the Scholar works. The Vanguard's military bearing in Achaemenid dress against stone architecture. The Scholar's robes deteriorating. But this prose does not constitute an art direction. Concept artists, environment artists, character designers, and the technical director all need a visual standard that specifies how these described aesthetics translate into actual images.</p>
+        <p>Critical missing elements: (1) color palette specification per world (not just "amber" and "lapis" — exact values, contrast ratios, material response to fire); (2) architectural reference hierarchy (which Persepolis structures are models for which rooms?); (3) creature visual design (Fire-Wardens are "stone-armored" — what does that actually look like?); (4) character visual design for both Vanguards and the Scholar; (5) lighting direction (fixed-camera horror lighting is a craft, not a default).</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          A 15–20 page art direction document: visual concept (the illuminated Persian manuscript that has been photocopied and annotated — already described in the Storytelling Bible's own design notes), reference imagery, color systems per world, material palette, character design direction, and creature design briefs. This document must exist before any concept art or environment art is produced.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">Fixed Camera Specification — AitD's Signature Requires Design</span>
+      </div>
+      <div class="gap-body">
+        <p>AitD's fixed cameras are specifically cited as KENOMA's model: each room's camera position is "art-directed to tell the story of that specific room." This is not a technical default — it is a craft. The camera in a fixed-camera horror game tells the player what to notice, establishes danger before the player sees it, and creates the composition that makes each room feel like an illustration from a specific book. AitD's most memorable camera angles are deliberate choices by a director, not an automatic result of placing a camera somewhere.</p>
+        <p>For KENOMA: how many camera positions does each room need? What is the rule for when the camera cuts vs when it follows? How does the camera serve the story of each specific room — WA-001's camera should establish the scale of the gate and the Scholar's smallness; WB-001's camera should establish the wrongness of the inverted space before the player has time to analyze it. None of this is specified.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Camera direction document: the methodology for camera placement in a story-first fixed-camera game, room-by-room camera brief for the seven designed rooms, and the technical specification for the camera system (transitions, cut logic, follow behavior when Scholar approaches TFP).
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">Creature Visual Design — Five Types, No Appearance Specification</span>
+      </div>
+      <div class="gap-body">
+        <p>Five creature types are named and behaviorally defined: Fire-Wardens (stone-armored, immune to fire vessel, respond to Naming), Lantern-Thieves (drawn to fire, contact extinguishes vessel), Shadow-Walkers (inverted processional figures, stilled by Naming), Loop-Walkers (orbital pattern, only vulnerable to discharge), and the Boundary (the law made physical). Each has a behavioral specification. None has a visual design.</p>
+        <p>"Stone-armored Fire-Warden" and "inverted processional figures moving through the Dark Archive" are descriptions that imply visual choices but don't make them. The Fire-Warden's relationship to the administrative functionaries depicted in the Apadana's friezes suggests they should look like the processional carving come to life — but how? The Lantern-Thieves are "cold lights" drawn to warmth — are they luminescent? Translucent? Do they have form or are they pure phenomenon?</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Creature visual brief per type: design direction, reference imagery from Persian art and architecture, behavioral animation notes (how does a creature that moves in an "orbital pattern" look different from one that patrols a route?), and the specific way each creature embodies the philosophy of its world (Fire-Warden = Sacred Fire bureaucracy given physical form; Lantern-Thief = Hollow's hunger for what it lacks).
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">Tutorial/Onboarding Design — No HUD, No Text Popups, No System Explanation</span>
+      </div>
+      <div class="gap-body">
+        <p>KENOMA has a diegetic-only interface: the robe for health, the fire vessel flame for oil, the astrolabe for proximity/debt. A three-tier combat system. A dual-world crossing mechanic with an Iron Rule. A behavioral tracking system the player must never see. A physical inventory with a 1.2-second open animation. A Traversal Debt system that pursues the Scholar.</p>
+        <p>None of this can be taught through text popups — the diegetic design philosophy forbids them. It must all be taught through experience, the way Metro 2033 teaches the gas mask filter check by having the player die from air exposure before they realize the gauge exists. This is achievable but requires explicit design: what does the player experience on Day One that teaches each system? What are the consequences of not understanding, and are they gentle enough to not frustrate?</p>
+        <p>PZ-002 is described as teaching the Iron Rule — but how exactly? What does "taught through experience" look like for a rule that says "Knowledge from World B enables action in World A"? The player's first failing attempt should teach them the rule in a way they remember. What is that attempt?</p>
+        <div class="story-impact"><strong>Story impact:</strong> The first 20 minutes of a fixed-camera horror game with a completely diegetic interface will lose players if they don't understand the basic language of the space. The tutorial design is not a polish task — it is the contract with the player that earns their willingness to learn the rest.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Tutorial sequence design: how each core system is introduced, in what order, through what diegetic mechanism, and with what consequences for failure to understand. PZ-002 specifically needs to be designed as a complete teaching sequence for the Iron Rule.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ GAP 6: THE FOUNDATION ══════════════════ -->
+<div class="gap-banner gb-found z">
+  <span class="gb-eye">Gap Category 06 · What Production Requires</span>
+  <div class="gb-title">The Production Foundation — What's Missing Before the Team Can Start</div>
+  <div class="gb-sub">Six production gaps — two of which reveal unexpected creative dimensions. The Persian localization gap is a cultural and commercial oversight of unusual significance. The previous scholar's deeper characterization is an artistic gap masquerading as a production one.</div>
+</div>
+
+<div class="bd z">
+  <div class="gaps">
+
+    <div class="gap-card gc-sev1">
+      <div class="gap-head">
+        <span class="gh-sev">Blocking</span>
+        <span class="gh-title">Persian / Farsi Localization — A Cultural Gap, Not Just a Commercial One</span>
+      </div>
+      <div class="gap-body">
+        <p>KENOMA is set in Achaemenid Persia. Its title uses Farsi script (بایگانی دو راستی). Its philosophical foundations are Zoroastrian. Its architectural references are Persepolis. The game is, in a meaningful sense, a deeply researched and respectful engagement with pre-Islamic Persian culture — an engagement that no major game has made before, at this level of seriousness.</p>
+        <p>Persian / Farsi localization is not on any existing document. It is not mentioned in the investor presentation, the product presentation, or the game loop document. This is a serious oversight for two distinct reasons:</p>
+        <p><strong>Cultural reason:</strong> KENOMA would be the first significant game to treat Achaemenid Persian civilization with this level of architectural and philosophical depth. The Iranian diaspora and the broader Farsi-speaking world have been underserved by games for decades. A game that gets Persian civilization right — and provides a Persian localization — would be received as a cultural event, not just a product launch. This community would champion it.</p>
+        <p><strong>Commercial reason:</strong> Word-of-mouth is the primary marketing mechanism for indie narrative games. A story-first horror game about an Achaemenid archive, localized into Persian, would generate coverage in outlets and communities that no indie horror game has ever reached. This is differentiated marketing that costs far less than any advertising and reaches an underserved audience with genuine cultural investment.</p>
+        <div class="story-impact"><strong>Story impact:</strong> The game uses "بایگانی دو راستی" as its subtitle and Farsi script as part of its visual identity. Producing this game without a Farsi localization is equivalent to a game set in feudal Japan with Japanese characters in the title not having a Japanese translation. The cultural credibility gap would be noticed and criticized.</div>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Farsi localization budget line item and cultural consultant from the beginning of development — not as a post-ship localization project, but as an authentic voice in how the Persian elements are handled. The Farsi localization is not a translation task. It is a cultural authenticity review that happens during development.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">WorldSyncManager Event Schema — Explicitly Pending</span>
+      </div>
+      <div class="gap-body">
+        <p>The session summary lists "Map WorldSyncManager event schema for cross-world puzzle state synchronization" as PENDING. The WorldSyncManager is the technical system that keeps both worlds synchronized — ensuring that Scholar actions in World A register correctly in World B's state (and vice versa), that the Iron Rule is enforced at the system level, and that the Calibration Channel's simultaneous dual-world state updates correctly.</p>
+        <p>Without this schema, the dual-world puzzle system cannot be built. Every cross-world mechanic — including the four interference puzzles, the Calibration Channel's three solution states, and the Iron Rule enforcement — depends on this schema existing and being stable. Building cross-world puzzles without it means building against an unknown foundation.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Full event schema document: event types (Scholar crosses, Scholar takes action in World A, Scholar takes action in World B, Vanguard action, Archive state change), synchronization model (real-time vs batched), Iron Rule validation logic, and the specific sync requirements for the Calibration Channel's three solution states.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev2">
+      <div class="gap-head">
+        <span class="gh-sev">Critical</span>
+        <span class="gh-title">Death & Failure State Design — What Happens When the Scholar Dies</span>
+      </div>
+      <div class="gap-body">
+        <p>The Scholar can die: creatures attack, the Boundary pursues, the fire vessel runs dry in World B. What happens when they die? The documents don't say. This matters more than it seems because the death state is part of the game's contract with the player about consequences. A game where death is an arbitrary loading screen has a different feel than a game where death is diegetically meaningful.</p>
+        <p>Related questions: Does Traversal Debt reset on death? Does the Vanguard's behavioral model accumulate from failed attempts (this would be extraordinary — the Vanguard learning from the Scholar's deaths, becoming progressively more capable across multiple runs without a New Game+)? Are save points permanent or do they reset? What is the exact reload experience — does the Scholar wake up at the fire altar, what state is the world in, does anything persist?</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Death and reload specification: the exact reload trigger (physical death), what state is preserved vs reset, the diegetic reload experience (fire altar wake-up sequence), Traversal Debt behavior on reload, and the decision on whether Vanguard behavioral data persists across deaths within a session (this is a significant design decision with major implications).
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">The Outside World — What Exists Beyond the Gate</span>
+      </div>
+      <div class="gap-body">
+        <p>The Archive is sealed on a mountain. 300 years have passed since the civilization that built it died. The Scholar arrived by invitation. The Vanguard has maintained a trade-route intelligence network across 300 years. The previous scholar died here without anyone apparently noticing. What does the world outside the Archive look like? This question matters for three reasons.</p>
+        <p>First: the Scholar's opening V.O. (Nietzsche's rope-over-abyss passage) is described as "spoken as pride, heard retroactively as epitaph." This voiceover is presumably spoken at the gate — what do they see before entering? Second: the sequel premise depends entirely on what the world outside is like 312 years after the civilization sealed itself. Third: the Vanguard's trade-route intelligence network has kept her informed about the outside world for centuries. What has she been tracking?</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          A brief (not an extensive worldbuilding document — just enough to be consistent) world-context document: what year is it relative to the civilization's sealing, what empire or powers have replaced the Achaemenid civilization, what does the mountain approach look like, what is the state of knowledge about the Archive in the outside world, and what has the Vanguard been tracking in her intelligence reports.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev3">
+      <div class="gap-head">
+        <span class="gh-sev">Important</span>
+        <span class="gh-title">Accessibility Features — Not Optional</span>
+      </div>
+      <div class="gap-body">
+        <p>KENOMA's no-HUD design is one of its strongest creative decisions. It is also, without accessibility features, one of its most exclusionary. A game with no UI text, no health indicators, no map, no objective markers, and a diegetic audio proximity system is completely inaccessible to players with visual impairments, hearing impairments, or cognitive differences in the current specification. Platform certification (especially for console) increasingly requires accessibility features. More importantly, the game's audience should not be defined by the absence of these features.</p>
+        <p>Accessibility options that need design: subtitle system for all voice (including the Vanguard's overheard scenes), visual indicator alternatives for audio-based systems (the astrolabe's audio proximity system needs a visual option), difficulty options that don't break the behavioral model, colorblind modes for the fire/lapis palette, and screen-reader compatibility for all UI.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Accessibility design document: the specific features required for platform certification, the design approach that maintains the diegetic integrity while providing alternatives (the challenge is that every visual proxy for an audio system must itself be diegetically grounded — a visual astrolabe display rather than a pulsing icon, for example), and the test plan for accessibility review.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-card gc-sev4">
+      <div class="gap-head">
+        <span class="gh-sev">Full Game</span>
+        <span class="gh-title">The Ten Ending Scripts — Scenario Archetypes Need Scene Scripts</span>
+      </div>
+      <div class="gap-body">
+        <p>Five scenario archetypes × 2 surviving worlds = 10 endings. The archetypes are fully described — each with its genre register, emotional key, key object moment, and closing line. But a closing line is not a script. The Child Phase is a navigable sequence lasting 8–15 minutes. The Vanguard walks to specific locations, performs specific actions, handles specific objects. Scenario V World A ends with the Vanguard crossing both arms over her chest in a gesture that belongs to no protocol — "invented in this moment, in this room." This gesture must be specified, timed, and performed. None of the 10 ending scenes have been scripted to this level.</p>
+        <div class="gap-needs">
+          <span class="gn-label">What It Needs</span>
+          Full scene scripts for all 10 endings: movement from room to room, key object interactions, timing of silences, specific dialogue lines with performance notes, animation direction for the non-scripted gestures (the arm-cross in Scenario V, the three-second silence that varies in weight), and the camera direction for each location in each scenario.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══ SYNTHESIS ══════════════════════════════ -->
+<div class="sh z"><span class="sh-n">Synthesis</span><span class="sh-t">The Complete Gap Register — Sequence and Priority</span><div class="sh-sub">34 identified gaps · 3 Blocking · 11 Critical · 12 Important · 8 Full Game</div></div>
+<div class="bd z">
+
+  <div class="call c-n">
+    <span class="c-lbl">The Central Finding</span>
+    KENOMA has the most fully realized narrative architecture of any game at this budget level and development stage. Its story design, character design, and philosophical foundation are extraordinary. <strong>What it does not have is the sensory content of the experience.</strong> The game is designed. The game's actual material — the text the Scholar reads, the sounds the player hears, the rooms they walk through — mostly does not exist. These are not polish items. They are the game.
+  </div>
+
+  <table class="seq-table">
+    <tr>
+      <th>Item</th><th>Category</th><th>Status</th><th>Rationale</th>
+    </tr>
+    <tr>
+      <td>Audio Direction Document</td>
+      <td>The Silence</td>
+      <td><span class="seq-tag st-block">Blocking</span></td>
+      <td>Three of the game's most important moments are defined entirely by sound. The Dark Voice cannot be recorded, the Act I→II turn cannot be prototyped, and the Calibration Channel cannot be built without audio direction.</td>
+    </tr>
+    <tr>
+      <td>Creature Naming Inscriptions</td>
+      <td>Blank Tablets</td>
+      <td><span class="seq-tag st-block">Blocking</span></td>
+      <td>The game's highest combat tier — the Naming mechanic — cannot be built without the actual inscription text. The WA-001 opening scene uses Naming as its first mechanic tutorial.</td>
+    </tr>
+    <tr>
+      <td>Dark Voice Dialogue Tree</td>
+      <td>Scholar's Interior</td>
+      <td><span class="seq-tag st-block">Blocking</span></td>
+      <td>Listed as PENDING. The Scholar's Act I psychological arc does not exist without it. The Dark Voice is the Scholar's internal life made audible.</td>
+    </tr>
+    <tr>
+      <td>Music Architecture</td>
+      <td>The Silence</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>The False Victory requires a major-key resolution. The Child Phase requires a genre-shift. These cannot be retroactively added — they must be designed into the game's structure from the start.</td>
+    </tr>
+    <tr>
+      <td>Core Tablet Content (Armillary Manual, Clause 18, Third Record, Entry Record)</td>
+      <td>Blank Tablets</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>These four tablets are structurally central to the game. Every other tablet can wait. These cannot.</td>
+    </tr>
+    <tr>
+      <td>Scholar's Journal (full)</td>
+      <td>Scholar's Interior</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>The journal is a physical in-game object players open. Currently it contains three notes. It needs 10–14 entries that constitute the Scholar's private arc.</td>
+    </tr>
+    <tr>
+      <td>WA-002 Hypostyle Forest (full design)</td>
+      <td>Unmapped Rooms</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>The Flask scene — one of three essential resonance moments — happens here. This room must be fully designed before the Flask scene can be built.</td>
+    </tr>
+    <tr>
+      <td>WorldSyncManager Event Schema</td>
+      <td>Foundation</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>Every cross-world mechanic depends on this. Listed as PENDING. Cannot build dual-world puzzles without it.</td>
+    </tr>
+    <tr>
+      <td>Scholar Identity (name, gender, appearance)</td>
+      <td>Scholar's Interior</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>Required before voice casting, character design, and concept art. Must be a deliberate decision, not an oversight.</td>
+    </tr>
+    <tr>
+      <td>Death & Reload Specification</td>
+      <td>Foundation</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>The Traversal Debt / death interaction is a major design decision. Whether Vanguard behavioral data persists across deaths is a potentially game-defining choice.</td>
+    </tr>
+    <tr>
+      <td>Art Direction Document</td>
+      <td>Unseen Archive</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>Cannot produce concept art without it. Cannot onboard environment or character artists without it.</td>
+    </tr>
+    <tr>
+      <td>Astrolabe Audio Specification</td>
+      <td>The Silence</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>The astrolabe is the primary proximity warning and Debt indicator. Must be designed before any World B gameplay is built.</td>
+    </tr>
+    <tr>
+      <td>Farsi/Persian Localization Plan</td>
+      <td>Foundation</td>
+      <td><span class="seq-tag st-crit">Critical</span></td>
+      <td>Cultural authenticity review must begin during development, not after. The Persian cultural elements need a Persian voice from the start.</td>
+    </tr>
+    <tr>
+      <td>Previous Scholar Characterization</td>
+      <td>Blank Tablets</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>The most important optional discovery in World B is currently a final journal entry. This character is the Scholar's mirror and deserves full biographical treatment.</td>
+    </tr>
+    <tr>
+      <td>Fixed Camera Specification</td>
+      <td>Unseen Archive</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>AitD's fixed cameras require directorial decisions per room. Cannot art-direct rooms without a camera methodology.</td>
+    </tr>
+    <tr>
+      <td>Tutorial / Onboarding Design</td>
+      <td>Unseen Archive</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>No-HUD design requires all systems to be taught through experience. PZ-002 specifically needs to be designed as a teaching sequence for the Iron Rule.</td>
+    </tr>
+    <tr>
+      <td>WA-004/005/006 · WB-002/003 Room Designs</td>
+      <td>Unmapped Rooms</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>Chapter One requires a traversable, consistent archive. Rooms on the map must have content before Chapter One ships.</td>
+    </tr>
+    <tr>
+      <td>Observatory Safe Room Design</td>
+      <td>Unmapped Rooms</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>The SH4 corruption model — safety built before it's taken away — requires the safety to be built and felt before the corruption begins.</td>
+    </tr>
+    <tr>
+      <td>Creature Visual Design</td>
+      <td>Unseen Archive</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>Five creature types have behavioral design but no visual design. Required before character/creature artists can begin work.</td>
+    </tr>
+    <tr>
+      <td>Voice Performance Direction</td>
+      <td>Scholar's Interior</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>Required before casting. Required before recording. The Vanguard's voice at Stage 1 vs Stage 4 must be specified.</td>
+    </tr>
+    <tr>
+      <td>Scholar's Published Monograph</td>
+      <td>Blank Tablets</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>Defines the Scholar's intellectual identity. Required for the Vanguard's "this is the one" moment to have a grounded reason.</td>
+    </tr>
+    <tr>
+      <td>Accessibility Design Document</td>
+      <td>Foundation</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>Platform certification requirements. The no-HUD design is exclusionary without accessibility alternatives. Required before Chapter One ships.</td>
+    </tr>
+    <tr>
+      <td>World Context Brief</td>
+      <td>Foundation</td>
+      <td><span class="seq-tag st-imp">Important</span></td>
+      <td>The Scholar's opening V.O., the outside-world Vanguard intelligence network, and the sequel premise all require a consistent world-state outside the Archive.</td>
+    </tr>
+    <tr>
+      <td>WB-005/006/007 Room Designs</td>
+      <td>Unmapped Rooms</td>
+      <td><span class="seq-tag st-full">Full Game</span></td>
+      <td>Deep World B rooms. Not required for Chapter One if WB is abbreviated. Required for full game.</td>
+    </tr>
+    <tr>
+      <td>All 10 Ending Scene Scripts</td>
+      <td>Foundation</td>
+      <td><span class="seq-tag st-full">Full Game</span></td>
+      <td>Scenario archetypes are described. Full scene scripts — movement, timing, animation direction — do not exist. Required before any ending can be built.</td>
+    </tr>
+    <tr>
+      <td>All Vanguard Overheard Scenes (complete)</td>
+      <td>Scholar's Interior</td>
+      <td><span class="seq-tag st-full">Full Game</span></td>
+      <td>Listed as PENDING. The Metro model requires fully scripted private moments. Only two overheard scenes are scripted.</td>
+    </tr>
+    <tr>
+      <td>Avestan Bell Wrong-Pattern Design</td>
+      <td>Blank Tablets</td>
+      <td><span class="seq-tag st-full">Full Game</span></td>
+      <td>Listed as PENDING. The Bell's wrong-pattern encounter (it draws creatures rather than repelling them) is a significant design element that doesn't exist yet.</td>
+    </tr>
+  </table>
+
+  <div class="call c-audio">
+    <span class="c-lbl">The One Thing That Could Save Months of Revision</span>
+    The audio direction document — every gap in §01 — if addressed before any other production work begins, will change the shape of every other system in the game. KENOMA is a game where the Act I→II turn is a sound and the Child Phase is a silence and the Scholar's interiority is a voice. <strong>Music and sound design are not post-production for this game. They are primary architecture. Commission a composer and a sound designer now, with the story documents as the brief, before the first room is built.</strong>
+  </div>
+</div>
+
+
+<div class="foot z">
+  <span class="f-main">KENOMA · بایگانی دو راستی · Pre-Production Gap Analysis</span>
+  <span class="f-meta">34 Gaps · 3 Blocking · 11 Critical · 12 Important · 8 Full Game</span>
+</div>
+
+</div>
+</body>
+</html>

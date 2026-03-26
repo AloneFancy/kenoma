@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KENOMA — Game Design Document</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink: #1a1510;
+    --dark: #0e0b08;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --rust: #8b3a2a;
+    --muted: #5a5248;
+    --paper: #f5f0e8;
+    --paper-dark: #ede6d6;
+    --accent-a: #2d4a6e;
+    --accent-b: #4a2d5a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1510;
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--paper);
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, #2a1f10 0%, #0e0b08 70%);
+  }
+
+  .cover-ornament {
+    font-size: 64px;
+    color: var(--gold);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+    opacity: 0.85;
+    letter-spacing: 12px;
+  }
+
+  .cover h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 68px;
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 16px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-shadow: 0 0 40px rgba(201,168,76,0.4);
+  }
+
+  .cover-sub {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: #8a7a60;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .cover-rule {
+    width: 240px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    position: relative;
+    z-index: 1;
+    margin: 0 auto 48px;
+  }
+
+  .cover-tagline {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: #c8b89a;
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 64px;
+  }
+
+  .cover-meta {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    border-top: 1px solid rgba(201,168,76,0.25);
+    padding-top: 32px;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .cover-meta-item label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #6a5c44;
+    margin-bottom: 4px;
+  }
+
+  .cover-meta-item span {
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    color: #c8b89a;
+  }
+
+  /* ── BODY LAYOUT ── */
+  .body-content {
+    padding: 0;
+  }
+
+  /* Chapter headers */
+  .chapter {
+    background: var(--dark);
+    padding: 48px 60px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--gold), transparent);
+  }
+
+  .chapter-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .chapter h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--gold-light);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  /* Section content */
+  .section {
+    padding: 40px 60px;
+    border-bottom: 1px solid #ddd5c0;
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--rust);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ddd5c0;
+  }
+
+  h4 {
+    font-family: 'EB Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 24px 0 8px;
+  }
+
+  p {
+    margin-bottom: 14px;
+    color: #2a2520;
+  }
+
+  em { font-style: italic; }
+  strong { font-weight: 700; }
+
+  /* Callout boxes */
+  .callout {
+    background: var(--paper-dark);
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .callout-dark {
+    background: #1e1a14;
+    border-left: 3px solid var(--rust);
+    padding: 16px 20px;
+    margin: 20px 0;
+    color: #c8b89a;
+    font-style: italic;
+  }
+
+  /* Phase cards */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .phase-card {
+    padding: 20px;
+    border: 1px solid #ddd5c0;
+    background: var(--paper-dark);
+    text-align: center;
+  }
+
+  .phase-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .phase-card h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin: 0 0 8px;
+  }
+
+  .phase-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* Ending spectrum */
+  .spectrum {
+    margin: 24px 0;
+  }
+
+  .spectrum-level {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-left: 4px solid transparent;
+  }
+
+  .lvl-1 { border-color: #444; background: #f0ece4; }
+  .lvl-2 { border-color: #8b3a2a; background: #f2ece4; }
+  .lvl-3 { border-color: #2d4a6e; background: #eef0f4; }
+  .lvl-4 { border-color: #6b4fa0; background: #f2eef6; }
+  .lvl-5 { border-color: var(--gold); background: #faf5e8; }
+
+  .spectrum-badge {
+    min-width: 80px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 2px;
+    margin-top: 2px;
+  }
+
+  .badge-null { background: #333; color: #aaa; }
+  .badge-poor { background: var(--rust); color: #fff; }
+  .badge-neutral { background: var(--accent-a); color: #fff; }
+  .badge-great { background: var(--accent-b); color: #fff; }
+  .badge-axiom { background: var(--gold); color: #111; }
+
+  .spectrum-level h4 { margin: 0 0 4px; font-size: 16px; }
+  .spectrum-level p { font-size: 14px; color: var(--muted); margin: 0; }
+
+  /* World comparison table */
+  .world-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+
+  .world-table th {
+    background: var(--dark);
+    color: var(--gold-light);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+  }
+
+  .world-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #ddd5c0;
+    vertical-align: top;
+  }
+
+  .world-table tr:nth-child(even) td { background: var(--paper-dark); }
+
+  /* Script block */
+  .script-block {
+    background: #141010;
+    color: #e8dcc8;
+    padding: 28px 32px;
+    margin: 24px 0;
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    line-height: 1.9;
+    border-left: 3px solid var(--gold);
+  }
+
+  .script-block .stage-dir {
+    color: #8a7a60;
+    font-style: italic;
+    font-size: 13px;
+    display: block;
+    margin: 14px 0 4px;
+  }
+
+  .script-block .speaker {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  .script-block .line { color: #e8dcc8; }
+
+  /* Info pills */
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .pill {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 1px solid #c9a84c;
+    color: var(--rust);
+    border-radius: 2px;
+  }
+
+  /* ToC */
+  .toc { padding: 48px 60px; background: var(--paper-dark); }
+  .toc h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--ink);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .toc-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dotted #c9b89a;
+    font-size: 15px;
+  }
+
+  .toc-entry-num {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--gold);
+    margin-right: 12px;
+  }
+
+  .toc-entry-title { color: var(--ink); flex: 1; }
+  .toc-entry-genre { font-size: 12px; color: var(--muted); font-style: italic; }
+
+  /* Page footer */
+  .doc-footer {
+    background: var(--dark);
+    padding: 24px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .doc-footer span {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #5a4e3a;
+  }
+
+  .divider {
+    height: 2px;
+    background: linear-gradient(to right, var(--gold), var(--rust), transparent);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════ COVER ═══════════ -->
+  <div class="cover">
+    <div class="cover-ornament">✦ ✦ ✦</div>
+    <h1>KENOMA</h1>
+    <div class="cover-sub">Archive of the Twin Abyss</div>
+    <div class="cover-rule"></div>
+    <p class="cover-tagline">"Man is merely a rope tied over an abyss. I am the bridge. I am the key to the locked doors. And together, we will build a new world."</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <label>Genre</label>
+        <span>Psychological Horror</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Perspective</label>
+        <span>Fixed-Camera</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Platform</label>
+        <span>PC / Console</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TABLE OF CONTENTS ═══════════ -->
+  <div class="toc">
+    <h2>Contents</h2>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">01</span><span class="toc-entry-title">Vision &amp; Pitch</span></span>
+      <span class="toc-entry-genre">Core Concept</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">02</span><span class="toc-entry-title">Philosophical Foundation</span></span>
+      <span class="toc-entry-genre">Source Material</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">03</span><span class="toc-entry-title">Characters</span></span>
+      <span class="toc-entry-genre">The Scholar &amp; The Vanguard</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">04</span><span class="toc-entry-title">World Architecture</span></span>
+      <span class="toc-entry-genre">Dual-World System</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">05</span><span class="toc-entry-title">Three-Act Structure</span></span>
+      <span class="toc-entry-genre">Camel · Lion · Child</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">06</span><span class="toc-entry-title">Core Mechanics</span></span>
+      <span class="toc-entry-genre">Puzzles, Traversal &amp; Betrayal</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">07</span><span class="toc-entry-title">The Ending Spectrum</span></span>
+      <span class="toc-entry-genre">10-Level Child Phase</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">08</span><span class="toc-entry-title">Opening Cinematic</span></span>
+      <span class="toc-entry-genre">Draft Script</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">09</span><span class="toc-entry-title">Aesthetic &amp; Tone</span></span>
+      <span class="toc-entry-genre">Visual &amp; Audio Direction</span>
+    </div>
+    <div class="toc-entry">
+      <span><span class="toc-entry-num">10</span><span class="toc-entry-title">Why This Game?</span></span>
+      <span class="toc-entry-genre">Pitch Summary</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="body-content">
+
+    <!-- ═══════════ 01 VISION ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 01</div>
+      <h2>Vision &amp; Pitch</h2>
+    </div>
+    <div class="section">
+      <h3>Elevator Pitch</h3>
+      <p><strong>Kenoma</strong> is a fixed-camera psychological horror game in which you play as a frail archivist who guides a brilliant, calculating woman through the ruins of a lost civilization — not knowing you are building your own executioner.</p>
+      <p>Inspired by Nietzsche's <em>Thus Spoke Zarathustra</em> and Philip K. Dick's <em>The Man in the High Castle</em>, the game unfolds across two mirrored dimensions. Every puzzle you solve, every weapon you hand her, every esoteric text you translate feeds a system designed to outlive and eliminate you. There are no jump scares. The dread is philosophical.</p>
+      <div class="callout">
+        "The horror doesn't come from a monster chasing you. It comes from the cold realization that the system you architected no longer requires you to exist."
+      </div>
+
+      <h3>What Makes It Unique</h3>
+      <div class="pill-row">
+        <span class="pill">No Second Health Bar</span>
+        <span class="pill">Dual-World Traversal</span>
+        <span class="pill">10-Level Ending Spectrum</span>
+        <span class="pill">Systemic Companion AI</span>
+        <span class="pill">Nietzschean Philosophy</span>
+        <span class="pill">Dark Folklore Aesthetic</span>
+      </div>
+      <p>Competing games give players a companion who is clearly weaker, clearly dependent. Kenoma inverts this: <em>you are the dependent one</em>. The Vanguard protects you not because she cares — she needs your translation skills. Once she has learned enough, the relationship terminates.</p>
+      <p>Additionally, the dual-world mechanic transforms a standard horror game into a 4D puzzle box, where the player must synchronize two parallel environments while both Vanguards secretly use them as a weapon against each other.</p>
+    </div>
+
+    <!-- ═══════════ 02 PHILOSOPHY ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 02</div>
+      <h2>Philosophical Foundation</h2>
+    </div>
+    <div class="section">
+      <h3>Thus Spoke Zarathustra — The Three Metamorphoses</h3>
+      <p>The entire arc of the game maps directly onto Nietzsche's three stages of human transformation, used not as metaphor but as <strong>literal game phases</strong>:</p>
+      <div class="phase-grid">
+        <div class="phase-card">
+          <span class="phase-icon">🐪</span>
+          <h4>The Camel</h4>
+          <p>You carry the burden. Solving puzzles, translating texts, handing the Vanguard her tools. The act of faithful service.</p>
+        </div>
+        <div class="phase-card">
+          <span class="phase-icon">🦁</span>
+          <h4>The Lion</h4>
+          <p>She rebels. Having absorbed enough knowledge, she no longer requires the burden-bearer. The hunt begins.</p>
+        </div>
+        <div class="phase-card">
+          <span class="phase-icon">👶</span>
+          <h4>The Child</h4>
+          <p>She creates. The final boss is not a fight — it is the terrifying birth of a new god shaped entirely by your actions.</p>
+        </div>
+      </div>
+
+      <h3>The Tightrope Walker — The Mid-Game Betrayal</h3>
+      <p>In Zarathustra's prologue, a tightrope walker is crossed by a jester who leaps over him, causing him to fall. The Vanguard's betrayal mirrors this exactly: she does not turn evil. She simply realizes your meticulous puzzle-solving is <em>too slow</em>, bound by the old rules. You are crushed by the system you helped design.</p>
+
+      <h3>The Man in the High Castle — The Traversal Rule</h3>
+      <p>Borrowing from Philip K. Dick, a single metaphysical rule governs the dual-world system: <strong>you can only travel between worlds if the other version of yourself is already dead.</strong></p>
+      <div class="callout-dark">
+        Narrator B died long ago. Therefore, Narrator A (the player) possesses the Traversal Skill — the ability to move between the Waking Archive and the Sunken Archive at will. Both Vanguards know this. Both want this power. This is the trap.
+      </div>
+
+      <h3>The Last Man vs. The Übermensch — The Ending Axis</h3>
+      <p>Nietzsche's ultimate contrast defines the spectrum of endings. A well-fed Vanguard achieves Übermensch status: terrifying, beautiful, absolute. A starved Vanguard becomes the Last Man: hollow, broken, a failed god ruling a gray void.</p>
+    </div>
+
+    <!-- ═══════════ 03 CHARACTERS ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 03</div>
+      <h2>Characters</h2>
+    </div>
+    <div class="section">
+      <h3>The Scholar — The Player Character</h3>
+      <p>The Scholar is the player's avatar: physically frail, intellectually brilliant. They are the <em>bridge</em> — the administrative key to the Archive's locked systems. Their entire identity is defined by utility to the Vanguard.</p>
+      <h4>Design Principles</h4>
+      <p>The Scholar cannot fight effectively. Their toolkit is translation, puzzle manipulation, and dimensional traversal. They survive only by maintaining their usefulness. The moment they cease to be useful, they die.</p>
+      <p>The player's sense of agency — solving puzzles, building systems, optimizing resources — is intentionally reframed in the third act as the mechanism of their own destruction. Every good decision the player made was feeding the Vanguard's ascension.</p>
+
+      <h3>The Vanguard — The Protagonist's Executioner</h3>
+      <p>The Vanguard is the most critical character design decision in the game. She is deliberately designed against the "hulking bodyguard" cliché. She is a master tactician — a prodigy of warfare who views the Archive as a complex locked system and the Scholar as the most efficient tool for extracting administrative privileges.</p>
+
+      <div class="world-table" style="margin-top: 16px;">
+        <table class="world-table">
+          <tr>
+            <th>Attribute</th>
+            <th>Design Choice</th>
+            <th>Reason</th>
+          </tr>
+          <tr>
+            <td><strong>Silhouette</strong></td>
+            <td>Sharp, needle-like. High-collared coat over reinforced leather. Silent movement.</td>
+            <td>Elegance signals intelligence, not brute force.</td>
+          </tr>
+          <tr>
+            <td><strong>Weapon</strong></td>
+            <td>Modular rapier or bladed staff. Precision strikes, not power swings.</td>
+            <td>She dissects the Archive's horrors anatomically — finding the one weak point.</td>
+          </tr>
+          <tr>
+            <td><strong>Camel Phase</strong></td>
+            <td>Stands perfectly still during puzzles, studying the Scholar's hands.</td>
+            <td>She is learning the system, not waiting.</td>
+          </tr>
+          <tr>
+            <td><strong>Lion Phase</strong></td>
+            <td>Does not smash through doors. She locks them from the outside.</td>
+            <td>She weaponizes your own systemic logic against you.</td>
+          </tr>
+          <tr>
+            <td><strong>Child Phase</strong></td>
+            <td>No mutation. No second health bar. Her form is absolute from the first second.</td>
+            <td>True power does not need a second chance to convince you.</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="callout">
+        "You realize too late: you weren't the hero guiding a warrior. You were a stepping stone being manipulated by a master strategist who needed someone to do the heavy lifting of translation."
+      </div>
+    </div>
+
+    <!-- ═══════════ 04 WORLD ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 04</div>
+      <h2>World Architecture</h2>
+    </div>
+    <div class="section">
+      <h3>The Twin Archives</h3>
+      <p>The game world is two parallel dimensions — mirrored ruins of the same lost civilization. They are not alternative timelines but <em>synchronized systems</em>: events in one directly affect the state of the other.</p>
+
+      <table class="world-table">
+        <tr>
+          <th>Attribute</th>
+          <th>World A — The Waking Archive</th>
+          <th>World B — The Sunken Archive</th>
+        </tr>
+        <tr>
+          <td><strong>Aesthetic</strong></td>
+          <td>Gothic, mechanical, dry. Clockwork corridors. Rigid iron architecture.</td>
+          <td>Flooded, decaying, mythic. Submerged folklore ruins. Creeping dark water.</td>
+        </tr>
+        <tr>
+          <td><strong>Logic System</strong></td>
+          <td>Systemic and rational. Puzzles are architectural and mechanical.</td>
+          <td>Mythic and esoteric. Puzzles invoke folklore and ritual.</td>
+        </tr>
+        <tr>
+          <td><strong>Vanguard</strong></td>
+          <td>Vanguard A — tactical, military, cold precision.</td>
+          <td>Vanguard B — strategic, folkloric, creeping dread.</td>
+        </tr>
+        <tr>
+          <td><strong>Ending Aesthetic</strong></td>
+          <td>Geometric, clockwork ascension. Logic and mathematics.</td>
+          <td>Gothic, mythic ascension. Folklore and cosmic dread.</td>
+        </tr>
+      </table>
+
+      <h3>The Traversal Rule</h3>
+      <p>Narrator B is dead. This grants the Scholar the Traversal Skill — the ability to shift between World A and World B at designated focal points. This is the game's central mechanic and the source of the final trap:</p>
+      <p>Both Vanguards observe the Scholar vanish into thin air and return with solutions. They realize a secondary universe exists. The Traversal Skill becomes the ultimate prize — and the only way to obtain it is to become the sole surviving Vanguard, which requires the other to die.</p>
+    </div>
+
+    <!-- ═══════════ 05 THREE-ACT ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 05</div>
+      <h2>Three-Act Structure</h2>
+    </div>
+    <div class="section">
+      <h3>Act I — The Camel Phase (The Synchronized State)</h3>
+      <p>The Scholar moves freely between both archives, believing they are assisting two separate allies to survive. The puzzles in this phase require cross-dimensional manipulation: to open a door in World A, the Scholar must drain a mechanism in World B.</p>
+      <p>Both Vanguards protect the Scholar in their respective world. The player feels like a master tactician, managing two parallel systems. This is the illusion of control — and the dread that slowly accumulates is realizing both Vanguards are watching, studying, and learning faster than the Scholar expects.</p>
+
+      <h3>Act II — The Lion Phase (The Systemic Sabotage)</h3>
+      <p>The Vanguards do not turn on the Scholar initially. They turn on <em>each other</em>, using the Scholar as the weapon. Each demands the Scholar shift to the opposing world and sabotage the environment — flood chambers, collapse ceilings, corrupt mechanisms. The Scholar is now caught in a cross-dimensional crossfire.</p>
+      <p>If the Scholar refuses Vanguard A, she begins hunting them in World A. Shifting to escape means Vanguard B is waiting in World B. There is no safe dimension. The Scholar must orchestrate the death of one former protector to survive the other.</p>
+      <div class="callout">
+        The Lion Phase's horror is not being chased by a monster — it is the cold realization that you must assassinate your ally, and that the surviving Vanguard will kill you anyway.
+      </div>
+
+      <h3>Act III — The Child Phase (The Convergence)</h3>
+      <p>One Vanguard is dead. The rule is satisfied. The survivor absorbs the Traversal Skill instantly, collapsing the mirrored architecture into a single, terrifying unified reality. The Scholar cannot run — there are no longer two worlds to flee between.</p>
+      <p>The quality and form of the final encounter is determined entirely by how the Scholar managed the twin systems throughout the game. There is no mid-fight transformation, no second health bar. Her final state is absolute and apparent the moment the arena door locks behind you.</p>
+    </div>
+
+    <!-- ═══════════ 06 MECHANICS ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 06</div>
+      <h2>Core Mechanics</h2>
+    </div>
+    <div class="section">
+      <h3>Puzzle System — Tactile Archive Mechanics</h3>
+      <p>Puzzles are three-dimensional mechanical and folkloric constructions embedded in the environment. The Scholar interacts with them through a deliberate, slow interface — the weight and complexity of each mechanism communicates the gravity of the knowledge being unlocked.</p>
+      <p>Every solved puzzle has two consequences: it advances the Scholar's path through the Archive, and it provides a resource — a weapon component, a lore fragment, a health reserve — that can either be given to the Vanguard or hoarded. This choice is the primary driver of the ending spectrum.</p>
+
+      <h3>The Vanguard Status System</h3>
+      <p>A passive status system tracks the Vanguard's accumulated knowledge and equipment. In the Camel Phase, this reads as human vitals. In the Lion Phase, it transitions to encrypted tactical data — a visual cue that the relationship has fundamentally changed. By the time the player reaches the Child Phase, the status has become pure system architecture.</p>
+
+      <h3>Dimensional Traversal</h3>
+      <p>The Traversal Skill functions as a weighted action — not a frictionless teleport. The screen tears along a visual axis, representing the trauma of crossing the dimensional boundary. Sound drops to a single sustained tone. The Scholar arrives in the mirrored environment a half-beat later, giving the player a moment of quiet before re-engagement. This pacing ensures each shift feels consequential.</p>
+
+      <h3>The Sabotage Loop (Lion Phase)</h3>
+      <p>During the Lion Phase, the Scholar gains access to environmental sabotage tools: flood controls, structural weaknesses, corrupted mechanisms. These can be deployed in either world. The Vanguard in the opposing world will anticipate and adapt if the Scholar's pattern is predictable — a direct reflection of her tactical intelligence. Effective assassination requires the Scholar to use the same systemic creativity that defined their puzzle-solving.</p>
+    </div>
+
+    <!-- ═══════════ 07 ENDING SPECTRUM ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 07</div>
+      <h2>The Ending Spectrum — 10-Level Child Phase</h2>
+    </div>
+    <div class="section">
+      <p>The Child Phase produces ten distinct final encounters — five per surviving Vanguard. The aesthetic and mechanical difficulty of each is determined by the accumulated state of both archives and the quality of resources the Scholar provided. In every case, there is no second phase. No dramatic transformation. Her state is final from the first moment.</p>
+
+      <h3>World A Survives — Waking Archive Endings</h3>
+      <p style="font-style: italic; color: var(--muted); margin-bottom: 16px;">Vanguard A kills Vanguard B. The merging of worlds is dominated by rigid mechanical architecture, systemic logic, and cold mathematical control.</p>
+
+      <div class="spectrum">
+        <div class="spectrum-level lvl-1">
+          <div><span class="spectrum-badge badge-null">Level 1A</span></div>
+          <div>
+            <h4>The Decoupled Husk</h4>
+            <p>The archive's mechanisms were broken, resources hoarded. The merge fails catastrophically. The final arena is a fragmented void of gray polygons. Vanguard A glitches violently, a broken automaton. No music. She simply walks through your geometry and suffocates you. The world she inherits is a frozen, empty server.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-2">
+          <div><span class="spectrum-badge badge-poor">Level 2A</span></div>
+          <div>
+            <h4>The Rusted Gear</h4>
+            <p>Minimal resources, chaotic sabotage. The arena is jagged, grinding, choked with rusted iron and stalling clockwork. She cannot teleport freely — she tears visible rifts in the air to drag herself through them, delivering brutal melee strikes. A suffocating brawl in a dying god's crumbling domain.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-3">
+          <div><span class="spectrum-badge badge-neutral">Level 3A</span></div>
+          <div>
+            <h4>The Cold Administrator</h4>
+            <p>A balanced playthrough. The arena is a vast, sterile grid of shifting stone. She does not chase — she blinks to pre-calculated tactical coordinates, cutting off escape routes with clean, precise strikes. You are not fighting a monster; you are a security risk being methodically removed by a protocol.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-4">
+          <div><span class="spectrum-badge badge-great">Level 4A</span></div>
+          <div>
+            <h4>The Master Architect</h4>
+            <p>Near-perfect optimization. The arena operates like the interior of a colossal clockwork. She manipulates the arena itself — shifting platforms, deploying every weapon the Scholar equipped in perfect synergy. Every approach the player tries has been anticipated and countered. You are dismantled by the system you designed.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-5">
+          <div><span class="spectrum-badge badge-axiom">Level 5A</span></div>
+          <div>
+            <h4>The Axiom</h4>
+            <p>100% completion. She does not reshape the room — she creates a perfect replica of reality itself. The visuals are a blinding, apocalyptic kaleidoscope of cosmic geometry and ancient logic synthesized. She exists everywhere simultaneously. She does not strike you; she rewrites the rules of the arena so your existence is no longer mathematically viable. You are deleted in a burst of majestic color.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>World B Survives — Sunken Archive Endings</h3>
+      <p style="font-style: italic; color: var(--muted); margin-bottom: 16px;">Vanguard B kills Vanguard A. The merging of worlds is dominated by dark gothic folklore, mythic dread, and creeping, inexorable horror.</p>
+
+      <div class="spectrum">
+        <div class="spectrum-level lvl-1">
+          <div><span class="spectrum-badge badge-null">Level 1B</span></div>
+          <div>
+            <h4>The Null Ritual</h4>
+            <p>The Sunken Archive's folklore systems were ignored and corrupted. The merge produces a formless, waterlogged void. Vanguard B is a desaturated husk, shivering in place. She recites fragmented prayers in a dead language, walking through walls to reach you. Death arrives as an afterthought. The world she inherits is a flooded, lightless purgatory.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-2">
+          <div><span class="spectrum-badge badge-poor">Level 2B</span></div>
+          <div>
+            <h4>The Rotten Thorns</h4>
+            <p>The archive was barely explored. Black, rotting thorns choke the arena, and crumbling gothic architecture collapses during the fight. Her movements are erratic — a half-formed deity who almost became something magnificent. She hunts with feral, desperate strikes. Killing her feels like mercy. The world she builds is made of ash and dead water.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-3">
+          <div><span class="spectrum-badge badge-neutral">Level 3B</span></div>
+          <div>
+            <h4>The Sovereign of Dark Waters</h4>
+            <p>A balanced playthrough. The arena is a vast, submerged cathedral — half above water, half below. She commands the environment: the tide rises and falls by her will, isolating the Scholar on shrinking platforms. She attacks from the dark water without surfacing, her strikes patient and deliberate. A cold, mythic execution.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-4">
+          <div><span class="spectrum-badge badge-great">Level 4B</span></div>
+          <div>
+            <h4>The Living Myth</h4>
+            <p>High completion of folkloric texts. She has absorbed the Archive's mythology so completely that she becomes a living story — the arena transforms into scenes from the Archive's founding myth. She manifests as each folkloric archetype in sequence, perfectly weaving weapon and lore into an unstoppable ritualistic performance. The Scholar is not being killed; they are being incorporated into the myth as the necessary sacrifice.</p>
+          </div>
+        </div>
+        <div class="spectrum-level lvl-5">
+          <div><span class="spectrum-badge badge-axiom">Level 5B</span></div>
+          <div>
+            <h4>The Eternal Dark</h4>
+            <p>100% folklore completion. She does not create a new world — she <em>becomes</em> the new world. The arena dissolves entirely into a boundless, perfect dark. Stars appear: every esoteric symbol from every text the Scholar translated now burns above you as a permanent constellation. She is everywhere and nowhere. The Scholar is simply absorbed — a final page folded into the new mythology. The experience is terrifying and beautiful in equal measure.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 08 SCRIPT ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 08</div>
+      <h2>Opening Cinematic — Draft Script</h2>
+    </div>
+    <div class="section">
+      <p>The opening cinematic establishes three things simultaneously: the dark folkloric tone, the power dynamic between characters, and the dramatic irony that the Scholar's hopeful monologue is, in retrospect, a confession of suicide.</p>
+
+      <div class="script-block">
+        <span class="stage-dir">[Scene 1 — The Threshold of Kenoma. Fixed low-angle shot: a colossal rusted iron gate set into a black mountain. Fog rolls over damp cobblestones. A mournful cello sustains a single note beneath the sound of rain.]</span>
+
+        <div class="speaker">The Scholar (V.O.)</div>
+        <div class="line">"In the old fables, the monsters always wore disguises. They hid in the shadows, waiting for a second act — a second phase — to reveal their true teeth. But I have never believed in that kind of theater."</div>
+
+        <span class="stage-dir">[Two figures emerge from the mist. The Scholar is hunched, soaked, clutching a leather-bound satchel of esoteric tools. The Vanguard walks a half-step behind: tall, sharp, wearing a high-collared coat. She moves with effortless, absolute silence. She looks at everything. She remembers everything.]</span>
+
+        <div class="speaker">The Scholar (V.O.)</div>
+        <div class="line">"True power... true beauty... it does not need a second chance to convince you. It is absolute from the very first breath. And that is what sleeps down here. The Archive of Kenoma."</div>
+
+        <span class="stage-dir">[The Scholar approaches the gate — a massive astrolabe sealed with dirt and vines. Their frail hands align its brass rings. The mechanism wakes with a deep, seismic groan. A creature of bone and rusted armor lunges from the darkness. Slow motion. The Scholar freezes. The Vanguard steps in front of them — a single, flawless strike. The creature falls. She lowers her weapon. She does not look at the dead thing. She looks at the Scholar.]</span>
+
+        <div class="speaker">The Scholar (V.O.)</div>
+        <div class="line">"Man is merely a rope tied over an abyss. A dangerous crossing. I am the bridge... I am the key to the locked doors."</div>
+
+        <span class="stage-dir">[The Scholar takes the Vanguard's offered hand. She pulls them upright with effortless ease. They step together into the darkness of the Archive. The iron doors grind shut behind them. The Vanguard's footsteps echo on the stone. She is already studying the walls.]</span>
+
+        <div class="speaker">The Scholar (V.O. — quiet, hopeful, unaware)</div>
+        <div class="line">"I will teach her the architecture of the gods. And together... we will build a new world."</div>
+
+        <span class="stage-dir">[Fade to black. Title card: KENOMA.]</span>
+      </div>
+    </div>
+
+    <!-- ═══════════ 09 AESTHETIC ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 09</div>
+      <h2>Aesthetic &amp; Tone</h2>
+    </div>
+    <div class="section">
+      <h3>Visual Direction</h3>
+      <p>The camera is fixed — a deliberate, classical choice that communicates powerlessness. The player cannot freely observe their environment; they are shown what the Archive wants them to see. The Vanguard is often present in the background of these fixed shots, watching the Scholar without comment.</p>
+      <p>Color language is sparse and systemic. World A uses cold iron tones — silver, gray, amber. World B uses dark water tones — deep navy, mossy green, pale gold. The Vanguard's color palette gradually absorbs the dominant tones of the world she inhabits, visually tracking her integration with the system.</p>
+      <p>The five colorful endings trend toward saturated, impossible visual states. The five poor endings trend toward desaturation and visual corruption — the aesthetic equivalent of a failing render.</p>
+
+      <h3>Audio Direction</h3>
+      <p>The score is built on two instruments in the Camel Phase: a cello (the Scholar) and a prepared piano (the Vanguard). As the Lion Phase begins, the piano begins to distort and expand. The cello is gradually removed. By the Child Phase, only the Vanguard's theme remains — recomposed into something unrecognizable and enormous.</p>
+      <p>Silence is used as a weapon. When the Vanguard is actively hunting the Scholar, her footsteps stop. The only audio cue is a faint, rhythmic click — the sound of her tactical processing. If the player hears it and cannot locate the direction, they are already trapped.</p>
+
+      <h3>UI Philosophy</h3>
+      <p>There is no visible HUD during normal gameplay. The Scholar's health is communicated through their movement — they slow, they hunch, their hands shake on puzzle interfaces. The Vanguard's status is visible only through a dedicated diegetic item in the Scholar's satchel: a brass tablet that transitions from vital signs to encrypted data to pure architectural code across the three phases.</p>
+    </div>
+
+    <!-- ═══════════ 10 PITCH SUMMARY ═══════════ -->
+    <div class="chapter">
+      <div class="chapter-number">Chapter 10</div>
+      <h2>Why This Game?</h2>
+    </div>
+    <div class="section">
+      <h3>The Market Gap</h3>
+      <p>Companion-based horror games (Resident Evil, Silent Hill 2, Ico) consistently succeed because they weaponize the player's emotional attachment to their partner. Kenoma executes this in reverse: the emotional attachment is real, but it is built on a relationship the player constructed through skilled play. The better you played, the more attached you became — and the more terrifying her final form will be.</p>
+      <p>No current game on the market uses a dual-world mechanic in a fixed-camera horror context, and no current horror game uses a companion whose final form is a direct quantitative function of the player's accumulated decisions across the entire game.</p>
+
+      <h3>The Thesis</h3>
+      <div class="callout">
+        Kenoma is a game about the horror of competence. The most skillful playthrough produces the most devastating outcome. The game is asking: what does it mean to build something perfect, knowing it will destroy you?
+      </div>
+      <p>This is a question with no comfortable answer — and that discomfort is the point. Kenoma does not offer the player a way to win. It offers them a choice of how to be dismantled, and asks them to find meaning in the architecture they leave behind.</p>
+
+      <h3>Scope &amp; Viability</h3>
+      <p>The fixed-camera format, single-player structure, and linear-with-branching design make Kenoma achievable at an AA scope. The dual-world system requires careful environment mirroring but does not require open-world asset generation. The Vanguard AI requires sophisticated behavior scripting in the Lion Phase but operates within clearly defined systemic rules.</p>
+      <p>The ten-ending spectrum is built from modular arena and particle system components — not ten independently constructed environments. The aesthetic difference between endings is largely shader, particle, and audio-based, making the spectrum financially viable at a reasonable production scale.</p>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <div class="divider"></div>
+  <div class="doc-footer">
+    <span>Kenoma — Game Design Document — Confidential</span>
+    <span>Archive of the Twin Abyss</span>
+    <span>Rev. 1.0</span>
+  </div>
+
+</div>
+</body>
+</html>

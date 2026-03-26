@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KENOMA — The Storytelling Bible · Persian Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Manuscript parchment */
+  --pg:       #f5edda;
+  --pg-w:     #efe5c8;
+  --pg-m:     #e4d5a8;
+  --pg-d:     #cabb80;
+  --pg-dk:    #b0a060;
+  --ink:      #1c1206;
+  --ink-m:    #302010;
+  --ink-l:    #503020;
+  --muted:    #7a5a30;
+  --faded:    #a88050;
+  /* Fire / Asha */
+  --fire:     #a83010;
+  --fire-l:   #d05018;
+  --fire-g:   #c08820;
+  --fire-p:   #ecd890;
+  /* Duzakh / Druj */
+  --void:     #0a0414;
+  --void-m:   #140820;
+  --druj:     #4020a0;
+  --druj-l:   #7040d0;
+  --druj-p:   #c8b8f0;
+  /* Gold */
+  --gold:     #b08020;
+  --gold-l:   #d0a830;
+  --gold-p:   #f0d870;
+  /* Lapis */
+  --lapis:    #1a3460;
+  --lapis-l:  #2850a0;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: #0a0610;
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-size: 17px;
+  line-height: 1.95;
+  color: var(--ink);
+}
+
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--pg);
+}
+
+/* =============================================
+   COVER — MANUSCRIPT / ILLUMINATED STYLE
+============================================= */
+.cover {
+  min-height: 100vh;
+  background: var(--void);
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+
+/* Illuminated border pattern */
+.cover-border {
+  position: absolute; inset: 24px;
+  border: 1px solid rgba(192,136,32,0.15);
+  pointer-events: none; z-index: 1;
+}
+.cover-border::before {
+  content: '';
+  position: absolute; inset: 6px;
+  border: 1px solid rgba(192,136,32,0.08);
+}
+
+/* Corner ornaments */
+.cover-corners {
+  position: absolute; inset: 0;
+  z-index: 2; pointer-events: none;
+}
+.corner {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-color: rgba(192,136,32,0.35);
+  border-style: solid;
+}
+.c-tl { top: 24px; left: 24px; border-width: 2px 0 0 2px; }
+.c-tr { top: 24px; right: 24px; border-width: 2px 2px 0 0; }
+.c-bl { bottom: 24px; left: 24px; border-width: 0 0 2px 2px; }
+.c-br { bottom: 24px; right: 24px; border-width: 0 2px 2px 0; }
+
+.cv-body {
+  position: relative; z-index: 3;
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 80px;
+  text-align: center;
+}
+
+.cv-farsi {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 18px;
+  color: rgba(192,136,32,0.3);
+  letter-spacing: 3px;
+  margin-bottom: 48px;
+  display: block;
+}
+
+.cv-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px; letter-spacing: 7px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.35);
+  display: block; margin-bottom: 20px;
+}
+
+.cv-main {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 80px; font-weight: 900;
+  line-height: .9;
+  background: linear-gradient(180deg,
+    rgba(240,216,112,0.9) 0%,
+    rgba(192,136,32,0.7) 40%,
+    rgba(120,80,16,0.5) 100%);
+  -webkit-background-clip: text;
+  background-clip: text; color: transparent;
+  margin-bottom: 16px;
+  letter-spacing: -2px;
+}
+
+.cv-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 5px;
+  color: rgba(192,136,32,0.4);
+  margin-bottom: 48px;
+  text-transform: uppercase;
+}
+
+.cv-hr {
+  width: 200px; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(192,136,32,0.4), transparent);
+  margin: 0 auto 48px;
+}
+
+.cv-logline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px; font-weight: 400;
+  font-style: italic;
+  color: rgba(230,205,155,0.45);
+  max-width: 600px;
+  line-height: 1.75;
+  margin-bottom: 56px;
+}
+
+.cv-worlds-row {
+  display: flex; gap: 24px;
+  margin-bottom: 48px;
+}
+.cv-world {
+  flex: 1; padding: 18px 20px;
+  text-align: center;
+}
+.cv-world.a-world {
+  border: 1px solid rgba(168,80,16,0.3);
+  background: rgba(168,80,16,0.06);
+}
+.cv-world.b-world {
+  border: 1px solid rgba(64,32,160,0.3);
+  background: rgba(64,32,160,0.06);
+}
+.cw-sym { font-size: 28px; display: block; margin-bottom: 6px; opacity: .6; }
+.cw-nm {
+  font-family: 'Cinzel', serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.a-world .cw-nm { color: rgba(208,128,48,0.6); }
+.b-world .cw-nm { color: rgba(160,120,240,0.5); }
+.cw-de {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; font-style: italic;
+  margin-top: 4px;
+}
+.a-world .cw-de { color: rgba(208,128,48,0.4); }
+.b-world .cw-de { color: rgba(160,120,240,0.35); }
+
+.cv-bottom {
+  position: relative; z-index: 3;
+  padding: 20px 80px;
+  border-top: 1px solid rgba(192,136,32,0.1);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.cv-bot-txt {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.2);
+}
+
+/* =============================================
+   CHAPTER SYSTEM — illuminated manuscript
+============================================= */
+.chapter-break {
+  background: var(--void-m);
+  padding: 48px 80px;
+  border-top: 2px solid var(--fire);
+  position: relative; overflow: hidden;
+}
+.chapter-break::after {
+  content: '';
+  position: absolute; right: 80px; top: 50%;
+  transform: translateY(-50%);
+  width: 120px; height: 120px;
+  border: 1px solid rgba(192,136,32,0.06);
+  border-radius: 50%;
+}
+.ch-num {
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px; letter-spacing: 6px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.35);
+  display: block; margin-bottom: 8px;
+}
+.ch-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--pg-w);
+  line-height: 1.2;
+}
+.ch-farsi {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 12px;
+  color: rgba(192,136,32,0.2);
+  margin-top: 6px; display: block;
+}
+
+/* SECTION HEAD within chapter */
+.sec {
+  padding: 28px 80px 0;
+  background: var(--pg);
+}
+.sec-num {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--fire-l); display: block;
+  margin-bottom: 4px;
+}
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px; font-weight: 600;
+  color: var(--ink);
+  border-bottom: 1px solid var(--pg-m);
+  padding-bottom: 10px;
+  margin-bottom: 0;
+}
+
+/* BODY AREA */
+.bd {
+  padding: 28px 80px 32px;
+  background: var(--pg);
+}
+.bd-b {
+  padding: 28px 80px 32px;
+  background: var(--pg-w);
+  border-top: 1px solid var(--pg-m);
+  border-bottom: 1px solid var(--pg-m);
+}
+
+p { margin-bottom: 14px; font-size: 17px; }
+p:last-child { margin-bottom: 0; }
+strong { font-weight: 600; color: var(--ink); }
+em { font-style: italic; }
+
+h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--fire);
+  margin: 30px 0 14px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--pg-m);
+}
+h3:first-child { margin-top: 0; }
+h3.dz { color: var(--druj-l); }
+
+h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 600;
+  font-style: italic; color: var(--ink-m);
+  margin: 20px 0 8px;
+}
+
+/* =============================================
+   SPECIAL TEXTBOXES
+============================================= */
+
+/* Opening illuminated drop-cap paragraph */
+.drop-cap::first-letter {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 72px; font-weight: 900;
+  float: left; line-height: .75;
+  margin: 8px 12px -4px 0;
+  color: var(--fire);
+  text-shadow: 2px 2px 0 rgba(168,80,16,0.15);
+}
+
+/* Avestan / Farsi quote block */
+.avestan {
+  background: var(--void);
+  padding: 28px 36px;
+  margin: 24px 0;
+  border-left: 3px solid rgba(192,136,32,0.4);
+  position: relative;
+}
+.av-farsi {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 20px;
+  color: rgba(192,136,32,0.55);
+  display: block; margin-bottom: 10px;
+  line-height: 1.8; direction: rtl; text-align: left;
+}
+.av-trans {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-style: italic;
+  color: rgba(220,195,140,0.55);
+  display: block; line-height: 1.7;
+}
+.av-src {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.25);
+  display: block; margin-top: 10px;
+}
+
+/* Eastern Zhou philosophy inset */
+.zhou {
+  background: var(--pg-w);
+  border: 1px solid var(--pg-d);
+  border-left: 4px solid var(--fire-g);
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+.zh-src {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--fire-g);
+  display: block; margin-bottom: 6px;
+}
+.zhou p {
+  font-size: 16px; font-style: italic;
+  color: var(--ink-l); margin: 0;
+}
+
+/* Narrative note / director's note */
+.note {
+  background: var(--pg-w);
+  border-left: 3px solid var(--fire);
+  padding: 14px 18px; margin: 18px 0;
+  font-size: 15px; font-style: italic;
+  color: var(--ink-l); line-height: 1.75;
+}
+.note-lbl {
+  font-family: 'Courier Prime', monospace;
+  font-style: normal; font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--fire); display: block; margin-bottom: 5px;
+}
+
+/* ROOM DESCRIPTION BLOCK */
+.room {
+  background: var(--pg-w);
+  border: 1px solid var(--pg-d);
+  margin: 24px 0;
+  overflow: hidden;
+}
+.room-head {
+  background: var(--ink-m);
+  padding: 14px 20px;
+  display: flex; justify-content: space-between;
+  align-items: center;
+}
+.room-id {
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.5);
+}
+.room-name {
+  font-family: 'Cinzel', serif;
+  font-size: 14px; font-weight: 600;
+  color: var(--pg-w);
+}
+.room-world {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+}
+.rw-a { background: rgba(168,80,16,0.3); color: rgba(240,180,80,0.6); }
+.rw-b { background: rgba(64,32,160,0.3); color: rgba(160,120,240,0.6); }
+
+.room-body { padding: 18px 20px; }
+.room-body p { font-size: 16px; margin-bottom: 10px; }
+
+.room-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.rg-section { }
+.rg-title {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--fire); margin-bottom: 6px;
+}
+.rg-title.dz { color: var(--druj-l); }
+.rg-body { font-size: 15px; color: var(--ink-l); line-height: 1.7; }
+
+/* PUZZLE BLOCK */
+.puzzle {
+  border: 1px solid var(--pg-d);
+  border-top: 3px solid var(--fire-g);
+  margin: 24px 0; overflow: hidden;
+}
+.pz-head {
+  background: var(--pg-m);
+  padding: 13px 20px;
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--pg-d);
+}
+.pz-id {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px; font-weight: 700;
+  color: var(--fire-g); background: var(--pg-dk);
+  padding: 2px 8px;
+}
+.pz-name {
+  font-family: 'Cinzel', serif;
+  font-size: 15px; font-weight: 600; color: var(--ink);
+  flex: 1;
+}
+.pz-phase {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pz-body { padding: 18px 20px; }
+.pz-body p { font-size: 15.5px; margin-bottom: 10px; color: var(--ink-l); }
+
+.pz-solution {
+  background: var(--void);
+  padding: 14px 18px;
+  margin: 12px -20px -18px;
+  border-top: 1px solid var(--pg-d);
+}
+.pz-sol-lbl {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.4); margin-bottom: 6px;
+  display: block;
+}
+.pz-sol-body {
+  font-size: 15px;
+  color: rgba(210,185,140,0.55);
+  line-height: 1.7;
+}
+
+/* CREATURE CARD */
+.creature {
+  background: var(--pg-w);
+  border: 1px solid var(--pg-d);
+  border-left: 4px solid;
+  margin: 18px 0; padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 0;
+}
+.creature.a-creature { border-left-color: var(--fire); }
+.creature.b-creature { border-left-color: var(--druj-l); }
+.c-main { padding-right: 20px; border-right: 1px solid var(--pg-d); }
+.c-name {
+  font-family: 'Cinzel', serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--ink); margin-bottom: 2px;
+}
+.c-avestan {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 12px; color: var(--fire-g);
+  display: block; margin-bottom: 10px;
+}
+.c-body { font-size: 15.5px; color: var(--ink-l); line-height: 1.7; }
+.c-stats { padding-left: 18px; }
+.c-stat-row {
+  display: grid; grid-template-columns: 100px 1fr;
+  margin-bottom: 2px; font-size: 13px;
+}
+.c-sk {
+  font-family: 'Courier Prime', monospace;
+  background: var(--pg-m); padding: 4px 8px;
+  color: var(--ink-m); font-size: 10px;
+}
+.c-sv { padding: 4px 8px; color: var(--ink-l); font-size: 13px; }
+
+/* SCENE SCRIPT */
+.scene {
+  background: var(--void);
+  padding: 28px 36px; margin: 24px 0;
+  border-left: 3px solid rgba(192,136,32,0.3);
+}
+.sc-dir {
+  font-size: 13.5px; font-style: italic;
+  color: rgba(192,136,32,0.35);
+  display: block; margin: 14px 0 6px;
+  line-height: 1.65;
+}
+.sc-spk {
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px; letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.6);
+  display: block; margin-top: 16px;
+}
+.sc-line {
+  font-size: 17px;
+  color: rgba(230,205,155,0.65);
+  line-height: 1.8;
+}
+.sc-note {
+  font-size: 12px; font-style: italic;
+  color: rgba(192,136,32,0.25);
+  display: block; margin-top: 4px;
+}
+
+/* DIALOGUE CALLOUT */
+.dialogue {
+  border-left: 3px solid var(--druj-l);
+  padding: 12px 18px; margin: 16px 0;
+  background: rgba(64,32,160,0.04);
+}
+.dia-spk {
+  font-family: 'Cinzel', serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--druj-l); margin-bottom: 4px;
+  display: block;
+}
+.dia-line {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; font-style: italic;
+  color: var(--ink-l); line-height: 1.75;
+}
+
+/* CHARACTER SECTION */
+.char-block {
+  border-top: 2px solid var(--pg-d);
+  padding-top: 24px; margin-top: 24px;
+}
+.char-block:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+
+/* TIMELINE */
+.timeline { margin: 16px 0; }
+.tl-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  margin-bottom: 2px;
+}
+.tl-time {
+  background: var(--pg-m);
+  padding: 8px 12px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px; color: var(--fire);
+  border-left: 2px solid var(--fire);
+}
+.tl-ev { padding: 8px 14px; font-size: 15px; color: var(--ink-l); }
+tr:nth-child(even) .tl-ev { background: var(--pg-w); }
+
+/* HR */
+.hr-gold {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 0;
+}
+.hr-thin { height: 1px; background: var(--pg-m); }
+.hr-fire {
+  height: 2px;
+  background: linear-gradient(to right, var(--fire), var(--fire-g), transparent);
+}
+
+/* FOOTER */
+.footer {
+  background: var(--void-m);
+  padding: 18px 80px;
+  display: flex; justify-content: space-between;
+  border-top: 1px solid rgba(192,136,32,0.1);
+}
+.footer span {
+  font-family: 'Courier Prime', monospace;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(192,136,32,0.18);
+}
+
+/* PHASE BANNERS */
+.phase-banner {
+  padding: 20px 80px;
+  display: flex; align-items: center; gap: 20px;
+}
+.pb-camel { background: rgba(120,100,40,0.12); border-left: 4px solid var(--muted); }
+.pb-lion  { background: rgba(168,48,16,0.1);  border-left: 4px solid var(--fire); }
+.pb-child { background: rgba(10,4,20,0.08);   border-left: 4px solid var(--ink-m); }
+.pb-icon { font-size: 28px; opacity: .5; }
+.pb-text { }
+.pb-nm {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--fire); display: block; margin-bottom: 2px;
+}
+.pb-de { font-size: 15px; color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- =============================================
+     COVER
+============================================= -->
+<div class="cover">
+  <div class="cover-border"></div>
+  <div class="cover-corners">
+    <div class="corner c-tl"></div>
+    <div class="corner c-tr"></div>
+    <div class="corner c-bl"></div>
+    <div class="corner c-br"></div>
+  </div>
+
+  <div class="cv-body">
+    <span class="cv-farsi">بایگانی آشا و دروج</span>
+    <span class="cv-label">Kenoma · Storytelling & World Design Bible · Persian Edition</span>
+    <div class="cv-main">KENOMA</div>
+    <div class="cv-subtitle">The Archive of Asha and Druj</div>
+    <div class="cv-hr"></div>
+    <div class="cv-logline">
+      A scholar who has read every warning about their own nature<br>
+      enters an archive built from the dead civilization's twin truths —<br>
+      fire above, darkness below — and builds, puzzle by puzzle,<br>
+      the instrument of their own erasure.
+    </div>
+    <div class="cv-worlds-row">
+      <div class="cv-world a-world">
+        <span class="cw-sym">🔥</span>
+        <span class="cw-nm">World A · Apadana of Asha</span>
+        <span class="cw-de">The Achaemenid hypostyle above — fire altars, column-forests, processional friezes, imperial truth</span>
+      </div>
+      <div class="cv-world b-world">
+        <span class="cw-sym">◈</span>
+        <span class="cw-nm">World B · The Duzakh Beneath</span>
+        <span class="cw-de">The inverted mirror underground — void-pits, hanging columns, reversed reliefs, Ahriman's domain</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cv-bottom">
+    <span class="cv-bot-txt">Detailed Narrative · World Design · Character Psychology · Puzzle Architecture · Creature Design</span>
+    <span class="cv-bot-txt">Storytelling Bible v6.0 · Companion to Production GDD</span>
+  </div>
+</div>
+
+<!-- =============================================
+     CHAPTER I — THE THESIS
+============================================= -->
+<div class="chapter-break">
+  <span class="ch-num">Chapter I</span>
+  <div class="ch-title">The Thesis — Fan Li's Warning in Persian Stone</div>
+  <span class="ch-farsi">فصل اول · پایه داستان</span>
+</div>
+
+<div class="bd">
+  <p class="drop-cap">There is a warning written in the oldest texts of the Eastern Zhou empire that a wandering scholar carries with them into every court they serve: <em>when the birds are gone, the good bow is put away; when the cunning hare is dead, the hunting dog is cooked.</em> Fan Li wrote it as an aphorism about power and gratitude. It is also, read differently, an instruction manual for what the Scholar is about to do.</p>
+
+  <p>KENOMA is a tragedy about professional excellence. The Scholar does not fail — they succeed at every task presented to them. They translate with extraordinary precision. They solve mechanisms no one alive has understood. They make their partner formidable, then more formidable, then unstoppable. The tragedy is not that they are foolish or naïve. The tragedy is that they are constitutionally incapable of stopping — that the 士 archetype, the wandering intellectural who derives identity from service, cannot be argued out of its own nature even when every Eastern Zhou aphorism it has memorized is screaming at it to run.</p>
+
+  <p>The Persian Archive is the perfect setting for this. The Achaemenid civilization was built on the systematic absorption of every conquered people's knowledge — Babylonian astronomy, Egyptian medicine, Indian philosophy, Eastern Zhou strategy. The Archive contains everything. Specifically, it contains the Scholar's own intellectual tradition, pressed into cuneiform and sealed behind mechanisms only the Scholar's training can open. The Scholar is the key. The Vanguard has been waiting for someone who fits this lock for a very long time.</p>
+
+  <div class="zhou">
+    <span class="zh-src">Eastern Zhou Philosophy · Character Influence Only · Not World Vocabulary</span>
+    <p>"Flying birds hidden when prey caught; hunting dogs cooked when hare is dead." — Fan Li, to Gou Jian of Yue. The Scholar knows this story. They know how it ends. They are Fan Li. They enter the Archive anyway, because the 士 archetype cannot be argued out of its own nature — only outlived by those it serves.</p>
+  </div>
+</div>
+
+<!-- =============================================
+     CHAPTER II — THE WORLD
+============================================= -->
+<div class="chapter-break">
+  <span class="ch-num">Chapter II</span>
+  <div class="ch-title">The Persian Archive — World Design</div>
+  <span class="ch-farsi">فصل دوم · طراحی جهان</span>
+</div>
+
+<div class="sec"><span class="sec-num">2.1</span><div class="sec-title">The Civilization That Built Both Worlds</div></div>
+<div class="bd">
+  <p>The Archive was commissioned by a faction of Achaemenid magi who believed that the Zoroastrian dualist cosmology — the eternal war between Ahura Mazda's truth (Asha) and Ahriman's lie (Druj) — could only be fully understood by studying both sides simultaneously. Orthodox Zoroastrianism rejected Druj knowledge entirely; the purification rituals of the Vendidad exist specifically to protect against contamination from Ahriman's domain. This faction believed the fear was the problem. That the Druj could be known without being surrendered to.</p>
+
+  <p>They built the Archive as a synchronized double structure: the Apadana of Asha above ground, modeled on Persepolis at its full imperial scale — 72 columns with double-bull capitals, processional relief staircases showing tribute delegations from thirty nations, fire altars (atash-dān) at every junction, astronomical instruments in the high galleries aligned to Ahura Mazda's sacred stars. And beneath it, precisely synchronized but inverted: the Duzakh, where Druj knowledge was contained. Columns hanging from ceilings. Void-pits replacing fire altars. The processional friezes on the walls showing the same tribute delegations gone wrong — figures distorted, their tribute transforming as they carry it, their faces beginning to turn.</p>
+
+  <div class="avestan">
+    <span class="av-farsi">آشا را پاس داشتن، دروج را شناختن</span>
+    <span class="av-trans">"To uphold Asha, one must know Druj." — Foundation inscription, carved above the Grand Armillary. The civilization's justification for what they built. Also the Scholar's justification for entering.</span>
+    <span class="av-src">Archive Foundation Inscription · Both Worlds · Primary Lore Document 001</span>
+  </div>
+
+  <p>The civilization died before completing the Archive. Not from external conquest — from the Duzakh itself. The Druj knowledge, accumulated without the counterweight of sufficient Asha scholarship, destabilized the synchronization mechanism. The two worlds began to bleed into each other. The magi sealed the Archive from the outside. The synchronization mechanism — a Grand Armillary sphere built into the Apadana's highest gallery — was left partially active, holding the worlds in imperfect stasis: connected enough to traverse between them, separate enough not to collapse entirely. The Guardian was the last thing the magi built before sealing the gates. It would enforce the separation. It would punish dimensional crossings. The cost of knowing both worlds, built into the architecture.</p>
+</div>
+
+<div class="sec"><span class="sec-num">2.2</span><div class="sec-title">World A — The Apadana of Asha · Room-by-Room Design</div></div>
+<div class="bd">
+  <p>The Apadana is not a dungeon. It is a palace that has been sealed for centuries and has begun, very slowly, to remember that its purpose was to hold fire. The sacred fires in the atash-dān altars are not lit — they are dormant, waiting for a scholar who carries oil. The relief carvings on every wall show the thirty-nation tribute procession in absolute stillness — frozen mid-step, gift-bearers with eyes that track the Scholar when the camera angle permits it. The Apadana is beautiful in the way that intact things that should not still be intact are beautiful: with the specific wonder of the preserved.</p>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WA-001</span>
+      <span class="room-name">The Gate of All Nations — Darvāze-ye Mellal</span>
+      <span class="room-world rw-a">World A · Entry</span>
+    </div>
+    <div class="room-body">
+      <p>The Archive's sole entrance. Two massive bull-lamassu flank a doorway large enough for six men abreast. The Achaemenid style demands symmetry — the Scholar arrives into absolute bilateral order. The lamassu are human-faced, bull-bodied, eagle-winged: they embody Ahura Mazda's four virtues in one form. They have not moved in centuries. They are very still. The cuneiform inscription above the gate runs in three languages: Old Persian, Elamite, and Babylonian.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">Opening Scene Function</div>
+          <div class="rg-body">This is where the Scholar and Vanguard enter together. The first encounter happens here: a corrupted Yazata spirit in the left approach corridor. The Scholar names it using the gate inscription (tutorial for Intellectual Combat). The Vanguard eliminates a second creature independently. First meeting of the two combat styles, side by side.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Mechanic Introduction</div>
+          <div class="rg-body">Fire vessel used for first time (lights the gate's dormant fire channel — opens the door). Crossbow found in a sealed alcove near the lamassu. Fire vessel's triple function (combat, save, navigation) can be intuited here because World B is not yet accessible.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Camera Composition</div>
+          <div class="rg-body">Low-angle shot looking up at lamassu from below — Scholar and Vanguard tiny against the stone figures. Dutch angle on the approach corridor shot. The Vanguard is always visible in background of Scholar-focused shots from this point forward.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Vanguard Behavior (Camel Phase)</div>
+          <div class="rg-body">She examines the cuneiform inscription before the Scholar reaches it. When the Scholar translates it, she says: "Interesting." She does not say what she finds interesting. She is already cataloguing the Scholar's translation methodology.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WA-002</span>
+      <span class="room-name">The Hypostyle Forest — Tālār-e Sad Sotūn</span>
+      <span class="room-world rw-a">World A · Primary Navigation Hub</span>
+    </div>
+    <div class="room-body">
+      <p>Thirty-six columns arranged in a six-by-six grid, each rising 20 meters to double-bull capitals lost in shadow. The scale is intentionally, physically overwhelming — the Scholar is an insect in a stone forest. Fire channels run along the floor between column bases, connecting all atash-dān altars in the room in a single circuit. When the circuit is lit (first full save in this room), all thirty-six column bases ignite simultaneously. The room transforms from cold stone to amber warmth. It is the most beautiful moment in the game's first act. It should feel like a gift.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">Navigation Function</div>
+          <div class="rg-body">Hub space connecting Gate (WA-001), Eastern Treasury (WA-003), Throne Hall (WA-005), and Grand Armillary Gallery (WA-007). Multiple camera angles — wide establishing shots and intimate column-to-column compositions. The Scholar is never more than one column away from cover.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Trap Zone (Camel Phase)</div>
+          <div class="rg-body">Three oil-conduit pressure valves in the floor between columns. When Scholar arms them, they appear as puzzle elements — "what does this valve do?" In Lion Phase, activating a valve sends burning oil through the floor channel, sealing that corridor segment with fire for 45 seconds.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Otherworld Shift Visual</div>
+          <div class="rg-body">When score threshold crossed: the tribute-bearer reliefs on the column faces begin moving. Slowly — barely perceptible. One relief figure has turned its head slightly. Another has put down its gift. The Scholar can see this from across the room. The Vanguard does not react to it.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Vanguard Background Presence</div>
+          <div class="rg-body">In every wide camera shot of this room, Vanguard A is visible as a silhouette between columns at a distance. She is examining the oil conduit system. She is measuring it. Players will not understand what they are watching on the first playthrough.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WA-003</span>
+      <span class="room-name">The Eastern Treasury — Khazāne-ye Sharqi</span>
+      <span class="room-world rw-a">World A · Primary Puzzle Chamber</span>
+    </div>
+    <div class="room-body">
+      <p>A chamber lined floor-to-ceiling with clay tablet archives — tens of thousands of cuneiform documents organized in a cataloguing system the Scholar must decode to find specific texts. The system itself is a puzzle: the clay tablets are organized by the Archive's own classification logic, which the Scholar can reverse-engineer from context. The room smells of old clay and the particular cold of sealed stone. It is the Scholar's happiest place in the game — a library of this scale should not still exist, and yet here it is, perfectly preserved.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">Primary Puzzle (PZ-001)</div>
+          <div class="rg-body">The Archive Catalogue System — see §4.1 for full puzzle design. The Scholar must identify the classification logic from three visible index tablets to locate the Grand Armillary's operating manual (necessary for Act I's finale). Five-step deduction sequence. Introduces the deep-read investment system.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Critical Lore Documents</div>
+          <div class="rg-body">Eastern Treasury contains: (1) The Foundation Inscription translation, (2) The Nasu boundary law (explains Guardian), (3) The Vanguard's entry record — she arrived 312 years before the Scholar. This last document is discoverable only via deep read of a partially damaged tablet. Most players miss it on first run.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Avestan Naming (WA)</div>
+          <div class="rg-body">A corrupted Yazata creature (Asha-corrupted guardian spirit) is dormant in the eastern alcove. Its origin inscription is on a damaged tablet in the northwest corner. Deep read unlocks Naming. First opportunity to use Intellectual Combat in World A.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Overheard Vanguard Scene (Missable)</div>
+          <div class="rg-body">Scholar enters from the south entrance and hears Vanguard A in the deep stacks, speaking quietly. She is issuing patrol orders to the corrupted Yazata creature in the eastern alcove — in military Elamite, the administrative language of the Achaemenid empire. The creature is obeying her. She has been here before. She knows these creatures. She has been managing them.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WA-005</span>
+      <span class="room-name">The Throne Hall — Tākht-e Shāhi</span>
+      <span class="room-world rw-a">World A · Lion Phase Final Arena</span>
+    </div>
+    <div class="room-body">
+      <p>The Archive's ceremonial center. An empty throne of black stone on a raised dais, flanked by two massive double-bull capitals that serve as supports — the Archive's architectural apex. The throne was never meant to be occupied; it is symbolic of Ahura Mazda's authority over the knowledge stored here. The walls show the largest processional relief in the Archive: all thirty delegations approaching the throne in full detail, each figure eight feet tall, each face individually carved. In the Otherworld state, every figure has stopped walking and turned to face the throne directly.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">Lion Phase Design</div>
+          <div class="rg-body">The Throne Hall is WA's final battleground — the Camel Phase trap zone activated here determines whether the Scholar has defensive options. The throne dais provides elevation advantage. The double-bull capitals can be brought down (one of the Camel Phase trap mechanisms) — destroying cover but also collapsing WA-004's connecting corridor.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">The False Victory Beat</div>
+          <div class="rg-body">Vanguard B (Druj survivor path) falls in this room. The throne is behind her as she falls. The achievement fires. The music resolves. The empty throne is visible in the background of the save prompt screen. The dimensional tear opens just to the left of the throne. Vanguard A walks through it, sets her spear against the throne, and begins.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WA-007</span>
+      <span class="room-name">The Grand Armillary Gallery — Tālār-e Osturlāb-e Bozorg</span>
+      <span class="room-world rw-a">World A · Act III Key Location</span>
+    </div>
+    <div class="room-body">
+      <p>The Archive's highest accessible space — a circular gallery open to the night sky through a domed oculus. The Grand Armillary occupies the center: a 4-meter astronomical instrument of bronze and jade, with seven concentric rings tracking the seven sacred stars of Zoroastrian cosmology. It is both the Archive's primary synchronization mechanism (keeping Asha and Druj in imperfect stasis) and, crucially, the dimensional aperture management system. Activating it collapses all traversal focal points simultaneously. The magi built in this emergency protocol when they understood what they'd created. The Scholar discovers this in the Eastern Treasury's most damaged and hardest-to-read tablet.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">Archive Guardian — Encounter 3</div>
+          <div class="rg-body">The Guardian manifests here for the final time during the Lion Phase. Scholar must reach the Armillary controls and activate the collapse sequence before the Guardian reaches them. Resonance bell buys staggered time. Activating the Armillary rings in the correct sequence (learned from the Eastern Treasury operating manual) triggers the collapse. Guardian dissolves. No weapon fired.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Astronomical Puzzle (PZ-007)</div>
+          <div class="rg-body">Seven rings, seven sacred stars. The operating sequence encodes the Zoroastrian creation order — the Scholar must have translated the cosmological inscription in WB-004 to know the correct order. If translated, the sequence is immediately readable. If not translated, it requires trial-and-error under Guardian pressure. Full design in §4.7.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec"><span class="sec-num">2.3</span><div class="sec-title">World B — The Duzakh Beneath · Room-by-Room Design</div></div>
+<div class="bd">
+  <p>The Duzakh is not simply a dark version of the Apadana. It is the Apadana's shadow made architectural — the same rooms, the same column placements, but subjected to Ahriman's inversion logic. Columns hang from ceilings because in the Druj cosmology, the earth is above and the sky is below. Fire altars are void-pits from which cold darkness seeps upward. The processional friezes show the same thirty-nation tribute procession, but something has gone wrong in the journey — the gifts are becoming their givers, the faces are becoming the things they carry. The Duzakh is a warning about the cost of full knowledge. It is also the most beautiful space in the game, because beauty and horror in Zoroastrian tradition are not opposites.</p>
+
+  <div class="avestan">
+    <span class="av-farsi">دروج پوشیده است، آشا آشکار است</span>
+    <span class="av-trans">"Druj is hidden; Asha is visible." — Avestan Gatha, Yasna 31.1. The Scholar reads this inscription above the first Duzakh traversal focal point. It is a warning. It is also, technically, a description of their current situation.</span>
+    <span class="av-src">Duzakh Entry Inscription · World B-000 · Discoverable Lore</span>
+  </div>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WB-001</span>
+      <span class="room-name">The Inverted Gate — Darvāze-ye Vāzgūn</span>
+      <span class="room-world rw-b">World B · Entry Point</span>
+    </div>
+    <div class="room-body">
+      <p>The Scholar arrives here from their first traversal — stepping through the Grand Armillary's lower focal point and emerging into absolute darkness broken only by their fire vessel's light. The Duzakh entry gate mirrors the Gate of All Nations exactly, but inverted: the lamassu faces are now concave, pressed inward as if something has been pushing them from behind for centuries. Their expression is no longer serene. The cuneiform inscription above reads the same trilingual text — but in reverse order, Babylonian first. The Scholar, who reads all three scripts, can hear the difference in meaning the reversal creates.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">First Encounter — Pairika</div>
+          <div class="rg-body">A Pairika (Zoroastrian harmful female spirit — Vendidad associates them with shooting-star anomalies, sudden light in dark places) detects the fire vessel's light immediately. First demonstration of the light-management problem: combat uses oil, navigation requires light, both compete. Scholar must choose: fight with light, or suppress light and navigate blind.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">First Darkness Experience</div>
+          <div class="rg-body">Player experiences full light management for the first time. Camera angles are tighter here — the darkness compresses the visual field. Only the fire vessel's illumination radius is visible. The Scholar cannot see the ceiling. Something moves above them.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Vanguard B First Appearance</div>
+          <div class="rg-body">Vanguard B is heard, not seen — footsteps on stone, then silence. She is somewhere in the darkness beyond the fire vessel's range. She does not approach. She is noting that the Scholar has arrived and carries fire. She already knew. She was waiting.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">First Avestan Naming Opportunity</div>
+          <div class="rg-body">The Pairika's origin inscription is visible on the Inverted Gate's right pillar. Scholar can attempt naming immediately if they deep-read the inscription — but the Guardian spawn probability during the read creates a deliberate risk/reward tension on the very first World B visit.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WB-002</span>
+      <span class="room-name">The Inverted Hypostyle — Jangal-e Sotūn-hā-ye Vāzgūn</span>
+      <span class="room-world rw-b">World B · Navigation Hub</span>
+    </div>
+    <div class="room-body">
+      <p>The same thirty-six column grid — but hanging from the ceiling, bases pointing down like stone stalactites. Walking through them requires navigating between hanging column-tips at head height. The floor, by contrast, is smooth and clear, which makes the space maximally disorienting — the Scholar walks a clear path through what should be a forest. The void-pits replace the fire channels, radiating cold darkness upward. Something lives in the void-pits. The Scholar's fire vessel creates a moving circle of warmth and light; anything outside that circle is theoretical.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">Sound Design Priority</div>
+          <div class="rg-body">The Inverted Hypostyle is the game's primary audio horror space. The hanging columns create specific acoustic reflections — footsteps echo wrong, at wrong intervals, at wrong distances. The astrolabe static may reflect off the hanging stone in confusing ways. Audio design must treat this room as a priority acoustic puzzle.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Daeva Encounter</div>
+          <div class="rg-body">Three Daeva entities (Zoroastrian anti-gods — beings that chose Druj over Asha at creation) patrol between the hanging columns. They are Avestan bell-stunnable. They are also nameable — if Scholar has translated WB-003's inscription (the Bundahishn daeva classification section). First multi-creature encounter in World B.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Overheard Vanguard B Scene (Missable)</div>
+          <div class="rg-body">Scholar approaches from WB-001 and can hear Vanguard B at the far end of the room, beyond the fire vessel's range. She is speaking Avestan formulae into one of the void-pits — not prayer but requisition. She is requesting tactical information from something in the Duzakh. She pauses. Listens. Appears satisfied. This is her private intelligence network. The Scholar who hears this and understands what they're hearing has found the most important single piece of characterization in the game.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Lion Phase Asymmetry</div>
+          <div class="rg-body">Traps set in WB-002 during the Camel Phase are nearly invisible in the dark — pressure plates cannot be seen beyond the fire vessel's range. This creates an asymmetry: observed traps are observed because Vanguard B was within fire range when Scholar armed them. Traps armed at the edge of fire range may or may not have been seen, depending on her patrol position. Players who carefully track her location during Camel Phase will have better trap coverage.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="room">
+    <div class="room-head">
+      <span class="room-id">Room WB-004</span>
+      <span class="room-name">The Druj Library — Ketāb-khāne-ye Duroghguyān</span>
+      <span class="room-world rw-b">World B · Primary Puzzle Chamber</span>
+    </div>
+    <div class="room-body">
+      <p>The inverted mirror of the Eastern Treasury. Clay tablets are here too — but they are the Druj complement: the Vendidad (the Zoroastrian law code specifically addressing Druj contamination), the Bundahishn (the creation cosmology explaining Ahriman's counter-creation), and the Dādestān ī Dēnīg (legal rulings on purification). Together these texts form the most complete Avestan library ever assembled. The Scholar, who has read fragments of these texts in the eastern libraries, is encountering the complete originals for the first time. These are texts scholars would spend careers to find. The Scholar may have to choose between reading all of them and surviving.</p>
+      <div class="room-grid">
+        <div class="rg-section">
+          <div class="rg-title">Primary Puzzle (PZ-004)</div>
+          <div class="rg-body">The Contamination Map — a spatial puzzle requiring the Scholar to identify which of the Druj Library's seven alcoves contain naming-origin inscriptions versus contamination-trap documents (documents that, when deeply read, cause Guardian spawn at triple normal probability). Requires cross-referencing three Bundahishn passages. Full design in §4.4.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">Maximum Naming Opportunity</div>
+          <div class="rg-body">Five of the seven nameable World B creature categories have their origin inscriptions here. A Scholar who fully engages with the Druj Library and completes all available deep reads will have named most of World B's threats before the Lion Phase begins. This is the highest behavioral score concentration in the game — and the highest Guardian pressure.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">The Cosmological Inscription</div>
+          <div class="rg-body">Contains the Zoroastrian creation order — the sequence needed for the Grand Armillary (PZ-007). If Scholar misses this and needs to use the Armillary to defeat the Guardian, they are working blind under maximum pressure. The game never tells the Scholar these two texts are connected. Spatial memory and note-taking (in-world clay tablet journal) reward the attentive player.</div>
+        </div>
+        <div class="rg-section">
+          <div class="rg-title">The 312-Year Record</div>
+          <div class="rg-body">A different version of the Vanguard's entry record exists here — this one in Vanguard B's own writing. It is a mission log. The first entry reads: "Day 1. The Archive is sealed. The synchronization mechanism is active but unstable. I require a translation key." The last entry, undated, reads: "Patience." The Scholar can calculate from the script's dialect drift that this log spans roughly three centuries. This document is the most important character revelation in the game, and it is fully missable.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     CHAPTER III — CHARACTERS
+============================================= -->
+<div class="chapter-break">
+  <span class="ch-num">Chapter III</span>
+  <div class="ch-title">The Characters — Psychology, History, Voice</div>
+  <span class="ch-farsi">فصل سوم · شخصیت‌پردازی</span>
+</div>
+
+<div class="sec"><span class="sec-num">3.1</span><div class="sec-title">The Scholar — 士 · The Bow That Cannot Put Itself Away</div></div>
+<div class="bd">
+  <div class="char-block">
+    <h3>Who They Are</h3>
+    <p>Born in the eastern provinces of the Achaemenid empire, raised in the empire's vast library network, trained in all three administrative scripts (Old Persian, Elamite, Babylonian) plus Avestan, plus the eastern philosophical traditions absorbed into the library system — including the Eastern Zhou strategic texts. They are perhaps the only person alive who could read the Archive's trilingual cuneiform key when they found it in a damaged fragment in the Persepolis library. They spent three years translating it. Then they went to find what it opened.</p>
+    <p>The Scholar is not naïve. They are something more specific: they are someone who has read all the warnings and concluded, through rigorous intellectual honesty, that the warnings apply to other people. Fan Li's aphorism is in their personal notes. They have read it. They think it is about King Gou Jian — about people who betray out of greed or fear. The Vanguard is not greedy. She is not afraid. The Scholar's framework for interpreting the aphorism does not have a category for what she is.</p>
+
+    <h3>The 士 Archetype in Persian Context</h3>
+    <p>The Scholar's Eastern Zhou philosophical training shapes their <em>psychology</em>, not their vocabulary or world-view. They do not use Chinese concepts to understand Persia — they use Chinese concepts to understand themselves. The 士's constitutive inability to stop serving, to stop translating, to stop making the people around them more capable — this is the Scholar's internal law. It is not a Persian concept. It is a transplanted Eastern Zhou concept that the Scholar carries around like a compass that always points at the next person who needs their expertise.</p>
+
+    <div class="zhou">
+      <span class="zh-src">The Scholar's Private Journal · Clay Tablet 1 · Day 3 in the Archive</span>
+      <p>"The magi who built this place understood Zarathustra's first insight: you cannot know truth by refusing to know its opposite. I was taught this by different teachers, in different languages. Fan Li, Sun Tzu, Guan Zhong — they all said the same thing: the strategist who refuses a difficult ally is not moral, they are merely afraid. I am not afraid. I am here because someone must translate this and it might as well be someone who can read it."</p>
+    </div>
+
+    <h3>The Scholar's Emotional Arc Through Three Acts</h3>
+    <div class="timeline">
+      <div class="tl-row"><div class="tl-time">Act I, Early</div><div class="tl-ev">Professional delight. The Archive is extraordinary. Every tablet is new knowledge. The Vanguard is an efficient partner. This is what scholarship is for.</div></div>
+      <div class="tl-row"><div class="tl-time">Act I, Mid</div><div class="tl-ev">First notice of the Dark Voice. The Scholar's strategic training asserting itself — Fan Li's aphorism speaking in their own voice at unexpected moments. Scholar treats it as intellectual self-awareness, not a warning.</div></div>
+      <div class="tl-row"><div class="tl-time">Act I, Late</div><div class="tl-ev">Genuine warmth for the Vanguard. She is extraordinary — the Scholar has never worked with someone who learns this fast. The efficiency of collaboration has become something that feels, carefully, like trust.</div></div>
+      <div class="tl-row"><div class="tl-time">Act II, Transition</div><div class="tl-ev">The resonance chime goes silent. Then a position report. The Scholar's hands stop on the puzzle they were working. They don't move for a moment. Then they put away the puzzle piece and pick up the crossbow.</div></div>
+      <div class="tl-row"><div class="tl-time">Act II, Core</div><div class="tl-ev">Grief and tactical clarity simultaneously. The Scholar is very good at their work. This is also work. They use every trap, every translation, every bell strike. The Dark Voice is no longer surprising them — they are starting to agree with it.</div></div>
+      <div class="tl-row"><div class="tl-time">Act III, False Victory</div><div class="tl-ev">Something that feels like relief. One Vanguard eliminated. The music resolves. The Scholar's breathing normalizes. They earned this. It is over.</div></div>
+      <div class="tl-row"><div class="tl-time">Act III, True End</div><div class="tl-ev">The fold in the air. The Scholar watches the surviving Vanguard absorb the Traversal Skill and turn. The astrolabe goes silent for the first time. There is nothing left to warn against. The Scholar's last thought, visible in their expression before the ending scenario begins, is a single Eastern Zhou aphorism finally arriving at its correct interpretation.</div></div>
+    </div>
+
+    <h3>The Dark Voice — Fan Li Speaks in the Scholar's Own Voice</h3>
+    <p>The Dark Voice emerges after the Scholar's third major puzzle — when the Scholar's strategic training has had enough Archive context to start calculating outcomes. It is not a supernatural intrusion. It is the Scholar's own mind, the Eastern Zhou strategic intellect that their 士 servility has been suppressing, finally refusing to stay quiet. It speaks in Fan Li and Sun Tzu aphorisms because that is the Scholar's own internal vocabulary for strategic thought.</p>
+
+    <div class="scene">
+      <span class="sc-dir">[Scholar has just completed their third major puzzle. They are alone in the Eastern Treasury. The Vanguard has moved to the next chamber. The Scholar stands in front of a tablet they've just finished translating — a list of tools and their optimal deployment ranges. Their lips move slightly as they read it again. Then they hear their own voice, slightly different — lower, the reverb of a thought with weight behind it:]</span>
+      <span class="sc-spk">Dark Voice</span>
+      <span class="sc-line">"When you have calculated your opponent's full capacity, the question is not whether they can defeat you. The question is whether they will choose to."</span>
+      <span class="sc-dir">[Long pause. The Scholar looks up from the tablet. They look at the doorway the Vanguard has just passed through.]</span>
+      <span class="sc-spk">Scholar (barely voiced)</span>
+      <span class="sc-line">"Sun Tzu. Art of War. Chapter 3." [pause] "I know."</span>
+      <span class="sc-dir">[They put the tablet down. They walk to the doorway. They follow the Vanguard. The Dark Voice does not speak again today. But it has been heard. And the Scholar has acknowledged it, which is the first step in a choice they don't know they're making.]</span>
+    </div>
+  </div>
+</div>
+
+<div class="sec"><span class="sec-num">3.2</span><div class="sec-title">The Vanguard — Hazarapatish · The Commander Who Waited</div></div>
+<div class="bd">
+  <div class="char-block">
+    <h3>Her History</h3>
+    <p>She was a Hazarapatish — a senior officer in the Achaemenid Immortals corps, responsible for a thousand-soldier regiment in a campaign on the empire's eastern border. She distinguished herself not through battlefield courage (which was common) but through a strategic intelligence that repeatedly resolved campaigns that should have taken seasons in weeks, with minimal losses on both sides. The king's court noticed. The court's magi noticed more specifically — because the strategies she was using were not in any military manual they recognized. She had developed, independently, several principles of campaign theory that the Archive's eastern philosophy collection had codified three centuries earlier in the Eastern Zhou kingdoms.</p>
+    <p>The magi brought her the Archive key fragments. She understood, instantly, what they were and what they meant. She was in the Archive within a month. She entered with a full regiment, which she systematically lost over the following decade as she mapped the Archive's dangers, learned the Archive's creatures, and established her operational understanding of both worlds. When the last of her soldiers died, she realized she needed a different kind of resource: not soldiers but scholarship. A translator. Someone who could read what she couldn't.</p>
+    <p>She has been waiting for 312 years. She is not patient by nature. She has become patient through three centuries of practice.</p>
+
+    <h3>What She Wants From the Scholar</h3>
+    <p>The Archive contains the complete tactical synthesis of every civilization the Achaemenid empire absorbed — including the Eastern Zhou strategic tradition that already partly shaped her thinking. She wants the complete text. She wants to understand it fully — not to use it in campaigns she will never fight again, but because the intellectual incompleteness is intolerable to her. She is a strategic mind that cannot tolerate an unsolved problem. The Archive is the unsolved problem. The Scholar is the solver she needs.</p>
+    <p>She is not incapable of warmth. The Camel Phase's emotional resonance requires genuine warmth between Scholar and Vanguard — players must feel the betrayal, not just understand it mechanically. What she cannot be is <em>loyal</em>, in the Scholar's sense. Her loyalty is to the problem. The Scholar is an optimal solution. When a better solution becomes available — when she has enough of the Scholar's knowledge to no longer need the Scholar — the calculation changes. She does not see this as betrayal. She sees it as the correct application of the same strategic logic both of them admire.</p>
+
+    <h3>The Camel Phase Dialogue Arc — How She Speaks</h3>
+    <p>Her voice is Achaemenid-inflected — the measured cadence of someone trained to give tactical orders clearly under pressure. Sentences end on certainties. She does not hedge. She asks exactly one question per subject and never asks the same question twice. In the early Camel Phase, she asks the Scholar to explain things. In the mid Camel Phase, she stops asking. The Scholar will notice this change if they are paying attention. Most players, on first run, read the stop as trust — she has learned enough to not need explanations anymore. On second run, they understand that she stopped asking because she had learned everything she needed to know.</p>
+
+    <div class="dialogue">
+      <span class="dia-spk">Vanguard A — Early Camel Phase, First Puzzle</span>
+      <span class="dia-line">"This mechanism has three possible states. You have identified two. What is the third?" [Scholar explains.] "And if the third state is activated from this side of the corridor?" [Scholar explains.] "I see." [She moves to exactly the position the Scholar described. Tests the mechanism.] "Yes. That is correct."</span>
+    </div>
+
+    <div class="dialogue">
+      <span class="dia-spk">Vanguard A — Mid Camel Phase, Sixth Puzzle</span>
+      <span class="dia-line">[Scholar reaches a mechanism junction. The Vanguard is already there. She has already engaged two of the three required levers.] "The third is through the left arch. The sequence requires this one second, that one third." [She steps back. Waits for Scholar to complete what she started.]</span>
+    </div>
+
+    <div class="dialogue">
+      <span class="dia-spk">Vanguard A — Late Camel Phase, The Shift</span>
+      <span class="dia-line">[Scholar calls on resonance chime. Long silence. Then her voice, changed — professional, clipped:] "Vanguard B's current position is the lower hypostyle. She will reach the Druj Library in approximately forty minutes. You should consider whether you want her to arrive." [Pause.] "This is information, not instruction. The choice is yours." [She closes the channel.]</span>
+    </div>
+
+    <h3>The Three Required Camel Phase Emotional Resonance Moments</h3>
+    <p>The False Victory only works if the player has genuinely liked the Vanguard before the betrayal. Three specific emotional resonance moments must be designed — understated, character-specific, not melodramatic:</p>
+
+    <p><strong>Moment 1 — The Eastern Texts Recognition:</strong> Scholar translates a passage from the Archive's Eastern Zhou philosophical collection. Reads it aloud to note the language style. Vanguard pauses, turns. "I have read those words before. In a different translation." Long pause. "You translated better." She turns back to the mechanism she was examining. This is the first indication she has more history with this Archive than the Scholar knows.</p>
+
+    <p><strong>Moment 2 — The Scholar's Near-Fall:</strong> Scholar traverses to World B and an unexpected creature encounter depletes their fire vessel to near-empty. They barely return through the traversal focal point to World A before the creature reaches them. Vanguard A is in the corridor when they arrive. She looks at the Scholar's depleted fire vessel, their torn robe, their visible tremor. She reaches into her own equipment and places an oil flask in the Scholar's hands. No words. She turns and walks back to her position. The Scholar looks at the flask. It is exactly one standard measure — she measured what would restore their capacity without expending more than necessary. Giving it was a calculated act. It still felt like care.</p>
+
+    <p><strong>Moment 3 — The Question She Doesn't Ask:</strong> Scholar has been working on a particularly difficult Avestan translation for three hours. The Vanguard has been in the same room, working on the adjacent puzzle independently. Neither has spoken. When the Scholar finally completes the translation and announces the solution, the Vanguard pauses. The Scholar expects a tactical follow-up question. She doesn't ask one. She says: "That is what I thought it would say." Not proud of herself — proud of the problem. Satisfied. This is the closest she comes to vulnerability: a moment when the Scholar can see that the Vanguard has been hoping, not just calculating. The hope and the calculation are identical. That is the tragedy.</p>
+
+    <h3>Vanguard B — The Shadow's Different Register</h3>
+    <p>Vanguard B is the same woman, but three centuries in the Duzakh has changed her relationship to language. Where Vanguard A speaks with military precision, Vanguard B speaks with the cadence of Avestan ceremonial text — slower, more resonant, as if she's measuring each word against the Druj library's full weight before speaking it. She has read more Zoroastrian sacred text than any scholar alive. She is not the same person who entered the Archive.</p>
+
+    <div class="dialogue">
+      <span class="dia-spk">Vanguard B — First Communication, World B</span>
+      <span class="dia-line">"You carry fire into a place where fire has not been in three centuries." [Long pause.] "The Duzakh remembers warmth as an absence. You have introduced a presence." [Pause.] "I find this interesting. I will find it useful."</span>
+    </div>
+
+    <div class="dialogue">
+      <span class="dia-spk">Vanguard B — Late Camel Phase, The Shift</span>
+      <span class="dia-line">[Scholar receives a message via resonance chime in World B. Vanguard B's voice:] "You should know that in the Vendidad, the scholar who enters Ahriman's realm seeking knowledge is described in two ways. As either the purifier — who brings Asha to the darkness — or as the contaminated. Which you are is determined by what you carry home." [Very long pause.] "Consider what she is carrying home." [Channel closes.]</span>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     CHAPTER IV — PUZZLES
+============================================= -->
+<div class="chapter-break">
+  <span class="ch-num">Chapter IV</span>
+  <div class="ch-title">Puzzle Design — Every Major Puzzle, Complete</div>
+  <span class="ch-farsi">فصل چهارم · طراحی معماها</span>
+</div>
+
+<div class="bd">
+  <p>Every major puzzle in KENOMA is designed around a single principle: the Scholar's expertise is the key. Cuneiform translation, Avestan scholarship, and astronomical knowledge are not window dressing — they are functional mechanics that unlock puzzle solutions unavailable to someone who doesn't read these languages. The puzzles are, in other words, Fan Li's aphorism made interactive: the Scholar's professional capability is both the instrument of their value and the instrument of their death. They unlock the Archive. They make the Vanguard capable of unlocking anything.</p>
+</div>
+
+<div class="sec"><span class="sec-num">4.1</span><div class="sec-title">Act I Puzzles — Camel Phase Architecture</div></div>
+<div class="bd">
+
+<div class="puzzle">
+  <div class="pz-head">
+    <div class="pz-id">PZ-001</div>
+    <div class="pz-name">The Archive Catalogue System — Dān-e Ketāb-khāne</div>
+    <span class="pz-phase">World A · Act I · Early Camel</span>
+  </div>
+  <div class="pz-body">
+    <p><strong>Room:</strong> Eastern Treasury (WA-003). <strong>Purpose:</strong> Introduces document reading system; tutorial for deep vs. shallow read trade-off; locates the Grand Armillary operating manual.</p>
+    <p><strong>Setup:</strong> The Eastern Treasury's thirty thousand tablets are organized in a classification system the Scholar cannot immediately read — it uses Archive-specific symbols not present in any of the three administrative scripts, combined with positional logic. Three index tablets are visible from the room's entrance, each describing a different organizational principle. The Scholar must identify which organizational principle governs which section by reading index tablets at different depths.</p>
+    <p><strong>The Puzzle's Three Steps:</strong></p>
+    <p><strong>Step 1</strong> — Scholar skims all three index tablets (2s each) and notes they each describe a different axis: subject matter, linguistic origin, access classification (who was permitted to read it). This gives the Scholar the three-axis coordinate system.</p>
+    <p><strong>Step 2</strong> — Scholar must determine which axis is primary (determines row), which is secondary (column), which is tertiary (shelf position). This requires standard-depth reading of a fourth tablet in the room's northeast alcove — an administrative memo describing how a previous scholar found a specific document. The memo gives enough coordinate data to reverse-engineer the axis hierarchy.</p>
+    <p><strong>Step 3</strong> — Scholar uses the three-axis system to navigate to the Grand Armillary operating manual, which is in a sealed alcove requiring cuneiform key-code entry (a simple substitution cipher that the Scholar solves by reading the closest inscription twice). Deep-reading the manual is optional here — but it contains the cosmological sequence needed for PZ-007. Players who read it now will understand PZ-007 immediately. Players who skip it will be solving PZ-007 under Guardian pressure with incomplete information.</p>
+
+    <div class="pz-solution">
+      <span class="pz-sol-lbl">Full Solution</span>
+      <div class="pz-sol-body">Primary axis: access classification (determines shelf wall — north=public, east=restricted, south=sacred, west=forbidden). Secondary axis: linguistic origin (determines row within wall — Old Persian top, Elamite middle, Babylonian lower, Avestan bottom). Tertiary axis: subject matter (determines position within row — astronomy, law, philosophy, military, medical, agricultural). Grand Armillary manual coordinates: West wall (forbidden), Avestan row (bottom), Astronomy section. Sealed alcove opens with cuneiform cipher: the key is that every symbol is shifted by the same value — identifiable by examining the three symbols that repeat across all three index tablets and whose sound values are known from context.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-head">
+    <div class="pz-id">PZ-002</div>
+    <div class="pz-name">The Atash-Dān Synchronization — Ham-āhangi-ye Ādar</div>
+    <span class="pz-phase">World A · Act I · Mid Camel — First Cross-Dimensional Puzzle</span>
+  </div>
+  <div class="pz-body">
+    <p><strong>Purpose:</strong> Introduces cross-dimensional puzzle logic; first traversal required for puzzle solution; first use of Duzakh as puzzle space rather than threat space.</p>
+    <p><strong>Setup:</strong> Three atash-dān fire altars in the Hypostyle Forest (WA-002) are cold. The Archive's fire distribution network requires all three to be lit simultaneously for the Throne Hall (WA-005) to unlock. The oil conduits between them are blocked — a mechanism in the Duzakh mirror-space controls the conduit valves. Scholar must: (1) identify the correct conduit sequence from inscriptions in World A, (2) traverse to World B, (3) activate the corresponding valve sequence in the inverted mirror-space, (4) return to World A, (5) light the altars in sequence before the valve timing resets.</p>
+    <p><strong>The World B Complication:</strong> The valve sequence in the Duzakh is mirrored — not just spatially inverted but logically inverted. The Asha sequence (fire-right-center-left) becomes the Druj sequence (darkness-left-center-right). The Scholar must translate this by reading a World B inscription that explains Druj mirror-logic. First deep-read in the Duzakh.</p>
+    <p><strong>The Teaching Moment:</strong> This puzzle teaches the game's cross-dimensional logic: solutions in World A often require actions in World B, and the translation between worlds requires understanding Druj inversion. Every subsequent cross-dimensional puzzle uses this same mirror-logic principle at increasing complexity.</p>
+
+    <div class="pz-solution">
+      <span class="pz-sol-lbl">Full Solution</span>
+      <div class="pz-sol-body">WA inscription (deep read): "The fire flows right-center-left in the order of Ahura Mazda's gifts." WB inscription (deep read): "The Druj mirror reverses gift-order and direction." Therefore WB sequence: left-center-right. Scholar activates WB valves in left-center-right order, returns to WA (1 traversal debt), and lights atars right-center-left within 90-second window before pressure valve resets. If Scholar attempts WA sequence in WB (logical error), all three valves lock and Scholar must wait for a full pressure-reset cycle (180 seconds, during which Guardian spawn probability increases).</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-head">
+    <div class="pz-id">PZ-003</div>
+    <div class="pz-name">The Living Relief — Nigar-e Zende</div>
+    <span class="pz-phase">World A · Act I · Late Camel — Otherworld State</span>
+  </div>
+  <div class="pz-body">
+    <p><strong>Purpose:</strong> Introduces Otherworld state; demonstrates behavioral tracking consequence (only accessible if score has crossed first threshold); first encounter where Intellectual Combat (Naming) is the optimal solution rather than fire/crossbow.</p>
+    <p><strong>Setup:</strong> Scholar crosses a behavioral score threshold, triggering World A's Otherworld state. In the Hypostyle Forest, the processional relief figures have begun moving. Three of them — all carrying tribute gifts of military equipment — have stepped fully out of the wall and are advancing on the Scholar as Yazata-class entities (divine beings animated wrong, carrying their stone tribute). Their stone bodies are immune to fire vessel damage (they are Asha-nature creatures, not Druj — fire cannot harm them) and to crossbow bolts (stone carapace). Standard combat is ineffective.</p>
+    <p><strong>The Solution Logic:</strong> Each relief figure is inscribed with its origin text — visible on its carved base, which it carries with it as it moves. Scholar must: read the origin inscription on each figure (standard read suffices — their designations are administrative, not sacred), identify the specific Yazata being they represent, and speak the deactivation formula (not a Naming — these are Asha creatures, the formula comes from the Avestan administrative text for decommissioning divine agents, which the Scholar learned from PZ-001's administrative memo).</p>
+    <p><strong>The Time Pressure:</strong> The three figures advance continuously. Scholar has approximately 90 seconds before they reach standard crossbow range. Each origin read (standard depth) takes 8–12 seconds. Scholar must prioritize correctly — the figure furthest left is slowest (stone tribute is heaviest), so read rightmost first.</p>
+
+    <div class="pz-solution">
+      <span class="pz-sol-lbl">Full Solution</span>
+      <div class="pz-sol-body">Read right figure (Sraosha, divine obedience) → speak Sraosha deactivation formula ("Mazda-data, ahura-frya, yehyā hātąm" from administrative memo). Sraosha returns to wall. Read center figure (Asha Vahishta, best truth) → speak formula. Returns. Read left figure (Vohu Manah, good purpose) → speak formula. Returns. Otherworld state does not end — it only ends at Child Phase. But the immediately dangerous manifestation is resolved. Scholar can now move through the Hypostyle Forest safely. The experience gives the Scholar their first direct encounter with the Archive's Asha-nature creatures and the principle that fire only works on Druj-nature threats.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-head">
+    <div class="pz-id">PZ-004</div>
+    <div class="pz-name">The Contamination Map — Naqshe-ye Ālāyandegi</div>
+    <span class="pz-phase">World B · Act I · Mid Camel</span>
+  </div>
+  <div class="pz-body">
+    <p><strong>Purpose:</strong> Teaches deep-read cost/benefit in World B; introduces the concept that Druj knowledge requires navigation rather than brute access; establishes Avestan Naming as a systematic capability.</p>
+    <p><strong>Setup:</strong> The Druj Library (WB-004) contains seven alcoves. Scholar needs the Bundahishn daeva classification texts from alcoves 3, 5, and 6 for complete Naming capability. But alcoves 2 and 4 contain contamination texts — Vendidad passages about Druj traps that, when deeply read, trigger triple-probability Guardian spawns. Alcove 7 is warded — it requires a purification sequence to access safely. Scholar has no prior knowledge of this distinction.</p>
+    <p><strong>The Discovery Process:</strong> Three Bundahishn tablets near the Druj Library entrance describe the Library's own organization (mirroring the Eastern Treasury's index tablets, but with Druj inversion logic). Standard-depth read of all three reveals: alcoves are organized by Druj potency (low to high, left to right), contamination texts are always in odd-numbered positions, naming-origin texts are in even-numbered positions, the warded alcove (7) requires a fire-purification rite described in the central tablet.</p>
+    <p><strong>The Trap for Impatient Players:</strong> A Scholar who skips the index tablets and begins deep-reading alcove tablets in order will hit alcove 2's contamination text and immediately trigger an enhanced Guardian event. This is not a game-over — but it is the game's first unambiguous demonstration that the Druj Library punishes the unschooled.</p>
+
+    <div class="pz-solution">
+      <span class="pz-sol-lbl">Full Solution</span>
+      <div class="pz-sol-body">Standard-read all three index tablets (24–36s total). Identify: even alcoves = safe naming texts (2, 4, 6 — but wait, this contradicts the odd/even rule stated above: re-read index tablet 2 more carefully). Correct principle: the Library uses the Druj mirror-logic from PZ-002 — the Scholar already knows that Druj inverts Asha patterns. Asha puts dangerous texts in restricted positions (odd). Druj inverts this: dangerous texts in "accessible" positions (even). So: odd alcoves are safe, even alcoves are traps. Alcoves 1, 3, 5 = naming texts. Alcoves 2, 4, 6 = contamination traps. Alcove 7 = warded, requires fire purification. Lighting Scholar's fire vessel at the central altar (burns 5 oil units — significant cost) purifies alcove 7, revealing the Cosmological Inscription needed for PZ-007.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-head">
+    <div class="pz-id">PZ-005</div>
+    <div class="pz-name">The Five-Step Chain — Zanjire-ye Panj-gāmi</div>
+    <span class="pz-phase">Both Worlds · Act I · Late Camel — Maximum Complexity</span>
+  </div>
+  <div class="pz-body">
+    <p><strong>Purpose:</strong> The Camel Phase's culminating puzzle — demonstrates the Scholar's full mastery of the Archive's logic; makes the Vanguard's independent problem-solving visible; is the last thing Scholar and Vanguard do together in genuine cooperation.</p>
+    <p><strong>Setup:</strong> The Throne Hall (WA-005) requires a five-step solution involving both worlds and both characters working in parallel. The Archive's primary gate — separating the Hypostyle Forest from the Grand Armillary Gallery — will only open when both worlds' synchronization stones are activated simultaneously. The stones are in opposite worlds and neither Scholar nor Vanguard can traverse without the other covering the timing gap.</p>
+    <p><strong>The Five Steps:</strong></p>
+    <p><em>Step 1 (WA):</em> Scholar translates the synchronization inscription in WA-006 corridor — reveals the two-stone requirement and the 30-second simultaneous-activation window.</p>
+    <p><em>Step 2 (WB):</em> Scholar traverses to find and prime the Duzakh synchronization stone — a daeva-guarded mechanism requiring one Avestan bell stun to access and 12 seconds to prime.</p>
+    <p><em>Step 3 (WA):</em> Scholar returns, reports position to Vanguard A via resonance chime. Vanguard A's response demonstrates her Stage 3 evolution — she has already primed the World A stone and is waiting at the activation point. She does not say this directly. She says: "I have been here for some time." The Scholar realizes she solved it in parallel.</p>
+    <p><em>Step 4 (Simultaneous):</em> Scholar traverses to WB stone activation position. On Scholar's count via resonance chime, both activate simultaneously.</p>
+    <p><em>Step 5 (Result):</em> The gate opens. Grand Armillary Gallery accessible. This is also the moment — in the gate's opening sequence — that Vanguard A's position data flashes onto the Scholar's resonance chime for the first time as a location coordinate rather than a voice. She is tracking her own position relative to the Scholar's. She has been doing this the entire time.</p>
+
+    <div class="pz-solution">
+      <span class="pz-sol-lbl">Full Solution · The Vanguard's Contribution</span>
+      <div class="pz-sol-body">The five-step chain is technically solvable by the Scholar alone — the Vanguard's parallel stone activation is not a required mechanic. Players who do not communicate via resonance chime can prime both stones themselves with two traversal crossings (debt +2), timing the activation by counting. The Vanguard will be at the WA stone when Scholar returns — she has already solved it. She will activate when the Scholar activates, because she calculated the Scholar's return time from traversal debt. This moment is designed to be misread as helpfulness and recognized, retroactively, as preparation. She has just demonstrated that she can coordinate cross-dimensional action independently. The Scholar has just helped her practice.</div>
+    </div>
+  </div>
+</div>
+
+<div class="puzzle">
+  <div class="pz-head">
+    <div class="pz-id">PZ-007</div>
+    <div class="pz-name">The Grand Armillary — Osturlāb-e Bozorg</div>
+    <span class="pz-phase">World A · Act II · Guardian Encounter 3 Finale</span>
+  </div>
+  <div class="pz-body">
+    <p><strong>Purpose:</strong> The Archive Guardian's final defeat; the Scholar's intellectual capability as the final weapon; confirms that every text translated, every deep read endured, every Guardian spawn survived was building to this moment.</p>
+    <p><strong>Setup:</strong> The Grand Armillary has seven concentric bronze rings, each tracking one of the seven sacred stars of Zoroastrian cosmology. The correct activation sequence collapses all traversal focal points simultaneously, denying the Guardian its entry routes and dissolving it. The sequence is the Zoroastrian creation order — Ahura Mazda created the seven sacred elements in a specific sequence recorded in the Bundahishn cosmological texts (found in WB-004, alcove 7, accessible only after oil purification in PZ-004).</p>
+    <p><strong>The Time Pressure:</strong> The Guardian is actively present. The Scholar must activate seven rings in sequence while the Guardian approaches. Each ring activation takes 4 seconds. Total sequence: 28 seconds. The Guardian's approach time from entry: 35 seconds. 7-second window if Scholar is at the Armillary when the Guardian appears. Avestan bell stuns Guardian for 8 seconds — extends window to 15 seconds if used at optimal moment.</p>
+    <p><strong>The Cruelty of Preparation:</strong> A Scholar who translated the Cosmological Inscription in PZ-004 knows the sequence immediately. They activate from memory. The Guardian dissolves. No weapon fired. The Scholar who skipped it is solving a seven-element ordering puzzle under Guardian pressure with no prior knowledge — possible through trial-and-error, but each wrong activation locks that ring for 8 seconds, potentially making the sequence unsolvable before the Guardian reaches Scholar.</p>
+
+    <div class="pz-solution">
+      <span class="pz-sol-lbl">Full Solution</span>
+      <div class="pz-sol-body">Zoroastrian creation order (from Bundahishn): (1) Sky — Asman, (2) Water — Aban, (3) Earth — Zam, (4) Plants — Urvar, (5) Cattle — Gospand, (6) Man — Gayomard, (7) Fire — Atash. Fire is last because it is the most sacred and was placed to protect all that came before. Activate rings in this order: outer ring (Sky) → second ring (Water) → third (Earth) → fourth (Plants) → fifth (Cattle) → sixth (Man) → innermost ring (Fire). On Fire ring activation, all traversal focal points simultaneously collapse. Guardian dissolves. The Archive goes quiet for the first time. The Scholar is standing at the Archive's highest point, at Ahura Mazda's astronomical instrument, having just spoken the creation order of the universe by activating seven bronze rings. No weapon was fired. The Archive's most powerful mechanism responded to the Scholar's scholarship. This is the apex of the Scholar's professional life. It happens four minutes before the False Victory sequence begins.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- =============================================
+     CHAPTER V — CREATURES
+============================================= -->
+<div class="chapter-break">
+  <span class="ch-num">Chapter V</span>
+  <div class="ch-title">Creature Design — Zoroastrian Cosmology Made Physical</div>
+  <span class="ch-farsi">فصل پنجم · موجودات</span>
+</div>
+
+<div class="bd">
+  <p>Every creature in KENOMA derives from Zoroastrian religious tradition — specifically from the Vendidad (Videvdad), the Avestan law code dealing with purification from Druj contamination, and the Bundahishn, the Middle Persian creation cosmology. These texts describe a full taxonomy of Ahriman's counter-creation: xrafstars (harmful creatures), daevas (anti-gods), pairikas (shooting-star spirits), and the various manifestations of the Nasu (corpse demon). The game's creatures are these entities as they actually appear in their source texts — not designed for horror convention, but faithful to Zoroastrian cosmological logic. The horror is that the cosmology is already terrifying.</p>
+
+  <div class="creature b-creature">
+    <div class="c-main">
+      <div class="c-name">Pairika</div>
+      <span class="c-avestan">پریکا</span>
+      <p class="c-body">In the Avestan texts, Pairikas are female supernatural entities associated with shooting stars — sudden light anomalies in darkness. In the Duzakh, they manifest as sources of cold white light that appears at the absolute edge of the Scholar's fire vessel radius, then vanishes. Drawn irresistibly to warmth and fire as the opposite of their nature. Their approach creates the specific horror of seeing light appear in darkness that should have none — the Scholar's first instinct is relief, then immediate correction. They damage by extinguishing the Scholar's fire vessel if they contact it — the Scholar is left in darkness. The greatest threat in the Duzakh is not injury but blindness.</p>
+    </div>
+    <div class="c-stats">
+      <div class="c-stat-row"><div class="c-sk">World</div><div class="c-sv">B (Duzakh) exclusively</div></div>
+      <div class="c-stat-row"><div class="c-sk">HP</div><div class="c-sv">45 sustained fire exposure</div></div>
+      <div class="c-stat-row"><div class="c-sk">Damage</div><div class="c-sv">Contact: extinguishes fire vessel</div></div>
+      <div class="c-stat-row"><div class="c-sk">Weaknesses</div><div class="c-sv">Sustained fire vessel exposure</div></div>
+      <div class="c-stat-row"><div class="c-sk">Immune to</div><div class="c-sv">Crossbow bolts, Avestan bells</div></div>
+      <div class="c-stat-row"><div class="c-sk">Nameable?</div><div class="c-sv">Yes — Vendidad Chapter 19</div></div>
+      <div class="c-stat-row"><div class="c-sk">Visual</div><div class="c-sv">Cold white light source, no defined form visible in fire vessel range</div></div>
+    </div>
+  </div>
+
+  <div class="creature b-creature">
+    <div class="c-main">
+      <div class="c-name">Daeva — The Anti-Gods</div>
+      <span class="c-avestan">دیو</span>
+      <p class="c-body">In Zoroastrian theology, daevas are supernatural beings that chose Druj over Asha at the moment of creation — the dark mirror of the yazatas (divine beings). In the Duzakh, they manifest as inverted versions of the Apadana's processional figures: the same proportions, the same carved-stone faces, but carrying inverted tribute (weapons pointing inward, gifts that consume their bearers). They move with the dignified processional gait of the relief figures above — stately, ceremonial, completely unhurried. They do not run. They do not need to.</p>
+    </div>
+    <div class="c-stats">
+      <div class="c-stat-row"><div class="c-sk">World</div><div class="c-sv">B primarily, late-game WA Otherworld</div></div>
+      <div class="c-stat-row"><div class="c-sk">HP</div><div class="c-sv">60 fire exposure</div></div>
+      <div class="c-stat-row"><div class="c-sk">Damage</div><div class="c-sv">High — single strike injures significantly</div></div>
+      <div class="c-stat-row"><div class="c-sk">Weaknesses</div><div class="c-sv">Fire vessel, Avestan bell stun (6–8s)</div></div>
+      <div class="c-stat-row"><div class="c-sk">Nameable?</div><div class="c-sv">Yes — Bundahishn classification section</div></div>
+      <div class="c-stat-row"><div class="c-sv" style="grid-column:span 2">Three categories nameable separately: Aeshma (wrath-daeva), Aka Manah (evil mind-daeva), Indra (apostasy-daeva)</div></div>
+    </div>
+  </div>
+
+  <div class="creature a-creature">
+    <div class="c-main">
+      <div class="c-name">Corrupted Yazata — The Broken Guardians</div>
+      <span class="c-avestan">یزتا</span>
+      <p class="c-body">Yazatas are Zoroastrian divine beings — not gods, but sacred entities that embody aspects of Ahura Mazda's creation (fire, water, wind, truth, obedience, etc.). The Archive's Yazatas were its divine guardians, assigned to protect specific chambers. Three centuries of Duzakh contamination has corrupted their Asha nature — their forms have developed fissures, dark matter seeping through the cracks in their stone carapace. They are confused between their original purpose (protect the Archive) and their corrupted impulse (consume what they encounter). Fire does not harm them — they are still Asha-nature at their core. They require Naming or the administrative deactivation formula from the Eastern Treasury's memo.</p>
+    </div>
+    <div class="c-stats">
+      <div class="c-stat-row"><div class="c-sk">World</div><div class="c-sv">A exclusively (Asha nature)</div></div>
+      <div class="c-stat-row"><div class="c-sk">Immune to</div><div class="c-sv">Fire vessel (Asha nature immune to Asha weapon)</div></div>
+      <div class="c-stat-row"><div class="c-sk">Vulnerable to</div><div class="c-sv">Crossbow bolts (stone cracks at bolt impact point), Avestan bell stun (8s), Naming</div></div>
+      <div class="c-stat-row"><div class="c-sk">Nameable?</div><div class="c-sv">Yes — Eastern Treasury administrative memo</div></div>
+      <div class="c-stat-row"><div class="c-sv" style="grid-column:span 2">Once deactivated via Naming, resume their original guardian function — standing motionless in their assigned positions. The Scholar can walk past them safely. In the Lion Phase, Vanguard A has already deactivated three of them and is using them as stationary cover.</div></div>
+    </div>
+  </div>
+
+  <div class="creature b-creature">
+    <div class="c-main">
+      <div class="c-name">Druj Nasu — The Archive Guardian</div>
+      <span class="c-avestan">نسو دروج</span>
+      <p class="c-body">The Nasu is the Zoroastrian corpse demon — the spirit that violates the boundary between pure and impure, living and dead, Asha and Druj. The Archive Guardian is the Druj Nasu at its cosmological scale: not a creature in any familiar sense, but a principle of dimensional law made physical. Its form shifts — it is the Archive's geometry itself becoming briefly animate, the walls and columns rearranging into something that pursues. It has no face. It has the architecture. It does not appear angry or malicious. It is enforcing a rule. The Scholar knows what rule. They chose to break it with every traversal crossing. The Guardian is the cost of knowing both worlds, made visible.</p>
+    </div>
+    <div class="c-stats">
+      <div class="c-stat-row"><div class="c-sk">World</div><div class="c-sv">Both — appears at traversal focal points</div></div>
+      <div class="c-stat-row"><div class="c-sk">Immune to</div><div class="c-sv">All conventional weapons</div></div>
+      <div class="c-stat-row"><div class="c-sv" style="grid-column:span 2">Avestan bell: 8s stun only. No permanent damage. Final defeat: Grand Armillary collapse sequence (PZ-007). The Guardian is not killed — it is denied access. The dimensional apertures it uses are closed. It cannot enter a world it has no aperture to step through. The Scholar seals it outside both worlds.</div></div>
+      <div class="c-stat-row"><div class="c-sk">Does not pursue</div><div class="c-sv">Vanguard. Only the Scholar. Only dimensional violators. This asymmetry is visible and significant.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     CHAPTER VI — THE OPENING SCENE
+============================================= -->
+<div class="chapter-break">
+  <span class="ch-num">Chapter VI</span>
+  <div class="ch-title">The Opening Scene — Full Script</div>
+  <span class="ch-farsi">فصل ششم · صحنه آغازین</span>
+</div>
+
+<div class="bd">
+  <div class="note">
+    <span class="note-lbl">Director's Intent</span>
+    The Scholar's voice-over quotes must be performed as genuine intellectual confidence — not dramatic irony, not foreknowledge, not melancholy. The player must believe the Scholar believes this. Fan Li's aphorism appears first, reinterpreted by the Scholar as an inapplicable warning. Nietzsche's rope appears second, quoted as self-definition. Both are, in retrospect, the Scholar's suicide note delivered cheerfully at the front door. The camera stays outside after they enter. The Archive claims both of them at the threshold. The gate closes. The bell decays. Game begins.
+  </div>
+
+  <div class="scene">
+    <span class="sc-dir">[A mountain range in the eastern Achaemenid empire, late Achaemenid period. Night, stars brilliant, the archive's single visible gate carved into the cliff face — enormous, Persepolis-scaled, flanked by lamassu in perfect bilateral symmetry. The Gate of All Nations applied to a private archive. Who built this and what for is the first question the player's eye asks. The stone is clean. Old, but maintained. Someone has kept it intact from the inside.]</span>
+
+    <span class="sc-spk">The Scholar (V.O.)</span>
+    <span class="sc-line">"Fan Li wrote his warning to a friend who had just won a war. He said: the birds are gone now — they will put away your bow. The hare is dead — they will cook the hunting dog. He meant: when you have served your purpose, you will be eliminated. He was not wrong. He had served his purpose. He had advised the King of Yue to patience for twenty years, and the king had won."</span>
+
+    <span class="sc-dir">[Two figures emerge from the dark below the cliff path. The Scholar arrives first — satchel overfull, robe practical rather than fine, the specific posture of someone who carries more knowledge than they can use comfortably. A clay tablet journal is tied to their hip. The Vanguard follows. She wears scale-armor embroidered blue, a Persian tiara, the Acinaces blade at her hip. She walks in silence. She has read the gate inscription already — she passed close enough to it an hour ago, scouting ahead, not mentioning it.]</span>
+
+    <span class="sc-spk">The Scholar (V.O.)</span>
+    <span class="sc-line">"I have always thought Fan Li was wrong about what the lesson means. He was right that his friend, King Gou Jian, would have eliminated him. But the lesson is not: do not serve. The lesson is: do not serve tyrants. The lesson is: choose better kings."</span>
+
+    <span class="sc-dir">[The Scholar reaches the gate. The activation mechanism is a miniature armillary sphere, bronze and jade, set into the gate's left pillar — the same three-script inscription around its rim as the fragment the Scholar spent three years decoding. They place their hand on it. Their hands know this mechanism from the translation. The rings align: Old Persian, Elamite, Babylonian — they move in sequence, almost affectionately. The gate speaks in grinding stone.]</span>
+
+    <span class="sc-dir">[Something is already moving in the near dark of the gate's shadow. A corrupted Yazata creature — stone face, cracked with dark matter — emerges from the right passage. The Vanguard moves first: Acinaces from hip, single anatomical strike, creature deactivated in three seconds. Clean. She steps over it without looking down. A second creature emerges from the left passage, between Scholar and Vanguard. She continues forward. Her calculation: the second creature is behind her optimal line. The Scholar is closer to it. The Scholar has tools.]</span>
+
+    <span class="sc-dir">[The Scholar raises the fire vessel. The creature recoils from the light. The Scholar does not strike it yet — they look up at the cuneiform inscription above the left passage. Their lips move. They are reading it. They are translating it on their feet, in six seconds. They lower their eyes to the creature and speak in Avestan — precisely, formally, each syllable of the designation correct. The creature goes still. Withdraws. The Scholar watches it go.]</span>
+
+    <span class="sc-spk">The Vanguard</span>
+    <span class="sc-line">[Without turning, ahead of Scholar by fifteen feet.] "You read the inscription."</span>
+
+    <span class="sc-spk">The Scholar</span>
+    <span class="sc-line">"The designation was written above the passage. They respond to their own names. The Vendidad says they must — to bind is to name, and to name correctly is to bind absolutely."</span>
+
+    <span class="sc-dir">[A pause. She stops. Turns — just her head — looks back at the Scholar, then at the still creature, then at the Scholar again.]</span>
+
+    <span class="sc-spk">The Vanguard</span>
+    <span class="sc-line">"I know the Vendidad passage." [Beat.] "I had not thought to apply it here."</span>
+
+    <span class="sc-dir">[She turns back and walks into the Archive. Her footsteps are the only sound. The Scholar follows, reaching into the satchel without looking — winding the crossbow's spring mechanism with practiced hands, just in case. Their V.O. resumes:]</span>
+
+    <span class="sc-spk">The Scholar (V.O.)</span>
+    <span class="sc-line">"Man is a rope stretched over an abyss. A dangerous crossing, a dangerous looking-back, a dangerous shuddering and standing still. What is great in man is that he is a bridge — not an end."</span>
+
+    <span class="sc-note">[Nietzsche. Thus Spoke Zarathustra. The Scholar quotes it as Zarathustra, the Persian prophet — not knowing, or not acknowledging, that Nietzsche chose that name because Zoroaster was the first philosopher to teach that life is a struggle between good and evil, that every choice has moral weight. The Scholar is quoting the first philosopher of moral struggle at the door of his civilization's most secret archive. They think they are quoting self-definition. They are quoting their epitaph.]</span>
+
+    <span class="sc-dir">[They disappear inside. The gate grinds shut. The camera holds. Night, stars, sealed gate. A bronze bell resonates from somewhere inside the cliff — a single note struck once. It takes a very long time to decay. The title card: KENOMA. Below it, the archive's foundation inscription in three languages. Below that, in the space where the creators' credits would go: "بایگانی آشا و دروج." The Archive of Asha and Druj. The bell's resonance decays completely. Silence. Then: the sound of the Scholar's fire vessel, small and warm, moving away into the dark.]</span>
+  </div>
+</div>
+
+<!-- =============================================
+     CHAPTER VII — THE ENDING
+============================================= -->
+<div class="chapter-break">
+  <span class="ch-num">Chapter VII</span>
+  <div class="ch-title">The Child Phase — False Victory and True End</div>
+  <span class="ch-farsi">فصل هفتم · پایان</span>
+</div>
+
+<div class="bd">
+  <h3>The False Victory — Exactly This Sequence</h3>
+  <p>The Lion Phase ends in the Throne Hall (WA) or the Inverted Gate (WB), depending on which Vanguard is the final target. The eliminated Vanguard falls. One moment of full silence — the Archive genuinely silent for the first time. Then the music resolves: the Scholar's cello theme, which has been in anxious counterpoint with the Vanguard's bronze bell theme since the Lion Phase began, completes its phrase in major key. The musical resolution is a lie, and it is a perfect lie, because the Scholar has earned resolution. They fought brilliantly. They used every tool they built. They won.</p>
+
+  <p>The achievement fires at T+2.5 seconds: <em>"The Archive Reclaimed."</em> The words are the game's most considered cruelty. The Scholar did not reclaim the Archive. The Archive has never been theirs. The achievement name reflects the Scholar's framing, not the Archive's truth. At T+6 seconds, the save prompt. The save-prompt screen, for the first time in the game, does not show the Scholar's usual satchel interface. It shows the Scholar standing in the room. Alone. In the background, the empty throne. The fire vessels on the walls burn steadily — the Scholar lit them all during the Camel Phase. The room is beautiful. The Scholar did that too.</p>
+
+  <p>At T+9 seconds: the fold. Not the traversal focal point — those are sealed. Something else. A place in the air where the architecture disagrees with itself — a fold in the stone geometry, like a page turning in a book made of limestone. Through it, unhurried, the surviving Vanguard.</p>
+
+  <p>She walks to the fallen Vanguard's body. Kneels. The ritual she performs is specific to her world: if Vanguard A survives, she removes the fallen's spear, examines the gold officer's butt-spike, and sets it carefully against the throne's base — a soldier's burial, the return of rank. If Vanguard B survives, she speaks a short Avestan invocation over the body, three lines, the tone of a text being completed. Either way, the Traversal Skill transfers: the Scholar watches their astrolabe spin briefly in their hands and go still. The UI disappears. The astrolabe goes permanently silent. The Scholar's Traversal Skill is gone from the satchel.</p>
+
+  <p>She stands. Straightens her tunic — not anxiously, not theatrically. The gesture of someone settling their clothes before returning to work. She turns and looks at the Scholar. Not at the Scholar's weapons, not at the Scholar's satchel. At the Scholar's face. This is the first time in the entire game that she has looked at them directly without also looking past them at something more tactically relevant. She has enough. There is nothing more tactically relevant in this room. There is only the Scholar.</p>
+
+  <p>What follows is determined entirely by what the Scholar built.</p>
+
+  <h3>A Note on What "Colorful" Means</h3>
+  <p>The ending spectrum's Absolute Colorful outcome — the Architect of the Apadana (World A), Ahriman's Scholar (World B) — is not redemption. It is not mercy. It is the Vanguard at her most complete, and the Scholar at the moment of understanding what they built. The Scholar's behavioral score is not a measure of virtue. It is a measure of genuine engagement: how deeply they read, how generously they gave, how carefully they observed. The Absolute Colorful Vanguard has a Scholar who was extraordinary at the work. She honors that, in the only way she knows how: by being completely, precisely, unhurriedly herself.</p>
+
+  <div class="dialogue">
+    <span class="dia-spk">Vanguard A — Absolute Colorful · Before Beginning</span>
+    <span class="dia-line">"You translated the Foundation Inscription on your third day here. You named the Yazata in the hypostyle before I had located its designation. You solved the five-step synchronization chain two hours ahead of my estimate." [Pause.] "You were an exceptional scholar." [She draws the Acinaces.] "Past tense is not a judgment. It is a precision."</span>
+  </div>
+
+  <div class="dialogue">
+    <span class="dia-spk">Vanguard B — Absolute Colorful · Before Beginning</span>
+    <span class="dia-line">"In three hundred years, I have read the entire Archive. Every tablet, every inscription, both worlds. I did not understand seventeen of them." [Long pause, in the complete darkness of the Duzakh with the Scholar's fire vessel extinguished.] "You explained eleven of the seventeen, in passing, while solving other problems. You were not trying to explain them. You were thinking aloud." [A sound in the dark — deliberate footsteps, already behind the Scholar.] "I finished the other six while you were fighting in the Lion Phase. I wanted you to know that before the end. The Archive is complete. You completed it." [Very quietly:] "The birds are gone now."</span>
+  </div>
+</div>
+
+<div class="hr-gold"></div>
+<div class="footer">
+  <span>KENOMA · Storytelling Bible v6.0 · Persian Edition</span>
+  <span>For Narrative, Art, Level Design, and Audio Departments</span>
+  <span>Companion to Production GDD v6.0 · Confidential</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — The Calibration Channel · Level Design Document</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:  #090a08;
+  --g1:    #0d0e0b;
+  --g2:    #131410;
+  --g3:    #191a15;
+  --g4:    #1e201a;
+  --g5:    #252720;
+  --rule:  #2c2e24;
+  --rule2: #383a2c;
+
+  --ink:   #e0dccc;
+  --ink2:  #b8b49e;
+  --ink3:  #787460;
+  --ink4:  #484440;
+  --ink5:  #2c2a26;
+
+  --a:    #c88c18;
+  --a2:   #e8aa30;
+  --a3:   #906408;
+  --abg:  rgba(200,140,24,0.09);
+  --abdr: rgba(200,140,24,0.2);
+
+  --b:    #3868b8;
+  --b2:   #5890e0;
+  --b3:   #204878;
+  --bbg:  rgba(56,104,184,0.09);
+  --bbdr: rgba(56,104,184,0.2);
+
+  --s:    #c8a060;
+  --s2:   #e8c080;
+
+  /* Cycle phase colors */
+  --ph-silence: #2a3520;
+  --ph-build:   #3a3010;
+  --ph-warn:    #502810;
+  --ph-disc:    #703010;
+
+  /* Outcome colors */
+  --ok:   #4a8840;
+  --ok2:  #68aa56;
+  --warn: #906820;
+  --warn2:#b09040;
+  --bad:  #883030;
+  --bad2: #b05050;
+
+  /* State colors */
+  --st0:  #486048;  /* Solo */
+  --st1a: #c88c18;  /* VA interference */
+  --st1b: #3868b8;  /* VB interference */
+  --st2:  #8858b8;  /* Combined */
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  font-family:'Barlow',sans-serif;
+  font-size:15px;line-height:1.72;
+  color:var(--ink3);
+}
+.page{max-width:1060px;margin:0 auto;padding-bottom:100px;}
+
+/* ── COVER ──────────────────────────────── */
+.cover{
+  padding:60px 64px 48px;
+  border-bottom:2px solid var(--rule);
+  position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--a),rgba(200,140,24,0.3),var(--b));
+}
+.cover::after{
+  content:'KENOMA';
+  position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  font-family:'Cinzel',serif;font-size:220px;font-weight:900;
+  color:rgba(255,255,255,0.015);letter-spacing:-10px;
+  pointer-events:none;white-space:nowrap;
+}
+.cv-eye{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--ink5);display:block;margin-bottom:28px;
+}
+.cv-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(34px,5vw,58px);font-weight:900;
+  line-height:1.04;letter-spacing:-1px;
+  color:var(--ink);margin-bottom:10px;
+}
+.cv-title em{font-style:italic;color:var(--a2);}
+.cv-sub{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:19px;font-weight:300;font-style:italic;
+  color:var(--ink4);max-width:660px;
+  line-height:1.55;margin-bottom:28px;
+}
+.cv-pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:28px;}
+.pill{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 12px;border:1px solid;
+}
+.pa{border-color:var(--a3);color:var(--a);}
+.pb{border-color:var(--b3);color:var(--b);}
+.ps{border-color:rgba(200,160,96,0.3);color:var(--s);}
+.pn{border-color:var(--rule2);color:var(--ink4);}
+
+/* Source lineage box */
+.lineage{
+  background:var(--g3);border:1px solid var(--rule2);
+  border-left:4px solid var(--ink4);
+  padding:14px 18px;max-width:720px;
+}
+.lin-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--ink4);display:block;margin-bottom:6px;
+}
+.lin-body{font-size:13.5px;color:var(--ink4);line-height:1.65;}
+.lin-body strong{color:var(--ink3);}
+
+/* ── SECTION HEADS ──────────────────────── */
+.sh{
+  padding:22px 64px 16px;
+  background:var(--g1);
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:baseline;gap:14px;
+}
+.sh-n{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--ink5);}
+.sh-t{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--ink);}
+.sh-sub{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink5);font-style:italic;white-space:nowrap;}
+.body{padding:28px 64px 32px;}
+
+/* ── PROSE ──────────────────────────────── */
+p{font-size:14.5px;color:var(--ink3);line-height:1.75;margin-bottom:10px;}
+p:last-child{margin:0;}
+p strong{color:var(--ink2);}
+p em{font-style:italic;color:var(--ink2);}
+h3{
+  font-family:'Cinzel',serif;font-size:15px;font-weight:700;
+  color:var(--ink2);margin:24px 0 11px;
+  padding-bottom:7px;border-bottom:1px solid var(--rule2);
+}
+h3:first-child{margin-top:0;}
+
+/* ── ROOM MAP SVG ───────────────────────── */
+.map-wrap{
+  background:var(--g2);border:1px solid var(--rule2);
+  overflow:hidden;margin:20px 0;
+}
+.map-bar{
+  background:var(--g4);padding:10px 18px;
+  border-bottom:1px solid var(--rule2);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.map-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ink4);}
+.map-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--ink2);}
+
+/* ── CYCLE DIAGRAM ──────────────────────── */
+.cycle-track{
+  display:grid;grid-template-columns:1fr 1fr 90px 50px;
+  gap:2px;margin:18px 0;
+}
+.ct-phase{
+  padding:16px 18px;
+  position:relative;overflow:hidden;
+}
+.ct-silence{background:rgba(42,53,32,0.7);}
+.ct-build  {background:rgba(58,48,16,0.8);}
+.ct-warn   {background:rgba(80,40,16,0.85);}
+.ct-disc   {background:rgba(112,48,16,0.9);}
+.ct-phase-n{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:3px;text-transform:uppercase;
+  display:block;margin-bottom:5px;
+}
+.ct-silence .ct-phase-n{color:rgba(100,140,80,0.6);}
+.ct-build   .ct-phase-n{color:rgba(200,160,60,0.6);}
+.ct-warn    .ct-phase-n{color:rgba(220,120,60,0.65);}
+.ct-disc    .ct-phase-n{color:rgba(240,100,50,0.7);}
+.ct-dur{
+  font-family:'JetBrains Mono',monospace;
+  font-size:18px;font-weight:500;
+  display:block;margin-bottom:6px;
+}
+.ct-silence .ct-dur{color:rgba(80,120,60,0.5);}
+.ct-build   .ct-dur{color:rgba(200,160,50,0.6);}
+.ct-warn    .ct-dur{color:rgba(220,120,50,0.65);}
+.ct-disc    .ct-dur{color:rgba(240,100,40,0.7);}
+.ct-desc{font-size:13px;color:var(--ink4);line-height:1.55;}
+.ct-audio{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--ink5);
+  margin-top:8px;display:block;font-style:italic;
+}
+
+/* ── WORLD SPLIT ────────────────────────── */
+.wsplit{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:16px 0;}
+.wa{padding:20px 22px;background:var(--abg);border-top:2px solid var(--a);}
+.wb{padding:20px 22px;background:var(--bbg);border-top:2px solid var(--b);}
+.w-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.wa .w-lbl{color:var(--a);}
+.wb .w-lbl{color:var(--b);}
+.w-title{font-family:'Cinzel',serif;font-size:15px;font-weight:700;display:block;margin-bottom:10px;}
+.wa .w-title{color:var(--a2);}
+.wb .w-title{color:var(--b2);}
+.w-body{font-size:13.5px;color:var(--ink3);line-height:1.65;}
+.w-body strong{color:var(--ink2);}
+.w-body em{font-style:italic;color:var(--ink2);}
+
+/* ── ENEMY CARD ─────────────────────────── */
+.enemy-card{
+  background:var(--g3);
+  border:1px solid var(--rule2);
+  border-left:4px solid;
+  margin:16px 0;overflow:hidden;
+}
+.ec-a{border-left-color:var(--a);}
+.ec-b{border-left-color:var(--b);}
+.ec-head{background:var(--g4);padding:12px 18px;border-bottom:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;}
+.ec-name{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--ink);}
+.ec-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border:1px solid;}
+.ec-a .ec-badge{border-color:var(--a3);color:var(--a);}
+.ec-b .ec-badge{border-color:var(--b3);color:var(--b);}
+.ec-body{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.ec-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.ec-col:last-child{border-right:none;}
+.ec-col-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--ink4);display:block;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--rule);}
+.ec-col p{font-size:13.5px;color:var(--ink3);line-height:1.62;margin-bottom:8px;}
+.ec-col p:last-child{margin:0;}
+.ec-col p strong{color:var(--ink2);}
+.ec-col p em{font-style:italic;}
+
+/* ── MANIPULATION STEPS ─────────────────── */
+.steps{margin:14px 0;}
+.step{
+  display:grid;grid-template-columns:36px 1fr;
+  gap:0;margin-bottom:2px;
+  background:var(--g3);
+}
+.step:last-child{margin:0;}
+.step-n{
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:14px 0;
+  font-family:'Cinzel',serif;font-size:16px;font-weight:700;
+  color:var(--ink5);border-right:1px solid var(--rule);
+}
+.step-body{padding:12px 16px;}
+.step-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px;}
+.step-desc{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.step-desc strong{color:var(--ink2);}
+.step-time{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  padding:2px 8px;display:inline-block;margin-top:5px;
+  border:1px solid var(--rule2);color:var(--ink4);
+}
+
+/* ── STATE SECTIONS ─────────────────────── */
+.state{
+  background:var(--g2);
+  border:1px solid var(--rule2);
+  border-top:3px solid;
+  margin:20px 0;overflow:hidden;
+}
+.state-0{border-top-color:var(--st0);}
+.state-1a{border-top-color:var(--st1a);}
+.state-1b{border-top-color:var(--st1b);}
+.state-2{border-top-color:var(--st2);}
+
+.state-head{
+  padding:18px 22px;border-bottom:1px solid var(--rule2);
+  display:flex;align-items:center;gap:16px;
+}
+.state-badge{
+  font-family:'Cinzel',serif;font-size:22px;font-weight:700;
+  width:48px;height:48px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:4px;flex-shrink:0;
+}
+.state-0  .state-badge{background:rgba(72,96,72,0.15);color:var(--st0);border:1px solid rgba(72,96,72,0.3);}
+.state-1a .state-badge{background:rgba(200,140,24,0.15);color:var(--a2);border:1px solid var(--abdr);}
+.state-1b .state-badge{background:rgba(56,104,184,0.15);color:var(--b2);border:1px solid var(--bbdr);}
+.state-2  .state-badge{background:rgba(136,88,184,0.15);color:#a870d8;border:1px solid rgba(136,88,184,0.3);}
+
+.state-info{}
+.state-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:4px;}
+.state-0  .state-label{color:var(--st0);}
+.state-1a .state-label{color:var(--a);}
+.state-1b .state-label{color:var(--b);}
+.state-2  .state-label{color:#8858b8;}
+.state-name{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--ink);display:block;}
+.state-sub{font-size:13.5px;font-style:italic;color:var(--ink4);display:block;margin-top:3px;}
+
+.state-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.state-col{padding:18px 20px;border-right:1px solid var(--rule);}
+.state-col:last-child{border-right:none;}
+.sc-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--rule);}
+.what .sc-lbl{color:var(--ink4);}
+.mech .sc-lbl{color:var(--a3);}
+.outcome .sc-lbl{color:var(--st0);}
+.state-1a .mech .sc-lbl{color:var(--a3);}
+.state-1b .mech .sc-lbl{color:var(--b3);}
+.state-2  .mech .sc-lbl{color:#6040a0;}
+.state-1a .outcome .sc-lbl{color:var(--a3);}
+.state-1b .outcome .sc-lbl{color:var(--b3);}
+.state-2  .outcome .sc-lbl{color:#6040a0;}
+.sc-body{font-size:14px;color:var(--ink3);line-height:1.68;}
+.sc-body strong{color:var(--ink2);}
+.sc-body em{font-style:italic;color:var(--ink);}
+
+/* Vanguard dialogue */
+.dia{
+  border-left:3px solid;padding:11px 16px;margin:12px 0;
+  background:rgba(0,0,0,0.15);
+}
+.dia-a{border-left-color:var(--a);}
+.dia-b{border-left-color:var(--b);}
+.dia-s{border-left-color:var(--s);}
+.dia-spk{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.dia-a .dia-spk{color:var(--a);}
+.dia-b .dia-spk{color:var(--b);}
+.dia-s .dia-spk{color:var(--s);}
+.dia-line{font-family:'Libre Baskerville',serif;font-size:15px;font-style:italic;color:var(--ink2);line-height:1.72;}
+.dia-note{font-family:'Barlow',sans-serif;font-size:11px;color:var(--ink4);display:block;margin-top:5px;font-style:normal;}
+
+/* Callout */
+.call{border-left:3px solid;padding:12px 16px;margin:14px 0;font-size:14.5px;line-height:1.7;color:var(--ink3);}
+.ca{border-color:var(--a);background:var(--abg);}
+.cb{border-color:var(--b);background:var(--bbg);}
+.cn{border-color:var(--rule2);background:var(--g3);}
+.csig{border-color:rgba(136,88,184,0.5);background:rgba(136,88,184,0.06);}
+.call strong{color:var(--ink2);}
+.call em{font-style:italic;color:var(--ink);}
+.c-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.ca .c-lbl{color:var(--a);}
+.cb .c-lbl{color:var(--b);}
+.cn .c-lbl{color:var(--ink4);}
+.csig .c-lbl{color:#8858b8;}
+
+/* Consequence table */
+.ctbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+.ctbl th{background:var(--g4);font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:var(--ink4);padding:9px 13px;text-align:left;border-bottom:1px solid var(--rule2);}
+.ctbl td{padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink3);}
+.ctbl td strong{color:var(--ink2);}
+.ctbl tr:hover td{background:var(--g3);}
+.ctbl td:first-child{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;white-space:nowrap;}
+.row-a td:first-child{color:var(--a2);}
+.row-b td:first-child{color:var(--b2);}
+.row-c td:first-child{color:#a870d8;}
+
+/* Decompression beat */
+.decomp{
+  background:var(--void);
+  border:1px solid var(--rule);
+  border-top:2px solid var(--ink4);
+  padding:22px 24px;margin:16px 0;
+}
+.decomp-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--ink5);display:block;margin-bottom:10px;}
+.decomp-time{font-family:'Cinzel',serif;font-size:32px;font-weight:900;color:var(--ink5);display:block;margin-bottom:12px;}
+.decomp-body{font-family:'Libre Baskerville',serif;font-size:14px;font-style:italic;color:var(--ink4);line-height:1.75;}
+.decomp-body em{font-style:normal;color:var(--ink3);}
+
+/* Tag */
+.tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border:1px solid;display:inline-block;}
+.tag-ok{border-color:rgba(74,136,64,0.4);color:var(--ok2);background:rgba(74,136,64,0.07);}
+.tag-warn{border-color:rgba(144,104,32,0.4);color:var(--warn2);background:rgba(144,104,32,0.07);}
+.tag-bad{border-color:rgba(136,48,48,0.4);color:var(--bad2);background:rgba(136,48,48,0.07);}
+.tag-a{border-color:var(--a3);color:var(--a2);background:var(--abg);}
+.tag-b{border-color:var(--b3);color:var(--b2);background:var(--bbg);}
+
+/* Foot */
+.foot{padding:20px 64px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.foot span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink5);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════ COVER ═══════ -->
+<div class="cover">
+  <span class="cv-eye">KENOMA · Level Design Document · LVL-CC-001 · Camel Phase II · Mid-Run</span>
+  <div class="cv-title">The Calibration<br><em>Channel</em></div>
+  <div class="cv-sub">A dual-world environmental-hazard puzzle derived from the Lightning Conductor design DNA of Alone in the Dark: The New Nightmare — rebuilt inside KENOMA's Archive, expressed through both Vanguards' philosophies, and shaped into three solution states by their interference.</div>
+  <div class="cv-pills">
+    <div class="pill pa">Room: WA/B-CC-01 · Calibration Channel</div>
+    <div class="pill pb">Both Worlds Simultaneously</div>
+    <div class="pill ps">Mid Camel Phase · PZ-005 Chain</div>
+    <div class="pill pn">3 Solution States · 2 Vanguard Interference Axes</div>
+  </div>
+  <div class="lineage">
+    <span class="lin-lbl">Design DNA Source · AitD: The New Nightmare (2001) · Aline Cedrac Campaign</span>
+    <div class="lin-body">
+      <strong>Lightning Conductor sequence</strong> — anticipation over reaction · enemy aggression weaponized · soft reset without full failure · traversal phase after kill · the puzzle ends with delivery not destruction. Transplanted into KENOMA's dual-world structure: the lightning is replaced by the Grand Armillary's calibration discharge; the lightning rod is replaced by the Archive's brass-and-jade channel network; the enemy is replaced by two creature variants whose invulnerabilities make environmental weaponization the only viable solution; the traversal phase gains a cross-world delivery requirement. Every modern improvement specified in the design injection has been built in from first principles, not patched in.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ §1 — THE ROOM ═══════ -->
+<div class="sh"><span class="sh-n">§ 01</span><span class="sh-t">The Room — Zone Layout & Physical Description</span><span class="sh-sub">WA/B-CC-01 · Calibration Channel</span></div>
+<div class="body">
+
+  <p>The Calibration Channel is a shared-space corridor — like the Inner Courtyard — that exists simultaneously in both World A and World B. It runs east-west for 42 meters at the Archive's middle level, connecting the Hypostyle Forest hub to the Inscription Vault. The Grand Armillary's calibration energy physically passes through this corridor during its discharge cycle, using channels built into the architecture.</p>
+
+  <div class="map-wrap">
+    <div class="map-bar">
+      <span class="map-lbl">WA/B-CC-01 · Plan View</span>
+      <span class="map-title">Calibration Channel — Both Worlds Overlaid</span>
+    </div>
+    <svg viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#0a0b08;">
+      <defs>
+        <pattern id="gp" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+          <line x1="20" y1="0" x2="20" y2="20" stroke="rgba(200,140,24,0.04)" stroke-width="0.5"/>
+          <line x1="0" y1="20" x2="20" y2="20" stroke="rgba(200,140,24,0.04)" stroke-width="0.5"/>
+        </pattern>
+        <!-- Alcove safe zone marker -->
+        <g id="alcove-a">
+          <rect x="-20" y="-18" width="40" height="36" rx="2" fill="rgba(200,140,24,0.1)" stroke="rgba(200,140,24,0.3)" stroke-width="1"/>
+          <text y="4" font-family="JetBrains Mono,monospace" font-size="7" fill="rgba(200,140,24,0.5)" text-anchor="middle">SAFE</text>
+        </g>
+        <g id="alcove-b">
+          <rect x="-20" y="-18" width="40" height="36" rx="2" fill="rgba(56,104,184,0.1)" stroke="rgba(56,104,184,0.3)" stroke-width="1"/>
+          <text y="4" font-family="JetBrains Mono,monospace" font-size="7" fill="rgba(56,104,184,0.5)" text-anchor="middle">SAFE</text>
+        </g>
+        <!-- Discharge channel marker -->
+        <g id="dmark">
+          <polygon points="0,-8 6,4 -6,4" fill="rgba(200,140,24,0.6)"/>
+        </g>
+      </defs>
+      <rect width="960" height="360" fill="url(#gp)"/>
+      <rect width="960" height="360" fill="rgba(8,9,6,0.55)"/>
+
+      <!-- World split line (horizontal center) -->
+      <line x1="0" y1="180" x2="960" y2="180" stroke="rgba(120,115,90,0.12)" stroke-width="1" stroke-dasharray="6,4"/>
+      <text x="480" y="184" fill="rgba(80,78,60,0.2)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="3">· · WORLD BOUNDARY · ·</text>
+
+      <!-- World labels -->
+      <text x="20" y="100" fill="rgba(200,140,24,0.2)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">WORLD A · SACRED FIRE</text>
+      <text x="20" y="272" fill="rgba(56,104,184,0.2)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">WORLD B · THE HOLLOW</text>
+
+      <!-- ── WORLD A CHANNEL (UPPER HALF) ── -->
+      <!-- Outer walls -->
+      <rect x="60" y="60" width="840" height="110" rx="4" fill="rgba(200,140,24,0.07)" stroke="rgba(200,140,24,0.28)" stroke-width="1.5"/>
+
+      <!-- Brass discharge channel (center spine) -->
+      <rect x="60" y="108" width="840" height="14" rx="2" fill="rgba(200,140,24,0.2)" stroke="rgba(200,140,24,0.55)" stroke-width="1.2"/>
+      <text x="480" y="118" fill="rgba(200,140,24,0.45)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle" letter-spacing="2">BRASS DISCHARGE CHANNEL — 1.5m WIDE — HAZARD ZONE</text>
+
+      <!-- Alcoves World A (safe zones) — north side -->
+      <use href="#alcove-a" transform="translate(210,70)"/>
+      <use href="#alcove-a" transform="translate(480,70)"/>
+      <use href="#alcove-a" transform="translate(750,70)"/>
+      <!-- Alcoves World A (safe zones) — south side (just above channel) -->
+      <use href="#alcove-a" transform="translate(210,158)"/>
+      <use href="#alcove-a" transform="translate(480,158)"/>
+      <use href="#alcove-a" transform="translate(750,158)"/>
+
+      <!-- Alcove labels -->
+      <text x="210" y="85" fill="rgba(200,140,24,0.3)" font-family="JetBrains Mono,monospace" font-size="6.5" text-anchor="middle">ALCOVE 1</text>
+      <text x="480" y="85" fill="rgba(200,140,24,0.3)" font-family="JetBrains Mono,monospace" font-size="6.5" text-anchor="middle">ALCOVE 2</text>
+      <text x="750" y="85" fill="rgba(200,140,24,0.3)" font-family="JetBrains Mono,monospace" font-size="6.5" text-anchor="middle">ALCOVE 3</text>
+
+      <!-- VA control panel (east alcove 3 — her early-trigger mechanism) -->
+      <rect x="800" y="66" width="28" height="22" rx="2" fill="rgba(200,140,24,0.18)" stroke="rgba(200,140,24,0.5)" stroke-width="1.2"/>
+      <text x="814" y="79" fill="rgba(200,140,24,0.6)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">VA</text>
+      <text x="814" y="87" fill="rgba(200,140,24,0.6)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">CTRL</text>
+
+      <!-- Room labels WA -->
+      <text x="72" y="75" fill="rgba(200,140,24,0.4)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="1">WA-HF →</text>
+      <text x="72" y="86" fill="rgba(200,140,24,0.28)" font-family="JetBrains Mono,monospace" font-size="6">Hypostyle</text>
+
+      <text x="870" y="75" fill="rgba(200,140,24,0.4)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="1" text-anchor="end">→ WA-IV-01</text>
+      <text x="870" y="86" fill="rgba(200,140,24,0.28)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="end">Inscription Vault</text>
+
+      <!-- Optimal positioning zone markers -->
+      <rect x="420" y="105" width="120" height="20" rx="0" fill="rgba(200,80,20,0.15)" stroke="rgba(200,80,20,0.4)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="480" y="100" fill="rgba(200,80,20,0.45)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">OPTIMAL ZONE</text>
+
+      <!-- Discharge direction arrow -->
+      <defs><marker id="da" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0,0 6,3 0,6" fill="rgba(200,140,24,0.5)"/></marker></defs>
+      <line x1="130" y1="115" x2="890" y2="115" stroke="rgba(200,140,24,0.2)" stroke-width="1" stroke-dasharray="8,4" marker-end="url(#da)"/>
+      <text x="300" y="111" fill="rgba(200,140,24,0.2)" font-family="JetBrains Mono,monospace" font-size="7">DISCHARGE DIRECTION →</text>
+
+      <!-- ── WORLD B CHANNEL (LOWER HALF) ── -->
+      <rect x="60" y="190" width="840" height="110" rx="4" fill="rgba(56,104,184,0.07)" stroke="rgba(56,104,184,0.25)" stroke-width="1.5"/>
+
+      <!-- Jade discharge channel (runs along ceiling → shown at top of World B space, i.e. near split line) -->
+      <rect x="60" y="238" width="840" height="14" rx="2" fill="rgba(56,104,184,0.2)" stroke="rgba(56,104,184,0.5)" stroke-width="1.2"/>
+      <text x="480" y="248" fill="rgba(56,104,184,0.4)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle" letter-spacing="2">JADE DISCHARGE CHANNEL — HOLLOW HAZARD ZONE</text>
+
+      <!-- Alcoves World B -->
+      <use href="#alcove-b" transform="translate(210,202)"/>
+      <use href="#alcove-b" transform="translate(480,202)"/>
+      <use href="#alcove-b" transform="translate(750,202)"/>
+      <use href="#alcove-b" transform="translate(210,285)"/>
+      <use href="#alcove-b" transform="translate(480,285)"/>
+      <use href="#alcove-b" transform="translate(750,285)"/>
+
+      <!-- VB counter-resonance point (west, she delays from here) -->
+      <rect x="62" y="196" width="28" height="22" rx="2" fill="rgba(56,104,184,0.18)" stroke="rgba(56,104,184,0.5)" stroke-width="1.2"/>
+      <text x="76" y="209" fill="rgba(56,104,184,0.6)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">VB</text>
+      <text x="76" y="217" fill="rgba(56,104,184,0.6)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">RES</text>
+
+      <!-- World B labels -->
+      <text x="72" y="228" fill="rgba(56,104,184,0.4)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="1">WB-HF →</text>
+      <text x="870" y="228" fill="rgba(56,104,184,0.4)" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="1" text-anchor="end">→ WB-IV-01</text>
+
+      <!-- Loop-Walker orbit visualized -->
+      <ellipse cx="350" cy="262" rx="44" ry="20" fill="none" stroke="rgba(56,104,184,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="350" y="258" fill="rgba(56,104,184,0.25)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">LOOP-WALKER</text>
+      <text x="350" y="268" fill="rgba(56,104,184,0.2)" font-family="JetBrains Mono,monospace" font-size="6" text-anchor="middle">orbital pattern</text>
+
+      <!-- Combined state sealed chamber (center, accessible only in State 3) -->
+      <rect x="440" y="160" width="80" height="40" rx="3" fill="rgba(136,88,184,0.1)" stroke="rgba(136,88,184,0.4)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="480" y="175" fill="rgba(136,88,184,0.45)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">WA/B-CC-02</text>
+      <text x="480" y="186" fill="rgba(136,88,184,0.35)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">SEALED · STATE 3</text>
+
+      <!-- Discharge direction World B (opposite direction in Hollow) -->
+      <defs><marker id="db" markerWidth="6" markerHeight="6" refX="0" refY="3" orient="auto"><polygon points="6,0 0,3 6,6" fill="rgba(56,104,184,0.4)"/></marker></defs>
+      <line x1="870" y1="245" x2="120" y2="245" stroke="rgba(56,104,184,0.15)" stroke-width="1" stroke-dasharray="8,4" marker-end="url(#db)"/>
+      <text x="680" y="241" fill="rgba(56,104,184,0.18)" font-family="JetBrains Mono,monospace" font-size="7">← DISCHARGE DIRECTION (INVERTED IN HOLLOW)</text>
+
+      <!-- Scale bar -->
+      <line x1="60" y1="340" x2="200" y2="340" stroke="rgba(80,78,60,0.2)" stroke-width="1"/>
+      <line x1="60" y1="336" x2="60" y2="344" stroke="rgba(80,78,60,0.2)" stroke-width="1"/>
+      <line x1="200" y1="336" x2="200" y2="344" stroke="rgba(80,78,60,0.2)" stroke-width="1"/>
+      <text x="130" y="352" fill="rgba(80,78,60,0.2)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">~7 METERS</text>
+      <text x="480" y="352" fill="rgba(80,78,60,0.15)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Total channel length: 42 meters · 6 alcoves per world-side · 1 sealed center chamber</text>
+    </svg>
+  </div>
+
+  <div class="wsplit">
+    <div class="wa">
+      <span class="w-lbl">World A · The Channel Above</span>
+      <span class="w-title">Brass Channel — Warm Light, Amber Grain</span>
+      <div class="w-body">The channel's floor-spine is cast brass, carved with the same astronomical notation as the Grand Armillary's rings. <strong>At rest, it is cold and dark</strong> — three centuries without maintenance. As the cycle builds, the brass warms from within: first a faint ember at the east wall (where Armillary energy enters), spreading west along the spine. Six shallow alcoves, three per wall, each just wide enough for the Scholar to press into. They are <em>not</em> safe rooms — just pockets outside the discharge spine's 1.5-meter width. The Scholar who has studied the channel knows this. The Scholar who hasn't discovers it under pressure.</div>
+    </div>
+    <div class="wb">
+      <span class="w-lbl">World B · The Channel Below</span>
+      <span class="w-title">Jade Channel — Cold Light, Inverted Flow</span>
+      <div class="w-body">The same channel, inverted. The jade runs along what is functionally the ceiling of the Dark Archive's version of this corridor — but because World B is underground and inverted, it runs at shoulder height. <strong>The discharge travels west-to-east</strong> in World B — the opposite direction from World A — because the Hollow's energy flows inward rather than outward. The Scholar who crosses between worlds and does not account for this directional inversion will position themselves against the wrong wall. This is not a trick. It is the Hollow's philosophy expressed architecturally: what is true above is inverted below.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ §2 — THE CYCLE ═══════ -->
+<div class="sh"><span class="sh-n">§ 02</span><span class="sh-t">The Cycle — "The Armillary's Breath"</span><span class="sh-sub">90-second repeating · 4 phases · Readable through spatial audio before visuals</span></div>
+<div class="body">
+
+  <p>The Grand Armillary calibrates itself by passing a pulse of energy through the building's channel network. It does this on a 90-second cycle that has been running continuously for three centuries — the same 90 seconds, repeated, over and over, without an observer, without a purpose beyond maintenance, without anyone positioned to use it. Until now.</p>
+
+  <div class="cycle-track">
+    <div class="ct-phase ct-silence">
+      <span class="ct-phase-n">Phase 1 · Silence</span>
+      <span class="ct-dur">30s</span>
+      <div class="ct-desc">Channel inert. Brass cold. Scholar can move freely anywhere in the corridor, including the spine. This is the safe window for repositioning after a failed attempt.</div>
+      <span class="ct-audio">🔊 Audio: Distant ticking from the Armillary above — metronomic, architectural. The sound of a building keeping time with no one to read it.</span>
+    </div>
+    <div class="ct-phase ct-build">
+      <span class="ct-phase-n">Phase 2 · Build</span>
+      <span class="ct-dur">35s</span>
+      <div class="ct-desc">Hum begins at the east wall and slowly rises in pitch. Brass channels begin to glow amber from east to west. <strong>This is the primary manipulation window.</strong> The enemy must be entering the channel's spine before this phase ends.</div>
+      <span class="ct-audio">🔊 Audio: A directional brass harmonic — audible before visible. The Scholar can locate the east wall by sound before they can see it light up. Pitch rises approximately one musical fifth over 35 seconds.</span>
+    </div>
+    <div class="ct-phase ct-warn">
+      <span class="ct-phase-n">Phase 3 · Warning</span>
+      <span class="ct-dur">10s</span>
+      <div class="ct-desc">Hum reaches a sustained resonant tone. Full channel glow. The Scholar's astrolabe begins to vibrate in sympathy — an involuntary physical cue that cannot be missed or ignored. <strong>Final evacuation window. No new positioning possible.</strong></div>
+      <span class="ct-audio">🔊 Audio: The harmonic becomes a clear sustained tone — like a struck bell held. The astrolabe's vibration is haptic feedback: the Scholar feels the cycle in their hand. Non-optional sensory warning.</span>
+    </div>
+    <div class="ct-phase ct-disc">
+      <span class="ct-phase-n">Phase 4 · Discharge</span>
+      <span class="ct-dur">2s + 13s afterglow</span>
+      <div class="ct-desc">Blinding pulse travels the full 42-meter spine. Anything in the channel's 1.5-meter spine is struck. Afterglow: 13 seconds of fading amber luminescence. During afterglow, the Scholar may safely traverse the channel — it is beautiful, briefly.</div>
+      <span class="ct-audio">🔊 Audio: A bass CRACK — structural, building-scale — followed by a sustained descending ring. The ring's pitch differs if the discharge struck something (shorter, sharper) versus firing empty (longer, hollow). The Scholar learns to read the difference.</span>
+    </div>
+  </div>
+
+  <div class="call cn">
+    <span class="c-lbl">Design Principle — Audio Before Visual, Always</span>
+    The cycle is readable through sound before it is readable through sight. A Scholar navigating in the dark (World B) or a Scholar who has their back turned (luring the creature) can still track the cycle by ear. The astrolabe vibration in Warning Phase is the failsafe — it requires no attention or orientation. <strong>A Scholar who goes deaf to the channel will not survive the puzzle. A Scholar who goes blind to it will.</strong>
+  </div>
+
+  <h3>The Soft Reset — "The Empty Shot"</h3>
+  <p>If the Scholar fails to position the enemy in the optimal zone before Warning Phase ends, or evacuates to an alcove with the enemy still outside the spine, the discharge fires empty. This is not failure. It is a consequence with a 30-second silence reset.</p>
+
+  <p><strong>Diegetic failure response (not a UI message):</strong> The brass channels pulse with their full discharge, light travels the spine, and exits through the east wall. The channel dims. A longer, hollow descending ring — the Armillary's "empty" tone — fills the corridor. The Architect-Warden, if still in the corridor, pauses for one full second: it felt the familiar energy, recognized it as its own nature, is briefly confused by the non-contact. Then it resumes advancing. The world registers the failure and moves on. The Scholar has 30 seconds to reposition.</p>
+
+  <div class="dia dia-a">
+    <span class="dia-spk">Vanguard A — Witnessing a Failed Discharge</span>
+    <span class="dia-line">"The next cycle is ninety seconds."</span>
+    <span class="dia-note">She does not offer advice. She does not express frustration. She timestamps the failure and returns to watching. This is behaviorally consistent: she is collecting data on the Scholar's decision-making under time pressure. Two failed attempts changes her assessment. Three changes her timeline.</span>
+  </div>
+
+  <div class="dia dia-b">
+    <span class="dia-spk">Vanguard B — Witnessing a Failed Discharge in World B</span>
+    <span class="dia-line">"The creature's orbit widened. It recognized the energy. The next three cycles will require a wider approach radius — approximately four additional steps inward before it will follow the fire vessel into the channel."</span>
+    <span class="dia-note">Not a rebuke. An operational observation. She has watched this creature orbit for 300 years. She knows exactly how it responds to a near-miss. She is providing tactical intelligence. She is also, without announcing it, keeping score.</span>
+  </div>
+</div>
+
+
+<!-- ═══════ §3 — THE ENEMIES ═══════ -->
+<div class="sh"><span class="sh-n">§ 03</span><span class="sh-t">The Creatures — Why Environmental Kill is Mandatory</span><span class="sh-sub">Invulnerabilities that force understanding over force</span></div>
+<div class="body">
+
+  <div class="enemy-card ec-a">
+    <div class="ec-head">
+      <div class="ec-name">The Architect-Warden</div>
+      <span class="ec-badge">World A Only · Sacred Fire Variant</span>
+    </div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <span class="ec-col-lbl">What It Is</span>
+        <p>A Fire-Warden that has been absorbing the calibration channel's discharge for 300 years — positioned, by some patrol accident of ancient protocol, directly beside the brass spine. It has accumulated so much Sacred Fire energy that it now <strong>radiates its own discharge field</strong>, and the designation inscription on its carapace has been completely overwritten by the excess charge: a fire of fire upon fire, until the original marks are gone.</p>
+        <p>Normal Naming doesn't work — there is no legible inscription. The fire vessel doesn't work — it IS Sacred Fire. The crossbow shatters on the energized carapace. <em>Standard options all fail for architectural reasons, not difficulty scaling.</em></p>
+      </div>
+      <div class="ec-col">
+        <span class="ec-col-lbl">Why It Can Be Weaponized</span>
+        <p>The Architect-Warden is drawn to the Scholar's fire vessel — the warmth calls to its Sacred Fire nature. It advances toward the Scholar at walking pace, never faster. This pace is <strong>exploitable</strong>: the Scholar can calibrate their positioning to place the Warden in the optimal zone at the correct phase of the cycle.</p>
+        <p>When the channel discharge hits the Architect-Warden, the two Sacred Fire energies — the building's calibrated discharge and the Warden's accumulated charge — <strong>cancel each other out</strong>. The Warden's energy field collapses. Its carapace cools. And for 45 seconds, its original designation inscription reappears on the cooling stone — legible, precise, nameable.</p>
+        <p><strong>The kill is not a kill. It is a restoration of something that had been buried by excess.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="enemy-card ec-b">
+    <div class="ec-head">
+      <div class="ec-name">The Loop-Walker</div>
+      <span class="ec-badge">World B Only · Hollow Variant</span>
+    </div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <span class="ec-col-lbl">What It Is</span>
+        <p>A Shadow-Walker that has been caught in an orbital loop around a void pit in the corridor's center — trapped circling the same point for three centuries without ever reaching a destination. Normal Shadow-Walkers can be Stilled by Naming because they are walking <em>toward</em> something. <strong>The Loop-Walker is not walking toward anything.</strong> It is orbiting. There is no arrival to interrupt.</p>
+        <p>Fire vessel sustained exposure works on most Hollow creatures — but the Loop-Walker's orbit carries it continuously away from any stationary flame before sufficient exposure accumulates. Naming Bell stuns it for 8 seconds before it resumes the loop. <em>Every standard approach was tried by Vanguard B over three centuries. She stopped trying sixty years ago.</em></p>
+      </div>
+      <div class="ec-col">
+        <span class="ec-col-lbl">Why It Can Be Weaponized</span>
+        <p>The Loop-Walker's orbit is gravitational — it circles the Scholar's fire vessel if the fire vessel enters the orbital radius. Move the fire vessel toward the loop's center, and the orbit contracts inward. Move the fire vessel along the jade channel's spine, and the Loop-Walker follows the contracting orbit <strong>along the channel's path</strong>.</p>
+        <p>When the jade channel's Hollow discharge hits the Loop-Walker's orbital pattern, the Hollow energy concentrated in the discharge is <em>stronger than the energy maintaining the orbit</em>. The loop shatters. For 35 seconds, the Loop-Walker stands still for the first time in 300 years — its designation inscription visible in the cold aftermath.</p>
+        <p><strong>The moment of stillness has an expression. Something in its posture looks like relief.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="call cn">
+    <span class="c-lbl">Aline Cedrac Principle — Applied Precisely</span>
+    In AitD: The New Nightmare, Aline weaponizes the Hybrid Elder's aggression against the lightning conductor: the monster chases her, she positions it in the strike zone, she evacuates, the building kills it. The Scholar's manipulations here work identically in principle — <strong>the Scholar lures, the Archive fires</strong> — but the KENOMA versions add a layer: the discharge doesn't destroy the creature, it restores its original state. Understanding produces a richer outcome than destruction would. The Aline Cedrac intellectual kill tier, taken one step further.
+  </div>
+</div>
+
+
+<!-- ═══════ §4 — THE MANIPULATION ═══════ -->
+<div class="sh"><span class="sh-n">§ 04</span><span class="sh-t">The Manipulation Sequence — Step by Step</span><span class="sh-sub">Taught consequence-free before demanded under pressure</span></div>
+<div class="body">
+
+  <h3>Pre-Teaching Moment — Eastern Treasury (WA-003) · Earlier in Camel Phase</h3>
+  <p>In the Eastern Treasury, the Scholar encounters a small resonance test tube — a miniature calibration instrument built into a study alcove's wall. A maintenance document nearby explains the calibration channel system. While the Scholar reads, a harmless stone shelf-construct (not hostile, more like a maintenance mechanism) drifts into the test tube's small discharge path. The Scholar watches: the hum builds over 8 seconds, the construct drifts through, the tube fires, the construct is briefly buffeted and redirected. No danger. No time pressure. No enemy.</p>
+  <p>The Scholar's journal auto-notes: <em>"The brass channels carry the Armillary's calibration pulse on a repeating cycle. The timing is consistent — the hum predicts the discharge. Objects in the path are redirected, not destroyed. The discharge resets automatically."</em> Three sentences. The entire puzzle mechanic, consequence-free, in a library context where the Scholar is already paying close attention.</p>
+
+  <div class="call ca">
+    <span class="c-lbl">Why This Teaches Rather Than Tutorializes</span>
+    The Scholar observes the mechanic happening to something else in a context where they're already reading. They don't interact with it. They don't solve it. <strong>They witness it and record it</strong> — exactly what a Scholar does. When they reach the Calibration Channel and encounter the Architect-Warden, the physical setup makes the connection immediately: the larger version of the mechanism they documented. Their journal entry is the clue. The documentation habit the game built is the tutorial.
+  </div>
+
+  <h3>World A — Luring the Architect-Warden</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">
+        <span class="step-title">Wait for the Silence Phase · Find Your Start Position</span>
+        <div class="step-desc">The Scholar enters the channel during Silence Phase — the only window to position safely. They identify the Architect-Warden's current position (it patrols the eastern third of the channel, drawn toward the Armillary energy source). The Scholar positions themselves <strong>at the western edge of the optimal zone</strong> — approximately 21 meters from the east wall. Their fire vessel draws the Warden's attention immediately.</div>
+        <span class="step-time">Window: All 30s of Silence Phase</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-body">
+        <span class="step-title">Build Phase Begins · Hold Position as the Warden Advances</span>
+        <div class="step-desc">The brass hum begins from the east wall. The Scholar hears it first — before the Warden does. The Warden continues its advance toward the fire vessel. The Scholar must <strong>hold their position in the channel spine</strong> long enough for the Warden to enter the optimal zone (15-meter deep range centered on the channel's midpoint). This requires standing in the discharge path while the channel warms around them — the most uncomfortable 15-20 seconds of the puzzle.</div>
+        <span class="step-time">Window: First 20s of 35s Build Phase</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-body">
+        <span class="step-title">Warden Enters Optimal Zone · Scholar Evacuates to Alcove</span>
+        <div class="step-desc">The Scholar reads the Warden's position against the glowing channel's depth markers (carved incremental notations on the wall — originally astronomical measurement marks, now serving as position indicators). When the Warden's leading edge crosses the third marker from the east: <strong>Scholar ducks into the nearest alcove</strong>. The Warden, committed to its advance, continues through the channel toward where the Scholar was standing — and into the discharge zone.</div>
+        <span class="step-time">Window: 5s window within Build Phase</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">4</div>
+      <div class="step-body">
+        <span class="step-title">Warning Phase · Last 10 Seconds · Do Not Move</span>
+        <div class="step-desc">Scholar presses into the alcove as the astrolabe vibrates. The Warden continues walking through the optimal zone. If the Scholar positioned correctly, the Warden will be in the zone when the discharge fires. If the Scholar's positioning was 2-3 meters off, the Warden will have walked through the optimal zone and be exiting it. <strong>This is the difference between success and the soft reset.</strong> Read the advance speed. Count the steps.</div>
+        <span class="step-time">Hold: Full 10s Warning Phase</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">5</div>
+      <div class="step-body">
+        <span class="step-title">Discharge · Evacuation · Clock Starts</span>
+        <div class="step-desc">The channel fires. The Architect-Warden, struck by the calibrated discharge, collapses its energy field — the Scholar can see the amber light in its carapace <em>going inward</em> rather than outward. It does not fall. It stops. Stone cools. The original designation inscription appears on the cooling surface — legible, complete, the creature's true name after 300 years of being buried in excess charge. <strong>The Scholar has 45 seconds to Name it and deliver the designation tablet to the Inscription Vault.</strong> Clock starts at the crack of discharge.</div>
+        <span class="step-time">Clock: 45 seconds from discharge crack</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>World B — Spiraling the Loop-Walker</h3>
+  <p>The World B version uses the same phase structure but requires a different luring geometry. The Scholar enters the orbital radius (a ring approximately 4 meters in diameter) and <strong>moves the fire vessel toward the Loop-Walker's orbital center</strong>. The orbit contracts. The Scholar then moves slowly westward along the jade channel's spine — the contracting orbit follows the fire vessel's movement, spiraling inward along the channel's path. The Scholar must pace their movement so the Loop-Walker is in the optimal zone when Warning Phase's astrolabe vibration confirms imminent discharge. Then: evacuate to alcove, discharge fires east-to-west (the Scholar must be in the west-side alcoves this time), the loop shatters, the 35-second window begins.</p>
+
+  <div class="call cb">
+    <span class="c-lbl">The Directional Inversion Trap</span>
+    The discharge travels east-to-west in World B — the opposite of World A. A Scholar who crossed from World A without re-reading the channel's orientation will evacuate to the east-side alcoves out of habit. The discharge fires toward them. This is not a death trap — it is a non-fatal hit that drains significant fire vessel oil and ends the cycle (soft reset required). The world teaches through consequence, not warning text. A Scholar who reads the jade channels' carved directional markers before acting will not make this mistake. A Scholar who acts on World A instinct will make it once.
+  </div>
+</div>
+
+
+<!-- ═══════ §5 — THE TRAVERSAL PHASE ═══════ -->
+<div class="sh"><span class="sh-n">§ 05</span><span class="sh-t">The Traversal Phase — The Puzzle Ends With Delivery</span><span class="sh-sub">Not destruction · delivery · The kill is not the completion</span></div>
+<div class="body">
+
+  <p>The discharge does not complete the puzzle. The discharge creates a 45-second window (Architect-Warden) or 35-second window (Loop-Walker) during which the creature's designation inscription is legible. The Scholar must Name the creature, receive the designation tablet, and deliver it to the Inscription Vault — the formal archival chamber at the channel's east end — before the inscription re-corrupts.</p>
+
+  <div class="wsplit">
+    <div class="wa">
+      <span class="w-lbl">The Cross-World Delivery Requirement</span>
+      <span class="w-title">Sacred Fire energy → archived in the Hollow</span>
+      <div class="w-body">The Architect-Warden's designation tablet must be delivered to the <strong>World B Inscription Vault (WB-IV-01)</strong> — the Hollow's archival space — to be properly contained. Sacred Fire energy discharged and released cannot be stored in a Sacred Fire chamber; it would re-amplify. The Hollow's cold archival space neutralizes it permanently. <strong>The Scholar must cross worlds during the traversal phase.</strong> The crossing takes 2.2 seconds. They have 45 seconds. The path to the Traversal Focal Point and through to WB-IV-01 takes approximately 38 seconds at walking pace. Margin: 5 seconds. There is no running in this Archive.</div>
+    </div>
+    <div class="wb">
+      <span class="w-lbl">The Cross-World Delivery Requirement</span>
+      <span class="w-title">Hollow energy → archived in Sacred Fire</span>
+      <div class="w-body">The Loop-Walker's designation tablet must be delivered to the <strong>World A Inscription Vault (WA-IV-01)</strong>. Hollow energy released from its orbital form cannot be stored in a Hollow space — it would reconstitute a new loop. The Sacred Fire archival chamber locks it. The Scholar must cross from World B to World A during the traversal phase. 35-second window. Path to TFP and through to WA-IV-01: approximately 30 seconds at walking pace. Margin: 3 seconds. <strong>World B's tighter margin is not arbitrary — it reflects the Hollow's philosophy that precision matters more than speed.</strong></div>
+    </div>
+  </div>
+
+  <p>The cross-world delivery is where the puzzle proves its thesis most clearly. The Scholar has just weaponized the Archive's own infrastructure against one of its creatures — using knowledge, not force — and now must carry the result across the boundary that creature could never cross. <em>The Scholar can do this because the Scholar is the only thing in the Archive that belongs to both worlds simultaneously.</em></p>
+
+  <div class="call cn">
+    <span class="c-lbl">Why the Traversal Crosses Worlds</span>
+    In AitD: TNN, the traversal phase delivers the consequence of the lightning kill to a second location — a door unlocks, a path opens, a mechanism activates elsewhere. KENOMA preserves this structure but charges it with the dual-world logic: the traversal phase forces a crossing because Sacred Fire energy belongs in the Hollow and Hollow energy belongs in Sacred Fire. <strong>The archive's two halves can only neutralize each other. The Scholar is the agent of that exchange.</strong> This is the architecture's philosophy expressed mechanically in the final 35–45 seconds of the puzzle.
+  </div>
+</div>
+
+
+<!-- ═══════ §6 — THREE SOLUTION STATES ═══════ -->
+<div class="sh"><span class="sh-n">§ 06</span><span class="sh-t">The Three Solution States</span><span class="sh-sub">Vanguard interference reshapes timing, force, and consequence — never breaks the puzzle</span></div>
+<div class="body">
+
+  <!-- STATE 0 -->
+  <div class="state state-0">
+    <div class="state-head">
+      <div class="state-badge">0</div>
+      <div class="state-info">
+        <span class="state-label">State 0 · Scholar Alone</span>
+        <span class="state-name">The Standard Cycle</span>
+        <span class="state-sub">No Vanguard present. Full 90-second rhythm. Standard windows. Standard delivery margins.</span>
+      </div>
+    </div>
+    <div class="state-body">
+      <div class="state-col what">
+        <span class="sc-lbl">What Happens</span>
+        <div class="sc-body">The full 90-second cycle plays as designed. Scholar reads the audio cue, enters the channel during Silence, positions the creature through Build Phase, evacuates during Warning, delivers during the 45/35-second post-discharge window. No external variables. The puzzle is navigable through reading and patience alone. <strong>This is the intended baseline.</strong> State 1 and State 2 are complications that produce richer outcomes — not easier or harder versions.</div>
+      </div>
+      <div class="state-col mech">
+        <span class="sc-lbl">Cycle Parameters</span>
+        <div class="sc-body">
+          Silence: 30s · Build: 35s · Warning: 10s<br>
+          Discharge: 2s + 13s afterglow<br>
+          Post-discharge window: <strong>45s (WA) / 35s (WB)</strong><br>
+          Traversal margin: ~5s (WA) / ~3s (WB)<br><br>
+          The Scholar's astrolabe is the warning failsafe. The journal's pre-documented observation is the strategic guide. No other support.
+        </div>
+      </div>
+      <div class="state-col outcome">
+        <span class="sc-lbl">Environmental Outcome</span>
+        <div class="sc-body">One creature neutralized and archived per successful attempt. Corresponding Inscription Vault records one formal archival entry. The Calibration Channel clears of one threat. Standard Naming XP toward the Scholar's designation vocabulary. The world does not celebrate. It registers. A creature that was here is no longer here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 1A -->
+  <div class="state state-1a">
+    <div class="state-head">
+      <div class="state-badge">A</div>
+      <div class="state-info">
+        <span class="state-label">State 1A · Vanguard A Interferes</span>
+        <span class="state-name">The Early Trigger</span>
+        <span class="state-sub">"I have managed this building for 300 years. This is my domain. I am helping you." She is. She is also watching to see if you can handle compressed timing.</span>
+      </div>
+    </div>
+    <div class="state-body">
+      <div class="state-col what">
+        <span class="sc-lbl">Her Mechanism</span>
+        <div class="sc-body">Vanguard A has access to a calibration control panel in the east alcove (marked VA-CTRL on the map) — a brass dial set into the channel wall that she has been using to maintain the Armillary's calibration for 300 years. <strong>She can advance the cycle by up to 30 seconds</strong> by manually initiating the Build Phase before the Silence timer expires. She does this when she judges the Scholar's positioning is correct but the Scholar is hesitating — waiting for a confidence they don't need. Her military assessment: Scholar is ready. The delay is waste.</div>
+      </div>
+      <div class="state-col mech">
+        <span class="sc-lbl">What Changes Mechanically</span>
+        <div class="sc-body">
+          Build Phase can begin up to <strong>30 seconds early</strong>, giving the Scholar less Silence time than expected. If the Scholar is mid-positioning when the hum starts, they have a compressed 5–10 second window to commit before Warning.<br><br>
+          <strong>Benefit she didn't announce:</strong> Her early trigger means the discharge fires with energy that built for 35 full seconds <em>plus</em> whatever Silence time she compressed. The discharge is 15–20% more powerful. <strong>The post-discharge inscription window extends to 60 seconds instead of 45.</strong><br><br>
+          She gave the Scholar more time in the delivery phase by compressing the approach phase. This is her entire military intelligence: spend early, save late.
+        </div>
+      </div>
+      <div class="state-col outcome">
+        <span class="sc-lbl">Thematic Expression + Behavioral Score</span>
+        <div class="sc-body">Her interference says: <em>trust the mechanism, trust my knowledge of it, trust that I have calculated you are ready.</em> This is three centuries of Armillary management expressed as a puzzle intervention. Her warmth is genuine. Her calculation is simultaneous. <strong>Behavioral score: +4 VA (she acted on her assessment of the Scholar's capability). If Scholar succeeded despite the compressed timing: +2 additional for confirming her model was accurate. If Scholar failed: she notes the positioning gap, recalibrates, does not offer this help again until it would produce a different result.</strong></div>
+      </div>
+    </div>
+
+    <div style="padding:16px 20px;border-top:1px solid var(--rule);">
+      <div class="dia dia-a">
+        <span class="dia-spk">Vanguard A — As She Activates the Early Trigger</span>
+        <span class="dia-line">"The warden is in position. I'm advancing the cycle."</span>
+        <span class="dia-note">No question. No request for confirmation. She has already decided the Scholar is ready. She tells them what is happening, not what they should do. The difference between a commander issuing an order and a commander issuing a warning: she's doing the first. The Scholar has approximately 8 seconds.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 1B -->
+  <div class="state state-1b">
+    <div class="state-head">
+      <div class="state-badge">B</div>
+      <div class="state-info">
+        <span class="state-label">State 1B · Vanguard B Interferes</span>
+        <span class="state-name">The Extended Window</span>
+        <span class="state-sub">"I have been patient long enough to understand exactly what this creature needs. I am giving you time — because time is what I have."</span>
+      </div>
+    </div>
+    <div class="state-body">
+      <div class="state-col what">
+        <span class="sc-lbl">Her Mechanism</span>
+        <div class="sc-body">From the west end of World B's corridor, Vanguard B applies a <strong>counter-resonance pulse</strong> using the jade channel's opposing harmonic — the same force she uses to navigate the Hollow's acoustic environment. She doesn't suppress the cycle; she <strong>slows the Build Phase's energy accumulation</strong>, effectively extending it by 20 seconds. The discharge will still fire. It will fire weaker than normal. The Scholar gets more time in the approach phase at the cost of a tighter delivery window afterward.</div>
+      </div>
+      <div class="state-col mech">
+        <span class="sc-lbl">What Changes Mechanically</span>
+        <div class="sc-body">
+          Build Phase extends by <strong>up to 20 seconds</strong> — giving the Scholar more time to spiral the Loop-Walker into position.<br><br>
+          <strong>Trade she didn't announce:</strong> The delayed discharge fires with less concentrated force — the Loop-Walker's loop is destabilized but not fully shattered. The post-discharge window is <strong>35 seconds reduced to 25 seconds</strong>. She gave time at the front, took it from the back.<br><br>
+          She also revealed her own capability: the Scholar now knows Vanguard B can influence the Hollow's resonance field in real time. This is information the Scholar did not have before.
+        </div>
+      </div>
+      <div class="state-col outcome">
+        <span class="sc-lbl">Thematic Expression + Behavioral Score</span>
+        <div class="sc-body">Her interference says: <em>create conditions for precision, extend the space, accept reduced force.</em> She has watched the Loop-Walker's orbit for three centuries and never acted — because she was waiting for the right instrument. The Scholar is that instrument. She is <strong>not</strong> being servile. She is deploying the Scholar the way she deploys everything: at the moment of maximum utility. <strong>Behavioral score: +4 VB (she acted on her assessment of the Scholar's need). The Scholar's first direct exposure to her counter-resonance capability. She knows what the Scholar knows now.</strong></div>
+      </div>
+    </div>
+
+    <div style="padding:16px 20px;border-top:1px solid var(--rule);">
+      <div class="dia dia-b">
+        <span class="dia-spk">Vanguard B — As She Applies the Counter-Resonance</span>
+        <span class="dia-line">"I am giving you twenty more seconds. The discharge will be softer. You will have less time after. This is the trade I am making."</span>
+        <span class="dia-note">She announces the trade explicitly — both sides of it, without being asked. This is not transparency as warmth. It is transparency as precision: she wants the Scholar to work with full information. She has not once in 300 years had someone to give full information to. The habit runs deep. The Scholar is the first person who can use it.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 2 — COMBINED -->
+  <div class="state state-2">
+    <div class="state-head">
+      <div class="state-badge">✦</div>
+      <div class="state-info">
+        <span class="state-label">State 2 · Both Vanguards Interfere — World-Bleed</span>
+        <span class="state-name">The Combined Discharge</span>
+        <span class="state-sub">Vanguard A triggers early. Vanguard B slows. The forces compound into something neither anticipated. A harder, richer, one-time third solution that no solo approach can produce.</span>
+      </div>
+    </div>
+    <div class="state-body">
+      <div class="state-col what">
+        <span class="sc-lbl">What Happens Physically</span>
+        <div class="sc-body">Vanguard A advances the cycle. Vanguard B simultaneously applies counter-resonance. The energy builds faster (VA) and is partially suppressed (VB) at the same time — creating an unstable standing wave in the channel's spine. <strong>Both discharge phases fire simultaneously across both worlds: the brass channel and the jade channel discharge at the same moment</strong>, rather than their normal offset. A combined Sacred Fire and Hollow energy pulse — the first time both channels have discharged simultaneously since the Archive was sealed.</div>
+      </div>
+      <div class="state-col mech">
+        <span class="sc-lbl">What Changes Mechanically</span>
+        <div class="sc-body">
+          Both creatures hit simultaneously: the Architect-Warden in World A and the Loop-Walker in World B are neutralized in the same discharge event.<br><br>
+          <strong>Scholar now has two designation tablets simultaneously</strong> — one from each world. Both inscriptions are legible for exactly <strong>40 seconds</strong>.<br><br>
+          <strong>The sealed chamber (WA/B-CC-02) opens</strong> at the channel's center — unsealed by the combined discharge's energy. It will reseal in 40 seconds. This chamber is only accessible in this state.<br><br>
+          <strong>Scholar must choose: deliver both tablets, or enter the sealed chamber.</strong> Physically impossible to do both in 40 seconds. This is the genuine difficulty of State 2.
+        </div>
+      </div>
+      <div class="state-col outcome">
+        <span class="sc-lbl">What Each Choice Produces</span>
+        <div class="sc-body">
+          <strong>Deliver both tablets:</strong> Both creatures permanently archived. Maximum archival credit. The sealed chamber remains sealed — but the Scholar knows it exists now, visible behind its locked door for those 40 seconds. A room they can see and cannot enter.<br><br>
+          <strong>Enter sealed chamber (sacrifice tablet delivery):</strong> Both creatures re-corrupt (tablets expire). But the Scholar accesses the <em>Third Record fragment</em> describing how the founding civilization intended the two energy systems to interact — lore only available in this state. And both Vanguards are briefly visible to each other through the chamber's transparent inner wall.
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:16px 20px;border-top:1px solid var(--rule);">
+      <div class="call csig" style="margin:0;border-radius:0;border-left:0;border-right:0;border-bottom:0;">
+        <span class="c-lbl">The Moment Both Vanguards See Each Other</span>
+        When the sealed chamber opens and the Scholar enters, both Vanguards become visible through the chamber's transparent inner wall — standing in their respective worlds on opposite sides of the same space. Vanguard A can see the jade channel's cold light where the Scholar just came from. Vanguard B can see the brass channel's amber light from Vanguard A's side. <strong>Neither speaks. They look at the other for the first time in 300 years.</strong> The chamber reseals at 40 seconds. They each turn away at the same moment — not dramatically, but with the specific economy of people who have already processed what they were looking at. The Scholar stands between the door and the closed-off view for a moment. Then the puzzle ends.
+      </div>
+    </div>
+  </div>
+
+  <div class="call cn">
+    <span class="c-lbl">Interference Never Breaks the Puzzle</span>
+    VA's early trigger compresses the approach window — the puzzle remains solvable, just tighter. VB's delay extends the approach and reduces the delivery window — still solvable, just different priority. Combined, they create a harder and richer state but not an impossible one. <strong>All three states resolve to either creature neutralization, chamber access, or both.</strong> The Scholar cannot be trapped in an unwinnable configuration. They can only choose which solution and which trade.
+  </div>
+</div>
+
+
+<!-- ═══════ §7 — THEMATIC EXPRESSION ═══════ -->
+<div class="sh"><span class="sh-n">§ 07</span><span class="sh-t">Thematic Expression — What This Puzzle Means</span><span class="sh-sub">The deepest truth of each Vanguard, made mechanical</span></div>
+<div class="body">
+
+  <h3>Vanguard A's Truth — Trust the System, Compress the Waste</h3>
+  <p>Vanguard A's interference is the action of someone who has been maintaining a system for so long that she and the system are functionally the same thing. She does not explain her early trigger to the Scholar before she uses it — she announces it at the moment of execution, like a commander issuing a fire order. This is not disrespect. It is her deepest assumption about how knowledge works: she has processed the Scholar's positioning, run the calculation, and arrived at a decision. Explaining the reasoning would cost the seconds she just saved.</p>
+  <p><strong>Her deepest truth in this puzzle: she knows the building better than the Scholar. She has been waiting three centuries for someone she could spend that knowledge on.</strong> The early trigger is the first time she expends her Armillary knowledge for the Scholar's benefit rather than the Archive's maintenance. It is also, in retrospect, a demonstration: she can operate the Armillary. She has been able to since decade one. She did not need the Scholar to show her how. She was waiting for the Scholar to be in a position where her capability was useful to them.</p>
+
+  <h3>Vanguard B's Truth — Create Space, Accept Reduced Force</h3>
+  <p>Vanguard B's interference is the action of someone who has spent three centuries learning to be patient and has transformed patience into a precision instrument. She watched the Loop-Walker's orbit for 300 years without acting — not because she lacked the will, but because she lacked the right instrument for the job. The Scholar is that instrument. Her counter-resonance delay says: <em>I am deploying you correctly by giving you the conditions for correct action.</em></p>
+  <p><strong>Her deepest truth: she announces both sides of the trade before making it.</strong> She tells the Scholar exactly what she is giving and what she is taking. She has not had anyone to give full information to for three centuries. The precision of her announcement — "I am giving you twenty more seconds. The discharge will be softer. You will have less time after." — is not a tactical briefing. It is the voice of someone for whom honesty and strategy are the same thing. She cannot be fully honest without being strategic, and she cannot be strategic without being honest. The Scholar who hears this and does not understand what it means will understand it in Act II.</p>
+
+  <h3>The Combined State's Truth — What Neither Could Do Alone</h3>
+  <p>State 2's combined discharge is not the "optimal" solution. It is the most demanding solution that produces the most ambiguous reward: the Scholar must choose between completing the puzzle's stated objective (archive both creatures) or accessing knowledge that reframes the puzzle's context (the Third Record fragment, the moment of mutual recognition). Neither choice is wrong. Both are losses of a kind.</p>
+  <p><strong>This is the puzzle's thesis expressed in mechanics: the two Vanguards working together for 40 seconds produces a richer world than either produces alone — and the Scholar, standing at the center of what they briefly created, must decide which half of it to preserve.</strong> Fan Li's aphorism arrives early and quietly in this moment. The Scholar has just been both Keepers simultaneously. The Archive's founding appointment was for exactly this. And there is not enough time to honor both sides of it.</p>
+</div>
+
+
+<!-- ═══════ §8 — DECOMPRESSION BEAT ═══════ -->
+<div class="sh"><span class="sh-n">§ 08</span><span class="sh-t">The Decompression Beat</span><span class="sh-sub">10 seconds · No cutscene · The world registers before the next sequence begins</span></div>
+<div class="body">
+
+  <div class="wsplit">
+    <div class="wa">
+      <span class="w-lbl">World A Decompression — After Successful Archival</span>
+      <div class="decomp">
+        <span class="decomp-lbl">Duration · ≈10 Seconds · Untriggered · Cannot Be Skipped</span>
+        <span class="decomp-time">:10</span>
+        <div class="decomp-body">
+          The brass channels dim to their standard inert cold. Then — one by one over 8 seconds — the carved stone reliefs on the channel's walls become visible in the amber afterglow as it fades: <em>Achaemenid astronomers, depicted in their original administrative function, using the calibration channel system to manage the building's Archive creatures</em>. The scholars who built this place had done exactly what the Scholar just did. This was always a weapon in the architecture. <em>The Scholar did not discover it. They rediscovered it.</em> 10 seconds. Then: silence. The channel is dark. The Calibration Channel is safe to traverse freely.
+        </div>
+      </div>
+    </div>
+    <div class="wb">
+      <span class="w-lbl">World B Decompression — After Successful Archival</span>
+      <div class="decomp">
+        <span class="decomp-lbl">Duration · ≈10 Seconds · Untriggered · Cannot Be Skipped</span>
+        <span class="decomp-time">:10</span>
+        <div class="decomp-body">
+          The jade channels go dark — truly dark, darker than the rest of the Dark Archive. The Loop-Walker's 300-year orbital path is visible as a <em>faint cold trace worn into the stone floor</em> — where it circled, over centuries, the stone is slightly different from the areas it never reached. The Scholar stands at the edge of the trace. It is almost beautiful. Then the cold trace fades as the residual jade energy dissipates. Something that walked for 300 years without stopping has stopped. The floor is just floor now. <em>10 seconds. Then silence.</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="decomp" style="margin-top:2px;background:rgba(136,88,184,0.06);border-color:rgba(136,88,184,0.25);border-top-color:#8858b8;">
+    <span class="decomp-lbl">State 2 Combined Decompression — After Both Vanguards See Each Other · ≈12 Seconds</span>
+    <span class="decomp-time" style="color:rgba(136,88,184,0.4);">:12</span>
+    <div class="decomp-body">
+      Both decompression effects happen simultaneously: the amber afterglow revealing the carved astronomers in World A, and the cold orbital trace fading in World B. <em>The Scholar stands in the sealed chamber as both effects play through its transparent walls on either side of them.</em> Through one wall: warm amber stone reliefs of scholars using the system. Through the other wall: a cold orbital trace dissolving into unmarked floor. The Scholar is between the two versions of what this place was, briefly, both at once. Then the chamber reseals. Both Vanguards have already turned away. The Scholar's astrolabe goes quiet for the first time since the puzzle began — there is no longer anything in the channel to warn against. <em>Twelve seconds.</em>
+    </div>
+  </div>
+
+  <div class="call cn">
+    <span class="c-lbl">Why Decompression Is Non-Skippable</span>
+    The Archive registers what happens to it. A creature that was here for 300 years is not here anymore. The floor shows the trace. The reliefs show the precedent. The Scholar who moves immediately to the next puzzle has missed the information the architecture is providing. These 10–12 seconds are not loading time disguised as atmosphere. They are the puzzle's final data layer — what the Archive looks like after the Scholar has acted correctly inside it. <strong>The AitD:TNN design injection specified this explicitly: the puzzle ends with delivery, not with the kill. The decompression is part of the delivery.</strong>
+  </div>
+</div>
+
+
+<!-- ═══════ §9 — CONSEQUENCE TABLE ═══════ -->
+<div class="sh"><span class="sh-n">§ 09</span><span class="sh-t">Consequence Summary — All States × All Vanguard Responses</span></div>
+<div class="body">
+  <table class="ctbl">
+    <tr><th style="width:140px">State</th><th>Cycle Parameters</th><th>Post-Discharge Window</th><th>Environmental Outcome</th><th>Behavioral Score Impact</th></tr>
+    <tr class="row-a"><td>0 · Solo</td><td>Standard 90s · 30/35/10</td><td>45s (WA) · 35s (WB)</td><td>One creature archived. Channel clears. Decompression plays. Standard lore access.</td><td>No score change. Baseline performance. Neither Vanguard comments.</td></tr>
+    <tr class="row-a"><td>1A · VA Early</td><td>Build begins up to 30s early. Warning compressed.</td><td><strong>60s (WA) · 35s (WB)</strong></td><td>More powerful discharge. Extended World A delivery window. Scholar must handle compressed approach.</td><td><strong>+4 VA</strong> (she acted on capability assessment). +2 bonus if Scholar succeeded. 0 bonus if failed and reset — she updates the model downward.</td></tr>
+    <tr class="row-b"><td>1B · VB Delay</td><td>Build extends 20s. Warning at standard.</td><td><strong>45s (WA) · 25s (WB)</strong></td><td>Softer discharge. Extended World B approach window. Tighter World B delivery window. Scholar learns VB's counter-resonance exists.</td><td><strong>+4 VB</strong> (she deployed the Scholar correctly). New capability revealed. Scholar now knows VB can manipulate the Hollow's acoustic resonance.</td></tr>
+    <tr class="row-c"><td>2 · Combined</td><td>VA trigger + VB suppression = unstable standing wave. Both channels discharge simultaneously.</td><td><strong>40s for both simultaneously</strong></td><td>Both creatures available. WA/B-CC-02 unsealed for 40s. Third Record fragment accessible. Both Vanguards briefly visible to each other. Scholar chooses: archive or access.</td><td><strong>+4 VA · +4 VB</strong> regardless of Scholar's chamber/archive choice. The cooperation itself is the scored act — not the Scholar's downstream decision. State 2 produces the session's highest combined behavioral score gain.</td></tr>
+  </table>
+</div>
+
+
+<!-- ═══════ §10 — DESIGN DOCTRINE AUDIT ═══════ -->
+<div class="sh"><span class="sh-n">§ 10</span><span class="sh-t">Design Injection Compliance Audit</span><span class="sh-sub">Every specified requirement checked against the implemented design</span></div>
+<div class="body">
+
+  <table class="ctbl">
+    <tr><th>Requirement</th><th>Implementation</th><th style="width:80px">Status</th></tr>
+    <tr><td><strong>Recurring, readable cycle tied to anticipation not reaction</strong></td><td>90-second Armillary Breath cycle with spatial audio that leads visuals by 2–3 seconds. Scholar can track the cycle by ear alone. The astrolabe vibration in Warning Phase is a physical, non-optional warning that requires no visual attention.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Enemy manipulated via its own behavior — aggression weaponized</strong></td><td>Architect-Warden advances toward fire vessel (drawn by Sacred Fire nature) — advance pace is the lure mechanic. Loop-Walker orbit contracts toward the fire vessel — orbital gravity is the spiral mechanic. Both creatures are weaponized by their own defining properties, not by external traps.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Soft reset without full failure</strong></td><td>The Empty Shot: discharge fires empty, creature resets to default behavior, Scholar waits 30-second Silence Phase. Diegetic failure response: world registers it, not UI. Scholar can attempt indefinitely. No degradation of resources from failure alone.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Traversal phase after hazard fires — puzzle ends with delivery</strong></td><td>Cross-world delivery requirement: Architect-Warden tablet to WB-IV-01 (45s window), Loop-Walker tablet to WA-IV-01 (35s window). Puzzle is not complete at the moment of discharge — it is complete at the moment of archival.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Mechanic expresses thematic truth of each Vanguard</strong></td><td>VA's early trigger = trust the mechanism, trust my calculation, compress the waste. VB's delay = create conditions for precision, announce the trade completely, accept reduced force. Both are philosophically distinct expressions of the same military intelligence applied through opposite cosmologies.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Different Vanguard entry points with distinct interference axes</strong></td><td>VA operates from east alcove calibration control panel (advance cycle). VB operates from west counter-resonance point (slow cycle). Different physical locations, different mechanical effects, same puzzle.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Compound interference creates harder, richer third state</strong></td><td>State 2: both channels discharge simultaneously, both creatures available, sealed chamber opens, 40-second combined window, Scholar forced to choose archive vs. access. Third Record fragment and Vanguard mutual recognition only available here.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Interference never fully breaks the puzzle</strong></td><td>VA early trigger: Scholar can still succeed with compressed timing. VB delay: Scholar can still succeed with tighter delivery window. Combined: Scholar can still archive one creature and access the chamber, or archive both at the cost of the chamber. No unwinnable state exists.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Cycle readable through spatial audio before visuals</strong></td><td>The brass harmonic is directional and audible 2–3 seconds before the channel glow is visible. Scholar can orient to the sound. Astrolabe vibration is non-visual failsafe. World B's inverted flow is signaled by the jade harmonic's inverted direction (Scholar hears it coming from the west instead of the east — if they are paying attention).</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Triggering condition taught once, consequence-free, before pressure</strong></td><td>Eastern Treasury resonance test tube encounter: Scholar observes the harmless calibration of a shelf-construct, auto-documents the hum-cycle-discharge-reset pattern in their journal. Zero danger, zero time pressure, full mechanical teaching.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Failure is diegetic — world responds narratively</strong></td><td>The Empty Shot: the discharge fires empty, the channel produces its hollow descending tone, the Architect-Warden pauses (recognizes its own nature in the energy), Vanguard A timestamps the failure. Each failure has a specific observable world response. No penalty UI, no "try again" prompt.</td><td><span class="tag tag-ok">✓</span></td></tr>
+    <tr><td><strong>Decompression beat after resolution</strong></td><td>10-12 seconds per state. World A: carved reliefs reveal precedent. World B: orbital trace fades from floor. Combined: both effects simultaneously through transparent chamber walls. Non-skippable, non-cutscene.</td><td><span class="tag tag-ok">✓</span></td></tr>
+  </table>
+</div>
+
+
+<div class="foot">
+  <span>KENOMA · LVL-CC-001 · The Calibration Channel</span>
+  <span>AitD:TNN Lightning Conductor DNA · Dual-World Extension</span>
+  <span>For Storytelling Bible v8 · GDD Production v6</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — Game Loop & Core Systems · Production Document</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════
+   DESIGN INTENT
+   This is a production document.
+   Clean. Scannable. Reference-grade.
+   Team opens this in a meeting —
+   everything is findable in 10 seconds.
+   Dark technical aesthetic: IDE meets
+   architectural blueprint.
+   Color is data, not decoration.
+════════════════════════════════════════ */
+:root{
+  --bg:      #0d0e0f;
+  --bg1:     #111213;
+  --bg2:     #161718;
+  --bg3:     #1b1c1e;
+  --bg4:     #202124;
+  --bg5:     #262729;
+  --hr:      #2a2b2e;
+  --hr2:     #333438;
+
+  --txt:     #d4d0c8;
+  --txt2:    #9c9890;
+  --txt3:    #5c5a56;
+  --txt4:    #3a3836;
+
+  /* System colors — each system has one */
+  --bms:     #4a8c6a;   /* Behavioral Model — green, living */
+  --bms2:    #6ab88e;
+  --rss:     #c89428;   /* Recognition Stage — amber */
+  --rss2:    #e8b440;
+  --tds:     #5878b8;   /* Translation Depth — blue */
+  --tds2:    #7898d8;
+  --tvs:     #8858a8;   /* Traversal — violet */
+  --tvs2:    #a878c8;
+  --res:     #b06828;   /* Resource Economy — orange */
+  --res2:    #d08840;
+  --uss:     #a84848;   /* Utility Score — red, danger */
+  --uss2:    #c86868;
+  --tcs:     #487888;   /* Terrain Control — teal */
+  --tcs2:    #68a8b8;
+  --srs:     #6878a8;   /* Scenario Resolution — steel */
+  --srs2:    #8898c8;
+
+  /* Phase colors */
+  --cam:     #c89428;
+  --lio:     #b86830;
+  --chi:     #7888a0;
+
+  /* Status */
+  --ok:      #3a7840;
+  --ok2:     #58a058;
+  --warn:    #906820;
+  --warn2:   #b89040;
+  --risk:    #884030;
+  --risk2:   #b05848;
+  --block:   #6848a0;
+  --block2:  #8868c0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:14px;scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--txt2);
+  font-family:'IBM Plex Sans',sans-serif;
+  line-height:1.65;
+}
+
+/* ── PAGE LAYOUT ─────────────────── */
+.page{max-width:1140px;margin:0 auto;padding-bottom:100px;}
+
+/* ── COVER ───────────────────────── */
+.cover{
+  padding:48px 64px 40px;
+  background:var(--bg1);
+  border-bottom:1px solid var(--hr);
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:40px;
+  align-items:start;
+}
+.cv-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--txt4);display:block;margin-bottom:16px;
+}
+.cv-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(28px,4vw,52px);
+  font-weight:700;color:var(--txt);
+  line-height:1.08;letter-spacing:-.5px;
+  margin-bottom:10px;
+}
+.cv-sub{
+  font-family:'IBM Plex Serif',serif;
+  font-size:16px;font-weight:300;font-style:italic;
+  color:var(--txt3);line-height:1.6;
+  max-width:560px;
+}
+.cv-meta{
+  border:1px solid var(--hr2);
+  padding:18px 20px;
+}
+.cv-meta-row{
+  display:flex;justify-content:space-between;
+  padding:6px 0;border-bottom:1px solid var(--hr);
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+}
+.cv-meta-row:last-child{border:none;}
+.cv-meta-key{color:var(--txt4);text-transform:uppercase;letter-spacing:1px;}
+.cv-meta-val{color:var(--txt2);}
+.cv-systems{
+  display:flex;flex-wrap:wrap;gap:4px;margin-top:20px;
+}
+.sys-pill{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:3px 9px;border:1px solid;border-radius:2px;
+}
+
+/* ── NAVIGATION STRIP ────────────── */
+.nav-strip{
+  background:var(--bg1);
+  border-bottom:1px solid var(--hr);
+  padding:0 64px;
+  display:flex;
+  position:sticky;top:0;z-index:50;
+  overflow-x:auto;
+}
+.nav-item{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--txt4);
+  padding:12px 16px;
+  text-decoration:none;
+  white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color .12s,border-color .12s;
+}
+.nav-item:hover{color:var(--txt2);border-bottom-color:var(--hr2);}
+.nav-item.cam{border-bottom-color:var(--cam);}
+.nav-item.lio{border-bottom-color:var(--lio);}
+.nav-item.chi{border-bottom-color:var(--chi);}
+
+/* ── SECTION HEADS ───────────────── */
+.sec-head{
+  padding:28px 64px 18px;
+  background:var(--bg1);
+  border-top:1px solid var(--hr);
+  border-bottom:1px solid var(--hr);
+  display:flex;align-items:baseline;gap:14px;
+}
+.sec-n{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--txt4);
+  flex-shrink:0;
+}
+.sec-t{
+  font-family:'Cinzel',serif;
+  font-size:17px;font-weight:700;color:var(--txt);
+}
+.sec-aside{
+  margin-left:auto;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;color:var(--txt4);
+  white-space:nowrap;
+}
+.body{padding:24px 64px 28px;}
+
+/* ── PHASE BANNERS ───────────────── */
+.phase-banner{
+  padding:32px 64px 22px;
+  border-top:3px solid;
+  position:relative;overflow:hidden;
+}
+.pb-cam{border-top-color:var(--cam);background:rgba(200,148,40,0.04);}
+.pb-lio{border-top-color:var(--lio);background:rgba(184,104,48,0.04);}
+.pb-chi{border-top-color:var(--chi);background:rgba(120,136,160,0.04);}
+.pb-eye{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  display:block;margin-bottom:7px;
+}
+.pb-cam .pb-eye{color:rgba(200,148,40,0.5);}
+.pb-lio .pb-eye{color:rgba(184,104,48,0.5);}
+.pb-chi .pb-eye{color:rgba(120,136,160,0.5);}
+.pb-title{
+  font-family:'Cinzel',serif;font-size:clamp(20px,3vw,36px);
+  font-weight:700;color:var(--txt);line-height:1.1;margin-bottom:6px;
+}
+.pb-sub{font-size:14px;color:var(--txt3);font-style:italic;line-height:1.55;max-width:700px;}
+
+/* ── PROSE ───────────────────────── */
+p{font-size:14px;color:var(--txt2);line-height:1.7;margin-bottom:10px;}
+p:last-child{margin:0;}
+p strong{color:var(--txt);}
+p em{font-style:italic;}
+h3{
+  font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;
+  color:var(--txt2);margin:22px 0 10px;
+  padding-bottom:5px;border-bottom:1px solid var(--hr);
+  letter-spacing:.3px;
+}
+h3:first-child{margin-top:0;}
+
+/* ── CALLOUT ─────────────────────── */
+.call{
+  border-left:3px solid;padding:11px 16px;margin:12px 0;
+  font-size:13.5px;line-height:1.68;color:var(--txt3);
+}
+.call strong{color:var(--txt2);}
+.c-cam{border-color:var(--cam);background:rgba(200,148,40,0.05);}
+.c-lio{border-color:var(--lio);background:rgba(184,104,48,0.05);}
+.c-chi{border-color:var(--chi);background:rgba(120,136,160,0.05);}
+.c-n{border-color:var(--hr2);background:var(--bg2);}
+.c-warn{border-color:var(--warn);background:rgba(144,104,32,0.06);}
+.c-risk{border-color:var(--risk);background:rgba(136,64,48,0.06);}
+.call-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:4px;
+}
+.c-cam .call-lbl{color:var(--cam);}
+.c-lio .call-lbl{color:var(--lio);}
+.c-chi .call-lbl{color:var(--chi);}
+.c-n .call-lbl{color:var(--txt4);}
+.c-warn .call-lbl{color:var(--warn2);}
+.c-risk .call-lbl{color:var(--risk2);}
+
+/* ── SYSTEM SPEC BLOCK ───────────── */
+.sys-spec{
+  background:var(--bg2);
+  border:1px solid var(--hr);
+  border-left:4px solid;
+  margin:14px 0;overflow:hidden;
+}
+.ss-bms{border-left-color:var(--bms);}
+.ss-rss{border-left-color:var(--rss);}
+.ss-tds{border-left-color:var(--tds);}
+.ss-tvs{border-left-color:var(--tvs);}
+.ss-res{border-left-color:var(--res);}
+.ss-uss{border-left-color:var(--uss);}
+.ss-tcs{border-left-color:var(--tcs);}
+.ss-srs{border-left-color:var(--srs);}
+.ss-head{
+  background:var(--bg3);padding:10px 18px;
+  border-bottom:1px solid var(--hr);
+  display:flex;align-items:center;gap:14px;
+}
+.ss-id{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;
+  flex-shrink:0;
+}
+.ss-bms .ss-id{color:var(--bms2);}
+.ss-rss .ss-id{color:var(--rss2);}
+.ss-tds .ss-id{color:var(--tds2);}
+.ss-tvs .ss-id{color:var(--tvs2);}
+.ss-res .ss-id{color:var(--res2);}
+.ss-uss .ss-id{color:var(--uss2);}
+.ss-tcs .ss-id{color:var(--tcs2);}
+.ss-srs .ss-id{color:var(--srs2);}
+.ss-name{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--txt);}
+.ss-phase{margin-left:auto;display:flex;gap:4px;}
+.ss-phase-pill{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:2px 7px;border:1px solid;border-radius:2px;
+}
+.sp-cam{border-color:rgba(200,148,40,0.3);color:rgba(200,148,40,0.6);}
+.sp-lio{border-color:rgba(184,104,48,0.3);color:rgba(184,104,48,0.6);}
+.sp-chi{border-color:rgba(120,136,160,0.3);color:rgba(120,136,160,0.6);}
+.ss-grid{display:grid;grid-template-columns:200px 1fr 1fr;border-bottom:1px solid var(--hr);}
+.ss-grid:last-child{border-bottom:none;}
+.ss-col{padding:13px 16px;border-right:1px solid var(--hr);}
+.ss-col:last-child{border-right:none;}
+.ss-col-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:2px;text-transform:uppercase;
+  display:block;margin-bottom:7px;padding-bottom:4px;
+  border-bottom:1px solid var(--hr);color:var(--txt4);
+}
+.field-list{list-style:none;}
+.field-list li{
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+  color:var(--txt3);padding:3px 0;
+  display:flex;gap:8px;align-items:baseline;
+}
+.field-type{color:var(--txt4);font-size:10px;}
+.field-name{color:var(--txt2);}
+.field-note{font-size:10px;color:var(--txt4);font-style:italic;}
+.ss-col p{font-size:13px;color:var(--txt3);line-height:1.62;margin-bottom:6px;}
+.ss-col p:last-child{margin:0;}
+.ss-col p strong{color:var(--txt2);}
+
+/* ── LOOP DIAGRAM CONTAINER ──────── */
+.loop-wrap{
+  background:var(--bg2);border:1px solid var(--hr);
+  overflow:hidden;margin:14px 0;
+}
+.loop-bar{
+  background:var(--bg3);padding:8px 16px;
+  border-bottom:1px solid var(--hr);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.lb-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt4);}
+.lb-title{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;color:var(--txt2);}
+
+/* ── BEAT CHART ──────────────────── */
+.beat-chart{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px;}
+.beat-chart th{
+  background:var(--bg3);
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--txt4);
+  padding:8px 12px;text-align:left;border-bottom:1px solid var(--hr);
+}
+.beat-chart td{
+  padding:8px 12px;border-bottom:1px solid var(--bg3);
+  vertical-align:top;color:var(--txt3);
+}
+.beat-chart td:first-child{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  color:var(--txt4);white-space:nowrap;
+}
+.beat-chart tr:hover td{background:var(--bg3);}
+.beat-chart td strong{color:var(--txt2);}
+.beat-chart td em{font-style:italic;}
+.beat-cam td:first-child{color:var(--rss);}
+.beat-lio td:first-child{color:var(--lio);}
+.beat-chi td:first-child{color:var(--chi);}
+
+/* ── DEPENDENCY MAP ──────────────── */
+.dep-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:12px 0;}
+.dep-card{
+  background:var(--bg2);padding:14px 14px;
+  border-top:2px solid;
+}
+.dep-card.tier0{border-top-color:#4a6840;}
+.dep-card.tier1{border-top-color:#486870;}
+.dep-card.tier2{border-top-color:#484870;}
+.dep-card.tier3{border-top-color:#684848;}
+.dep-tier{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--txt4);display:block;margin-bottom:4px;}
+.tier0 .dep-tier{color:rgba(74,104,64,0.7);}
+.tier1 .dep-tier{color:rgba(72,104,112,0.7);}
+.tier2 .dep-tier{color:rgba(72,72,112,0.7);}
+.tier3 .dep-tier{color:rgba(104,72,72,0.7);}
+.dep-sys{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:var(--txt);display:block;margin-bottom:5px;}
+.dep-deps{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--txt4);line-height:1.6;}
+.dep-week{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--txt4);margin-top:5px;display:block;}
+
+/* ── TEAM MATRIX ─────────────────── */
+.team-matrix{width:100%;border-collapse:collapse;margin:12px 0;}
+.team-matrix th{
+  background:var(--bg3);font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--txt4);padding:8px 12px;text-align:left;
+  border-bottom:1px solid var(--hr2);
+}
+.team-matrix td{
+  padding:8px 12px;border-bottom:1px solid var(--hr);
+  font-size:12.5px;color:var(--txt3);vertical-align:top;
+}
+.team-matrix td:first-child{font-weight:600;color:var(--txt2);}
+.team-matrix tr:hover td{background:var(--bg3);}
+.owner{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  padding:2px 7px;border:1px solid var(--hr2);
+  color:var(--txt3);display:inline-block;
+}
+.risk-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  padding:1px 7px;border:1px solid;
+}
+.rt-ok{border-color:rgba(58,120,64,0.35);color:var(--ok2);}
+.rt-warn{border-color:rgba(144,104,32,0.35);color:var(--warn2);}
+.rt-risk{border-color:rgba(136,64,48,0.35);color:var(--risk2);}
+.rt-block{border-color:rgba(104,72,160,0.35);color:var(--block2);}
+
+/* ── SCORE TAGS ──────────────────── */
+.stags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;}
+.stag{font-family:'IBM Plex Mono',monospace;font-size:9.5px;padding:2px 8px;border:1px solid;border-radius:2px;}
+.st-bms{border-color:rgba(74,140,106,0.3);color:var(--bms2);}
+.st-rss{border-color:rgba(200,148,40,0.3);color:var(--rss2);}
+.st-uss{border-color:rgba(168,72,72,0.3);color:var(--uss2);}
+.st-tcs{border-color:rgba(72,120,136,0.3);color:var(--tcs2);}
+.st-ok{border-color:rgba(58,120,64,0.3);color:var(--ok2);}
+.st-warn{border-color:rgba(144,104,32,0.3);color:var(--warn2);}
+.st-risk{border-color:rgba(136,64,48,0.3);color:var(--risk2);}
+
+/* ── TWO-COL ─────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:12px 0;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin:12px 0;}
+.col-box{background:var(--bg2);padding:16px 18px;}
+.col-box-cam{border-top:2px solid var(--cam);}
+.col-box-lio{border-top:2px solid var(--lio);}
+.col-box-chi{border-top:2px solid var(--chi);}
+.cb-lbl{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:6px;}
+.col-box-cam .cb-lbl{color:rgba(200,148,40,0.55);}
+.col-box-lio .cb-lbl{color:rgba(184,104,48,0.55);}
+.col-box-chi .cb-lbl{color:rgba(120,136,160,0.55);}
+.cb-title{font-family:'Cinzel',serif;font-size:13.5px;font-weight:700;color:var(--txt);display:block;margin-bottom:7px;}
+.cb-body{font-size:13px;color:var(--txt3);line-height:1.62;}
+.cb-body strong{color:var(--txt2);}
+
+/* ── PRODUCTION TIER ROADMAP ─────── */
+.roadmap{margin:12px 0;}
+.rm-row{
+  display:grid;grid-template-columns:100px 1fr;
+  gap:0;margin-bottom:2px;
+}
+.rm-phase{
+  background:var(--bg3);
+  padding:14px 14px;
+  border-right:1px solid var(--hr);
+  display:flex;flex-direction:column;justify-content:center;
+  align-items:center;text-align:center;
+}
+.rm-tier-n{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt4);display:block;margin-bottom:3px;}
+.rm-tier-name{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--txt2);}
+.rm-budget{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--txt3);margin-top:4px;}
+.rm-content{
+  background:var(--bg2);
+  padding:12px 16px;
+}
+.rm-content p{font-size:13px;color:var(--txt3);line-height:1.6;margin-bottom:5px;}
+.rm-content p:last-child{margin:0;}
+.rm-content p strong{color:var(--txt2);}
+.rm-systems{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px;}
+.rm-sys-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  padding:2px 7px;border:1px solid var(--hr2);color:var(--txt4);
+}
+
+/* ── RISK REGISTER ───────────────── */
+.risk-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px;}
+.risk-table th{
+  background:var(--bg3);font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--txt4);padding:8px 12px;text-align:left;
+  border-bottom:1px solid var(--hr2);
+}
+.risk-table td{
+  padding:8px 12px;border-bottom:1px solid var(--hr);
+  vertical-align:top;color:var(--txt3);
+}
+.risk-table td:first-child{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--txt2);white-space:nowrap;}
+.risk-table tr:hover td{background:var(--bg3);}
+
+/* ── FOOT ────────────────────────── */
+.foot{padding:18px 64px;border-top:1px solid var(--hr);display:flex;justify-content:space-between;}
+.foot span{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt4);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ COVER ════════════════════════════ -->
+<div class="cover">
+  <div>
+    <span class="cv-eyebrow">KENOMA · Game Loop & Core Systems · Production Document · v1.0</span>
+    <div class="cv-title">Game Loop &<br>Core Systems</div>
+    <div class="cv-sub">
+      The master game loop, eight core systems with data specifications, three-phase beat charts, system build order, team ownership matrix, and production risk register. Everything a team needs to move from design to production on Monday.
+    </div>
+    <div class="cv-systems">
+      <div class="sys-pill" style="border-color:rgba(74,140,106,0.3);color:var(--bms2)">SYS-01 · BMS</div>
+      <div class="sys-pill" style="border-color:rgba(200,148,40,0.3);color:var(--rss2)">SYS-02 · RSS</div>
+      <div class="sys-pill" style="border-color:rgba(88,120,184,0.3);color:var(--tds2)">SYS-03 · TDS</div>
+      <div class="sys-pill" style="border-color:rgba(136,88,168,0.3);color:var(--tvs2)">SYS-04 · TVS</div>
+      <div class="sys-pill" style="border-color:rgba(176,104,40,0.3);color:var(--res2)">SYS-05 · RES</div>
+      <div class="sys-pill" style="border-color:rgba(168,72,72,0.3);color:var(--uss2)">SYS-06 · USS</div>
+      <div class="sys-pill" style="border-color:rgba(72,120,136,0.3);color:var(--tcs2)">SYS-07 · TCS</div>
+      <div class="sys-pill" style="border-color:rgba(104,120,168,0.3);color:var(--srs2)">SYS-08 · SRS</div>
+    </div>
+  </div>
+  <div>
+    <div class="cv-meta">
+      <div class="cv-meta-row"><span class="cv-meta-key">Document</span><span class="cv-meta-val">GLD-001</span></div>
+      <div class="cv-meta-row"><span class="cv-meta-key">Phase</span><span class="cv-meta-val">Pre-Production</span></div>
+      <div class="cv-meta-row"><span class="cv-meta-key">Status</span><span class="cv-meta-val">For Team Review</span></div>
+      <div class="cv-meta-row"><span class="cv-meta-key">Companion Docs</span><span class="cv-meta-val">CHR-VAN-001 · CHR-PHA-001 · NRS-001</span></div>
+      <div class="cv-meta-row"><span class="cv-meta-key">Systems Count</span><span class="cv-meta-val">8 Core · 24 Sub-systems</span></div>
+      <div class="cv-meta-row"><span class="cv-meta-key">Build Tiers</span><span class="cv-meta-val">Tier 0 (Slice) → Tier 3 (Full)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ══════════════════════════════ -->
+<nav class="nav-strip">
+  <a class="nav-item" href="#loop">Master Loop</a>
+  <a class="nav-item" href="#systems">Core Systems</a>
+  <a class="nav-item cam" href="#camel">Camel Phase</a>
+  <a class="nav-item lio" href="#lion">Lion Phase</a>
+  <a class="nav-item chi" href="#child">Child Phase</a>
+  <a class="nav-item" href="#production">Build Order</a>
+  <a class="nav-item" href="#team">Team Matrix</a>
+  <a class="nav-item" href="#risks">Risk Register</a>
+</nav>
+
+
+<!-- ══ §0 · THE MASTER GAME LOOP ════════ -->
+<div id="loop" class="sec-head"><span class="sec-n">§ 00</span><span class="sec-t">The Master Game Loop — One Loop, Three Expressions</span><span class="sec-aside">READ → ACT → OBSERVE → ADAPT</span></div>
+<div class="body">
+
+  <p>KENOMA runs one primary game loop throughout all three phases. The loop's <em>content</em> changes — what the player reads, what actions are available, what they observe — but the structure is identical. This is the game's deepest design decision: the player never learns a new loop. They run the same loop with increasing stakes and decreasing resources.</p>
+
+  <div class="loop-wrap">
+    <div class="loop-bar">
+      <span class="lb-lbl">Master Loop Architecture</span>
+      <span class="lb-title">READ → ACT → OBSERVE → ADAPT · Phase determines the content of each node</span>
+    </div>
+    <svg viewBox="0 0 1040 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#111213;">
+      <defs>
+        <marker id="loopa" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0,0 7,3.5 0,7" fill="rgba(200,148,40,0.5)"/>
+        </marker>
+        <marker id="loopb" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0,0 7,3.5 0,7" fill="rgba(184,104,48,0.5)"/>
+        </marker>
+        <marker id="loopc" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0,0 7,3.5 0,7" fill="rgba(120,136,160,0.5)"/>
+        </marker>
+        <marker id="back" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto">
+          <polygon points="7,0 0,3.5 7,7" fill="rgba(80,80,90,0.4)"/>
+        </marker>
+      </defs>
+      <!-- 4 loop nodes -->
+      <g>
+        <!-- READ -->
+        <rect x="40" y="60" width="160" height="100" rx="4" fill="rgba(22,23,24,0.9)" stroke="rgba(60,60,68,0.7)" stroke-width="1.5"/>
+        <text x="120" y="88" fill="rgba(174,170,160,0.8)" font-family="Cinzel,serif" font-size="15" font-weight="700" text-anchor="middle">READ</text>
+        <text x="120" y="106" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Camel: Tablet content</text>
+        <text x="120" y="118" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Lion: Terrain + signals</text>
+        <text x="120" y="130" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Child: Archive state</text>
+        <text x="120" y="148" fill="rgba(90,86,80,0.4)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">→ TDS + TVS feed this</text>
+        <!-- ACT -->
+        <rect x="280" y="60" width="160" height="100" rx="4" fill="rgba(22,23,24,0.9)" stroke="rgba(60,60,68,0.7)" stroke-width="1.5"/>
+        <text x="360" y="88" fill="rgba(174,170,160,0.8)" font-family="Cinzel,serif" font-size="15" font-weight="700" text-anchor="middle">ACT</text>
+        <text x="360" y="106" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Camel: Translate·Cross·</text>
+        <text x="360" y="118" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">       Name·Donate</text>
+        <text x="360" y="130" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Lion: Move·Trap·Fight</text>
+        <text x="360" y="142" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Child: Witness</text>
+        <text x="360" y="156" fill="rgba(90,86,80,0.4)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">→ writes to BMS every ACT</text>
+        <!-- OBSERVE -->
+        <rect x="520" y="60" width="160" height="100" rx="4" fill="rgba(22,23,24,0.9)" stroke="rgba(60,60,68,0.7)" stroke-width="1.5"/>
+        <text x="600" y="88" fill="rgba(174,170,160,0.8)" font-family="Cinzel,serif" font-size="15" font-weight="700" text-anchor="middle">OBSERVE</text>
+        <text x="600" y="106" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Camel: VG stage shifts</text>
+        <text x="600" y="118" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Lion: Utility signals</text>
+        <text x="600" y="130" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Child: Aftermath plays</text>
+        <text x="600" y="148" fill="rgba(90,86,80,0.4)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">→ RSS + USS feed this</text>
+        <!-- ADAPT -->
+        <rect x="760" y="60" width="160" height="100" rx="4" fill="rgba(22,23,24,0.9)" stroke="rgba(60,60,68,0.7)" stroke-width="1.5"/>
+        <text x="840" y="88" fill="rgba(174,170,160,0.8)" font-family="Cinzel,serif" font-size="15" font-weight="700" text-anchor="middle">ADAPT</text>
+        <text x="840" y="106" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Camel: How much share?</text>
+        <text x="840" y="118" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Lion: Which route now?</text>
+        <text x="840" y="130" fill="rgba(130,126,118,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">Child: No adaptation</text>
+        <text x="840" y="148" fill="rgba(90,86,80,0.4)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">→ informs next READ</text>
+
+        <!-- Arrows between nodes -->
+        <line x1="202" y1="110" x2="274" y2="110" stroke="rgba(80,80,90,0.5)" stroke-width="1.5" marker-end="url(#loopa)"/>
+        <line x1="442" y1="110" x2="514" y2="110" stroke="rgba(80,80,90,0.5)" stroke-width="1.5" marker-end="url(#loopa)"/>
+        <line x1="682" y1="110" x2="754" y2="110" stroke="rgba(80,80,90,0.5)" stroke-width="1.5" marker-end="url(#loopa)"/>
+        <!-- Return arrow -->
+        <path d="M 920,160 Q 960,195 520,195 Q 80,195 120,160" fill="none" stroke="rgba(60,60,70,0.35)" stroke-width="1.5" marker-end="url(#back)" stroke-dasharray="5,3"/>
+        <text x="520" y="210" fill="rgba(60,60,70,0.35)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="2">LOOP RETURNS · PHASE CHANGES CONTENT · STRUCTURE CONSTANT</text>
+
+        <!-- Phase shift indicators -->
+        <rect x="240" y="20" width="560" height="20" rx="2" fill="rgba(15,16,17,0.5)" stroke="rgba(50,50,60,0.3)" stroke-width="1"/>
+        <rect x="241" y="21" width="184" height="18" rx="1" fill="rgba(200,148,40,0.12)"/>
+        <rect x="426" y="21" width="187" height="18" rx="1" fill="rgba(184,104,48,0.12)"/>
+        <rect x="614" y="21" width="184" height="18" rx="1" fill="rgba(120,136,160,0.12)"/>
+        <text x="333" y="33" fill="rgba(200,148,40,0.5)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle" letter-spacing="2">CAMEL</text>
+        <text x="519" y="33" fill="rgba(184,104,48,0.5)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle" letter-spacing="2">LION</text>
+        <text x="706" y="33" fill="rgba(120,136,160,0.5)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle" letter-spacing="2">CHILD</text>
+        <text x="960" y="33" fill="rgba(50,50,60,0.5)" font-family="IBM Plex Mono,monospace" font-size="7" text-anchor="end">Phase controls content</text>
+        <text x="960" y="44" fill="rgba(50,50,60,0.4)" font-family="IBM Plex Mono,monospace" font-size="7" text-anchor="end">not loop structure</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="call c-n">
+    <span class="call-lbl">The Central Design Constraint</span>
+    <strong>Every action the player takes in any phase writes to the Behavioral Model System (BMS).</strong> The BMS is the connective tissue between all three phases. The Camel Phase fills it with warmth data. The Lion Phase reads it for Vanguard combat AI. The Child Phase reads it for Scenario resolution. No action is ever wasted — the player builds their consequence in Act I without knowing it. The BMS is the architectural reason the three phases feel like one continuous story rather than three separate chapters.
+  </div>
+</div>
+
+
+<!-- ══ §1 · CORE SYSTEMS ════════════════ -->
+<div id="systems" class="sec-head"><span class="sec-n">§ 01</span><span class="sec-t">The Eight Core Systems — Specifications</span><span class="sec-aside">Data · Dependencies · Phase Activity</span></div>
+<div class="body">
+
+  <!-- SYS-01 BMS -->
+  <div class="sys-spec ss-bms">
+    <div class="ss-head">
+      <span class="ss-id">SYS-01 · BMS</span>
+      <span class="ss-name">Behavioral Model System — The Spine</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-cam">Camel</span>
+        <span class="ss-phase-pill sp-lio">Lion</span>
+        <span class="ss-phase-pill sp-chi">Child</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">event[]</span><span class="field-name">ActionLog</span></li>
+          <li><span class="field-type">float[2]</span><span class="field-name">WarmthRegister</span><span class="field-note">VA, VB</span></li>
+          <li><span class="field-type">int[2]</span><span class="field-name">RecognitionStage</span><span class="field-note">VA, VB · 1–5</span></li>
+          <li><span class="field-type">float</span><span class="field-name">ArchiveCompletePct</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">DarkVoiceAccepted</span></li>
+          <li><span class="field-type">int[4]</span><span class="field-name">RouteFrequency</span><span class="field-note">per zone</span></li>
+          <li><span class="field-type">float</span><span class="field-name">FinalScore</span><span class="field-note">0–100</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">How It Works</span>
+        <p>Every Scholar action fires an <code style="font-family:'IBM Plex Mono',monospace;color:var(--bms2);font-size:11px;">ActionEvent</code> with: type, location, quality (deep/shallow/skipped), timestamp, and observer (VA/VB/both/none). The BMS aggregates these events into running scores.</p>
+        <p><strong>The BMS never exposes data directly to the player.</strong> Its output is the Vanguard AIs' behavior changes (RSS), the Utility Score (USS), and the final Scenario selector (SRS). The player reads the system through its effects on NPCs — not through a UI panel.</p>
+        <p><strong>Every action has a default weight.</strong> A deep translation: +3 WarmthRegister[VA], +2 WarmthRegister[VB], +1 RecognitionStage progress. A withheld translation: −2 each. A demonstrated combat method (VA observed): +1 VA recognition accuracy, −2 USS[VA] in Lion Phase.</p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Dependencies · Risks</span>
+        <p><strong>Feeds into:</strong> RSS (stage progression), USS (lion phase utility), SRS (scenario resolution). Reads from: TDS (translation quality), TVS (crossing patterns), RES (donation events).</p>
+        <p><strong>Design risk:</strong> Event granularity. Too coarse → Vanguard AI feels arbitrary. Too fine → 60fps event spam. Solution: batch events per room-session (Scholar leaves room → BMS processes session). Fire score updates at session-end, not per-action.</p>
+        <div class="stags">
+          <span class="stag st-risk">⚠ Batching logic critical</span>
+          <span class="stag st-ok">Tier 0 implementation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYS-02 RSS -->
+  <div class="sys-spec ss-rss">
+    <div class="ss-head">
+      <span class="ss-id">SYS-02 · RSS</span>
+      <span class="ss-name">Recognition Stage System — The Visible Model</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-cam">Camel</span>
+        <span class="ss-phase-pill sp-lio">Lion</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">int</span><span class="field-name">VA_Stage</span><span class="field-note">1–5</span></li>
+          <li><span class="field-type">int</span><span class="field-name">VB_Stage</span><span class="field-note">1–5</span></li>
+          <li><span class="field-type">float[2]</span><span class="field-name">StageProgress</span><span class="field-note">0.0–1.0</span></li>
+          <li><span class="field-type">string[]</span><span class="field-name">UnlockedDialogue</span></li>
+          <li><span class="field-type">bool[]</span><span class="field-name">AccessGates</span><span class="field-note">per room</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">ResonanceMoment1_Fired</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">ResonanceMoment2_Fired</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">ResonanceMoment3_Fired</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Stage Transition Thresholds</span>
+        <p><strong>Stage 1→2:</strong> WarmthRegister[VA or VB] reaches 15. Triggers: Vanguard stops asking methodology questions, begins providing context without prompting.</p>
+        <p><strong>Stage 2→3:</strong> Reaches 30. Triggers: Pre-staged resources on Scholar's route, room access expands, Vanguard begins answering anticipated questions.</p>
+        <p><strong>Stage 3→4:</strong> Reaches 50. Triggers: Deep personal dialogue unlocks (grief tablet gate, VB confessions). Resonance Moments 1–3 become available to fire (they require their own sub-conditions).</p>
+        <p><strong>Stage 4→5:</strong> Reaches 70. Triggers: Vanguard stops offering information. Shorter more precise replies. Pre-emptive positioning in Lion Phase. <strong>Model is complete.</strong></p>
+        <p><strong>Stage regression:</strong> Withheld translations, deceptions detected, Dark Voice followed: −8 WarmthRegister per event. Stage regression is possible down to Stage 2 minimum (Stage 1 never re-enters — she already knows the Scholar came).</p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Behavioral Outputs per Stage</span>
+        <p><strong>Stage 1:</strong> VA asks × 1 per topic, times Scholar translations, offers nothing. VB speaks only when addressed.</p>
+        <p><strong>Stage 2:</strong> VA provides patrol info, VB annotates tablets. Both begin contributing to shared work.</p>
+        <p><strong>Stage 3:</strong> VA pre-stages oil on Scholar route. VB reveals shortcuts. Resonance Moments gated open.</p>
+        <p><strong>Stage 4:</strong> VA completes Scholar's sentences (predictive responses). VB makes philosophical confessions. Maximum warmth window.</p>
+        <p><strong>Stage 5:</strong> Both go quieter. Fewer words. Precise. The model is done. They are verifying, not learning. <strong>Lion Phase pre-positioning begins activating.</strong></p>
+        <div class="stags">
+          <span class="stag st-ok">Tier 0 · Stages 1–3</span>
+          <span class="stag st-warn">Tier 1 · Stages 4–5</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYS-03 TDS -->
+  <div class="sys-spec ss-tds">
+    <div class="ss-head">
+      <span class="ss-id">SYS-03 · TDS</span>
+      <span class="ss-name">Translation Depth System — Knowledge as Resource</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-cam">Camel</span>
+        <span class="ss-phase-pill sp-lio">Lion</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">enum</span><span class="field-name">ReadDepth</span><span class="field-note">SKIP/SKIM/DEEP</span></li>
+          <li><span class="field-type">dict</span><span class="field-name">KnowledgeBank</span><span class="field-note">tabletID → depth</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">ArmillarySequenceKnown</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">Clause18Known</span></li>
+          <li><span class="field-type">int</span><span class="field-name">NamingVocabSize</span></li>
+          <li><span class="field-type">float</span><span class="field-name">TranslationAccuracy</span><span class="field-note">0.0–1.0</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">The Three Depths</span>
+        <p><strong>SKIP:</strong> Scholar walks past. No BMS event. No knowledge gained. No consequence... except the gap it leaves. Skipped tablets can become Act II resources that don't exist.</p>
+        <p><strong>SKIM (default):</strong> 8–12 second interaction. Scholar gets surface meaning — sufficient for most immediate puzzle purposes. BMS writes: +1 WarmthRegister if shared with Vanguard. The creature's name if an origin inscription. Partial knowledge stored.</p>
+        <p><strong>DEEP:</strong> 25–40 second interaction. Scholar enters focused reading mode (camera locks slightly, ambient sound narrows). Full knowledge stored to KnowledgeBank. Unlocks: full Naming tier for creature inscriptions, Armillary sequence memory, Clause 18 recognition, Dark Voice aphorism database. Costs time and robe exposure (standing still = vulnerability). <strong>Returns are asymmetric — DEEP reads compound across the full run.</strong></p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Downstream Consequences</span>
+        <p><strong>PZ-007 (Armillary):</strong> DEEP read of the manual = Scholar has sequence memorized. 28 seconds to activate. SKIM or skip = Scholar improvises under Boundary pressure. 35 seconds. 7-second difference in the game's most dangerous window.</p>
+        <p><strong>Naming Tier:</strong> Only available if the creature's origin inscription was DEEP-read. Skim: 8-second stun available. Skip: no options beyond combat tiers.</p>
+        <p><strong>Dark Voice content:</strong> The Voice only has aphorisms available from texts the Scholar has DEEP-read. A Scholar who skimmed everything hears their Voice speaking generic strategic advice. A Scholar who read deeply hears their exact texts cited back at them. The Voice uses the Scholar's own vocabulary — but only vocabulary the Scholar actually has.</p>
+        <div class="stags">
+          <span class="stag st-ok">Tier 0 · Core mechanic</span>
+          <span class="stag st-ok">Critical for demo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYS-04 TVS -->
+  <div class="sys-spec ss-tvs">
+    <div class="ss-head">
+      <span class="ss-id">SYS-04 · TVS</span>
+      <span class="ss-name">Traversal System — Debt, Boundary, Crossing</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-cam">Camel</span>
+        <span class="ss-phase-pill sp-lio">Lion</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">int</span><span class="field-name">CrossingCount</span></li>
+          <li><span class="field-type">float</span><span class="field-name">TraversalDebt</span><span class="field-note">0.0–1.0</span></li>
+          <li><span class="field-type">enum</span><span class="field-name">BoundaryState</span><span class="field-note">DORMANT/ACTIVE/HUNTING</span></li>
+          <li><span class="field-type">float</span><span class="field-name">BoundaryProximity</span></li>
+          <li><span class="field-type">vec3</span><span class="field-name">CurrentWorld</span><span class="field-note">WA or WB</span></li>
+          <li><span class="field-type">float</span><span class="field-name">CrossingTimer</span><span class="field-note">2.2s window</span></li>
+          <li><span class="field-type">int[4]</span><span class="field-name">TFP_Uses</span><span class="field-note">per TFP</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Mechanic Specification</span>
+        <p><strong>Every crossing increments CrossingCount and adds to TraversalDebt.</strong> TFP-04 costs +2 per use; others +1. Debt decays at 0.01/second while Scholar remains in one world. Rapid crossing prevents decay.</p>
+        <p><strong>BoundaryState transitions:</strong> Debt 0–0.3 → DORMANT (astrolabe quiet). Debt 0.3–0.6 → ACTIVE (astrolabe static begins, Boundary appears in distant rooms). Debt 0.6–1.0 → HUNTING (Boundary actively pursues, astrolabe in continuous warning).</p>
+        <p><strong>The Iron Rule — enforced by TVS:</strong> Knowledge from World B unlocks World A chamber/puzzle. Material from World A produces World B physical change. TVS validates every cross-world action against this rule. Invalid applications simply fail with no animation — the Scholar tries, nothing happens. The rule is never explained in text. It is taught through PZ-002 and observed consistently.</p>
+        <p><strong>Vanguard crossing delta:</strong> Neither Vanguard has a CrossingCount. Their TraversalDebt is always 0. TVS tracks this delta explicitly — it is used by USS in Lion Phase. The Scholar is the only thing with Debt.</p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">World-Switch Interaction</span>
+        <p><strong>The 2.2-second crossing window is uninterruptible.</strong> Both Vanguards know this. Stage 5 VA has measured the Scholar's average crossing time (she started timing on Week 1). In Lion Phase, she can close distance by 3.8 meters in 2.2 seconds. The Scholar who crosses without checking the approach angle has given VA a free approach.</p>
+        <p><strong>Astrolabe as TVS HUD:</strong> The physical astrolabe object is the only TraversalDebt display. Three ring positions: settled (Debt &lt;0.3), active (0.3–0.6), urgent (0.6+). When Debt reaches 1.0 in Lion Phase, the astrolabe's resonance signal cuts out permanently — the Scholar has no proximity warning for the rest of the game. This is a resource depletion, not a game event.</p>
+        <div class="stags">
+          <span class="stag st-ok">Tier 0 · Core crossing</span>
+          <span class="stag st-warn">Tier 1 · Boundary AI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYS-05 RES -->
+  <div class="sys-spec ss-res">
+    <div class="ss-head">
+      <span class="ss-id">SYS-05 · RES</span>
+      <span class="ss-name">Resource Economy System — Scarcity is Structural</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-cam">Camel</span>
+        <span class="ss-phase-pill sp-lio">Lion</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">float</span><span class="field-name">Oil</span><span class="field-note">0.0–100.0</span></li>
+          <li><span class="field-type">int</span><span class="field-name">Bolts</span><span class="field-note">0–12</span></li>
+          <li><span class="field-type">int</span><span class="field-name">Stones</span><span class="field-note">for Naming Bells</span></li>
+          <li><span class="field-type">float</span><span class="field-name">RobeIntegrity</span><span class="field-note">0.0–1.0</span></li>
+          <li><span class="field-type">int</span><span class="field-name">NamingBells</span><span class="field-note">0–3</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">FireVesselLit</span></li>
+          <li><span class="field-type">dict</span><span class="field-name">DonationLog</span><span class="field-note">what·to whom</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Economy Design</span>
+        <p><strong>The Camel Phase is deliberately resource-generous.</strong> Oil is findable in every room. Bolts respawn on creature patrol routes. The Scholar learns to spend freely — because the Camel's nature is generosity. This is intentional priming: when the Lion Phase tightens the economy, the player feels the scarcity as a tonal shift, not a punishment.</p>
+        <p><strong>Donation writes to BMS.</strong> Scholar gives oil to VB (her cold-light tube needs fuel): +3 WarmthRegister[VB]. Scholar gives bolts to VA for patrol supply: +2 WarmthRegister[VA]. The economy is not just survival — it is relationship capital. Every donation is both resource expenditure and BMS investment.</p>
+        <p><strong>Lion Phase economy:</strong> Resource spawn rates drop 40%. Donation opportunities disappear (Vanguards are no longer accepting). Every bolt spent on a missed shot is a bolt not available for the next required shot. The Scholar who was generous in Act I now faces an economy calibrated to exactly how many resources they saved.</p>
+        <p><strong>Robe Integrity as health proxy:</strong> No number displayed. Visual state only: intact → frayed → torn → deeply damaged → critical (hands shake on tablet interactions). At critical, the Scholar's SKIM read time increases +6 seconds (trembling hands). This directly pressures the Scholar's core competency.</p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Combat Tier Resource Costs</span>
+        <p><strong>Tier 1 (Environmental):</strong> 0 oil, 0 bolts — uses only traps set in Camel Phase. Finite: once used, gone. Maximum efficiency, requires Camel Phase setup investment.</p>
+        <p><strong>Tier 2A (Fire Vessel):</strong> 5–8 oil per sustained exposure. Competes with navigation oil use. A Scholar who fires at Hollow creatures is also dimming their navigation light.</p>
+        <p><strong>Tier 2B (Crossbow):</strong> 1 bolt per shot, 3 seconds to reload (fully exposed). Maximum 12 bolts total. Bolts can become Naming Bells (2 bolts + 1 stone). The Scholar who makes Naming Bells cannot shoot. This trade is the game's central resource decision.</p>
+        <p><strong>Tier 3 (Naming):</strong> 0 cost. Requires only prior DEEP read. The game's most powerful action costs nothing except time and reading depth — which is the Scholar's most abundant resource if used correctly.</p>
+        <div class="stags"><span class="stag st-ok">Tier 0 · Oil + Robe</span><span class="stag st-warn">Tier 1 · Full economy</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYS-06 USS -->
+  <div class="sys-spec ss-uss">
+    <div class="ss-head">
+      <span class="ss-id">SYS-06 · USS</span>
+      <span class="ss-name">Utility Score System — The Lion Phase Engine</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-lio">Lion</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">float</span><span class="field-name">VA_Utility</span><span class="field-note">0.0–100.0</span></li>
+          <li><span class="field-type">float</span><span class="field-name">VB_Utility</span><span class="field-note">0.0–100.0</span></li>
+          <li><span class="field-type">float</span><span class="field-name">VA_Threshold</span><span class="field-note">default 35.0</span></li>
+          <li><span class="field-type">float</span><span class="field-name">VB_Threshold</span><span class="field-note">default 28.0</span></li>
+          <li><span class="field-type">enum[2]</span><span class="field-name">VG_State</span><span class="field-note">WAIT/CLOSE/EXEC</span></li>
+          <li><span class="field-type">float</span><span class="field-name">VA_DecisionGap</span><span class="field-note">time since EXEC</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">SpareActive</span><span class="field-note">per Vanguard</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Utility Score Mechanics</span>
+        <p><strong>USS starts at 100.0 for both Vanguards at Act II turn.</strong> It depletes through Scholar combat (each bolt fired: −3), trap discovery by Vanguard (−5), Archive completion advances (−2 per % completed beyond 80%), and prolonged Scholar inactivity (−1.5/minute).</p>
+        <p><strong>USS can recover:</strong> Scholar completes a high-value translation: +6. Scholar Names a creature VA couldn't Name: +10 and VA_Threshold rises by 5 (she needs to observe more). Scholar enters an unvisited WB room: +4 VB_Utility. Scholar produces a cross-world insight VB's model didn't predict: +12 VB_Utility (maximum single recovery).</p>
+        <p><strong>Threshold crossing triggers:</strong> VA_Utility &lt; VA_Threshold → VA_State → CLOSE (she begins pre-positioning, closing exits). VA_Utility &lt; (VA_Threshold × 0.6) → VA_State → EXEC (she begins the hunt). Same logic for VB, independently.</p>
+        <p><strong>The Gap is playable:</strong> If VA enters EXEC before VB, the Scholar can still keep VB in WAIT by producing VB_Utility recoveries. A Scholar fighting VA while VB observes is a fundamentally different encounter than both in EXEC simultaneously. The Gap is the Lion Phase's richest strategic space.</p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Spare State Logic</span>
+        <p><strong>SpareActive = true</strong> when a Vanguard in EXEC receives a USS recovery event that pushes Utility above (Threshold + 15). She transitions back to CLOSE, not WAIT.</p>
+        <p><strong>Spare is always temporary.</strong> The Scholar must produce another recovery event within 8 minutes of game time or SpareActive expires and she returns to EXEC. The Scholar cannot rest. Spare is earned continuously, not banked.</p>
+        <p><strong>What a Spare looks like:</strong> VA in EXEC receives Scholar's completion of an Archive section she couldn't access. She stops approaching. She stands still for 3 seconds (USS processing). Then she moves to observe rather than close. The Scholar has bought time — not safety.</p>
+        <p><strong>Hysteresis prevents oscillation:</strong> VA_Threshold rises by 3 every time SpareActive fires. Earning spares becomes progressively harder. The Scholar cannot repeatedly produce the same recovery event — she has already updated her model to account for it. The utility of any single strategy decays.</p>
+        <div class="stags"><span class="stag st-risk">⚠ Highest design risk</span><span class="stag st-warn">Tier 1 full · Tier 0 stub</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYS-07 TCS -->
+  <div class="sys-spec ss-tcs">
+    <div class="ss-head">
+      <span class="ss-id">SYS-07 · TCS</span>
+      <span class="ss-name">Terrain Control System — The Strategic Map</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-lio">Lion</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">enum</span><span class="field-name">Room.State</span><span class="field-note">SCHOLAR/CONTEST/VG</span></li>
+          <li><span class="field-type">dict</span><span class="field-name">TrapMap</span><span class="field-note">roomID → trapList</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">TrapObserved</span><span class="field-note">per trap</span></li>
+          <li><span class="field-type">float</span><span class="field-name">VG_Coverage</span><span class="field-note">% WA or WB</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">ExitSecured</span><span class="field-note">per exit</span></li>
+          <li><span class="field-type">vec3[]</span><span class="field-name">VG_Waypoints</span><span class="field-note">AI patrol plan</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Room State Logic</span>
+        <p><strong>SCHOLAR-controlled:</strong> Scholar's traps are active. Resources Scholar staged are present. Scholar knows all exit positions (they entered this room in Camel Phase). Vanguard has not scouted this room in Act II yet — her AI path-plan treats it as uncertain terrain and approaches with reduced speed.</p>
+        <p><strong>CONTESTED:</strong> Both parties have partial knowledge. Scholar traps may have been scouted (if Vanguard entered while Scholar was in the other world) but not necessarily removed. The Scholar doesn't know which traps are still viable. The Vanguard doesn't know if the Scholar has restaged traps since her last visit. Both are operating on incomplete information.</p>
+        <p><strong>VANGUARD-controlled:</strong> Scholar traps removed or disabled. Vanguard has pre-positioned resources she will use. Scholar approaches into a room she built but that now serves someone else's plan. The Scholar's own architectural knowledge is working against them — they know every exit, but so does the Vanguard, and she's already covered the relevant ones.</p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Trap System Integration</span>
+        <p><strong>Traps placed in Camel Phase:</strong> Only Scholar-placed traps from Act I persist to Act II. The Scholar who set more traps earlier has more options now. Each trap has a TrapObserved flag — VA in Stage 5 watched the Scholar arm specific traps and has marked them in her route plan. Unobserved traps remain viable; observed ones do not.</p>
+        <p><strong>The Camel Phase payoff:</strong> The Scholar who worked outside VA's observed zones in Act I set traps she didn't see. Those traps fire in Act II at full effectiveness. The Scholar who always worked where VA could observe was building a relationship AND inadvertently training her adversary's counter-strategy. <strong>This is the structural reason warmth and danger are the same thing.</strong></p>
+        <div class="stags"><span class="stag st-warn">Tier 1 · Depends on USS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYS-08 SRS -->
+  <div class="sys-spec ss-srs">
+    <div class="ss-head">
+      <span class="ss-id">SYS-08 · SRS</span>
+      <span class="ss-name">Scenario Resolution System — Child Phase Selector</span>
+      <div class="ss-phase">
+        <span class="ss-phase-pill sp-chi">Child</span>
+      </div>
+    </div>
+    <div class="ss-grid">
+      <div class="ss-col">
+        <span class="ss-col-lbl">Data Structure</span>
+        <ul class="field-list">
+          <li><span class="field-type">float</span><span class="field-name">FinalScore</span><span class="field-note">0–100</span></li>
+          <li><span class="field-type">enum</span><span class="field-name">SurvivorWorld</span><span class="field-note">WA or WB</span></li>
+          <li><span class="field-type">int</span><span class="field-name">ScenarioIndex</span><span class="field-note">1–5</span></li>
+          <li><span class="field-type">bool[3]</span><span class="field-name">ResonanceMomentsHit</span></li>
+          <li><span class="field-type">float</span><span class="field-name">ArchivePctAtEnd</span></li>
+          <li><span class="field-type">string</span><span class="field-name">ClosingLineVariant</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">JournalDiscovered</span></li>
+          <li><span class="field-type">bool</span><span class="field-name">NorthSeeded</span></li>
+        </ul>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Score Calculation</span>
+        <p><strong>FinalScore composition:</strong></p>
+        <p>WarmthRegister[both] at peak / 2 → weight 35%<br>
+        ArchiveCompletePct at Act II turn → weight 25%<br>
+        ResonanceMomentsHit count (0–3) × 8 → weight 24%<br>
+        DonationLog depth → weight 10%<br>
+        DarkVoiceAccepted bonus (handled with fullness) → weight 6%</p>
+        <p><strong>SurvivorWorld:</strong> Determined by which Vanguard's execution succeeded. WA survivor = Sacred Fire aftermath. WB survivor = Hollow aftermath. Each Scenario archetype has two scene variants — the content is the same archetype (grief structure, portrait structure, etc.) but expressed through the surviving Vanguard's philosophy. <strong>This gives the game 10 meaningfully distinct endings from 5 scenario archetypes × 2 world variants.</strong></p>
+        <p><strong>JournalDiscovered:</strong> If Scholar's private journal was found by the Vanguard (she accesses it in Scenarios 4–5), the ClosingLineVariant selects from the more intimate pool. The journal is in the Scholar's last work room — she will find it in all Tier 4+ scenarios because she always returns to verify the model against its final state.</p>
+      </div>
+      <div class="ss-col">
+        <span class="ss-col-lbl">Scene Construction</span>
+        <p><strong>The Child Phase is not a cutscene.</strong> It is a navigable sequence with the Vanguard as the active agent. The player's camera follows but cannot direct. The Vanguard walks to specific locations, performs specific actions, speaks specific lines — all determined by SRS outputs.</p>
+        <p><strong>Scene construction order:</strong> (1) Three-second silence. (2) SRS selects movement script for Scenario archetype. (3) Vanguard executes movement script. (4) FinalLine selected from ClosingLineVariant pool. (5) NorthSeeded flag determines post-credits scene availability.</p>
+        <p><strong>The three-second silence has no animation variation</strong> — it is always identical. The weight it carries changes entirely based on what was built before it. Same gesture, five different meanings. This is the design delivering on the promise: the same action means different things depending on everything that preceded it.</p>
+        <div class="stags"><span class="stag st-warn">Tier 1 · 3 scenarios</span><span class="stag st-risk">Tier 2 · All 5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ CAMEL PHASE GAME LOOP ════════════ -->
+<div id="camel" class="phase-banner pb-cam">
+  <span class="pb-eye">Act I · Camel Phase · The Scholar's Joy and Its Cost</span>
+  <div class="pb-title">The Camel Phase Game Loop</div>
+  <div class="pb-sub">Primary loop: 8–14 minutes per cycle. Secondary loop: 3–5 minutes. Tertiary: 45–90 seconds. Three nested loops, all feeding BMS simultaneously, none of them announcing their stakes.</div>
+</div>
+
+<div class="sec-head"><span class="sec-n">1.1</span><span class="sec-t">Loop Architecture — Three Nested Cycles</span></div>
+<div class="body">
+
+  <div class="loop-wrap">
+    <div class="loop-bar">
+      <span class="lb-lbl">Camel Phase · Loop Diagram</span>
+      <span class="lb-title">Three Nested Cycles — All Feeding BMS</span>
+    </div>
+    <svg viewBox="0 0 1040 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#111213;">
+      <defs>
+        <marker id="ca" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <polygon points="0,0 6,3 0,6" fill="rgba(200,148,40,0.5)"/>
+        </marker>
+      </defs>
+      <!-- Primary Loop (outer) -->
+      <rect x="20" y="20" width="1000" height="50" rx="4" fill="rgba(200,148,40,0.05)" stroke="rgba(200,148,40,0.15)" stroke-width="1.5"/>
+      <text x="34" y="40" fill="rgba(200,148,40,0.4)" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2">PRIMARY LOOP · 8–14 MIN · ROOM SESSION</text>
+      <text x="34" y="57" fill="rgba(200,148,40,0.25)" font-family="IBM Plex Mono,monospace" font-size="8">Enter room → Survey → Work until satisfied → Leave → BMS processes session → Route decision for next room</text>
+      <!-- Secondary Loop (middle band) -->
+      <rect x="20" y="82" width="1000" height="50" rx="4" fill="rgba(200,148,40,0.04)" stroke="rgba(200,148,40,0.12)" stroke-width="1"/>
+      <text x="34" y="101" fill="rgba(200,148,40,0.35)" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2">SECONDARY LOOP · 3–5 MIN · ENCOUNTER</text>
+      <text x="34" y="117" fill="rgba(200,148,40,0.2)" font-family="IBM Plex Mono,monospace" font-size="8">Creature / crossing / Vanguard interaction → Decide (which tier?) → Execute → Observe consequence → Integrate into next action</text>
+      <!-- Tertiary Loop (inner) -->
+      <rect x="20" y="144" width="1000" height="50" rx="4" fill="rgba(200,148,40,0.03)" stroke="rgba(200,148,40,0.1)" stroke-width="1"/>
+      <text x="34" y="163" fill="rgba(200,148,40,0.3)" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2">TERTIARY LOOP · 45–90 SEC · MICRO-DECISION</text>
+      <text x="34" y="179" fill="rgba(200,148,40,0.18)" font-family="IBM Plex Mono,monospace" font-size="8">Each tablet: SKIP / SKIM / DEEP? → Execute → BMS event fires → Return to survey or continue current task</text>
+
+      <!-- BMS Central Node -->
+      <rect x="420" y="210" width="200" height="60" rx="4" fill="rgba(22,23,24,0.95)" stroke="rgba(74,140,106,0.6)" stroke-width="2"/>
+      <text x="520" y="233" fill="rgba(74,140,106,0.8)" font-family="IBM Plex Mono,monospace" font-size="10" text-anchor="middle" letter-spacing="2">SYS-01 · BMS</text>
+      <text x="520" y="249" fill="rgba(74,140,106,0.45)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">All actions write here</text>
+      <text x="520" y="261" fill="rgba(74,140,106,0.3)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">Invisible to player · Drives all AI</text>
+
+      <!-- BMS outputs to sub-systems -->
+      <line x1="420" y1="240" x2="290" y2="240" stroke="rgba(74,140,106,0.3)" stroke-width="1.2" marker-end="url(#ca)"/>
+      <text x="300" y="235" fill="rgba(74,140,106,0.2)" font-family="IBM Plex Mono,monospace" font-size="8">→ RSS</text>
+      <text x="300" y="247" fill="rgba(74,140,106,0.18)" font-family="IBM Plex Mono,monospace" font-size="7.5">Stage progression</text>
+
+      <line x1="620" y1="240" x2="750" y2="240" stroke="rgba(74,140,106,0.3)" stroke-width="1.2" marker-end="url(#ca)"/>
+      <text x="752" y="235" fill="rgba(74,140,106,0.2)" font-family="IBM Plex Mono,monospace" font-size="8">→ USS</text>
+      <text x="752" y="247" fill="rgba(74,140,106,0.18)" font-family="IBM Plex Mono,monospace" font-size="7.5">Seeds at Act II start</text>
+
+      <line x1="520" y1="270" x2="520" y2="310" stroke="rgba(74,140,106,0.3)" stroke-width="1.2" marker-end="url(#ca)"/>
+      <text x="530" y="290" fill="rgba(74,140,106,0.2)" font-family="IBM Plex Mono,monospace" font-size="8">→ SRS</text>
+      <text x="530" y="302" fill="rgba(74,140,106,0.18)" font-family="IBM Plex Mono,monospace" font-size="7.5">Final score components</text>
+
+      <!-- Warm register visualization -->
+      <text x="40" y="240" fill="rgba(200,148,40,0.2)" font-family="IBM Plex Mono,monospace" font-size="8">VG Recognition</text>
+      <text x="40" y="252" fill="rgba(200,148,40,0.18)" font-family="IBM Plex Mono,monospace" font-size="8">Stage: visible through</text>
+      <text x="40" y="264" fill="rgba(200,148,40,0.18)" font-family="IBM Plex Mono,monospace" font-size="8">Vanguard behavior</text>
+      <text x="40" y="278" fill="rgba(200,148,40,0.15)" font-family="IBM Plex Mono,monospace" font-size="8">changes only. No UI.</text>
+
+      <!-- Feedback arrows from RSS back to primary loop -->
+      <line x1="200" y1="240" x2="200" y2="190" stroke="rgba(200,148,40,0.18)" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ca)"/>
+      <text x="208" y="222" fill="rgba(200,148,40,0.15)" font-family="IBM Plex Mono,monospace" font-size="7.5">VG behavior</text>
+      <text x="208" y="232" fill="rgba(200,148,40,0.15)" font-family="IBM Plex Mono,monospace" font-size="7.5">change signals</text>
+      <text x="208" y="242" fill="rgba(200,148,40,0.15)" font-family="IBM Plex Mono,monospace" font-size="7.5">player to adapt</text>
+
+      <text x="520" y="340" fill="rgba(60,58,56,0.5)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle" letter-spacing="2">CAMEL PHASE ENDS WHEN: BMS.ArchiveCompletePct ≥ 0.40 AND BMS.RecognitionStage[VA] ≥ 3</text>
+      <text x="520" y="354" fill="rgba(60,58,56,0.35)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">Trigger: VA resonance channel goes silent 8 seconds · Scholar hears absence before position report fires</text>
+    </svg>
+  </div>
+
+  <h3>Camel Phase Beat Chart — What the Player Does Over 90 Minutes</h3>
+  <table class="beat-chart">
+    <tr><th>Time</th><th>Player Action</th><th>System Write</th><th>Vanguard Signal</th><th>Tension Shape</th></tr>
+    <tr class="beat-cam"><td>0:00–8:00</td><td><strong>Day 1.</strong> Enter Gate, read inscription (DEEP or SKIM decision 1), first Vanguard contact, first tablet session in WA-002.</td><td>BMS: Day 1 baseline. TDS: first translation stored. RSS: Stage 1 begins accumulating.</td><td>VA times Scholar's first translation. Asks methodology question × 1. Does not repeat if Scholar ignores it.</td><td>Low. Curiosity dominant. The Archive is wonderful. The Scholar is delighted.</td></tr>
+    <tr class="beat-cam"><td>8:00–22:00</td><td><strong>Days 2–5.</strong> WA-002 and WA-003 primary work. First crossing (PZ-002). WB-001 and WB-002 first contact. VB first encounter.</td><td>BMS: Crossing patterns begin. TVS: Debt accumulates. RSS: VA Stage 1→2 if Scholar demonstrates method clearly.</td><td>VA stops asking methodology, begins providing patrol context. VB speaks for first time (only if addressed). First annotation appears on Scholar's tablet.</td><td>Mild rising interest. Both worlds feel like gifts. Crossings feel like discoveries. No dread yet.</td></tr>
+    <tr class="beat-cam"><td>22:00–40:00</td><td><strong>Days 6–10.</strong> WA-003 deep work. First recognition resonance moment (The Recognition) if Stage 3 reached. Calibration Channel puzzle.</td><td>BMS: Warmth peak begins building. RSS: Stage 2→3 transition. TDS: Armillary manual either deep-read or skimmed (permanent consequence).</td><td>VA pre-stages oil on Scholar's consistent route for the first time. VB leaves annotation in a tablet Scholar hasn't opened yet. Both Vanguards are now anticipating.</td><td>Warm. Comfortable. The Scholar belongs here. This is the feeling that must be genuine before the turn can devastate.</td></tr>
+    <tr class="beat-cam"><td>40:00–60:00</td><td><strong>Days 11–16.</strong> Dark Library sessions. The Flask moment. Deep World B work. The 250-year-old philosophical text. Grief tablet if Stage 3+.</td><td>BMS: Highest BMS write rate. Cross-world donations. RES: Most donation events. RSS: Stage 3→4 if Scholar engages genuinely.</td><td>VB begins longer sentences. VA answers questions before they're fully asked. Stage 4 warmth is most visible here — both Vanguards are fully trusting their Scholar models.</td><td>The game's warmth peak. The Scholar has the Archive's richest content, the finest relationship they've had, full resources, both worlds open. This is the Camel at maximum.</td></tr>
+    <tr class="beat-cam"><td>60:00–78:00</td><td><strong>Days 17–22.</strong> Approaches WB-∞. Third Record. Both Vanguards at Convergence. The Admission of Hope. VA's Clause 18 statement (if Stage 4+).</td><td>BMS: Third Record completion logged. RSS: Stage 4→5 possible. SRS: FinalScore components accumulating. TVS: TFP-04 first use.</td><td>Both Vanguards quieter in Stage 5. Shorter replies. VA stops offering information. VB's confessions end. <strong>The model is complete. Both Vanguards begin verifying.</strong></td><td>Subtle dread entering. The Archive is still wonderful. But both Vanguards are behaving differently. The Scholar who has been paying attention knows what Stage 5 means.</td></tr>
+    <tr class="beat-cam"><td>78:00–90:00</td><td><strong>Days 23–25.</strong> Final Camel Phase work. Dark Voice intensifies. Scholar choices with Dark Voice. The Gate scene (missable). Act II turn fires.</td><td>BMS: Final Camel Phase BMS writes. USS: Seeds with Camel Phase data. TCS: Trap positions locked in. RSS: Final stage locked.</td><td>VA resonance channel silent for 8 seconds. Position report fires. <strong>Act II begins.</strong> Scholar sets down the tablet. Picks up the crossbow.</td><td>The turn. Not a jump scare. Not a betrayal reveal. A completion. The Scholar always knew this was the last page. They stayed anyway.</td></tr>
+  </table>
+</div>
+
+
+<!-- ══ LION PHASE GAME LOOP ══════════════ -->
+<div id="lion" class="phase-banner pb-lio">
+  <span class="pb-eye">Act II · Lion Phase · The Scholar Says I Will</span>
+  <div class="pb-title">The Lion Phase Game Loop</div>
+  <div class="pb-sub">Primary loop: 4–8 minutes per zone advance. Secondary loop: 90 seconds per encounter. Tertiary: 15–30 seconds per decision. Scarcity increasing. Both Vanguards recalibrating in real time.</div>
+</div>
+
+<div class="sec-head"><span class="sec-n">2.1</span><span class="sec-t">Loop Architecture — Resource Under Pressure</span></div>
+<div class="body">
+
+  <div class="loop-wrap">
+    <div class="loop-bar">
+      <span class="lb-lbl">Lion Phase · Loop Diagram</span>
+      <span class="lb-title">Scholar Route Strategy × Dual Vanguard AI × Resource Scarcity</span>
+    </div>
+    <svg viewBox="0 0 1040 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#111213;">
+      <defs>
+        <marker id="la" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <polygon points="0,0 6,3 0,6" fill="rgba(184,104,48,0.5)"/>
+        </marker>
+        <marker id="va-arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <polygon points="0,0 6,3 0,6" fill="rgba(200,148,40,0.5)"/>
+        </marker>
+        <marker id="vb-arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <polygon points="0,0 6,3 0,6" fill="rgba(88,152,224,0.5)"/>
+        </marker>
+      </defs>
+      <!-- Scholar loop chain: Assess → Route → Execute → Monitor → Recalibrate -->
+      <text x="40" y="30" fill="rgba(184,104,48,0.4)" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2">SCHOLAR PRIMARY LOOP · THE STRATEGIC LAYER</text>
+      <rect x="40" y="40" width="140" height="44" rx="3" fill="rgba(22,23,24,0.9)" stroke="rgba(184,104,48,0.3)" stroke-width="1.2"/>
+      <text x="110" y="58" fill="rgba(184,104,48,0.6)" font-family="IBM Plex Mono,monospace" font-size="9" text-anchor="middle">ASSESS</text>
+      <text x="110" y="71" fill="rgba(130,126,118,0.35)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle">Terrain + VG signals</text>
+      <line x1="180" y1="62" x2="224" y2="62" stroke="rgba(184,104,48,0.3)" stroke-width="1.2" marker-end="url(#la)"/>
+      <rect x="226" y="40" width="140" height="44" rx="3" fill="rgba(22,23,24,0.9)" stroke="rgba(184,104,48,0.3)" stroke-width="1.2"/>
+      <text x="296" y="58" fill="rgba(184,104,48,0.6)" font-family="IBM Plex Mono,monospace" font-size="9" text-anchor="middle">ROUTE</text>
+      <text x="296" y="71" fill="rgba(130,126,118,0.35)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle">Choose next room</text>
+      <line x1="366" y1="62" x2="410" y2="62" stroke="rgba(184,104,48,0.3)" stroke-width="1.2" marker-end="url(#la)"/>
+      <rect x="412" y="40" width="140" height="44" rx="3" fill="rgba(22,23,24,0.9)" stroke="rgba(184,104,48,0.3)" stroke-width="1.2"/>
+      <text x="482" y="58" fill="rgba(184,104,48,0.6)" font-family="IBM Plex Mono,monospace" font-size="9" text-anchor="middle">EXECUTE</text>
+      <text x="482" y="71" fill="rgba(130,126,118,0.35)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle">Move + translate + fight</text>
+      <line x1="552" y1="62" x2="596" y2="62" stroke="rgba(184,104,48,0.3)" stroke-width="1.2" marker-end="url(#la)"/>
+      <rect x="598" y="40" width="140" height="44" rx="3" fill="rgba(22,23,24,0.9)" stroke="rgba(184,104,48,0.3)" stroke-width="1.2"/>
+      <text x="668" y="58" fill="rgba(184,104,48,0.6)" font-family="IBM Plex Mono,monospace" font-size="9" text-anchor="middle">MONITOR</text>
+      <text x="668" y="71" fill="rgba(130,126,118,0.35)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle">VG state + resources</text>
+      <line x1="738" y1="62" x2="782" y2="62" stroke="rgba(184,104,48,0.3)" stroke-width="1.2" marker-end="url(#la)"/>
+      <rect x="784" y="40" width="140" height="44" rx="3" fill="rgba(22,23,24,0.9)" stroke="rgba(184,104,48,0.3)" stroke-width="1.2"/>
+      <text x="854" y="58" fill="rgba(184,104,48,0.6)" font-family="IBM Plex Mono,monospace" font-size="9" text-anchor="middle">RECALIBRATE</text>
+      <text x="854" y="71" fill="rgba(130,126,118,0.35)" font-family="IBM Plex Mono,monospace" font-size="7.5" text-anchor="middle">Adapt to VG signals</text>
+      <!-- Return -->
+      <path d="M 924,62 Q 980,62 980,110 Q 980,140 40,140 Q 24,140 24,110 Q 24,62 38,62" fill="none" stroke="rgba(100,98,90,0.2)" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#la)"/>
+
+      <!-- VA AI thread (below Scholar loop) -->
+      <text x="40" y="164" fill="rgba(200,148,40,0.35)" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2">VA AI THREAD · RUNS PARALLEL · READS BMS CONTINUOUSLY</text>
+      <rect x="40" y="174" width="430" height="44" rx="3" fill="rgba(22,23,24,0.9)" stroke="rgba(200,148,40,0.25)" stroke-width="1"/>
+      <text x="255" y="192" fill="rgba(200,148,40,0.45)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">USS[VA] running · State: WAIT / CLOSE / EXEC</text>
+      <text x="255" y="207" fill="rgba(200,148,40,0.25)" font-family="IBM Plex Mono,monospace" font-size="8">Route plan: Scholar's known traps excluded · TCS room states read · Unobserved traps: uncertainty buffer</text>
+
+      <!-- VB AI thread -->
+      <text x="40" y="238" fill="rgba(88,152,224,0.3)" font-family="IBM Plex Mono,monospace" font-size="8.5" letter-spacing="2">VB AI THREAD · INDEPENDENT THRESHOLD · DIFFERENT LOGIC</text>
+      <rect x="40" y="248" width="430" height="44" rx="3" fill="rgba(22,23,24,0.9)" stroke="rgba(88,152,224,0.22)" stroke-width="1"/>
+      <text x="255" y="266" fill="rgba(88,152,224,0.4)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">USS[VB] running · Depth model · Surprise metric</text>
+      <text x="255" y="281" fill="rgba(88,152,224,0.22)" font-family="IBM Plex Mono,monospace" font-size="8">Enters EXEC when Scholar repeats strategies · VB_Threshold rises as Scholar surprises → defers longer</text>
+
+      <!-- Gap indicator -->
+      <rect x="490" y="170" width="200" height="125" rx="3" fill="rgba(74,140,106,0.06)" stroke="rgba(74,140,106,0.25)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="590" y="192" fill="rgba(74,140,106,0.45)" font-family="IBM Plex Mono,monospace" font-size="9" text-anchor="middle" letter-spacing="1">THE GAP</text>
+      <text x="590" y="210" fill="rgba(74,140,106,0.3)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">VA in EXEC</text>
+      <text x="590" y="224" fill="rgba(74,140,106,0.3)" font-family="IBM Plex Mono,monospace" font-size="8.5" text-anchor="middle">VB in WAIT</text>
+      <text x="590" y="242" fill="rgba(74,140,106,0.22)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">Playable window.</text>
+      <text x="590" y="254" fill="rgba(74,140,106,0.22)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">Scholar uses VB's</text>
+      <text x="590" y="266" fill="rgba(74,140,106,0.22)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">wait-state to fight</text>
+      <text x="590" y="278" fill="rgba(74,140,106,0.22)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">VA. Window closes</text>
+      <text x="590" y="290" fill="rgba(74,140,106,0.22)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">when VB threshold</text>
+      <text x="590" y="302" fill="rgba(74,140,106,0.22)" font-family="IBM Plex Mono,monospace" font-size="8" text-anchor="middle">crosses.</text>
+
+      <text x="740" y="210" fill="rgba(184,104,48,0.18)" font-family="IBM Plex Mono,monospace" font-size="8.5">Objective:</text>
+      <text x="740" y="224" fill="rgba(184,104,48,0.18)" font-family="IBM Plex Mono,monospace" font-size="8.5">WA-007 + WB-∞</text>
+      <text x="740" y="240" fill="rgba(184,104,48,0.15)" font-family="IBM Plex Mono,monospace" font-size="8">Both Archives complete</text>
+      <text x="740" y="254" fill="rgba(184,104,48,0.15)" font-family="IBM Plex Mono,monospace" font-size="8">before both VGs exec</text>
+    </svg>
+  </div>
+
+  <h3>Lion Phase Beat Chart — 60–80 Minutes of Act II</h3>
+  <table class="beat-chart">
+    <tr><th>Time</th><th>Player Action</th><th>USS State</th><th>AI Response</th><th>Decision Stakes</th></tr>
+    <tr class="beat-lio"><td>0:00–5:00</td><td><strong>Act II opens.</strong> Scholar assesses terrain — which rooms are Scholar-controlled from Camel Phase trap placement. Resource audit: oil, bolts, named creatures. Route decision.</td><td>VA: WAIT (seeded from Camel). VB: WAIT. Both at 100.0 and beginning decay.</td><td>Both Vanguards in observation mode. VA begins factoring Camel Phase trap map into route plan. VB notes Scholar's first route choice.</td><td>The Scholar's first Act II movement is the most important route decision. It commits to a strategy that both Vanguards will begin modeling.</td></tr>
+    <tr class="beat-lio"><td>5:00–18:00</td><td><strong>Zone 1 advance.</strong> Scholar pushes toward first major objective (WA-003 final section or WB-004 deep stack). Environmental trap opportunities. First Act II creature encounters.</td><td>VA: 85.0–70.0 (decaying). VB: 90.0–75.0 (decaying slightly slower). Both still WAIT.</td><td>VA's trap scout reveals 2–3 Camel Phase traps in the Scholar's route. She marks them. VB notes Scholar's World preference — if Scholar enters WA first, VB_Utility decay rate slows.</td><td>Use traps now (finite resource) or save for later (VA moves further into CLOSE range)? This is the Lion Phase's first resource tension.</td></tr>
+    <tr class="beat-lio"><td>18:00–35:00</td><td><strong>The Gap emerges.</strong> VA typically crosses into CLOSE state (~Utility 65.0) before VB. Scholar has a window where VA is closing and VB is still observing. Scholar must decide: fight VA now using VB's neutrality, or produce translations to recover VA Utility.</td><td>VA: CLOSE (50.0–40.0). VB: WAIT (70.0–55.0). Gap is at maximum.</td><td>VA begins pre-positioning — closing exits in rooms the Scholar hasn't been to yet. VB stays passive but begins updating her surprise metric. If Scholar takes unexpected routes: VB_Utility ticks up, Gap extends.</td><td>The Lion Phase's strategic peak. Scholar who understands the Gap fights VA in VB's neutral presence. Scholar who doesn't understand it faces both simultaneously 20 minutes later.</td></tr>
+    <tr class="beat-lio"><td>35:00–50:00</td><td><strong>Mid-phase crunch.</strong> Resources thinning. VA likely in EXEC range. Spare opportunities: Scholar completes Armillary section (high-value translation, +8 VA Utility). Scholar Names creature VA couldn't name (+10, model revision pause).</td><td>VA: EXEC-threshold. VB: CLOSE (40.0–30.0). Gap closing.</td><td>VA's route plan is fully deployed — she is using Scholar's own Camel Phase architecture against them. Traps she observed: neutralized. Traps she didn't: Scholar's last advantages. VB begins closing exits in WB.</td><td>Resource allocation: each remaining bolt represents a choice. Bolts → combat, or Bolts → Naming Bells? The Scholar who reads their KnowledgeBank now and crafts Naming Bells has more power per resource than any other option.</td></tr>
+    <tr class="beat-lio"><td>50:00–65:00</td><td><strong>Final push.</strong> WA-007 or WB-∞ accessible. Both Vanguards likely in EXEC range. Scholar's TDS investment pays or doesn't: Armillary sequence memorized (28 seconds) vs improvised (35 seconds) under Boundary pressure.</td><td>Both VGs: EXEC. Gap closed. Scholar faces simultaneous pressure.</td><td>Both Vanguards converge on objectives. Neither is trying to intercept in the corridor — both are trying to reach the endpoints first and control the resolution space.</td><td>The final Act II sequence: the Scholar racing both Vanguards to the Archive's two key points. Every decision in the preceding 50 minutes has produced the resources, the terrain control, and the knowledge for this moment.</td></tr>
+    <tr class="beat-lio"><td>65:00–80:00</td><td><strong>Resolution.</strong> One Vanguard eliminated. False Victory sequence. The fold. Act III begins. Three seconds.</td><td>USS irrelevant. Game transitions to SRS for Scenario calculation.</td><td>Surviving Vanguard performs burial ritual. Traversal Skill transfers. Astrolabe goes permanently silent.</td><td>The Scholar stands in the silence and understands what they built.</td></tr>
+  </table>
+</div>
+
+
+<!-- ══ CHILD PHASE GAME LOOP ════════════ -->
+<div id="child" class="phase-banner pb-chi">
+  <span class="pb-eye">Act III · Child Phase · The Vanguard's New Beginning</span>
+  <div class="pb-title">The Child Phase Game Loop</div>
+  <div class="pb-sub">Not a traditional game loop. The player witnesses rather than directs. Five scenario archetypes × 2 surviving worlds = 10 endings. Duration: 8–15 minutes. The most important 15 minutes in the game.</div>
+</div>
+
+<div class="sec-head"><span class="sec-n">3.1</span><span class="sec-t">Child Phase Architecture — Witness Loop</span></div>
+<div class="body">
+
+  <div class="call c-chi">
+    <span class="call-lbl">The Inversion Principle</span>
+    <strong>The Child Phase inverts the player's role.</strong> In Acts I and II, the player directed the Scholar and observed the Vanguards' reactions. In Act III, the Vanguard is the agent — she moves, acts, speaks — and the player observes her reactions to what the Scholar built. The player has no input. The input happened across the preceding 150 minutes. <strong>The Child Phase is the read-out of everything the player wrote into the BMS.</strong>
+  </div>
+
+  <table class="beat-chart">
+    <tr><th>Beat</th><th>What Happens</th><th>SRS Input</th><th>Scenario Variant</th></tr>
+    <tr class="beat-chi"><td>0:00–0:03</td><td><strong>The Three-Second Silence.</strong> Surviving Vanguard stands in the room where the Scholar was. Same gesture, same duration, every scenario. Weight determined entirely by what was built. No animation variation.</td><td>None — silence is fixed. Scenario context determines its weight.</td><td>Scenario I: Feels like emptiness. Scenario III: Professional stillness. Scenario V: Closest to prayer.</td></tr>
+    <tr class="beat-chi"><td>0:03–2:00</td><td><strong>The First Movement.</strong> Vanguard walks to first scripted location. Location determined by SRS.ScenarioIndex. Low scores: she wanders (uncertainty). High scores: purposeful destination.</td><td>SRS selects movement script from 5 × 2 matrix. WA survivor → WA-003 first. WB survivor → WB-∞ first.</td><td>Sc I: WA-001 gate (she looks at the inscription the Scholar read first). Sc V: WA-007 (where the Scholar stood for six minutes).</td></tr>
+    <tr class="beat-chi"><td>2:00–8:00</td><td><strong>The Archive Review.</strong> Vanguard moves through rooms significant to the Scholar's run — visiting them in reverse order of the Scholar's work, reading what was left. Some rooms trigger short monologues. Most are silent.</td><td>BMS.ActionLog provides the room sequence. SRS selects which rooms generate monologues based on WarmthRegister level.</td><td>Sc I–II: Functional review (she is auditing). Sc III–IV: Something closer to memorial. Sc V: She is verifying the model against its source one final time.</td></tr>
+    <tr class="beat-chi"><td>8:00–12:00</td><td><strong>The Key Object.</strong> Each scenario archetype has one key object moment. Sc I: Writes a new invitation, first line. Sc II: Finishes Scholar's incomplete translation. Sc III: Lights 72nd altar. Sc IV: Writes Scholar's character record. Sc V: Stands in WA-007 looking at the space the Scholar occupied.</td><td>SRS.ScenarioIndex selects the key object. SRS.ResonanceMomentsHit determines whether there is additional dialogue.</td><td>If JournalDiscovered: the Vanguard reads it here and stands still for 8 seconds after (Sc IV–V only). The journal content she read is then referenced in the Closing Line.</td></tr>
+    <tr class="beat-chi"><td>12:00–14:00</td><td><strong>The Closing Line.</strong> Vanguard speaks once — the line selected from SRS.ClosingLineVariant. Then leaves the room. Final camera holds on the empty space.</td><td>SRS selects closing line from pool determined by: ScenarioIndex + SurvivorWorld + JournalDiscovered + NorthSeeded.</td><td>Sc V, VA survivor: "You were extraordinary." [Silence.] [Arms cross.] "North." // Sc V, VB survivor: "The birds are gone now." [Begins filing final report.] Last visible word: "North."</td></tr>
+    <tr class="beat-chi"><td>14:00–15:00</td><td><strong>Decompression.</strong> 10–12 seconds. World A: fire altars' afterglow reveals carved astronomers doing exactly what Scholar did. World B: Loop-Walker's orbital trace fades from floor. Can't be skipped. Not loading time. Final data layer.</td><td>Fixed. Environmental storytelling, not SRS-driven. Same content every run. The Archive registers what happened. The decompression is its registration.</td><td>Same in all scenarios. The Archive's response to completion is consistent — it doesn't evaluate the relationship. It records the completion. The evaluation is the Vanguard's three-second silence.</td></tr>
+  </table>
+</div>
+
+
+<!-- ══ BUILD ORDER ═══════════════════════ -->
+<div id="production" class="sec-head"><span class="sec-n">§ 04</span><span class="sec-t">Production Build Order — System Tiers</span><span class="sec-aside">Dependencies · Weeks · Vertical Slice → Full Game</span></div>
+<div class="body">
+
+  <div class="call c-warn">
+    <span class="call-lbl">Production Principle</span>
+    <strong>Build what is needed to demonstrate the core concept first.</strong> The BMS + TDS + basic RSS + one Traversal crossing + one creature encounter = a playable vertical slice that proves the game's unique mechanic. Everything else is expansion. Build in the order that dependencies require, not in the order that feels most exciting.
+  </div>
+
+  <div class="roadmap">
+    <div class="rm-row">
+      <div class="rm-phase" style="border-top:2px solid #4a6840;">
+        <span class="rm-tier-n">Tier 0</span>
+        <span class="rm-tier-name">Vertical Slice</span>
+        <span class="rm-budget">$50–80K · 3–4mo</span>
+      </div>
+      <div class="rm-content">
+        <p><strong>Goal:</strong> Prove the core concept works in 30–45 minutes of play. BMS records Scholar actions. One Vanguard (VA) progresses through Stages 1–3 visibly. TDS shallow/deep distinction active. One crossing (TFP-01). One creature type with Naming available after DEEP read. RES basic (oil + robe).</p>
+        <p><strong>Must feel like:</strong> The Scholar translates something deeply, shares it with VA, VA responds differently than she would have if they had skimmed. One crossing. One creature encounter. The warmth is real. The BMS is running. That is the demo.</p>
+        <div class="rm-systems">
+          <span class="rm-sys-tag">SYS-01 BMS · core events only</span>
+          <span class="rm-sys-tag">SYS-02 RSS · Stages 1–3, VA only</span>
+          <span class="rm-sys-tag">SYS-03 TDS · SKIM/DEEP only</span>
+          <span class="rm-sys-tag">SYS-04 TVS · TFP-01 only</span>
+          <span class="rm-sys-tag">SYS-05 RES · oil + robe</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-row">
+      <div class="rm-phase" style="border-top:2px solid #486870;">
+        <span class="rm-tier-n">Tier 1</span>
+        <span class="rm-tier-name">Chapter One</span>
+        <span class="rm-budget">$250–350K · 10–12mo</span>
+      </div>
+      <div class="rm-content">
+        <p><strong>Goal:</strong> Complete 3–4 hour experience. Both Vanguards through full Stage 1–5. Full Camel Phase with all three resonance moments. Full Act II with basic USS (VA priority, VB stub). Three Child Phase scenarios (I, III, V). WA primary world only — WB accessible but abbreviated.</p>
+        <p><strong>SYS-06 USS stub:</strong> VA threshold fires at 80% Archive completion (fixed trigger, not dynamic calculation). VB threshold fires on VA elimination. True independent thresholds come in Tier 2.</p>
+        <div class="rm-systems">
+          <span class="rm-sys-tag">SYS-01 BMS · full event set</span>
+          <span class="rm-sys-tag">SYS-02 RSS · both VGs · all 5 stages</span>
+          <span class="rm-sys-tag">SYS-03 TDS · all three depths</span>
+          <span class="rm-sys-tag">SYS-04 TVS · all 4 TFPs · Boundary basic</span>
+          <span class="rm-sys-tag">SYS-05 RES · full economy</span>
+          <span class="rm-sys-tag">SYS-06 USS · VA only · stub VB</span>
+          <span class="rm-sys-tag">SYS-07 TCS · basic room states</span>
+          <span class="rm-sys-tag">SYS-08 SRS · 3 scenarios · WA survivor</span>
+        </div>
+      </div>
+    </div>
+    <div class="rm-row">
+      <div class="rm-phase" style="border-top:2px solid #484870;">
+        <span class="rm-tier-n">Tier 2</span>
+        <span class="rm-tier-name">Full Game</span>
+        <span class="rm-budget">$800K–1.5M · 14–18mo</span>
+      </div>
+      <div class="rm-content">
+        <p><strong>Goal:</strong> Complete KENOMA. Both worlds fully realized. Full USS with independent dynamic thresholds and hysteresis. Full TCS with trap observation flags and terrain control shifts. All five Child Phase scenarios × 2 worlds = 10 endings. Full Boundary AI. Console ports.</p>
+        <p><strong>The full USS is the most complex system in the game</strong> — independent AI thresholds, hysteresis, Spare state logic, Depth model for VB. This is the system that makes the Lion Phase genuinely strategic rather than scripted. It should not be attempted before Tier 1 has been playtested extensively.</p>
+        <div class="rm-systems">
+          <span class="rm-sys-tag">SYS-06 USS · full dynamic · both VGs · hysteresis</span>
+          <span class="rm-sys-tag">SYS-07 TCS · full trap observation · terrain shifts</span>
+          <span class="rm-sys-tag">SYS-08 SRS · all 5 scenarios · both worlds</span>
+          <span class="rm-sys-tag">Full WB · all rooms designed</span>
+          <span class="rm-sys-tag">Full Boundary AI · SH4 Observatory corruption</span>
+          <span class="rm-sys-tag">Console ports · PS5 · Xbox · Switch</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>System Build Dependencies — What Blocks What</h3>
+  <div class="dep-grid">
+    <div class="dep-card tier0">
+      <span class="dep-tier">Week 1–4 · Build First</span>
+      <span class="dep-sys">SYS-01 · BMS</span>
+      <div class="dep-deps">Dependencies: None<br>Blocked by: Nothing<br>Blocks: Everything<br>Note: Build event schema first. All other systems write to BMS or read from it.</div>
+      <span class="dep-week">Start: Week 1</span>
+    </div>
+    <div class="dep-card tier0">
+      <span class="dep-tier">Week 1–4 · Build First</span>
+      <span class="dep-sys">SYS-03 · TDS</span>
+      <div class="dep-deps">Dependencies: None<br>Blocked by: Nothing<br>Blocks: BMS quality data<br>Note: Core player input. Must exist before any BMS testing is meaningful.</div>
+      <span class="dep-week">Start: Week 1</span>
+    </div>
+    <div class="dep-card tier0">
+      <span class="dep-tier">Week 3–7 · Depends on BMS</span>
+      <span class="dep-sys">SYS-02 · RSS</span>
+      <div class="dep-deps">Dependencies: SYS-01 BMS<br>Blocked by: BMS event types undefined<br>Blocks: Warmth visible behaviors<br>Note: Stage transition logic is straightforward once BMS events exist.</div>
+      <span class="dep-week">Start: Week 3</span>
+    </div>
+    <div class="dep-card tier0">
+      <span class="dep-tier">Week 3–8 · Independent</span>
+      <span class="dep-sys">SYS-04 · TVS</span>
+      <div class="dep-deps">Dependencies: None (crossing is physics)<br>Blocked by: Level geometry<br>Blocks: SYS-06 USS (Debt delta needed)<br>Note: Build in parallel with BMS. Crossing is independent of scoring.</div>
+      <span class="dep-week">Start: Week 3</span>
+    </div>
+    <div class="dep-card tier1">
+      <span class="dep-tier">Week 5–10 · Second Wave</span>
+      <span class="dep-sys">SYS-05 · RES</span>
+      <div class="dep-deps">Dependencies: SYS-01 BMS (donation events)<br>Blocked by: Economy balance needs playtest<br>Blocks: Camel/Lion phase feel<br>Note: Placeholder values first. Balance after playtest.</div>
+      <span class="dep-week">Start: Week 5</span>
+    </div>
+    <div class="dep-card tier1">
+      <span class="dep-tier">Week 8–16 · Requires BMS + RSS</span>
+      <span class="dep-sys">SYS-06 · USS</span>
+      <div class="dep-deps">Dependencies: SYS-01 BMS, SYS-02 RSS, SYS-04 TVS<br>Blocked by: All three must be stable<br>Blocks: Lion Phase feel<br>Note: Build stub (fixed trigger) first. Dynamic version only after Tier 1 complete.</div>
+      <span class="dep-week">Start: Week 8 (stub)</span>
+    </div>
+    <div class="dep-card tier2">
+      <span class="dep-tier">Week 14–22 · Tier 2 Only</span>
+      <span class="dep-sys">SYS-07 · TCS</span>
+      <div class="dep-deps">Dependencies: SYS-06 USS, SYS-01 BMS<br>Blocked by: USS must be stable<br>Blocks: Full Lion Phase strategy<br>Note: Room state system. Cannot be meaningfully balanced without full playtest data.</div>
+      <span class="dep-week">Start: Week 14</span>
+    </div>
+    <div class="dep-card tier2">
+      <span class="dep-tier">Week 20–26 · Final System</span>
+      <span class="dep-sys">SYS-08 · SRS</span>
+      <div class="dep-deps">Dependencies: All systems must be stable<br>Blocked by: Balance requires full BMS data<br>Blocks: Child Phase content<br>Note: Scenario selector. Build 3 scenarios for Tier 1. All 5 for Tier 2.</div>
+      <span class="dep-week">Start: Week 20</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ TEAM MATRIX ═══════════════════════ -->
+<div id="team" class="sec-head"><span class="sec-n">§ 05</span><span class="sec-t">Team Ownership Matrix</span><span class="sec-aside">Who builds what · Who owns decisions · Team of 5–7</span></div>
+<div class="body">
+
+  <table class="team-matrix">
+    <tr><th style="width:180px">System / Area</th><th>Owner Role</th><th>Collaborators</th><th>Decision Authority</th><th>Tier 0 Deliverable</th></tr>
+    <tr>
+      <td>SYS-01 · BMS</td>
+      <td><span class="owner">Lead Engineer</span></td>
+      <td>Game Designer (event schema), Narrative (weight values)</td>
+      <td>Lead Engineer owns data architecture. Designer owns weight values. Both must sign off on event taxonomy.</td>
+      <td>Event schema documented. 12 core event types firing. WarmthRegister updating from 3 action types.</td>
+    </tr>
+    <tr>
+      <td>SYS-02 · RSS</td>
+      <td><span class="owner">Game Designer</span></td>
+      <td>Engineer (implementation), Writer (dialogue gates)</td>
+      <td>Designer owns threshold values and stage behavior specifications. Writer owns dialogue content at each stage. Engineer implements.</td>
+      <td>VA Stages 1–3 functional. One visible behavioral change per stage. Stage 1→2 transition fires correctly.</td>
+    </tr>
+    <tr>
+      <td>SYS-03 · TDS</td>
+      <td><span class="owner">Game Designer</span></td>
+      <td>Engineer (input handling), Writer (tablet content)</td>
+      <td>Designer owns depth system rules and downstream consequence mapping. Writer owns the content that DEEP reading unlocks. Non-negotiable: every DEEP read must unlock something the SKIM does not.</td>
+      <td>SKIM/DEEP distinction functional on 5 tablets. ArmillarySequenceKnown flag sets on DEEP read of manual. One Naming enabled by DEEP read.</td>
+    </tr>
+    <tr>
+      <td>SYS-04 · TVS</td>
+      <td><span class="owner">Lead Engineer</span></td>
+      <td>Level Designer (TFP placement), Designer (Debt values)</td>
+      <td>Engineer owns technical implementation. Level Designer owns TFP placement and world geometry. Designer owns Debt rates and Boundary thresholds. Iron Rule enforcement is non-negotiable — engineer must implement validation on every cross-world action.</td>
+      <td>TFP-01 crossing functional. Debt accumulates and decays. Astrolabe ring state updates.</td>
+    </tr>
+    <tr>
+      <td>SYS-05 · RES</td>
+      <td><span class="owner">Game Designer</span></td>
+      <td>Engineer, Level Designer (pickup placement)</td>
+      <td>Designer owns all economy values and combat cost tables. Level Designer owns pickup placement in world. Balance is designer's responsibility — the "Camel generous, Lion scarce" gradient must be felt by playtesters.</td>
+      <td>Oil depletes, refills from pickups. Robe integrity shows 3 visible states. One bolt → one Naming Bell recipe functional.</td>
+    </tr>
+    <tr>
+      <td>SYS-06 · USS</td>
+      <td><span class="owner">AI Engineer</span></td>
+      <td>Game Designer (threshold values), Narrative Writer (behavior scripts)</td>
+      <td>AI Engineer owns state machine and transition logic. Designer owns threshold values and decay rates. <strong>Critical: USS is the hardest system to balance.</strong> Dedicated playtest sessions required. Neither Vanguard should feel random in her decision.</td>
+      <td>Tier 0: Fixed trigger stub only. VA executes at 80% Archive complete. Tier 1: VA dynamic threshold functional. VB stub.</td>
+    </tr>
+    <tr>
+      <td>SYS-07 · TCS</td>
+      <td><span class="owner">Level Designer</span></td>
+      <td>AI Engineer (room state logic), Game Designer (control balance)</td>
+      <td>Level Designer owns room state initial values and transition triggers. AI Engineer implements TrapObserved flag and VG route planning. Designer owns overall control balance — neither Scholar nor Vanguard should feel omniscient.</td>
+      <td>Tier 0: Not needed. Tier 1: Basic room states only (SCHOLAR/VG, no CONTESTED). Tier 2: Full system.</td>
+    </tr>
+    <tr>
+      <td>SYS-08 · SRS</td>
+      <td><span class="owner">Narrative Writer</span></td>
+      <td>Engineer (score calculation), Designer (weight values), Director (scene direction)</td>
+      <td>Writer owns all Scenario content, dialogue, and closing lines. Engineer owns score calculation and scenario selection logic. Designer owns FinalScore component weights. <strong>The closing lines must be approved by the full team — these are the game's most important sentences.</strong></td>
+      <td>Tier 0: Not needed. Tier 1: Scenarios I, III, V functional for WA survivor. Tier 2: All 10.</td>
+    </tr>
+    <tr>
+      <td>Vanguard AI (both)</td>
+      <td><span class="owner">AI Engineer</span></td>
+      <td>Writer (dialogue at each stage), Designer (behavior specs), Narrative Director</td>
+      <td>AI Engineer owns behavior trees. Writer owns all spoken dialogue. Designer owns the behavioral specifications per RSS stage. <strong>The Vanguard must never feel scripted</strong> — if she feels like she is on a timer, the warm relationship is broken. AI tuning requires sustained playtest time.</td>
+      <td>VA Stage 1–3 behavior tree functional. 5 lines of dialogue per stage. Translation timing logged correctly.</td>
+    </tr>
+    <tr>
+      <td>Dark Voice System</td>
+      <td><span class="owner">Narrative Writer</span></td>
+      <td>Audio Director (voice filter), Engineer (trigger conditions), Designer (suppress/accept/follow logic)</td>
+      <td>Writer owns all Dark Voice lines — must use only vocabulary from Scholar's DEEP-read texts. Audio owns the voice filter (Scholar's voice + reverb). <strong>The Dark Voice must never feel like game advice</strong> — it must feel like the Scholar's own private strategic analysis surfacing against their will.</td>
+      <td>3 aphorisms triggering on Tier 0 conditions. Suppress/Accept response logic functional. Voice filter applied.</td>
+    </tr>
+  </table>
+</div>
+
+
+<!-- ══ RISK REGISTER ═════════════════════ -->
+<div id="risks" class="sec-head"><span class="sec-n">§ 06</span><span class="sec-t">Production Risk Register</span><span class="sec-aside">12 flagged risks · Severity · Mitigation</span></div>
+<div class="body">
+
+  <table class="risk-table">
+    <tr>
+      <th>Risk ID</th><th>System</th><th>Description</th><th>Severity</th><th>Mitigation</th>
+    </tr>
+    <tr>
+      <td>RISK-01</td>
+      <td>SYS-06 USS</td>
+      <td><strong>Vanguard feels random.</strong> If USS threshold crossing is not smooth — if players see VA in WAIT and two seconds later in EXEC with no visible intermediate signal — the AI feels arbitrary rather than intelligent. This breaks the relationship's emotional coherence.</td>
+      <td><span class="risk-tag rt-risk">HIGH</span></td>
+      <td>Mandatory playtest gate: dedicated 6-session USS tuning sprint after Tier 1 ship. Players must be able to identify, in retrospect, why VA transitioned. CLOSE state behavioral signals (pre-positioning, exit-closing) must be legible. Add CLOSE→EXEC delay timer (minimum 90 seconds) to prevent snap-transitions.</td>
+    </tr>
+    <tr>
+      <td>RISK-02</td>
+      <td>SYS-01 BMS</td>
+      <td><strong>BMS event spam.</strong> If BMS writes events every frame rather than per session, performance degrades and event weighting loses signal in noise. Common failure mode: everything is equally weighted because everything fires equally often.</td>
+      <td><span class="risk-tag rt-risk">HIGH</span></td>
+      <td>Batch events per room-session as specified. BMS.ProcessSession() fires on Scholar exit, not on every action. Only 12 core event types in Tier 0 — resist scope creep. Profile BMS performance explicitly in Tier 0 milestone.</td>
+    </tr>
+    <tr>
+      <td>RISK-03</td>
+      <td>SYS-02 RSS</td>
+      <td><strong>Stage 5 feels like a difficulty spike, not a narrative beat.</strong> If Stage 5 Vanguard behavior change reads as "she got harder" rather than "she's done learning," the model completion loses its intended weight and becomes a complaint about unfair difficulty.</td>
+      <td><span class="risk-tag rt-warn">MEDIUM</span></td>
+      <td>Stage 5 must be reached through player investment, not time. A player who didn't build the relationship won't reach Stage 5 — they'll face Stage 3 competence. Stage 5 must feel earned. Playtester language check: if testers say "she got harder" rather than "she knew me," the behavioral signals need tuning.</td>
+    </tr>
+    <tr>
+      <td>RISK-04</td>
+      <td>SYS-03 TDS</td>
+      <td><strong>Deep reads feel like punishment (slow and boring) rather than investment.</strong> If the 25–40 second DEEP read interaction is not engaging in itself — visually, aurally, narratively — players will consistently skim, and the TDS downstream consequences will never manifest. The demo will then seem to be about skimming.</td>
+      <td><span class="risk-tag rt-risk">HIGH</span></td>
+      <td>The DEEP read interaction must be the game's best-feeling moment. Scholar's voice murmuring the translation. Cuneiform characters highlighting as they're parsed. Ambient sound narrowing to focus. The 25 seconds must feel like reward, not cost. Art and audio must prioritize this interaction above all others in Tier 0.</td>
+    </tr>
+    <tr>
+      <td>RISK-05</td>
+      <td>Child Phase</td>
+      <td><strong>Child Phase feels like a cutscene, not a resolution.</strong> If players feel they are watching a video after a game, the emotional payoff is reduced. The key is the player retaining a sense that what they see is the direct consequence of their choices — not the game playing a conclusion at them.</td>
+      <td><span class="risk-tag rt-warn">MEDIUM</span></td>
+      <td>The Vanguard's route through the Child Phase must include at least 2 interactive "witness" moments — moments where the player can direct the camera to look at something the Vanguard is also looking at. Not control, but gaze. The player should feel present, not dismissed. Three-second silence must land before any music event — let the absence breathe.</td>
+    </tr>
+    <tr>
+      <td>RISK-06</td>
+      <td>Resonance Moments</td>
+      <td><strong>Resonance Moments fire on a timer, not on evidence.</strong> If the Recognition scene fires regardless of what the Scholar has done in the preceding two weeks, the warmth is guaranteed atmosphere, not earned relationship. Players notice — they feel the scene is pre-scripted.</td>
+      <td><span class="risk-tag rt-risk">HIGH</span></td>
+      <td>Gate all three Resonance Moments behind RSS stage thresholds as specified. The Recognition only produces "Yours is better" at Stage 3+. Below Stage 3: "I had a translation." Test explicitly: a playthrough where Scholar skims everything must produce noticeably flatter Vanguard responses. If the flat version is indistinguishable, the system is broken.</td>
+    </tr>
+    <tr>
+      <td>RISK-07</td>
+      <td>SYS-07 TCS</td>
+      <td><strong>Terrain control feels like invisible scripting.</strong> If the Scholar discovers their Camel Phase traps have been neutralized without any in-world signal they missed, TCS creates frustration rather than strategic loss. "How did she know?" is a legitimate complaint if the information was never available to observe.</td>
+      <td><span class="risk-tag rt-warn">MEDIUM</span></td>
+      <td>TrapObserved flag must have visible evidence. If VA observed a trap being set, there must be a signal the player could have noticed — VA's gaze direction at the time, a slight pause in her patrol, a tablet annotation referencing the trap's location. Players who were paying attention should be able to reconstruct "she was watching."</td>
+    </tr>
+    <tr>
+      <td>RISK-08</td>
+      <td>Dark Voice</td>
+      <td><strong>Dark Voice gives game hints.</strong> If the Voice ever says anything that solves a puzzle or suggests a tactical move the player hasn't considered, it becomes a hint system with reverb. The entire character of the Scholar collapses — they are no longer someone who knows and chooses, they are someone being coached.</td>
+      <td><span class="risk-tag rt-risk">HIGH</span></td>
+      <td>All Dark Voice lines must be reviewed for hint content before ship. Rule: the Voice speaks what the Scholar already knows, not what the Scholar should do next. If a line can reasonably be read as advice, it is cut. The Voice is self-knowledge surfacing, not external guidance arriving.</td>
+    </tr>
+    <tr>
+      <td>RISK-09</td>
+      <td>Economy Balance</td>
+      <td><strong>Camel Phase is not generous enough — players hoard.</strong> If players are resource-anxious in Act I, they will not donate to Vanguards, will not use environmental traps liberally (saving them for later), and will not invest in Naming Bell crafting. The Camel's nature (generous, burden-bearing) must be mechanically incentivized, not just narratively stated.</td>
+      <td><span class="risk-tag rt-warn">MEDIUM</span></td>
+      <td>Camel Phase resource respawn rate must be tuned so a generous Scholar never feels resource-anxious. Donations must produce immediate visible RSS feedback. Players must feel that giving away resources produces more than hoarding them. Playtest specifically for donation rate — if it's below 30% of available donation opportunities, the economy is too tight.</td>
+    </tr>
+    <tr>
+      <td>RISK-10</td>
+      <td>SYS-08 SRS</td>
+      <td><strong>Scenarios I and II feel like punishments for playing badly.</strong> If low-score endings feel like the game judging the player negatively, the design premise breaks — the game is supposed to produce genuine outcomes, not grade performance. A Scholar who gave little should produce a specific kind of ending, not a bad ending.</td>
+      <td><span class="risk-tag rt-warn">MEDIUM</span></td>
+      <td>Scenario I writing must be genuinely distinct, not diminished. The Vanguard who faces an incomplete archive has a real problem to solve — she is not failing, she is recalibrating. Testers who experience Scenario I first should feel "that was a different story" not "that was the worse story." This is a writing calibration requirement, not a design change.</td>
+    </tr>
+    <tr>
+      <td>RISK-11</td>
+      <td>Dual-World Logic</td>
+      <td><strong>The Iron Rule is applied inconsistently across rooms.</strong> TS2's critical failure was each zone reinventing the crossing logic. KENOMA has one rule. If any puzzle or room-specific mechanic violates the rule — even once, even with good intentions — the player's intuition breaks and every subsequent crossing becomes uncertain.</td>
+      <td><span class="risk-tag rt-risk">HIGH</span></td>
+      <td>The Iron Rule is locked at PZ-002 and never revisited. Every cross-world action in every puzzle must be reviewed against the rule before ship. TVS validation is technical enforcement. If a puzzle design requires bending the rule, the puzzle design changes — the rule does not.</td>
+    </tr>
+    <tr>
+      <td>RISK-12</td>
+      <td>Act I→II Transition</td>
+      <td><strong>The turn feels like a betrayal reveal.</strong> If players experience the Act II turn as "she was secretly evil all along," the Camel Phase's emotional investment was false — players were deceived, not invested. The distinction between a betrayal narrative and a completion narrative is entirely in the transition's execution.</td>
+      <td><span class="risk-tag rt-risk">HIGH</span></td>
+      <td>The turn must be staged as a completion, not a reveal. VA's Clause 18 statement (at Stage 4+) tells the Scholar and the player exactly what is happening before it happens. The Scholar sets down the tablet. They pick up the crossbow. This is not surprise. This is decision. Playtest language check: testers must say "I knew it was coming and it still landed" not "I didn't see that coming." The latter means the Camel Phase failed to prepare them.</td>
+    </tr>
+  </table>
+</div>
+
+
+<div class="foot">
+  <span>KENOMA · GLD-001 · Game Loop & Core Systems</span>
+  <span>8 Systems · 3 Phases · Production-Ready</span>
+  <span>Companion: CHR-PHA-001 · CHR-VAN-001 · NRS-001</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KENOMA — Gameplay Analysis & Archive Maps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600;700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0a0b09;
+  --bg2:    #111210;
+  --bg3:    #171816;
+  --bg4:    #1d1f1b;
+  --ln:     #2a2c26;
+  --ln2:    #363830;
+
+  --body:   #c8c4b4;
+  --dim:    #7a7668;
+  --faint:  #48463e;
+
+  /* World A fire */
+  --wa:     #c08820;
+  --wal:    #e0aa38;
+  --wad:    #785010;
+  --wabg:   rgba(192,136,32,0.1);
+  --wabrd:  rgba(192,136,32,0.22);
+
+  /* World B lapis */
+  --wb:     #3c68b0;
+  --wbl:    #5a90d8;
+  --wbd:    #1e3870;
+  --wbbg:   rgba(60,104,176,0.1);
+  --wbbrd:  rgba(60,104,176,0.22);
+
+  /* Scholar */
+  --sc:     #c8a050;
+  --scl:    #e8c070;
+
+  /* Scenarios */
+  --sa:     #c05828;
+  --sb:     #38886a;
+  --sc2:    #486890;
+  --sd:     #7848a8;
+
+  /* TS analysis */
+  --ts1:    #b89018;
+  --ts2:    #4870b0;
+
+  --ok:     #4a8840;
+  --warn:   #9a6820;
+  --bad:    #882828;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.72;color:var(--body);}
+.page{max-width:1200px;margin:0 auto;padding-bottom:80px;}
+
+/* ── COVER ── */
+.cover{
+  padding:52px 60px 40px;
+  border-bottom:1px solid var(--ln);
+  position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--wa),var(--sc),var(--wb));
+}
+.cv-meta{
+  font-family:'Space Mono',monospace;font-size:9px;
+  letter-spacing:4px;text-transform:uppercase;
+  color:var(--faint);display:flex;justify-content:space-between;
+  margin-bottom:28px;
+}
+.cv-title{font-family:'Cinzel',serif;font-size:42px;font-weight:700;line-height:1.06;color:#ddd8c8;margin-bottom:8px;}
+.cv-title em{font-style:italic;color:var(--wal);}
+.cv-sub{font-size:15px;font-weight:300;color:var(--dim);max-width:680px;line-height:1.65;margin-bottom:22px;}
+.cv-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:2px;text-transform:uppercase;padding:4px 11px;border:1px solid;}
+.t-a{border-color:var(--wad);color:var(--wa);}
+.t-b{border-color:var(--wbd);color:var(--wb);}
+.t-ts1{border-color:rgba(184,144,24,0.4);color:var(--ts1);}
+.t-ts2{border-color:rgba(72,112,176,0.4);color:var(--ts2);}
+.t-n{border-color:var(--ln2);color:var(--faint);}
+
+/* ── SECTION HEADERS ── */
+.sec{border-top:1px solid var(--ln);padding:24px 60px 18px;background:var(--bg2);display:flex;align-items:baseline;gap:14px;}
+.sec-n{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--faint);}
+.sec-t{font-family:'Cinzel',serif;font-size:19px;font-weight:600;color:#d4d0c0;}
+.sec-sub{margin-left:auto;font-family:'Space Mono',monospace;font-size:9px;color:var(--faint);font-style:italic;white-space:nowrap;}
+
+.body{padding:24px 60px 28px;}
+p{font-size:14.5px;color:var(--dim);line-height:1.75;margin-bottom:10px;}
+p strong{color:var(--body);}
+p:last-child{margin:0;}
+h3{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#ccc8b8;margin:20px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--ln);}
+h3:first-child{margin-top:0;}
+
+/* ── TS COMPARE SPLIT ── */
+.ts-split{display:grid;grid-template-columns:1fr 1fr;margin:16px 0;gap:0;}
+.ts1-pane{padding:20px 22px;background:rgba(184,144,24,0.07);border-top:2px solid var(--ts1);border-right:1px solid rgba(184,144,24,0.2);border-bottom:1px solid rgba(184,144,24,0.15);border-left:1px solid rgba(184,144,24,0.15);}
+.ts2-pane{padding:20px 22px;background:rgba(72,112,176,0.07);border-top:2px solid var(--ts2);border:1px solid rgba(72,112,176,0.18);border-top:2px solid var(--ts2);}
+.pane-lbl{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.ts1-pane .pane-lbl{color:var(--ts1);}
+.ts2-pane .pane-lbl{color:var(--ts2);}
+.pane-title{font-family:'Cinzel',serif;font-size:14px;font-weight:600;display:block;margin-bottom:10px;}
+.ts1-pane .pane-title{color:rgba(224,170,56,0.8);}
+.ts2-pane .pane-title{color:rgba(90,144,216,0.8);}
+.pane-body{font-size:13.5px;color:var(--dim);line-height:1.68;}
+.pane-body strong{color:var(--body);}
+
+/* ── TS SCHEMATIC MAPS ── */
+.ts-maps{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:18px 0;}
+.ts-map-box{background:var(--bg3);border:1px solid var(--ln);overflow:hidden;}
+.ts-map-hd{background:var(--bg4);padding:9px 16px;border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:10px;}
+.ts-map-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;}
+.ts1-box .ts-map-lbl{color:var(--ts1);}
+.ts2-box .ts-map-lbl{color:var(--ts2);}
+.ts-map-name{font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:var(--body);}
+
+/* ── CALLOUTS ── */
+.call{border-left:3px solid;padding:11px 16px;margin:13px 0;font-size:14px;line-height:1.7;}
+.call-a{border-color:var(--wa);background:var(--wabg);color:var(--dim);}
+.call-b{border-color:var(--wb);background:var(--wbbg);color:var(--dim);}
+.call-n{border-color:var(--ln2);background:var(--bg3);color:var(--dim);}
+.call strong{color:var(--body);}
+.call-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.call-a .call-lbl{color:var(--wa);}
+.call-b .call-lbl{color:var(--wb);}
+.call-n .call-lbl{color:var(--faint);}
+
+/* ── MAP CONTAINERS ── */
+.map-wrap{
+  background:var(--bg3);border:1px solid var(--ln2);
+  margin:16px 0;position:relative;overflow:hidden;
+}
+.map-title-bar{
+  background:var(--bg4);padding:11px 20px;
+  border-bottom:1px solid var(--ln2);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mtb-left{display:flex;align-items:center;gap:12px;}
+.mtb-lbl{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;}
+.mtb-a .mtb-lbl{color:var(--wa);}
+.mtb-b .mtb-lbl{color:var(--wb);}
+.mtb-title{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:var(--body);}
+.mtb-right{font-family:'Space Mono',monospace;font-size:8px;color:var(--faint);font-style:italic;}
+
+/* ── LEGEND ── */
+.legend{
+  display:flex;flex-wrap:wrap;gap:10px;
+  padding:10px 18px;border-top:1px solid var(--ln);
+  background:var(--bg4);
+}
+.leg-item{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* ── ROOM KEY TABLE ── */
+.room-key{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;}
+.room-key th{background:var(--bg4);font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);padding:8px 13px;text-align:left;border-bottom:1px solid var(--ln);}
+.room-key td{padding:7px 13px;border-bottom:1px solid var(--ln);vertical-align:top;color:var(--dim);}
+.room-key td:first-child{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;white-space:nowrap;}
+.room-key td strong{color:var(--body);}
+.room-key tr.wa-row td:first-child{color:var(--wal);}
+.room-key tr.wb-row td:first-child{color:var(--wbl);}
+.room-key tr.sh-row td:first-child{color:var(--scl);}
+
+/* Doc footer */
+.doc-foot{padding:20px 60px;border-top:1px solid var(--ln);display:flex;justify-content:space-between;}
+.doc-foot span{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);}
+
+/* SVG rooms hover */
+.room-node{cursor:pointer;transition:opacity .2s;}
+.room-node:hover rect,.room-node:hover polygon{opacity:0.85;}
+.tooltip-box{pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cv-meta">
+    <span>KENOMA · MAP-DOC-001 · Gameplay Analysis + Archive Cartography</span>
+    <span>TS1 · TS2 · World A · World B · Interference Puzzles</span>
+  </div>
+  <div class="cv-title">The Archive<br><em>Mapped & Analysed</em></div>
+  <div class="cv-sub">Tormented Souls 1 & 2 gameplay structure analysis — followed by full architectural maps of both KENOMA worlds drawn from the Storytelling Bible v8 and the Vanguard Interference Puzzle document. All rooms, corridors, crossing points, and puzzle locations marked.</div>
+  <div class="cv-tags">
+    <span class="tag t-ts1">TS1 · Single Location · Narrative Spine</span>
+    <span class="tag t-ts2">TS2 · Zone Structure · Expanded Scale</span>
+    <span class="tag t-a">World A · Sacred Fire · Apadana Above</span>
+    <span class="tag t-b">World B · The Hollow · Dark Archive Below</span>
+    <span class="tag t-n">4 Interference Puzzle Locations</span>
+  </div>
+</div>
+
+
+<!-- §1 TS GAMEPLAY ANALYSIS -->
+<div class="sec">
+  <span class="sec-n">§ 01</span>
+  <span class="sec-t">Tormented Souls 1 & 2 — Gameplay & Map Structure Analysis</span>
+  <span class="sec-sub">Navigation · Camera · Backtracking · World Logic</span>
+</div>
+<div class="body">
+
+  <h3>Core Camera & Navigation System — Shared DNA</h3>
+  <p>Both games inherit the classic survival horror fixed-camera model: each room triggers a pre-set camera angle that does not follow the player. This is not a technical limitation — it is a deliberate spatial storytelling tool. The camera decides what you see and what you don't. A room's angle can hide a creature, reveal a resource, or frame a door in a way that tells the player it matters before they reach it.</p>
+  <p>Tank controls (relative to character, not camera) are retained in both games. This creates intentional friction in dangerous rooms — the player cannot instantly reverse course, cannot circle-strafe, must commit to movement decisions. In TS1, this friction is felt inside the mansion's narrow corridors. In TS2, it is felt across wider zone spaces with more complex geometry. The friction is designed as tension calibration, not difficulty from poor UX.</p>
+
+  <div class="ts-split">
+    <div class="ts1-pane">
+      <span class="pane-lbl">Tormented Souls 1 · 2021</span>
+      <span class="pane-title">The Spine Model — One Building, Layered Vertically</span>
+      <div class="pane-body">
+        <strong>Structure:</strong> Single mansion building carved into multiple functional zones (Ground Floor, Basement, Upper Floor, Bunker, Roof). All zones are physically connected — no loading-screen "travel" between areas. The player navigates a continuous building.<br><br>
+        <strong>Navigation logic:</strong> A central spine (main hallway, stairwells, the elevator shaft) connects all floors. Side rooms branch off the spine. The player always knows approximately where they are relative to the building's center because the spine is consistently accessible.<br><br>
+        <strong>Backtracking:</strong> Moderate and intentional. Most keys unlock doors within 1-3 rooms. The mansion is compact enough that a player holding an unused item is never more than 3 minutes from its destination. The mirror crossings add a vertical layer — the "corrupted world" is accessed from fixed mirror points on the main floor and basement, creating a predictable parallel navigation plane.<br><br>
+        <strong>Camera philosophy:</strong> Fixed angles are pre-rendered — high visual detail, consistent framing, every angle was art-directed. Camera positions often reveal story: the maternity ward's camera angle includes the shifted patient before the player approaches, rewarding attention. The operating theater camera is from above — the surgeon's perspective on the subject.
+      </div>
+    </div>
+    <div class="ts2-pane">
+      <span class="pane-lbl">Tormented Souls 2 · 2025</span>
+      <span class="pane-title">The Zone Model — Multiple Locations, Lateral Scale</span>
+      <div class="pane-body">
+        <strong>Structure:</strong> Seven distinct zones (Convent, Prison, School, Cemetery, Town, Processing Plant, Church/Bunker), each a separate large area connected by specific transit points. Some zones require backtracking through previously visited zones to progress in a later one.<br><br>
+        <strong>Navigation logic:</strong> Each zone has its own internal loop structure — areas designed to reconnect and allow efficient movement after the player learns them. The zone connections are linear (Convent → Prison → School → Cemetery → Town → Plant → Church) but zones open backward for key retrieval. The in-game map becomes essential — TS1 rarely needed it.<br><br>
+        <strong>Backtracking:</strong> More extensive and occasionally frustrating. Key items for one zone are sometimes found in a previous zone (a document in the Convent needed for a Cemetery puzzle). The expanded scale means "I need to go back" can cost 4-6 minutes of travel. The "Other Side" crossing adds another layer in each zone — a parallel version of the same space, not a separate building.<br><br>
+        <strong>Camera philosophy:</strong> Real-time 3D cameras (not pre-rendered) for most spaces, with fixed-angle triggers for specific corridors and rooms. The visual detail is higher, but the art-direction-per-angle is less precise than TS1's. Caroline's examination comments (press button near objects) replace some of the story-through-camera-angle that TS1 achieved architecturally.
+      </div>
+    </div>
+  </div>
+
+  <h3>Schematic Map Comparison</h3>
+
+  <!-- TS1 + TS2 SCHEMATICS SVG -->
+  <div class="ts-maps">
+    <div class="ts-map-box ts1-box">
+      <div class="ts-map-hd">
+        <span class="ts-map-lbl">TS1</span>
+        <span class="ts-map-name">Wildberger Hospital — Single Spine, Vertical</span>
+      </div>
+      <svg viewBox="0 0 420 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#111210;">
+        <defs>
+          <marker id="arr1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="rgba(184,144,24,0.5)"/>
+          </marker>
+        </defs>
+        <!-- Grid lines -->
+        <line x1="0" y1="60" x2="420" y2="60" stroke="rgba(184,144,24,0.04)" stroke-width="1"/>
+        <line x1="0" y1="160" x2="420" y2="160" stroke="rgba(184,144,24,0.04)" stroke-width="1"/>
+        <line x1="0" y1="260" x2="420" y2="260" stroke="rgba(184,144,24,0.04)" stroke-width="1"/>
+        <line x1="0" y1="360" x2="420" y2="360" stroke="rgba(184,144,24,0.04)" stroke-width="1"/>
+        <line x1="0" y1="460" x2="420" y2="460" stroke="rgba(184,144,24,0.04)" stroke-width="1"/>
+
+        <!-- Floor labels -->
+        <text x="16" y="44" fill="rgba(184,144,24,0.25)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">ROOF</text>
+        <text x="16" y="144" fill="rgba(184,144,24,0.25)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">UPPER FLOOR</text>
+        <text x="16" y="244" fill="rgba(184,144,24,0.25)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">MAIN FLOOR</text>
+        <text x="16" y="344" fill="rgba(184,144,24,0.25)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">BASEMENT</text>
+        <text x="16" y="444" fill="rgba(184,144,24,0.25)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">BUNKER</text>
+
+        <!-- Central spine (elevator/stairs) -->
+        <rect x="196" y="18" width="28" height="490" fill="rgba(184,144,24,0.07)" stroke="rgba(184,144,24,0.2)" stroke-width="1"/>
+        <text x="210" y="270" fill="rgba(184,144,24,0.2)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle" writing-mode="tb">SPINE</text>
+
+        <!-- ROOF rooms -->
+        <rect x="120" y="22" width="70" height="30" rx="2" fill="rgba(184,144,24,0.12)" stroke="rgba(184,144,24,0.35)" stroke-width="1"/>
+        <text x="155" y="35" fill="rgba(224,170,56,0.7)" font-family="Space Mono,monospace" font-size="7.5" text-anchor="middle" font-weight="700">ATTIC</text>
+        <text x="155" y="46" fill="rgba(184,144,24,0.4)" font-family="Space Mono,monospace" font-size="6.5" text-anchor="middle">BOSS</text>
+        <line x1="190" y1="37" x2="196" y2="37" stroke="rgba(184,144,24,0.25)" stroke-width="1.5"/>
+
+        <rect x="232" y="22" width="80" height="30" rx="2" fill="rgba(184,144,24,0.08)" stroke="rgba(184,144,24,0.2)" stroke-width="1"/>
+        <text x="272" y="35" fill="rgba(184,144,24,0.5)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Storeroom</text>
+        <text x="272" y="46" fill="rgba(184,144,24,0.3)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">items</text>
+        <line x1="232" y1="37" x2="224" y2="37" stroke="rgba(184,144,24,0.2)" stroke-width="1.5"/>
+
+        <!-- UPPER FLOOR rooms -->
+        <rect x="68" y="168" width="76" height="32" rx="2" fill="rgba(184,144,24,0.1)" stroke="rgba(184,144,24,0.28)" stroke-width="1"/>
+        <text x="106" y="182" fill="rgba(184,144,24,0.6)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Room 2A</text>
+        <text x="106" y="192" fill="rgba(184,144,24,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">mirror access</text>
+        <line x1="144" y1="184" x2="196" y2="184" stroke="rgba(184,144,24,0.2)" stroke-width="1.5"/>
+
+        <rect x="232" y="165" width="76" height="38" rx="2" fill="rgba(184,144,24,0.08)" stroke="rgba(184,144,24,0.22)" stroke-width="1"/>
+        <text x="270" y="180" fill="rgba(184,144,24,0.5)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Room 2D</text>
+        <text x="270" y="190" fill="rgba(184,144,24,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">guillotine</text>
+        <text x="270" y="198" fill="rgba(184,144,24,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">monkey scroll</text>
+        <line x1="232" y1="184" x2="224" y2="184" stroke="rgba(184,144,24,0.2)" stroke-width="1.5"/>
+
+        <rect x="310" y="168" width="90" height="32" rx="2" fill="rgba(184,144,24,0.08)" stroke="rgba(184,144,24,0.18)" stroke-width="1"/>
+        <text x="355" y="182" fill="rgba(184,144,24,0.4)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Library /</text>
+        <text x="355" y="192" fill="rgba(184,144,24,0.4)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Judge Podium</text>
+        <line x1="310" y1="184" x2="308" y2="184" stroke="rgba(184,144,24,0.15)" stroke-width="1"/>
+
+        <!-- MAIN FLOOR -->
+        <rect x="46" y="268" width="88" height="36" rx="2" fill="rgba(184,144,24,0.12)" stroke="rgba(184,144,24,0.32)" stroke-width="1"/>
+        <text x="90" y="283" fill="rgba(184,144,24,0.65)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Waiting Room</text>
+        <text x="90" y="294" fill="rgba(184,144,24,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Entry</text>
+        <line x1="134" y1="286" x2="196" y2="286" stroke="rgba(184,144,24,0.22)" stroke-width="1.5"/>
+
+        <rect x="232" y="265" width="90" height="42" rx="2" fill="rgba(184,144,24,0.12)" stroke="rgba(184,144,24,0.3)" stroke-width="1"/>
+        <text x="277" y="282" fill="rgba(224,170,56,0.7)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle" font-weight="700">Maternity Ward</text>
+        <text x="277" y="292" fill="rgba(184,144,24,0.4)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">mirror · doll puzzle</text>
+        <text x="277" y="301" fill="rgba(184,144,24,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">TV biography</text>
+        <line x1="232" y1="286" x2="224" y2="286" stroke="rgba(184,144,24,0.22)" stroke-width="1.5"/>
+
+        <rect x="332" y="268" width="80" height="36" rx="2" fill="rgba(184,144,24,0.08)" stroke="rgba(184,144,24,0.2)" stroke-width="1"/>
+        <text x="372" y="282" fill="rgba(184,144,24,0.45)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Chapel /</text>
+        <text x="372" y="292" fill="rgba(184,144,24,0.45)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Pharmacy</text>
+
+        <!-- BASEMENT -->
+        <rect x="36" y="367" width="90" height="36" rx="2" fill="rgba(60,80,140,0.12)" stroke="rgba(60,80,140,0.28)" stroke-width="1"/>
+        <text x="81" y="382" fill="rgba(80,110,180,0.65)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Little Room</text>
+        <text x="81" y="393" fill="rgba(60,80,140,0.4)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">MIRROR 1</text>
+        <line x1="126" y1="385" x2="196" y2="385" stroke="rgba(60,80,140,0.2)" stroke-width="1.5"/>
+
+        <rect x="232" y="364" width="90" height="42" rx="2" fill="rgba(60,80,140,0.1)" stroke="rgba(60,80,140,0.24)" stroke-width="1"/>
+        <text x="277" y="379" fill="rgba(90,144,216,0.65)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Sewer /</text>
+        <text x="277" y="390" fill="rgba(90,144,216,0.65)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Bedroom Mirror</span></text>
+        <text x="277" y="400" fill="rgba(60,80,140,0.4)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">MIRROR 2</text>
+        <line x1="232" y1="385" x2="224" y2="385" stroke="rgba(60,80,140,0.2)" stroke-width="1.5"/>
+
+        <rect x="332" y="367" width="80" height="36" rx="2" fill="rgba(60,80,140,0.08)" stroke="rgba(60,80,140,0.2)" stroke-width="1"/>
+        <text x="372" y="382" fill="rgba(60,80,140,0.5)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Generator /</text>
+        <text x="372" y="393" fill="rgba(60,80,140,0.5)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Valve Room</text>
+
+        <!-- BUNKER -->
+        <rect x="100" y="466" width="80" height="32" rx="2" fill="rgba(60,80,140,0.14)" stroke="rgba(60,80,140,0.28)" stroke-width="1"/>
+        <text x="140" y="480" fill="rgba(90,144,216,0.6)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Bunker / Gas</text>
+        <text x="140" y="491" fill="rgba(60,80,140,0.38)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">MIRROR 3</text>
+        <line x1="180" y1="482" x2="196" y2="482" stroke="rgba(60,80,140,0.2)" stroke-width="1.5"/>
+
+        <rect x="240" y="466" width="80" height="32" rx="2" fill="rgba(60,80,140,0.1)" stroke="rgba(60,80,140,0.2)" stroke-width="1"/>
+        <text x="280" y="480" fill="rgba(60,80,140,0.5)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">VHS Room</text>
+        <text x="280" y="491" fill="rgba(60,80,140,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">time travel</text>
+        <line x1="240" y1="482" x2="224" y2="482" stroke="rgba(60,80,140,0.2)" stroke-width="1.5"/>
+
+        <!-- Stair/spine connections -->
+        <line x1="210" y1="52" x2="210" y2="165" stroke="rgba(184,144,24,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="210" y1="200" x2="210" y2="265" stroke="rgba(184,144,24,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="210" y1="307" x2="210" y2="365" stroke="rgba(184,144,24,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="210" y1="407" x2="210" y2="465" stroke="rgba(184,144,24,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Clock annotation -->
+        <text x="210" y="510" fill="rgba(184,144,24,0.15)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Single building · Vertical spine · Mirror = corrupted past layer</text>
+      </svg>
+    </div>
+
+    <div class="ts-map-box ts2-box">
+      <div class="ts-map-hd">
+        <span class="ts-map-lbl">TS2</span>
+        <span class="ts-map-name">Villa Hess / Town — Zone Structure, Lateral</span>
+      </div>
+      <svg viewBox="0 0 420 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#111210;">
+        <!-- Zone connection lines -->
+        <line x1="70" y1="100" x2="350" y2="100" stroke="rgba(72,112,176,0.12)" stroke-width="8"/>
+        <text x="210" y="95" fill="rgba(72,112,176,0.18)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="3">PROGRESSION PATH</text>
+
+        <!-- ZONE 1: Convent -->
+        <rect x="18" y="30" width="72" height="140" rx="3" fill="rgba(72,112,176,0.1)" stroke="rgba(72,112,176,0.32)" stroke-width="1.5"/>
+        <text x="54" y="52" fill="rgba(90,144,216,0.75)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle" font-weight="700">CONVENT</text>
+        <line x1="54" y1="57" x2="54" y2="63" stroke="rgba(72,112,176,0.2)" stroke-width="1"/>
+        <rect x="26" y="65" width="56" height="18" rx="1" fill="rgba(72,112,176,0.15)" stroke="rgba(72,112,176,0.25)" stroke-width="1"/>
+        <text x="54" y="76" fill="rgba(72,112,176,0.6)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Cryptex room</text>
+        <rect x="26" y="87" width="56" height="18" rx="1" fill="rgba(72,112,176,0.1)" stroke="rgba(72,112,176,0.2)" stroke-width="1"/>
+        <text x="54" y="98" fill="rgba(72,112,176,0.5)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Museum mirror</text>
+        <rect x="26" y="109" width="56" height="18" rx="1" fill="rgba(72,112,176,0.1)" stroke="rgba(72,112,176,0.2)" stroke-width="1"/>
+        <text x="54" y="120" fill="rgba(72,112,176,0.5)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Church mirror</text>
+        <rect x="26" y="131" width="56" height="18" rx="1" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.18)" stroke-width="1"/>
+        <text x="54" y="142" fill="rgba(72,112,176,0.4)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Lady Chapel</text>
+        <text x="54" y="166" fill="rgba(90,144,216,0.3)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">↑ OTHER SIDE</text>
+        <line x1="90" y1="100" x2="108" y2="100" stroke="rgba(72,112,176,0.25)" stroke-width="2"/>
+
+        <!-- ZONE 2: Prison -->
+        <rect x="108" y="30" width="66" height="140" rx="3" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.25)" stroke-width="1.5"/>
+        <text x="141" y="52" fill="rgba(90,144,216,0.6)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle" font-weight="700">PRISON</text>
+        <rect x="116" y="65" width="50" height="18" rx="1" fill="rgba(72,112,176,0.1)" stroke="rgba(72,112,176,0.2)" stroke-width="1"/>
+        <text x="141" y="76" fill="rgba(72,112,176,0.5)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Power boxes</text>
+        <rect x="116" y="87" width="50" height="18" rx="1" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.18)" stroke-width="1"/>
+        <text x="141" y="98" fill="rgba(72,112,176,0.4)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Cells corridor</text>
+        <rect x="116" y="109" width="50" height="18" rx="1" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.18)" stroke-width="1"/>
+        <text x="141" y="120" fill="rgba(72,112,176,0.4)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Guard room</text>
+        <line x1="174" y1="100" x2="192" y2="100" stroke="rgba(72,112,176,0.2)" stroke-width="2"/>
+
+        <!-- ZONE 3: School -->
+        <rect x="192" y="30" width="70" height="140" rx="3" fill="rgba(72,112,176,0.12)" stroke="rgba(72,112,176,0.3)" stroke-width="1.5"/>
+        <text x="227" y="52" fill="rgba(90,144,216,0.7)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle" font-weight="700">SCHOOL</text>
+        <rect x="200" y="65" width="54" height="18" rx="1" fill="rgba(72,112,176,0.15)" stroke="rgba(72,112,176,0.25)" stroke-width="1"/>
+        <text x="227" y="76" fill="rgba(90,144,216,0.6)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Restroom mirror</text>
+        <rect x="200" y="87" width="54" height="18" rx="1" fill="rgba(72,112,176,0.12)" stroke="rgba(72,112,176,0.22)" stroke-width="1"/>
+        <text x="227" y="98" fill="rgba(72,112,176,0.55)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Apple seed time</text>
+        <rect x="200" y="109" width="54" height="18" rx="1" fill="rgba(72,112,176,0.1)" stroke="rgba(72,112,176,0.2)" stroke-width="1"/>
+        <text x="227" y="120" fill="rgba(72,112,176,0.45)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Classrooms</text>
+        <rect x="200" y="131" width="54" height="18" rx="1" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.18)" stroke-width="1"/>
+        <text x="227" y="142" fill="rgba(72,112,176,0.38)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Bell tower</text>
+        <text x="227" y="166" fill="rgba(90,144,216,0.3)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">↑ VHS TIME TRAVEL</text>
+        <line x1="262" y1="100" x2="280" y2="100" stroke="rgba(72,112,176,0.2)" stroke-width="2"/>
+
+        <!-- ZONE 4: Cemetery -->
+        <rect x="280" y="30" width="66" height="140" rx="3" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.22)" stroke-width="1.5"/>
+        <text x="313" y="52" fill="rgba(90,144,216,0.55)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle" font-weight="700">CEMETERY</text>
+        <rect x="288" y="65" width="50" height="18" rx="1" fill="rgba(72,112,176,0.1)" stroke="rgba(72,112,176,0.18)" stroke-width="1"/>
+        <text x="313" y="76" fill="rgba(72,112,176,0.45)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Animal dials</text>
+        <rect x="288" y="87" width="50" height="18" rx="1" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.16)" stroke-width="1"/>
+        <text x="313" y="98" fill="rgba(72,112,176,0.4)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">PEDRO grave</text>
+        <rect x="288" y="109" width="50" height="18" rx="1" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.16)" stroke-width="1"/>
+        <text x="313" y="120" fill="rgba(72,112,176,0.38)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Mausoleum</text>
+        <line x1="346" y1="100" x2="360" y2="100" stroke="rgba(72,112,176,0.18)" stroke-width="2"/>
+
+        <!-- ZONE 5: Processing -->
+        <rect x="360" y="30" width="52" height="140" rx="3" fill="rgba(72,112,176,0.06)" stroke="rgba(72,112,176,0.18)" stroke-width="1.5"/>
+        <text x="386" y="52" fill="rgba(90,144,216,0.45)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">PLANT</text>
+        <rect x="368" y="65" width="36" height="18" rx="1" fill="rgba(72,112,176,0.08)" stroke="rgba(72,112,176,0.15)" stroke-width="1"/>
+        <text x="386" y="76" fill="rgba(72,112,176,0.38)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Furnace</text>
+        <rect x="368" y="87" width="36" height="18" rx="1" fill="rgba(72,112,176,0.06)" stroke="rgba(72,112,176,0.13)" stroke-width="1"/>
+        <text x="386" y="98" fill="rgba(72,112,176,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Waste disp.</text>
+        <text x="386" y="166" fill="rgba(90,144,216,0.25)" font-family="Space Mono,monospace" font-size="5" text-anchor="middle">→ CHURCH</text>
+
+        <!-- "Other Side" layer for each zone -->
+        <text x="210" y="192" fill="rgba(72,112,176,0.18)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="2">OTHER SIDE LAYER (EACH ZONE HAS OWN RULE)</text>
+        <rect x="18" y="200" width="394" height="40" rx="2" fill="rgba(72,112,176,0.05)" stroke="rgba(72,112,176,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="70" y="216" fill="rgba(72,112,176,0.3)" font-family="Space Mono,monospace" font-size="7">Museum: retrieve bull</text>
+        <text x="70" y="228" fill="rgba(72,112,176,0.2)" font-family="Space Mono,monospace" font-size="6">different logic per zone →</text>
+        <text x="200" y="216" fill="rgba(72,112,176,0.3)" font-family="Space Mono,monospace" font-size="7">School: heal Miguel</text>
+        <text x="310" y="216" fill="rgba(72,112,176,0.3)" font-family="Space Mono,monospace" font-size="7">Waste: furnace code</text>
+
+        <!-- Cross-zone backtrack arrows -->
+        <path d="M141,170 C141,260 54,260 54,220" stroke="rgba(72,112,176,0.15)" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+        <text x="90" y="250" fill="rgba(72,112,176,0.2)" font-family="Space Mono,monospace" font-size="7">backtrack</text>
+        <path d="M313,170 C313,270 54,270 54,240" stroke="rgba(72,112,176,0.1)" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+
+        <!-- Item requiring cross-zone travel indicator -->
+        <rect x="18" y="290" width="394" height="50" rx="2" fill="rgba(136,40,40,0.05)" stroke="rgba(136,40,40,0.12)" stroke-width="1"/>
+        <text x="30" y="308" fill="rgba(176,70,70,0.35)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">TS2 DESIGN ISSUE — CROSS-ZONE CLUE DISTANCE</text>
+        <text x="30" y="322" fill="rgba(136,40,40,0.3)" font-family="Space Mono,monospace" font-size="7">Convent document needed for Cemetery puzzle. 4–6 min travel.</text>
+        <text x="30" y="334" fill="rgba(136,40,40,0.25)" font-family="Space Mono,monospace" font-size="7">No consistent "Other Side" rule across zones. Each crossing is a surprise.</text>
+
+        <!-- Conclusion -->
+        <text x="210" y="380" fill="rgba(72,112,176,0.15)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">7 zones · Zone logic per area · No unified crossing rule · Backtrack-heavy late game</text>
+
+        <!-- Map scale annotation -->
+        <line x1="18" y1="400" x2="402" y2="400" stroke="rgba(72,112,176,0.1)" stroke-width="1"/>
+        <text x="18" y="412" fill="rgba(72,112,176,0.15)" font-family="Space Mono,monospace" font-size="6">CONVENT</text>
+        <text x="102" y="412" fill="rgba(72,112,176,0.15)" font-family="Space Mono,monospace" font-size="6">PRISON</text>
+        <text x="186" y="412" fill="rgba(72,112,176,0.15)" font-family="Space Mono,monospace" font-size="6">SCHOOL</text>
+        <text x="270" y="412" fill="rgba(72,112,176,0.15)" font-family="Space Mono,monospace" font-size="6">CEMETERY</text>
+        <text x="356" y="412" fill="rgba(72,112,176,0.15)" font-family="Space Mono,monospace" font-size="6">PLANT</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="call call-n">
+    <span class="call-lbl">KENOMA's Position</span>
+    <strong>KENOMA takes TS1's single-location discipline and TS2's depth-of-world ambition simultaneously.</strong> One Archive building — but with two complete worlds inside it, each with its own philosophical puzzle vocabulary, its own creature ecology, and its own Vanguard. The variety TS2 generated through seven geographic zones, KENOMA generates through civilizational divergence within the same physical structure. The corridor you cross in World A is the same corridor — inverted — in World B. The player learns both at once.
+  </div>
+</div>
+
+
+<!-- §2 KENOMA WORLD A MAP -->
+<div class="sec">
+  <span class="sec-n">§ 02</span>
+  <span class="sec-t">KENOMA — World A · Sacred Fire · The Apadana Above</span>
+  <span class="sec-sub">Persepolis-scale · 72 columns · Fire altars as save points · Summit at WA-007</span>
+</div>
+<div class="body">
+  <div class="map-wrap">
+    <div class="map-title-bar mtb-a">
+      <div class="mtb-left">
+        <span class="mtb-lbl">World A · Sacred Fire</span>
+        <span class="mtb-title">The Apadana — Full Architectural Map · Elevation View (South Face)</span>
+      </div>
+      <span class="mtb-right">WA-001 → WA-002 → WA-003 → WA/B Shared → WA-007 Summit</span>
+    </div>
+
+    <svg viewBox="0 0 1060 680" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#0e0e0a;">
+      <defs>
+        <!-- Fire glow filter -->
+        <filter id="fire-glow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <!-- Grid -->
+        <pattern id="grid-a" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+          <line x1="20" y1="0" x2="20" y2="20" stroke="rgba(192,136,32,0.06)" stroke-width="0.5"/>
+          <line x1="0" y1="20" x2="20" y2="20" stroke="rgba(192,136,32,0.06)" stroke-width="0.5"/>
+        </pattern>
+        <!-- Crossing point symbol -->
+        <g id="tfp">
+          <circle r="8" fill="rgba(192,136,32,0.15)" stroke="rgba(192,136,32,0.6)" stroke-width="1.5"/>
+          <line x1="-5" y1="0" x2="5" y2="0" stroke="rgba(192,136,32,0.7)" stroke-width="1"/>
+          <line x1="0" y1="-5" x2="0" y2="5" stroke="rgba(192,136,32,0.7)" stroke-width="1"/>
+          <circle r="2" fill="rgba(192,136,32,0.8)"/>
+        </g>
+        <!-- Scenario markers -->
+        <g id="scA">
+          <circle r="9" fill="rgba(192,88,40,0.2)" stroke="rgba(192,88,40,0.7)" stroke-width="1.5"/>
+          <text y="4" font-family="Space Mono" font-size="10" fill="rgba(220,110,60,0.9)" text-anchor="middle" font-weight="700">A</text>
+        </g>
+        <g id="scB">
+          <circle r="9" fill="rgba(56,136,106,0.2)" stroke="rgba(56,136,106,0.7)" stroke-width="1.5"/>
+          <text y="4" font-family="Space Mono" font-size="10" fill="rgba(80,170,130,0.9)" text-anchor="middle" font-weight="700">B</text>
+        </g>
+        <g id="scC">
+          <circle r="9" fill="rgba(72,104,144,0.2)" stroke="rgba(72,104,144,0.7)" stroke-width="1.5"/>
+          <text y="4" font-family="Space Mono" font-size="10" fill="rgba(100,145,195,0.9)" text-anchor="middle" font-weight="700">C</text>
+        </g>
+        <g id="scD">
+          <circle r="9" fill="rgba(120,72,168,0.2)" stroke="rgba(120,72,168,0.7)" stroke-width="1.5"/>
+          <text y="4" font-family="Space Mono" font-size="10" fill="rgba(160,110,210,0.9)" text-anchor="middle" font-weight="700">D</text>
+        </g>
+        <!-- Fire altar -->
+        <g id="altar">
+          <rect x="-4" y="-8" width="8" height="10" fill="rgba(192,136,32,0.3)" stroke="rgba(192,136,32,0.5)" stroke-width="0.8"/>
+          <ellipse cx="0" cy="-8" rx="5" ry="3" fill="rgba(230,170,40,0.15)" stroke="rgba(230,170,40,0.4)" stroke-width="0.8"/>
+          <ellipse cx="0" cy="-10" rx="3" ry="4" fill="rgba(255,200,60,0.08)"/>
+        </g>
+        <!-- Fire-Warden symbol -->
+        <g id="fw">
+          <polygon points="0,-8 8,5 -8,5" fill="rgba(192,80,20,0.2)" stroke="rgba(192,80,20,0.55)" stroke-width="1"/>
+          <text y="2" font-family="Space Mono" font-size="7" fill="rgba(200,100,40,0.7)" text-anchor="middle">FW</text>
+        </g>
+      </defs>
+
+      <!-- Background grid -->
+      <rect width="1060" height="680" fill="url(#grid-a)"/>
+
+      <!-- Cliff face background -->
+      <rect x="0" y="0" width="1060" height="680" fill="rgba(20,16,8,0.5)"/>
+
+      <!-- Mountain/cliff outline -->
+      <path d="M0,680 L0,380 Q50,340 120,300 L200,250 Q260,200 300,160 L340,120 Q370,80 400,40 L420,20 L440,40 Q470,80 500,120 L540,160 Q580,200 640,250 L720,300 Q790,340 840,380 L920,420 L1060,460 L1060,680 Z" fill="rgba(25,20,10,0.4)" stroke="rgba(192,136,32,0.06)" stroke-width="1"/>
+
+      <!-- ══ LEVEL LABELS ══ -->
+      <text x="24" y="40" fill="rgba(192,136,32,0.18)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">SUMMIT</text>
+      <line x1="20" y1="50" x2="1040" y2="50" stroke="rgba(192,136,32,0.08)" stroke-width="1"/>
+      <text x="24" y="175" fill="rgba(192,136,32,0.15)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">UPPER APADANA</text>
+      <line x1="20" y1="185" x2="1040" y2="185" stroke="rgba(192,136,32,0.06)" stroke-width="1"/>
+      <text x="24" y="320" fill="rgba(192,136,32,0.15)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">MIDDLE APADANA</text>
+      <line x1="20" y1="330" x2="1040" y2="330" stroke="rgba(192,136,32,0.06)" stroke-width="1"/>
+      <text x="24" y="475" fill="rgba(192,136,32,0.15)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">LOWER APADANA</text>
+      <line x1="20" y1="485" x2="1040" y2="485" stroke="rgba(192,136,32,0.06)" stroke-width="1"/>
+      <text x="24" y="620" fill="rgba(192,136,32,0.12)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">SURFACE APPROACH</text>
+      <line x1="20" y1="630" x2="1040" y2="630" stroke="rgba(192,136,32,0.05)" stroke-width="1"/>
+
+      <!-- ══ WA-007 — GRAND ARMILLARY GALLERY (SUMMIT) ══ -->
+      <rect x="380" y="58" width="300" height="118" rx="4" fill="rgba(192,136,32,0.15)" stroke="rgba(192,136,32,0.5)" stroke-width="1.5"/>
+      <!-- Oculus (dome opening to sky) -->
+      <ellipse cx="530" cy="105" rx="48" ry="28" fill="rgba(20,16,8,0.6)" stroke="rgba(192,136,32,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="530" y="100" fill="rgba(192,136,32,0.3)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">OCULUS</text>
+      <text x="530" y="111" fill="rgba(192,136,32,0.2)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">star access</text>
+      <!-- Grand Armillary rings -->
+      <ellipse cx="530" cy="105" rx="14" ry="8" fill="none" stroke="rgba(192,136,32,0.5)" stroke-width="1.5"/>
+      <ellipse cx="530" cy="105" rx="22" ry="13" fill="none" stroke="rgba(192,136,32,0.3)" stroke-width="1"/>
+      <ellipse cx="530" cy="105" rx="30" ry="18" fill="none" stroke="rgba(192,136,32,0.2)" stroke-width="1"/>
+      <circle cx="530" cy="105" r="3" fill="rgba(192,136,32,0.7)"/>
+
+      <!-- Room label WA-007 -->
+      <text x="388" y="76" fill="rgba(192,136,32,0.55)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WA-007</text>
+      <text x="388" y="88" fill="rgba(224,170,56,0.8)" font-family="Cinzel,serif" font-size="13" font-weight="600">Grand Armillary Gallery</text>
+      <text x="388" y="100" fill="rgba(192,136,32,0.4)" font-family="Space Mono,monospace" font-size="7">Act II climax · 7-ring astronomical instrument</text>
+      <text x="388" y="112" fill="rgba(192,136,32,0.35)" font-family="Space Mono,monospace" font-size="7">Boundary's only permanent defeat (PZ-007)</text>
+      <text x="388" y="156" fill="rgba(192,136,32,0.35)" font-family="Space Mono,monospace" font-size="7">← 28s memorized / 35s improvised →</text>
+
+      <!-- Column capitals at WA-007 -->
+      <rect x="384" y="58" width="12" height="118" fill="rgba(192,136,32,0.06)" stroke="rgba(192,136,32,0.15)" stroke-width="0.5"/>
+      <rect x="664" y="58" width="12" height="118" fill="rgba(192,136,32,0.06)" stroke="rgba(192,136,32,0.15)" stroke-width="0.5"/>
+
+      <!-- Stairs from summit -->
+      <path d="M530,176 L530,190" stroke="rgba(192,136,32,0.3)" stroke-width="2" stroke-dasharray="4,2"/>
+      <text x="544" y="186" fill="rgba(192,136,32,0.25)" font-family="Space Mono,monospace" font-size="7">stairs down</text>
+
+      <!-- TFP-04 at summit -->
+      <use href="#tfp" transform="translate(660,90)"/>
+      <text x="674" y="87" fill="rgba(192,136,32,0.45)" font-family="Space Mono,monospace" font-size="7">TFP-04</text>
+      <text x="674" y="97" fill="rgba(192,136,32,0.3)" font-family="Space Mono,monospace" font-size="6">→ WB-∞ Convergence</text>
+
+      <!-- ══ WA-004 — THRONE APPROACH CORRIDOR (UPPER) ══ -->
+      <rect x="190" y="193" width="660" height="80" rx="3" fill="rgba(192,136,32,0.08)" stroke="rgba(192,136,32,0.3)" stroke-width="1"/>
+      <text x="200" y="213" fill="rgba(192,136,32,0.45)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WA-004 · WA-005</text>
+      <text x="200" y="226" fill="rgba(200,160,60,0.6)" font-family="Cinzel,serif" font-size="12" font-weight="600">Processional Corridor + Throne Hall Approach</text>
+      <text x="200" y="240" fill="rgba(192,136,32,0.3)" font-family="Space Mono,monospace" font-size="7">Carved tribute friezes · 30 nations · Fire altars at each pilaster · Act II: Vanguard's flanking route</text>
+      <text x="200" y="254" fill="rgba(192,136,32,0.25)" font-family="Space Mono,monospace" font-size="7">WA-005 = Throne Hall — Act III False Victory location</text>
+
+      <!-- Fire altars WA-004 -->
+      <use href="#altar" transform="translate(260,230)"/>
+      <use href="#altar" transform="translate(360,230)"/>
+      <use href="#altar" transform="translate(460,230)"/>
+      <use href="#altar" transform="translate(560,230)"/>
+      <use href="#altar" transform="translate(660,230)"/>
+      <use href="#altar" transform="translate(760,230)"/>
+
+      <!-- Columns WA-004 -->
+      <rect x="190" y="193" width="10" height="80" fill="rgba(192,136,32,0.06)" stroke="rgba(192,136,32,0.1)" stroke-width="0.5"/>
+      <rect x="840" y="193" width="10" height="80" fill="rgba(192,136,32,0.06)" stroke="rgba(192,136,32,0.1)" stroke-width="0.5"/>
+
+      <!-- ══ OBSERVATORY — SCHOLAR'S SAFE ROOM ══ -->
+      <rect x="870" y="195" width="160" height="78" rx="3" fill="rgba(192,168,80,0.1)" stroke="rgba(192,168,80,0.4)" stroke-width="1.5"/>
+      <text x="880" y="213" fill="rgba(192,168,80,0.55)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">OBSERVATORY</text>
+      <text x="880" y="226" fill="rgba(224,192,80,0.65)" font-family="Cinzel,serif" font-size="12" font-weight="600">Scholar's Base Camp</font></text>
+      <text x="880" y="239" fill="rgba(192,168,80,0.35)" font-family="Space Mono,monospace" font-size="7">Safe room · Oil + candle save</text>
+      <text x="880" y="251" fill="rgba(192,168,80,0.28)" font-family="Space Mono,monospace" font-size="7">SH4 corruption lifecycle</text>
+      <text x="880" y="263" fill="rgba(136,40,40,0.35)" font-family="Space Mono,monospace" font-size="6">ACT II: Lantern-Thief spawns here</text>
+      <!-- Connection to WA-004 -->
+      <line x1="870" y1="234" x2="850" y2="234" stroke="rgba(192,168,80,0.3)" stroke-width="1.5"/>
+
+      <!-- ══ MIDDLE APADANA LEVEL ══ -->
+
+      <!-- WA/B-GH-02 — GREAT HALL (Translation Obelisk — Scenario D) -->
+      <rect x="280" y="340" width="200" height="110" rx="3" fill="rgba(192,136,32,0.12)" stroke="rgba(192,136,32,0.38)" stroke-width="1.5"/>
+      <text x="290" y="360" fill="rgba(192,136,32,0.5)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WA/B-GH-02</text>
+      <text x="290" y="373" fill="rgba(224,170,56,0.7)" font-family="Cinzel,serif" font-size="13" font-weight="600">Great Hall</text>
+      <text x="290" y="386" fill="rgba(192,136,32,0.35)" font-family="Space Mono,monospace" font-size="7">Foundation Obelisk · Clause 7 + 12</text>
+      <text x="290" y="398" fill="rgba(192,136,32,0.3)" font-family="Space Mono,monospace" font-size="7">Clause 18 — Archive completion condition</text>
+      <!-- TFP-03 -->
+      <use href="#tfp" transform="translate(460,395)"/>
+      <text x="474" y="392" fill="rgba(192,136,32,0.4)" font-family="Space Mono,monospace" font-size="7">TFP-03</text>
+      <!-- Scenario D marker -->
+      <use href="#scD" transform="translate(318,430)"/>
+      <text x="335" y="435" fill="rgba(160,110,210,0.6)" font-family="Space Mono,monospace" font-size="7">Scenario D</text>
+      <text x="335" y="445" fill="rgba(120,72,168,0.4)" font-family="Space Mono,monospace" font-size="6">Translation Obelisk</text>
+      <!-- Column inside Great Hall -->
+      <rect x="360" y="345" width="8" height="100" fill="rgba(192,136,32,0.05)" stroke="rgba(192,136,32,0.12)" stroke-width="0.5"/>
+
+      <!-- WA/B-CY-01 — CENTRAL COURTYARD (Shadow Well — Scenario A) -->
+      <rect x="500" y="338" width="180" height="115" rx="3" fill="rgba(192,136,32,0.1)" stroke="rgba(192,136,32,0.32)" stroke-width="1.5"/>
+      <text x="510" y="358" fill="rgba(192,136,32,0.48)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WA/B-CY-01</text>
+      <text x="510" y="371" fill="rgba(224,170,56,0.65)" font-family="Cinzel,serif" font-size="13" font-weight="600">Central Courtyard</text>
+      <text x="510" y="384" fill="rgba(192,136,32,0.3)" font-family="Space Mono,monospace" font-size="7">Open sky · Shadow well · Sun-path calibration</text>
+      <!-- Well symbol -->
+      <circle cx="596" cy="415" r="18" fill="rgba(192,136,32,0.08)" stroke="rgba(192,136,32,0.35)" stroke-width="1.5"/>
+      <circle cx="596" cy="415" r="10" fill="rgba(20,16,8,0.8)" stroke="rgba(192,136,32,0.3)" stroke-width="1"/>
+      <text x="596" y="419" fill="rgba(192,136,32,0.4)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">WELL</text>
+      <!-- Scenario A marker -->
+      <use href="#scA" transform="translate(534,413)"/>
+      <text x="548" y="437" fill="rgba(220,110,60,0.55)" font-family="Space Mono,monospace" font-size="6">Scenario A</text>
+      <text x="548" y="447" fill="rgba(192,88,40,0.38)" font-family="Space Mono,monospace" font-size="6">Shadow Well</text>
+
+      <!-- WA-003 — EASTERN TREASURY -->
+      <rect x="700" y="338" width="190" height="115" rx="3" fill="rgba(192,136,32,0.13)" stroke="rgba(192,136,32,0.4)" stroke-width="1.5"/>
+      <text x="710" y="358" fill="rgba(192,136,32,0.52)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WA-003</text>
+      <text x="710" y="371" fill="rgba(224,170,56,0.75)" font-family="Cinzel,serif" font-size="13" font-weight="600">Eastern Treasury</text>
+      <text x="710" y="384" fill="rgba(192,136,32,0.35)" font-family="Space Mono,monospace" font-size="7">30,000 cuneiform tablets · PZ-001 hub</text>
+      <text x="710" y="396" fill="rgba(192,136,32,0.3)" font-family="Space Mono,monospace" font-size="7">Armillary manual · Vanguard entry record</text>
+      <text x="710" y="408" fill="rgba(192,136,32,0.25)" font-family="Space Mono,monospace" font-size="7">Recognition moment (Emotional Beat 1)</text>
+      <text x="710" y="438" fill="rgba(224,170,56,0.4)" font-family="Space Mono,monospace" font-size="7">★ Overheard Scene: Vanguard A</text>
+
+      <!-- TFP-03b -->
+      <use href="#tfp" transform="translate(878,370)"/>
+      <text x="890" y="367" fill="rgba(192,136,32,0.38)" font-family="Space Mono,monospace" font-size="6">TFP</text>
+      <text x="890" y="377" fill="rgba(192,136,32,0.28)" font-family="Space Mono,monospace" font-size="6">→ WB-004</text>
+
+      <!-- ══ LOWER APADANA LEVEL ══ -->
+
+      <!-- WA-002 — HYPOSTYLE FOREST CORRIDOR -->
+      <rect x="150" y="493" width="680" height="120" rx="3" fill="rgba(192,136,32,0.11)" stroke="rgba(192,136,32,0.35)" stroke-width="1.5"/>
+      <text x="162" y="513" fill="rgba(192,136,32,0.5)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WA-002 · HF</text>
+      <text x="162" y="527" fill="rgba(224,170,56,0.72)" font-family="Cinzel,serif" font-size="14" font-weight="600">Hypostyle Forest Corridor</text>
+      <text x="162" y="541" fill="rgba(192,136,32,0.32)" font-family="Space Mono,monospace" font-size="7">72 stone columns with double-bull capitals · Main circulation hub · PZ-002 (Fire/Shadow mirror crossing)</text>
+      <text x="162" y="553" fill="rgba(192,136,32,0.28)" font-family="Space Mono,monospace" font-size="7">Flask moment (Emotional Beat 2) · Vanguard times Scholar at PZ-003 · Act II: Vanguard uses columns as cover</text>
+
+      <!-- 72 columns — represented as dots -->
+      <g fill="rgba(192,136,32,0.18)" stroke="rgba(192,136,32,0.25)" stroke-width="0.5">
+        <ellipse cx="190" cy="565" rx="5" ry="7"/><ellipse cx="218" cy="565" rx="5" ry="7"/><ellipse cx="246" cy="565" rx="5" ry="7"/>
+        <ellipse cx="274" cy="565" rx="5" ry="7"/><ellipse cx="302" cy="565" rx="5" ry="7"/><ellipse cx="330" cy="565" rx="5" ry="7"/>
+        <ellipse cx="358" cy="565" rx="5" ry="7"/><ellipse cx="386" cy="565" rx="5" ry="7"/><ellipse cx="414" cy="565" rx="5" ry="7"/>
+        <ellipse cx="442" cy="565" rx="5" ry="7"/><ellipse cx="470" cy="565" rx="5" ry="7"/><ellipse cx="498" cy="565" rx="5" ry="7"/>
+        <ellipse cx="526" cy="565" rx="5" ry="7"/><ellipse cx="554" cy="565" rx="5" ry="7"/><ellipse cx="582" cy="565" rx="5" ry="7"/>
+        <ellipse cx="610" cy="565" rx="5" ry="7"/><ellipse cx="638" cy="565" rx="5" ry="7"/><ellipse cx="666" cy="565" rx="5" ry="7"/>
+        <ellipse cx="694" cy="565" rx="5" ry="7"/><ellipse cx="722" cy="565" rx="5" ry="7"/><ellipse cx="750" cy="565" rx="5" ry="7"/>
+        <ellipse cx="778" cy="565" rx="5" ry="7"/><ellipse cx="806" cy="565" rx="5" ry="7"/>
+        <!-- Row 2 -->
+        <ellipse cx="190" cy="595" rx="5" ry="7"/><ellipse cx="218" cy="595" rx="5" ry="7"/><ellipse cx="246" cy="595" rx="5" ry="7"/>
+        <ellipse cx="274" cy="595" rx="5" ry="7"/><ellipse cx="302" cy="595" rx="5" ry="7"/><ellipse cx="330" cy="595" rx="5" ry="7"/>
+        <ellipse cx="358" cy="595" rx="5" ry="7"/><ellipse cx="386" cy="595" rx="5" ry="7"/><ellipse cx="414" cy="595" rx="5" ry="7"/>
+        <ellipse cx="442" cy="595" rx="5" ry="7"/><ellipse cx="470" cy="595" rx="5" ry="7"/><ellipse cx="498" cy="595" rx="5" ry="7"/>
+        <ellipse cx="526" cy="595" rx="5" ry="7"/><ellipse cx="554" cy="595" rx="5" ry="7"/><ellipse cx="582" cy="595" rx="5" ry="7"/>
+        <ellipse cx="610" cy="595" rx="5" ry="7"/><ellipse cx="638" cy="595" rx="5" ry="7"/><ellipse cx="666" cy="595" rx="5" ry="7"/>
+        <ellipse cx="694" cy="595" rx="5" ry="7"/><ellipse cx="722" cy="595" rx="5" ry="7"/><ellipse cx="750" cy="595" rx="5" ry="7"/>
+        <ellipse cx="778" cy="595" rx="5" ry="7"/><ellipse cx="806" cy="595" rx="5" ry="7"/>
+      </g>
+
+      <!-- WA/B-CT-03 — Inner Courtyard (Scenario C) — sub-space of HF -->
+      <rect x="510" y="502" width="130" height="55" rx="2" fill="rgba(72,104,144,0.15)" stroke="rgba(72,104,144,0.4)" stroke-width="1.5"/>
+      <text x="518" y="518" fill="rgba(72,104,144,0.6)" font-family="Space Mono,monospace" font-size="7" letter-spacing="1">WA/B-CT-03</text>
+      <text x="518" y="529" fill="rgba(100,145,195,0.7)" font-family="Cinzel,serif" font-size="10">Inner Courtyard</text>
+      <text x="518" y="540" fill="rgba(72,104,144,0.4)" font-family="Space Mono,monospace" font-size="6">Crossing junction</text>
+      <!-- Scenario C marker -->
+      <use href="#scC" transform="translate(614,523)"/>
+
+      <!-- WA/B-HF-04 — Eastern Alcove (Scenario B) -->
+      <rect x="815" y="493" width="135" height="90" rx="2" fill="rgba(56,136,106,0.12)" stroke="rgba(56,136,106,0.38)" stroke-width="1.5"/>
+      <text x="824" y="511" fill="rgba(56,136,106,0.55)" font-family="Space Mono,monospace" font-size="7" letter-spacing="1">WA/B-HF-04</text>
+      <text x="824" y="523" fill="rgba(80,170,130,0.7)" font-family="Cinzel,serif" font-size="10">Eastern Alcove</text>
+      <text x="824" y="535" fill="rgba(56,136,106,0.4)" font-family="Space Mono,monospace" font-size="6">Resonance Obelisk</text>
+      <text x="824" y="545" fill="rgba(56,136,106,0.3)" font-family="Space Mono,monospace" font-size="6">Keeper Designation</text>
+      <!-- Scenario B marker -->
+      <use href="#scB" transform="translate(834,565)"/>
+      <text x="850" y="570" fill="rgba(56,136,106,0.5)" font-family="Space Mono,monospace" font-size="6">Scenario B</text>
+
+      <!-- Fire altars in HF -->
+      <use href="#altar" transform="translate(200,540)"/>
+      <use href="#altar" transform="translate(400,540)"/>
+      <use href="#altar" transform="translate(600,540)"/>
+      <use href="#altar" transform="translate(800,540)"/>
+
+      <!-- TFP-02 in HF -->
+      <use href="#tfp" transform="translate(300,560)"/>
+      <text x="314" y="557" fill="rgba(192,136,32,0.4)" font-family="Space Mono,monospace" font-size="7">TFP-02</text>
+      <text x="314" y="567" fill="rgba(192,136,32,0.28)" font-family="Space Mono,monospace" font-size="6">→ WB-002</text>
+
+      <!-- ══ SURFACE APPROACH ══ -->
+
+      <!-- WA-001 — Gate of All Nations -->
+      <rect x="300" y="635" width="280" height="38" rx="3" fill="rgba(192,136,32,0.18)" stroke="rgba(192,136,32,0.55)" stroke-width="2"/>
+      <text x="310" y="650" fill="rgba(192,136,32,0.6)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WA-001</text>
+      <text x="310" y="664" fill="rgba(224,170,56,0.85)" font-family="Cinzel,serif" font-size="14" font-weight="700">Gate of All Nations</text>
+      <!-- Bull guardians -->
+      <polygon points="308,635 294,635 294,673 308,673" fill="rgba(192,136,32,0.1)" stroke="rgba(192,136,32,0.35)" stroke-width="1"/>
+      <polygon points="572,635 586,635 586,673 572,673" fill="rgba(192,136,32,0.1)" stroke="rgba(192,136,32,0.35)" stroke-width="1"/>
+      <text x="301" y="658" fill="rgba(192,136,32,0.25)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle" writing-mode="tb">BULL</text>
+      <text x="579" y="658" fill="rgba(192,136,32,0.25)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle" writing-mode="tb">BULL</text>
+
+      <!-- TFP-01 near gate -->
+      <use href="#tfp" transform="translate(620,654)"/>
+      <text x="634" y="651" fill="rgba(192,136,32,0.4)" font-family="Space Mono,monospace" font-size="7">TFP-01</text>
+      <text x="634" y="661" fill="rgba(192,136,32,0.28)" font-family="Space Mono,monospace" font-size="6">→ WB-001</text>
+
+      <!-- Fire-Wardens at gate -->
+      <use href="#fw" transform="translate(258,654)"/>
+      <use href="#fw" transform="translate(648,654)"/>
+
+      <!-- ══ VERTICAL CONNECTION LINES ══ -->
+      <!-- Main stairwell spine -->
+      <line x1="530" y1="176" x2="530" y2="193" stroke="rgba(192,136,32,0.3)" stroke-width="2"/>
+      <line x1="530" y1="273" x2="530" y2="340" stroke="rgba(192,136,32,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="530" y1="453" x2="530" y2="493" stroke="rgba(192,136,32,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="440" y1="613" x2="440" y2="635" stroke="rgba(192,136,32,0.25)" stroke-width="2"/>
+      <!-- Side connections -->
+      <line x1="380" y1="450" x2="340" y2="338" stroke="rgba(192,136,32,0.12)" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="800" y1="450" x2="800" y2="338" stroke="rgba(192,136,32,0.12)" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="850" y1="273" x2="880" y2="273" stroke="rgba(192,168,80,0.2)" stroke-width="1"/>
+
+      <!-- Stair symbols -->
+      <rect x="522" y="177" width="16" height="6" fill="rgba(192,136,32,0.2)"/>
+      <rect x="522" y="183" width="16" height="6" fill="rgba(192,136,32,0.15)"/>
+      <rect x="522" y="340" width="16" height="6" fill="rgba(192,136,32,0.15)"/>
+      <rect x="522" y="346" width="16" height="6" fill="rgba(192,136,32,0.1)"/>
+    </svg>
+
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(192,136,32,0.4);"></div>World A Room</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(192,136,32,0.8);border-radius:50%;"></div>Traversal Focal Point (TFP)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(192,88,40,0.6);border-radius:50%;"></div>Scenario A — Shadow Well</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(56,136,106,0.6);border-radius:50%;"></div>Scenario B — Resonance Obelisk</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(72,104,144,0.6);border-radius:50%;"></div>Scenario C — Still-Water Oracle</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(120,72,168,0.6);border-radius:50%;"></div>Scenario D — Translation Obelisk</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(192,168,80,0.5);"></div>Observatory (Scholar Base)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(192,80,20,0.4);"></div>Fire-Warden Spawn</div>
+    </div>
+  </div>
+
+  <table class="room-key">
+    <tr><th>ID</th><th>Name</th><th>Level</th><th>Key Functions</th></tr>
+    <tr class="wa-row"><td>WA-001</td><td><strong>Gate of All Nations</strong></td><td>Surface</td><td>Entry, naming tutorial, twin bull guardians, TFP-01 to WB-001</td></tr>
+    <tr class="wa-row"><td>WA-002 / HF</td><td><strong>Hypostyle Forest Corridor</strong></td><td>Lower</td><td>72-column main hub, Flask moment (Beat 2), PZ-002, TFP-02, fire altar chain</td></tr>
+    <tr class="sh-row"><td>WA/B-CT-03</td><td><strong>Inner Courtyard</strong></td><td>Lower / HF sub</td><td>Crossing junction, Still-Water Oracle (Scenario C), 8th star constellation trace</td></tr>
+    <tr class="sh-row"><td>WA/B-HF-04</td><td><strong>Eastern Alcove</strong></td><td>Lower / HF east</td><td>Resonance Obelisk (Scenario B), Keeper Designation, two-Keepers trace</td></tr>
+    <tr class="wa-row"><td>WA-003</td><td><strong>Eastern Treasury</strong></td><td>Middle</td><td>30,000 tablets, PZ-001 hub, Armillary manual, Recognition moment (Beat 1), overheard Vanguard A scene</td></tr>
+    <tr class="sh-row"><td>WA/B-CY-01</td><td><strong>Central Courtyard</strong></td><td>Middle</td><td>Shadow Well (Scenario A), two-calendar Calibration Marker, TFP connection</td></tr>
+    <tr class="sh-row"><td>WA/B-GH-02</td><td><strong>Great Hall</strong></td><td>Middle</td><td>Foundation Obelisk (Scenario D), Clause 18, TFP-03 to WB-004</td></tr>
+    <tr class="wa-row"><td>Observatory</td><td><strong>Scholar's Base Camp</strong></td><td>Upper side</td><td>Safe room → SH4 corruption, oil + candle saves, Act II: Lantern-Thief intrusion</td></tr>
+    <tr class="wa-row"><td>WA-004/005</td><td><strong>Processional Corridor + Throne Hall</strong></td><td>Upper</td><td>Tribute friezes, fire altar chain, Act III False Victory location</td></tr>
+    <tr class="wa-row"><td>WA-007</td><td><strong>Grand Armillary Gallery</strong></td><td>Summit</td><td>7-ring bronze instrument, Boundary's permanent defeat (PZ-007), TFP-04 to WB-∞, night-sky oculus</td></tr>
+  </table>
+</div>
+
+
+<!-- §3 KENOMA WORLD B MAP -->
+<div class="sec">
+  <span class="sec-n">§ 03</span>
+  <span class="sec-t">KENOMA — World B · The Hollow · Dark Archive Below</span>
+  <span class="sec-sub">Inverted architecture · Cold absolute dark · Fire vessel as only light · WB-∞ deepest</span>
+</div>
+<div class="body">
+  <div class="map-wrap">
+    <div class="map-title-bar mtb-b">
+      <div class="mtb-left">
+        <span class="mtb-lbl">World B · The Hollow</span>
+        <span class="mtb-title">Dark Archive — Inverted Map · Underground Elevation (columns hang from ceiling)</span>
+      </div>
+      <span class="mtb-right">WB-001 surface → WB-002 → WB-004 → WB-∞ Deepest</span>
+    </div>
+
+    <svg viewBox="0 0 1060 680" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#060810;">
+      <defs>
+        <pattern id="grid-b" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+          <line x1="20" y1="0" x2="20" y2="20" stroke="rgba(60,104,176,0.05)" stroke-width="0.5"/>
+          <line x1="0" y1="20" x2="20" y2="20" stroke="rgba(60,104,176,0.05)" stroke-width="0.5"/>
+        </pattern>
+        <filter id="cold-glow">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <!-- Void pit (inverse of fire altar) -->
+        <g id="void">
+          <ellipse cx="0" cy="0" rx="5" ry="3" fill="rgba(20,30,80,0.8)" stroke="rgba(60,104,176,0.4)" stroke-width="0.8"/>
+          <line x1="-3" y1="3" x2="3" y2="3" stroke="rgba(60,104,176,0.3)" stroke-width="0.5"/>
+          <ellipse cx="0" cy="5" rx="3" ry="2" fill="rgba(8,12,40,0.9)" stroke="rgba(40,80,160,0.2)" stroke-width="0.5"/>
+        </g>
+        <!-- Lantern-Thief -->
+        <g id="lt">
+          <circle r="4" fill="rgba(180,210,255,0.1)" stroke="rgba(180,210,255,0.5)" stroke-width="0.8"/>
+          <circle r="1.5" fill="rgba(200,230,255,0.6)"/>
+        </g>
+        <!-- Shadow-Walker -->
+        <g id="sw">
+          <polygon points="0,-7 6,4 -6,4" fill="rgba(40,80,160,0.2)" stroke="rgba(60,104,176,0.5)" stroke-width="0.8"/>
+          <text y="2" font-family="Space Mono" font-size="6" fill="rgba(90,144,216,0.6)" text-anchor="middle">SW</text>
+        </g>
+        <!-- Cold TFP -->
+        <g id="tfp-b">
+          <circle r="8" fill="rgba(60,104,176,0.15)" stroke="rgba(60,104,176,0.6)" stroke-width="1.5"/>
+          <line x1="-5" y1="0" x2="5" y2="0" stroke="rgba(90,144,216,0.7)" stroke-width="1"/>
+          <line x1="0" y1="-5" x2="0" y2="5" stroke="rgba(90,144,216,0.7)" stroke-width="1"/>
+          <circle r="2" fill="rgba(90,144,216,0.8)"/>
+        </g>
+      </defs>
+
+      <!-- Background -->
+      <rect width="1060" height="680" fill="url(#grid-b)"/>
+      <rect width="1060" height="680" fill="rgba(4,6,20,0.6)"/>
+
+      <!-- Underground cave ceiling shape (inverted from World A mountain) -->
+      <path d="M0,0 L0,280 Q50,320 120,360 L200,410 Q260,460 300,500 L340,540 Q370,580 400,620 L420,640 L440,620 Q470,580 500,540 L540,500 Q580,460 640,410 L720,360 Q790,320 840,280 L920,240 L1060,200 L1060,0 Z" fill="rgba(8,10,28,0.7)" stroke="rgba(60,104,176,0.05)" stroke-width="1"/>
+
+      <!-- ══ LEVEL LABELS (inverted — deep is at bottom) ══ -->
+      <text x="24" y="40" fill="rgba(60,104,176,0.18)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">SURFACE ACCESS (WB-001)</text>
+      <line x1="20" y1="50" x2="1040" y2="50" stroke="rgba(60,104,176,0.07)" stroke-width="1"/>
+      <text x="24" y="200" fill="rgba(60,104,176,0.15)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">UPPER HOLLOW</text>
+      <line x1="20" y1="210" x2="1040" y2="210" stroke="rgba(60,104,176,0.06)" stroke-width="1"/>
+      <text x="24" y="360" fill="rgba(60,104,176,0.14)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">MIDDLE HOLLOW</text>
+      <line x1="20" y1="370" x2="1040" y2="370" stroke="rgba(60,104,176,0.06)" stroke-width="1"/>
+      <text x="24" y="510" fill="rgba(60,104,176,0.13)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">DEEP HOLLOW</text>
+      <line x1="20" y1="520" x2="1040" y2="520" stroke="rgba(60,104,176,0.05)" stroke-width="1"/>
+      <text x="24" y="640" fill="rgba(60,104,176,0.12)" font-family="Space Mono,monospace" font-size="8" letter-spacing="3">CONVERGENCE LEVEL</text>
+
+      <!-- ══ WB-001 — INVERTED GATE (near surface) ══ -->
+      <rect x="300" y="58" width="280" height="115" rx="4" fill="rgba(60,104,176,0.13)" stroke="rgba(60,104,176,0.45)" stroke-width="1.5"/>
+      <text x="312" y="78" fill="rgba(60,104,176,0.55)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WB-001</text>
+      <text x="312" y="91" fill="rgba(90,144,216,0.75)" font-family="Cinzel,serif" font-size="14" font-weight="600">Inverted Gate</text>
+      <text x="312" y="104" fill="rgba(60,104,176,0.38)" font-family="Space Mono,monospace" font-size="7">"...enter with what you believe is truth."</text>
+      <text x="312" y="116" fill="rgba(60,104,176,0.32)" font-family="Space Mono,monospace" font-size="7">Bull faces concave · pushed from inside · 300yr</text>
+      <text x="312" y="128" fill="rgba(60,104,176,0.28)" font-family="Space Mono,monospace" font-size="7">Vanguard B heard (not seen) on arrival</text>
+      <text x="312" y="140" fill="rgba(60,104,176,0.25)" font-family="Space Mono,monospace" font-size="7">Lantern-Thieves detect Scholar immediately</text>
+      <text x="312" y="155" fill="rgba(90,144,216,0.3)" font-family="Space Mono,monospace" font-size="6">← WB-001 mirrors WA-001 · same arch · inverted inscription</text>
+      <!-- TFP-01b -->
+      <use href="#tfp-b" transform="translate(558,90)"/>
+      <text x="572" y="87" fill="rgba(60,104,176,0.42)" font-family="Space Mono,monospace" font-size="7">TFP-01</text>
+      <text x="572" y="97" fill="rgba(60,104,176,0.28)" font-family="Space Mono,monospace" font-size="6">← WA-001</text>
+
+      <!-- Inverted bull guardians -->
+      <polygon points="308,58 294,58 294,173 308,173" fill="rgba(60,104,176,0.1)" stroke="rgba(60,104,176,0.28)" stroke-width="1"/>
+      <polygon points="572,58 586,58 586,173 572,173" fill="rgba(60,104,176,0.1)" stroke="rgba(60,104,176,0.28)" stroke-width="1"/>
+
+      <!-- ══ WB-002 — HOLLOW HYPOSTYLE (UPPER) ══ -->
+      <rect x="150" y="218" width="680" height="100" rx="3" fill="rgba(60,104,176,0.09)" stroke="rgba(60,104,176,0.28)" stroke-width="1.5"/>
+      <text x="162" y="238" fill="rgba(60,104,176,0.48)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WB-002 · HF HOLLOW</text>
+      <text x="162" y="252" fill="rgba(90,144,216,0.65)" font-family="Cinzel,serif" font-size="13" font-weight="600">Hollow Hypostyle — Columns Hang from Ceiling</text>
+      <text x="162" y="266" fill="rgba(60,104,176,0.3)" font-family="Space Mono,monospace" font-size="7">Mirror of WA-002 · Same column grid inverted · Processional friezes gone wrong mid-journey</text>
+      <text x="162" y="278" fill="rgba(60,104,176,0.25)" font-family="Space Mono,monospace" font-size="7">PZ-002 World B side: valve sequence inverted (left-center-right) · Scholar fire vessel ONLY warm light</text>
+      <text x="162" y="293" fill="rgba(180,210,255,0.2)" font-family="Space Mono,monospace" font-size="7">Void pits replace fire altars — darkness seeps upward</text>
+      <text x="162" y="307" fill="rgba(60,104,176,0.2)" font-family="Space Mono,monospace" font-size="6">Lantern-Thieves drawn to Scholar's fire vessel from the moment of entry</text>
+
+      <!-- Inverted columns (hanging) -->
+      <g fill="rgba(60,104,176,0.14)" stroke="rgba(60,104,176,0.22)" stroke-width="0.5">
+        <ellipse cx="200" cy="218" rx="5" ry="7"/><ellipse cx="240" cy="218" rx="5" ry="7"/>
+        <ellipse cx="280" cy="218" rx="5" ry="7"/><ellipse cx="320" cy="218" rx="5" ry="7"/>
+        <ellipse cx="360" cy="218" rx="5" ry="7"/><ellipse cx="400" cy="218" rx="5" ry="7"/>
+        <ellipse cx="440" cy="218" rx="5" ry="7"/><ellipse cx="480" cy="218" rx="5" ry="7"/>
+        <ellipse cx="520" cy="218" rx="5" ry="7"/><ellipse cx="560" cy="218" rx="5" ry="7"/>
+        <ellipse cx="600" cy="218" rx="5" ry="7"/><ellipse cx="640" cy="218" rx="5" ry="7"/>
+        <ellipse cx="680" cy="218" rx="5" ry="7"/><ellipse cx="720" cy="218" rx="5" ry="7"/>
+        <ellipse cx="760" cy="218" rx="5" ry="7"/><ellipse cx="800" cy="218" rx="5" ry="7"/>
+      </g>
+
+      <!-- Void pits -->
+      <use href="#void" transform="translate(230,290)"/>
+      <use href="#void" transform="translate(430,290)"/>
+      <use href="#void" transform="translate(630,290)"/>
+      <use href="#void" transform="translate(780,290)"/>
+
+      <!-- Lantern-Thief indicators -->
+      <use href="#lt" transform="translate(310,285)"/>
+      <use href="#lt" transform="translate(510,285)"/>
+      <use href="#lt" transform="translate(700,270)"/>
+
+      <!-- TFP-02b -->
+      <use href="#tfp-b" transform="translate(350,285)"/>
+      <text x="364" y="282" fill="rgba(60,104,176,0.4)" font-family="Space Mono,monospace" font-size="7">TFP-02</text>
+      <text x="364" y="292" fill="rgba(60,104,176,0.25)" font-family="Space Mono,monospace" font-size="6">← WA-002</text>
+
+      <!-- WA/B-CT-03 shadow (Scenario C mirrored) -->
+      <rect x="510" y="225" width="130" height="55" rx="2" fill="rgba(72,104,144,0.12)" stroke="rgba(72,104,144,0.35)" stroke-width="1.5"/>
+      <text x="518" y="242" fill="rgba(72,104,144,0.55)" font-family="Space Mono,monospace" font-size="7">WA/B-CT-03</text>
+      <text x="518" y="254" fill="rgba(100,145,195,0.6)" font-family="Cinzel,serif" font-size="10">Inner Courtyard</text>
+      <text x="518" y="265" fill="rgba(72,104,144,0.35)" font-family="Space Mono,monospace" font-size="6">Still-Water Oracle</text>
+      <use href="#scC" transform="translate(614,250)"/>
+
+      <!-- WA/B-HF-04 World B side (Scenario B) -->
+      <rect x="815" y="218" width="135" height="85" rx="2" fill="rgba(56,136,106,0.1)" stroke="rgba(56,136,106,0.3)" stroke-width="1.5"/>
+      <text x="824" y="236" fill="rgba(56,136,106,0.5)" font-family="Space Mono,monospace" font-size="7">WA/B-HF-04</text>
+      <text x="824" y="248" fill="rgba(80,170,130,0.6)" font-family="Cinzel,serif" font-size="10">Eastern Alcove</text>
+      <text x="824" y="259" fill="rgba(56,136,106,0.35)" font-family="Space Mono,monospace" font-size="6">Obelisk south face</text>
+      <text x="824" y="270" fill="rgba(56,136,106,0.28)" font-family="Space Mono,monospace" font-size="6">VB strikes from here</text>
+      <use href="#scB" transform="translate(834,292)"/>
+
+      <!-- ══ WB-004 — DARK LIBRARY (MIDDLE) ══ -->
+      <rect x="180" y="378" width="400" height="120" rx="3" fill="rgba(60,104,176,0.13)" stroke="rgba(60,104,176,0.38)" stroke-width="1.5"/>
+      <text x="192" y="398" fill="rgba(60,104,176,0.55)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WB-004</text>
+      <text x="192" y="412" fill="rgba(90,144,216,0.75)" font-family="Cinzel,serif" font-size="14" font-weight="600">The Dark Library</text>
+      <text x="192" y="426" fill="rgba(60,104,176,0.38)" font-family="Space Mono,monospace" font-size="7">Hollow classification: most dangerous texts most accessible</text>
+      <text x="192" y="438" fill="rgba(60,104,176,0.32)" font-family="Space Mono,monospace" font-size="7">Previous scholar's journal · Cosmological sequence (PZ-007 key)</text>
+      <text x="192" y="450" fill="rgba(60,104,176,0.28)" font-family="Space Mono,monospace" font-size="7">Admission of Hope (Emotional Beat 3) · Vanguard B's private requisition scene</text>
+      <text x="192" y="462" fill="rgba(60,104,176,0.25)" font-family="Space Mono,monospace" font-size="7">PZ-004 hub · NW Alcove: restricted position = most valuable texts</text>
+      <text x="192" y="476" fill="rgba(90,144,216,0.3)" font-family="Space Mono,monospace" font-size="7">★ Overheard Scene: Vanguard B speaking to void pit (her intelligence network)</text>
+      <text x="192" y="490" fill="rgba(60,104,176,0.2)" font-family="Space Mono,monospace" font-size="6">MIRRORED FROM WA-003 · Same footprint · Inverted access hierarchy</text>
+
+      <!-- TFP-03b -->
+      <use href="#tfp-b" transform="translate(558,440)"/>
+      <text x="572" y="437" fill="rgba(60,104,176,0.4)" font-family="Space Mono,monospace" font-size="7">TFP-03</text>
+      <text x="572" y="447" fill="rgba(60,104,176,0.28)" font-family="Space Mono,monospace" font-size="6">← WA-003</text>
+
+      <!-- Shadow-Walkers in Dark Library -->
+      <use href="#sw" transform="translate(260,470)"/>
+      <use href="#sw" transform="translate(380,470)"/>
+
+      <!-- NW Alcove (most valuable, appears restricted) -->
+      <rect x="185" y="382" width="62" height="90" rx="2" fill="rgba(60,104,176,0.08)" stroke="rgba(60,104,176,0.25)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="216" y="432" fill="rgba(60,104,176,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">NW</text>
+      <text x="216" y="442" fill="rgba(60,104,176,0.35)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">ALCOVE</text>
+      <text x="216" y="452" fill="rgba(60,104,176,0.28)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">highest</text>
+      <text x="216" y="462" fill="rgba(60,104,176,0.28)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">value</text>
+
+      <!-- WB-003 (placeholder, unexplored) -->
+      <rect x="600" y="378" width="150" height="80" rx="2" fill="rgba(30,50,100,0.08)" stroke="rgba(40,70,140,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="675" y="415" fill="rgba(40,70,140,0.35)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle">WB-003</text>
+      <text x="675" y="428" fill="rgba(40,70,140,0.25)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Undesigned</text>
+      <text x="675" y="440" fill="rgba(40,70,140,0.2)" font-family="Space Mono,monospace" font-size="6" text-anchor="middle">Pending</text>
+
+      <!-- WA/B-GH-02 World B side (Scenario D) -->
+      <rect x="780" y="378" width="180" height="100" rx="3" fill="rgba(120,72,168,0.1)" stroke="rgba(120,72,168,0.3)" stroke-width="1.5"/>
+      <text x="790" y="396" fill="rgba(120,72,168,0.5)" font-family="Space Mono,monospace" font-size="7" letter-spacing="1">WA/B-GH-02</text>
+      <text x="790" y="408" fill="rgba(160,110,210,0.65)" font-family="Cinzel,serif" font-size="12">Great Hall WB Side</text>
+      <text x="790" y="420" fill="rgba(120,72,168,0.35)" font-family="Space Mono,monospace" font-size="7">Foundation Obelisk</text>
+      <text x="790" y="432" fill="rgba(120,72,168,0.3)" font-family="Space Mono,monospace" font-size="7">Clause 12 (Hollow ritual)</text>
+      <text x="790" y="444" fill="rgba(120,72,168,0.25)" font-family="Space Mono,monospace" font-size="7">Clause 18 readable here</text>
+      <use href="#scD" transform="translate(800,467)"/>
+      <text x="818" y="472" fill="rgba(160,110,210,0.5)" font-family="Space Mono,monospace" font-size="6">Scenario D</text>
+
+      <!-- ══ WA/B-CY-01 World B shadow (Scenario A) ══ -->
+      <rect x="180" y="528" width="200" height="80" rx="3" fill="rgba(192,88,40,0.08)" stroke="rgba(192,88,40,0.28)" stroke-width="1.5"/>
+      <text x="192" y="546" fill="rgba(192,88,40,0.5)" font-family="Space Mono,monospace" font-size="7">WA/B-CY-01 · WB SIDE</text>
+      <text x="192" y="558" fill="rgba(220,130,80,0.65)" font-family="Cinzel,serif" font-size="11">Shadow Well Below</text>
+      <text x="192" y="570" fill="rgba(192,88,40,0.35)" font-family="Space Mono,monospace" font-size="6">Vanguard B's cold-light tube</text>
+      <text x="192" y="580" fill="rgba(192,88,40,0.3)" font-family="Space Mono,monospace" font-size="6">creates 2nd shadow from below</text>
+      <text x="192" y="590" fill="rgba(192,88,40,0.25)" font-family="Space Mono,monospace" font-size="6">Inner ring reads Dark Archive calendar</text>
+      <!-- Well symbol inverted -->
+      <circle cx="352" cy="568" r="16" fill="rgba(8,12,40,0.9)" stroke="rgba(192,88,40,0.3)" stroke-width="1.5"/>
+      <circle cx="352" cy="568" r="9" fill="rgba(20,30,80,0.9)" stroke="rgba(60,104,176,0.3)" stroke-width="1"/>
+      <use href="#scA" transform="translate(352,568)"/>
+
+      <!-- WB-005, 006, 007 placeholder -->
+      <rect x="420" y="528" width="130" height="70" rx="2" fill="rgba(30,50,100,0.07)" stroke="rgba(40,70,140,0.18)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="485" y="560" fill="rgba(40,70,140,0.3)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle">WB-005</text>
+      <text x="485" y="573" fill="rgba(40,70,140,0.2)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Undesigned</text>
+
+      <rect x="580" y="528" width="130" height="70" rx="2" fill="rgba(30,50,100,0.07)" stroke="rgba(40,70,140,0.16)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="645" y="560" fill="rgba(40,70,140,0.28)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle">WB-006</text>
+      <text x="645" y="573" fill="rgba(40,70,140,0.18)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Undesigned</text>
+
+      <rect x="740" y="528" width="130" height="70" rx="2" fill="rgba(30,50,100,0.07)" stroke="rgba(40,70,140,0.15)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="805" y="560" fill="rgba(40,70,140,0.26)" font-family="Space Mono,monospace" font-size="8" text-anchor="middle">WB-007</text>
+      <text x="805" y="573" fill="rgba(40,70,140,0.18)" font-family="Space Mono,monospace" font-size="7" text-anchor="middle">Undesigned</text>
+
+      <!-- ══ WB-∞ — CHAMBER OF CONVERGENCE (DEEPEST) ══ -->
+      <rect x="280" y="640" width="500" height="34" rx="3" fill="rgba(80,50,120,0.2)" stroke="rgba(120,80,180,0.5)" stroke-width="2"/>
+      <!-- Both world colors blend -->
+      <rect x="280" y="640" width="250" height="34" rx="3" fill="rgba(192,136,32,0.06)"/>
+      <rect x="530" y="640" width="250" height="34" rx="3" fill="rgba(60,104,176,0.06)"/>
+      <text x="290" y="654" fill="rgba(120,80,180,0.55)" font-family="Space Mono,monospace" font-size="8" letter-spacing="2">WB-∞</text>
+      <text x="360" y="654" fill="rgba(180,150,220,0.75)" font-family="Cinzel,serif" font-size="13" font-weight="600">Chamber of Convergence</text>
+      <text x="360" y="667" fill="rgba(120,80,180,0.35)" font-family="Space Mono,monospace" font-size="6">5 crossings required · Both Vanguards simultaneously · Third Record · TFP-04 ← WA-007</text>
+      <use href="#tfp-b" transform="translate(762,657)"/>
+      <text x="774" y="654" fill="rgba(120,80,180,0.4)" font-family="Space Mono,monospace" font-size="7">TFP-04</text>
+
+      <!-- ══ VERTICAL CONNECTION LINES (WORLD B — DESCENDING) ══ -->
+      <!-- Main descent shaft -->
+      <line x1="440" y1="173" x2="440" y2="218" stroke="rgba(60,104,176,0.25)" stroke-width="2"/>
+      <line x1="440" y1="318" x2="440" y2="378" stroke="rgba(60,104,176,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="440" y1="498" x2="440" y2="528" stroke="rgba(60,104,176,0.15)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="530" y1="608" x2="530" y2="640" stroke="rgba(120,80,180,0.25)" stroke-width="2"/>
+
+      <!-- Depth indicator -- becomes darker as you go down -->
+      <text x="24" y="95" fill="rgba(60,104,176,0.12)" font-family="Space Mono,monospace" font-size="7" writing-mode="tb">↓ DEEPER · DARKER · COLDER ↓</text>
+    </svg>
+
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(60,104,176,0.45);"></div>World B Room</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(60,104,176,0.8);border-radius:50%;"></div>Traversal Focal Point (TFP)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(180,210,255,0.5);border-radius:50%;"></div>Lantern-Thief Presence</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(40,80,160,0.5);"></div>Shadow-Walker Presence</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(30,50,100,0.4);border:1px dashed rgba(60,104,176,0.3);"></div>Undesigned (Pending)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(120,80,180,0.4);"></div>WB-∞ Both-World Space</div>
+    </div>
+  </div>
+
+  <table class="room-key">
+    <tr><th>ID</th><th>Name</th><th>Depth Level</th><th>Key Functions</th></tr>
+    <tr class="wb-row"><td>WB-001</td><td><strong>Inverted Gate</strong></td><td>Surface access</td><td>Entry point, concave bulls, inverted inscription ("what they believe is truth"), Vanguard B first presence</td></tr>
+    <tr class="wb-row"><td>WB-002 / HF</td><td><strong>Hollow Hypostyle</strong></td><td>Upper Hollow</td><td>Mirror of WA-002, inverted columns, void pits, Lantern-Thieves, PZ-002 World B side</td></tr>
+    <tr class="sh-row"><td>WA/B-CT-03</td><td><strong>Inner Courtyard (WB side)</strong></td><td>Upper / WB-002 sub</td><td>Still-Water Oracle WB side, Vanguard B's footstep vibration, 8th constellation (inverted cluster)</td></tr>
+    <tr class="sh-row"><td>WA/B-HF-04</td><td><strong>Eastern Alcove (WB side)</strong></td><td>Upper / WB-002 east</td><td>Resonance Obelisk south face, Vanguard B's strike pattern, destructive interference source</td></tr>
+    <tr class="wb-row"><td>WB-003</td><td><strong>Undesigned</strong></td><td>Middle Hollow</td><td>Pending — connects WB-002 to WB-004 west approach</td></tr>
+    <tr class="wb-row"><td>WB-004</td><td><strong>Dark Library</strong></td><td>Middle Hollow</td><td>Inverted classification logic, previous scholar's journal, cosmological sequence (PZ-007), Admission of Hope (Beat 3)</td></tr>
+    <tr class="sh-row"><td>WA/B-GH-02</td><td><strong>Great Hall (WB side)</strong></td><td>Middle Hollow</td><td>Clause 12 (Hollow ritual), Foundation Obelisk WB view, Clause 18 bilingual reading</td></tr>
+    <tr class="sh-row"><td>WA/B-CY-01</td><td><strong>Shadow Well (WB side)</strong></td><td>Deep Hollow</td><td>Vanguard B's cold-light tube, inner ring Dark Archive calendar, 300yr failed readings</td></tr>
+    <tr class="wb-row"><td>WB-005/006/007</td><td><strong>Undesigned</strong></td><td>Deep Hollow</td><td>Pending — depth layer between Dark Library and Convergence Chamber</td></tr>
+    <tr class="wb-row"><td>WB-∞</td><td><strong>Chamber of Convergence</strong></td><td>Deepest</td><td>5 crossings required, both worlds overlap, Third Record, both Vanguards simultaneously, TFP-04</td></tr>
+  </table>
+</div>
+
+
+<!-- §4 — KEY DESIGN INSIGHTS -->
+<div class="sec">
+  <span class="sec-n">§ 04</span>
+  <span class="sec-t">From Analysis to Architecture — What TS1 & TS2 Teach About the KENOMA Map</span>
+</div>
+<div class="body">
+  <h3>What TS1's Spine Model Gives KENOMA</h3>
+  <p>TS1's greatest navigational achievement: players always know where they are relative to the main spine (elevator, main hallway). The fixed cameras are positioned to reinforce this — they don't just frame a scene, they orient the player. A camera angled down the main hall toward a door communicates "that door matters, and you know how to get back to where you are." KENOMA's Hypostyle Forest (WA-002 / WB-002 in its mirror) serves the same function: it is the widest, most recognizable space, and every other room connects to it visibly. Players return to the Hypostyle the way TS1 players return to the main hallway — it is the cognitive anchor.</p>
+
+  <div class="call call-a">
+    <span class="call-lbl">KENOMA Adoption from TS1</span>
+    <strong>The Hypostyle Forest's 72 columns are not decoration — they are a navigation system.</strong> After the Scholar lights fire altars, the Hypostyle becomes unmistakable: lit columns stretch in both directions, the processional scale tells you exactly how far from the Gate you are. This is TS1's corridor-as-landmark, applied at Persepolis scale.
+  </div>
+
+  <h3>What TS2's Zone Depth Teaches KENOMA About World B</h3>
+  <p>TS2's most praised level design is the Processing Plant — a space that loops back on itself, reveals new areas on revisit, and builds a mental model incrementally. The Dark Archive (World B) must achieve the same density of revisit-reward, but without the luxury of distinct visual zone identities. World B's identity is sameness-with-wrongness: the same column grid, but columns hang from the ceiling. The same carved friezes, but the procession has gone wrong mid-journey. The player navigates by learning World A perfectly and then reading the Dark Archive as its distorted reflection. Navigation in World B is not spatial — it is mnemonic. You find your way because you remember where this is in World A, and then you apply the inversion logic.</p>
+
+  <div class="call call-b">
+    <span class="call-lbl">KENOMA's Answer to TS2's Zone-Variety Problem</span>
+    <strong>Two philosophical puzzle vocabularies = two distinct navigational languages in one building.</strong> Sacred Fire logic tells you where valuable tablets are (in restricted positions). Hollow logic tells you the same information inverted (in apparently accessible positions). The player develops two navigation modes — one per world — without needing seven geographic zones to generate variety.
+  </div>
+
+  <h3>The Interference Puzzle Locations — Why These Positions</h3>
+  <p><strong>Scenario A (Central Courtyard):</strong> Open sky. A crossing-junction accessible to both Vanguards naturally — the courtyard is on the path between the Hypostyle (main hub) and the Eastern Treasury (puzzle hub). Both Vanguards pass through it routinely. The well's calendar-marker implies both worlds to a Scholar who reads carefully. Its open-air setting means the Scholar cannot control who sees them working.</p>
+  <p><strong>Scenario B (Eastern Alcove):</strong> Removed from the main traffic flow, but acoustically connected — sound travels through the Hypostyle's stone columns. The Resonance Obelisk's failure mode (destructive acoustic interference) fits perfectly in a space where sound travels between worlds. The Keeper Designation's two-line revelation is most effective here because the Scholar is alone with it — no immediate pressure, just time with an inscription that implies the entire Archive's dual nature.</p>
+  <p><strong>Scenario C (Inner Courtyard, Crossing Junction):</strong> Placed at the Archive's crossing junction — the most overlap-dense point between worlds. The Still-Water Oracle's 300-year failure (both Vanguards unknowingly interfering) is also the most compressed statement of the game's central tragedy. Placing it at the literal crossing point between worlds makes the story and the architecture say the same thing simultaneously.</p>
+  <p><strong>Scenario D (Great Hall):</strong> The game's widest indoor space — visible from the Gallery above, accessible from the Processional Corridor, the Treasury, and the Courtyard. Placing the Translation Obelisk (the most socially complex interference puzzle) here means the Scholar manages a command conflict in the space where anyone can observe them. The Foundation Record's Clause 18 is the Archive's legal completion trigger — it belongs in the most formal administrative space.</p>
+</div>
+
+<div class="doc-foot">
+  <span>KENOMA · MAP-DOC-001</span>
+  <span>TS Analysis + World A + World B + 4 Scenarios</span>
+  <span>For Storytelling Bible v8 · GDD Production v6</span>
+</div>
+
+</div>
+</body>
+</html>

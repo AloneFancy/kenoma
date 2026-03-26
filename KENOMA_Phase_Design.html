@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENOMA — Phase Design Document · Camel · Lion · Child</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Barlow+Condensed:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:  #06070a;
+  --g1:    #0b0c10;
+  --g2:    #101318;
+  --g3:    #151820;
+  --g4:    #1a1d28;
+  --g5:    #202430;
+  --rule:  #282c38;
+  --rule2: #343a4a;
+
+  --ink:   #e4dece;
+  --ink2:  #b4ad9c;
+  --ink3:  #6e6860;
+  --ink4:  #424048;
+  --ink5:  #26242e;
+
+  /* Camel — warm amber, the Scholar's warmth */
+  --cam:   #c89020;
+  --cam2:  #e8aa38;
+  --cam3:  #886008;
+  --cambg: rgba(200,144,32,0.09);
+  --camdr: rgba(200,144,32,0.22);
+
+  /* Lion — cooler amber bleeding to red, urgency */
+  --lio:   #b86828;
+  --lio2:  #e08040;
+  --lio3:  #804018;
+  --liobg: rgba(184,104,40,0.09);
+  --liodr: rgba(184,104,40,0.22);
+
+  /* Child — pale silver-gold, aftermath */
+  --chi:   #8898a8;
+  --chi2:  #a8bcc8;
+  --chi3:  #506070;
+  --chibg: rgba(136,152,168,0.09);
+  --chidr: rgba(136,152,168,0.2);
+
+  /* Vanguard A — Sacred Fire */
+  --va:    #c89020;
+  --va2:   #e8aa38;
+  --vabg:  rgba(200,144,32,0.08);
+  --vadr:  rgba(200,144,32,0.2);
+
+  /* Vanguard B — The Hollow */
+  --vb:    #3868b0;
+  --vb2:   #5898e0;
+  --vbbg:  rgba(56,104,176,0.09);
+  --vbdr:  rgba(56,104,176,0.2);
+
+  /* Scholar */
+  --sc:    #c0a068;
+  --sc2:   #e0c090;
+  --scbg:  rgba(192,160,104,0.08);
+
+  /* Scores */
+  --ok:    #4a8840;
+  --ok2:   #68a858;
+  --warn:  #907020;
+  --warn2: #b09040;
+  --bad:   #884030;
+  --bad2:  #b06050;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--ink3);
+  font-family:'Barlow',sans-serif;
+  line-height:1.72;
+}
+.page{max-width:1080px;margin:0 auto;padding-bottom:120px;}
+
+/* ── COVER ─────────────────────────── */
+.cover{
+  min-height:100vh;display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  background:var(--void);
+}
+.cover::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(200,144,32,0.05) 0%, transparent 40%),
+    radial-gradient(ellipse 50% 60% at 80% 60%, rgba(56,104,176,0.05) 0%, transparent 55%);
+}
+.cv-top{
+  padding:38px 60px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  display:flex;justify-content:space-between;
+  position:relative;z-index:1;
+}
+.cv-brand{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,0.18);}
+.cv-brand em{color:var(--cam2);opacity:.55;font-style:normal;}
+.cv-body{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:64px 60px 48px;position:relative;z-index:1;
+}
+.cv-pre{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:6px;text-transform:uppercase;color:rgba(200,144,32,0.35);display:block;margin-bottom:18px;}
+.cv-title{
+  font-family:'Cinzel',serif;font-size:clamp(44px,7vw,96px);
+  font-weight:900;color:var(--ink);line-height:.92;
+  letter-spacing:-2px;margin-bottom:12px;
+}
+.cv-title .sub{color:var(--cam2);opacity:.55;display:block;font-size:.45em;letter-spacing:4px;font-weight:400;margin-bottom:8px;}
+.cv-tagline{
+  font-family:'Cormorant Garamond',serif;font-size:clamp(15px,2vw,22px);
+  font-weight:300;font-style:italic;color:rgba(255,255,255,0.22);
+  max-width:620px;line-height:1.55;margin-bottom:40px;
+}
+/* Phase bar at bottom of cover */
+.phase-bar{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  border-top:1px solid rgba(255,255,255,0.04);
+  position:relative;z-index:1;
+}
+.pb-phase{padding:22px 28px;border-right:1px solid rgba(255,255,255,0.04);}
+.pb-phase:last-child{border-right:none;}
+.pb-cam{border-top:3px solid var(--cam);}
+.pb-lio{border-top:3px solid var(--lio);}
+.pb-chi{border-top:3px solid var(--chi);}
+.pb-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:4px;text-transform:uppercase;display:block;margin-bottom:4px;}
+.pb-cam .pb-label{color:var(--cam);}
+.pb-lio .pb-label{color:var(--lio);}
+.pb-chi .pb-label{color:var(--chi);}
+.pb-name{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--ink);display:block;margin-bottom:6px;}
+.pb-desc{font-size:12.5px;color:var(--ink4);line-height:1.5;}
+
+/* ── SECTION HEADS ─────────────────── */
+.sh{
+  padding:20px 60px 14px;
+  background:var(--g1);
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:baseline;gap:12px;
+  position:sticky;top:0;z-index:20;
+}
+.sh-n{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--ink4);}
+.sh-t{font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:var(--ink);}
+.sh-aside{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink4);font-style:italic;white-space:nowrap;}
+.body{padding:26px 60px 30px;}
+
+/* Phase dividers */
+.phase-div{
+  padding:36px 60px 24px;
+  border-top:2px solid;
+  position:relative;overflow:hidden;
+}
+.pd-cam{border-top-color:var(--cam);}
+.pd-lio{border-top-color:var(--lio);}
+.pd-chi{border-top-color:var(--chi);}
+.pd-analysis{border-top-color:var(--rule2);}
+.pd-div::after{
+  content:attr(data-glyph);
+  position:absolute;right:40px;top:50%;transform:translateY(-50%);
+  font-family:'Cinzel',serif;font-size:120px;font-weight:900;
+  color:rgba(255,255,255,0.018);line-height:1;pointer-events:none;
+}
+.pd-eye{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;display:block;margin-bottom:8px;}
+.pd-cam .pd-eye{color:rgba(200,144,32,0.38);}
+.pd-lio .pd-eye{color:rgba(184,104,40,0.38);}
+.pd-chi .pd-eye{color:rgba(136,152,168,0.38);}
+.pd-analysis .pd-eye{color:rgba(100,98,120,0.38);}
+.pd-title{font-family:'Cinzel',serif;font-size:clamp(20px,3.5vw,40px);font-weight:700;color:var(--ink);line-height:1.1;margin-bottom:6px;}
+.pd-sub{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;font-style:italic;color:rgba(255,255,255,0.18);line-height:1.5;}
+
+/* ── PROSE ─────────────────────────── */
+p{font-size:14.5px;color:var(--ink3);line-height:1.75;margin-bottom:11px;}
+p:last-child{margin:0;}
+p strong{color:var(--ink2);}
+p em{font-style:italic;color:var(--ink2);}
+h3{font-family:'Cinzel',serif;font-size:14.5px;font-weight:700;color:var(--ink2);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--rule2);}
+h3:first-child{margin-top:0;}
+
+/* ── CALLOUT ───────────────────────── */
+.call{border-left:3px solid;padding:12px 17px;margin:14px 0;font-size:14px;line-height:1.72;color:var(--ink3);}
+.cc{border-color:var(--cam);background:var(--cambg);}
+.cl{border-color:var(--lio);background:var(--liobg);}
+.cch{border-color:var(--chi);background:var(--chibg);}
+.cn{border-color:var(--rule2);background:var(--g3);}
+.call strong{color:var(--ink2);}
+.call em{font-style:italic;color:var(--ink);}
+.c-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:4px;}
+.cc .c-lbl{color:var(--cam);}
+.cl .c-lbl{color:var(--lio);}
+.cch .c-lbl{color:var(--chi);}
+.cn .c-lbl{color:var(--ink4);}
+
+/* ── ANALYSIS PROBLEM/SOLUTION ─────── */
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:18px 0;}
+.ps-card{padding:20px 22px;background:var(--g2);}
+.ps-problem{border-top:2px solid var(--bad);}
+.ps-solution{border-top:2px solid var(--ok);}
+.ps-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:7px;}
+.ps-problem .ps-lbl{color:var(--bad2);}
+.ps-solution .ps-lbl{color:var(--ok2);}
+.ps-title{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--ink);display:block;margin-bottom:7px;}
+.ps-body{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.ps-body strong{color:var(--ink2);}
+
+/* ── PHASE MECHANICS ───────────────── */
+.mech-block{background:var(--g2);border:1px solid var(--rule2);border-left:4px solid;margin:16px 0;overflow:hidden;}
+.mb-cam{border-left-color:var(--cam);}
+.mb-lio{border-left-color:var(--lio);}
+.mb-chi{border-left-color:var(--chi);}
+.mb-va{border-left-color:var(--va);}
+.mb-vb{border-left-color:var(--vb);}
+.mb-sc{border-left-color:var(--sc);}
+.mech-head{background:var(--g3);padding:10px 18px;border-bottom:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;}
+.mh-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;}
+.mb-cam .mh-lbl{color:var(--cam);}
+.mb-lio .mh-lbl{color:var(--lio);}
+.mb-chi .mh-lbl{color:var(--chi);}
+.mb-va .mh-lbl{color:var(--va);}
+.mb-vb .mh-lbl{color:var(--vb);}
+.mb-sc .mh-lbl{color:var(--sc);}
+.mh-title{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--ink);}
+.mh-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 9px;border:1px solid var(--rule2);color:var(--ink4);}
+.mech-body{padding:17px 18px;}
+.mech-body p{font-size:14px;}
+
+/* ── RECOGNITION STAGES ─────────────── */
+.stages{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin:18px 0;}
+.stage{padding:14px 14px;background:var(--g3);text-align:center;border-top:2px solid var(--rule2);}
+.stage.active{background:var(--g4);}
+.st-va.active{border-top-color:var(--va);}
+.st-vb.active{border-top-color:var(--vb);}
+.stage-n{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:4px;}
+.st-va .stage-n{color:var(--va3,var(--cam3));}
+.st-vb .stage-n{color:var(--vb3,var(--lapis3,#204878));}
+.stage.active .stage-n{color:var(--va);}
+.st-vb.active .stage-n{color:var(--vb2);}
+.stage-title{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--ink);display:block;margin-bottom:5px;}
+.stage-body{font-size:11.5px;color:var(--ink4);line-height:1.5;}
+
+/* ── WARMTH MECHANICS ──────────────── */
+.warmth-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:16px 0;}
+.wm-card{padding:18px 20px;background:var(--g2);}
+.wm-va{border-top:2px solid var(--va);}
+.wm-vb{border-top:2px solid var(--vb);}
+.wm-both{border-top:2px solid var(--cam);grid-column:span 2;}
+.wm-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:6px;}
+.wm-va .wm-lbl{color:var(--va);}
+.wm-vb .wm-lbl{color:var(--vb2);}
+.wm-both .wm-lbl{color:var(--cam);}
+.wm-title{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--ink);display:block;margin-bottom:7px;}
+.wm-body{font-size:13.5px;color:var(--ink3);line-height:1.62;}
+.wm-body strong{color:var(--ink2);}
+.wm-body em{font-style:italic;color:var(--ink);}
+
+/* ── DIALOGUE ──────────────────────── */
+.dia{margin:14px 0;}
+.d-who{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;display:block;margin-bottom:4px;}
+.d-va .d-who{color:var(--va);}
+.d-vb .d-who{color:var(--vb2);}
+.d-sc .d-who{color:var(--sc2);}
+.d-dir{font-family:'Cormorant Garamond',serif;font-size:13.5px;font-style:italic;color:rgba(200,144,32,0.22);display:block;margin:8px 0 4px;line-height:1.58;}
+.d-line{font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:rgba(228,210,152,0.6);line-height:1.72;display:block;}
+.d-note{font-size:12px;color:rgba(200,144,32,0.2);display:block;margin-top:5px;line-height:1.5;}
+
+/* ── AI DECISION TREE ──────────────── */
+.ai-tree{
+  background:var(--g2);border:1px solid var(--rule2);
+  padding:20px 22px;margin:16px 0;
+}
+.ai-tree-title{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;display:block;}
+.ai-node{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:10px 0;border-bottom:1px solid var(--rule);
+}
+.ai-node:last-child{border:none;}
+.ai-cond{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  flex-shrink:0;min-width:130px;padding:3px 0;
+}
+.ai-va .ai-cond{color:var(--va);}
+.ai-vb .ai-cond{color:var(--vb2);}
+.ai-response{font-size:13.5px;color:var(--ink3);line-height:1.58;}
+.ai-response strong{color:var(--ink2);}
+.ai-score{
+  margin-left:auto;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:2px 8px;border:1px solid;
+}
+.sc-ok{border-color:rgba(74,136,64,0.35);color:var(--ok2);background:rgba(74,136,64,0.07);}
+.sc-warn{border-color:rgba(144,112,32,0.35);color:var(--warn2);background:rgba(144,112,32,0.07);}
+.sc-bad{border-color:rgba(136,64,48,0.35);color:var(--bad2);background:rgba(136,64,48,0.07);}
+
+/* ── LION ROUTE TABLE ──────────────── */
+.route-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+.route-table th{background:var(--g4);font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:var(--ink4);padding:9px 13px;text-align:left;border-bottom:1px solid var(--rule2);}
+.route-table td{padding:10px 13px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink3);}
+.route-table td:first-child{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap;}
+.route-table tr:hover td{background:var(--g3);}
+.route-table td strong{color:var(--ink2);}
+.route-table td em{font-style:italic;}
+
+/* ── CHILD SCENARIOS ───────────────── */
+.scenario-grid{display:grid;grid-template-columns:1fr;gap:2px;margin:18px 0;}
+.scenario{background:var(--g2);border:1px solid var(--rule2);overflow:hidden;}
+.sc-head{padding:16px 20px;border-bottom:1px solid var(--rule2);display:flex;align-items:flex-start;gap:16px;}
+.sc-num{
+  font-family:'Cinzel',serif;font-size:28px;font-weight:900;
+  width:50px;height:50px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--rule2);color:var(--chi2);
+  background:rgba(136,152,168,0.06);
+}
+.sc-info{}
+.sc-range{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--chi3);display:block;margin-bottom:4px;}
+.sc-title{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--ink);display:block;margin-bottom:3px;}
+.sc-sub{font-size:13.5px;font-style:italic;color:var(--ink4);}
+.sc-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.sc-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.sc-col:last-child{border-right:none;}
+.sc-col-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--rule);}
+.shift .sc-col-lbl{color:var(--chi3);}
+.vanguard-pos .sc-col-lbl{color:var(--cam3);}
+.last-line-col .sc-col-lbl{color:rgba(136,152,168,0.5);}
+.sc-col p{font-size:13.5px;color:var(--ink3);line-height:1.65;margin-bottom:8px;}
+.sc-col p:last-child{margin:0;}
+.sc-col p strong{color:var(--ink2);}
+.sc-col p em{font-style:italic;color:var(--ink);}
+
+/* Final line styling */
+.final-line-box{
+  padding:14px 18px;
+  background:var(--void);
+  border-top:1px solid var(--rule);
+}
+.fl-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(136,152,168,0.3);display:block;margin-bottom:6px;}
+.fl-text{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:rgba(200,190,170,0.4);line-height:1.65;}
+
+/* ── INTERACTION MAP SVG CONTAINER ─── */
+.map-wrap{background:var(--g2);border:1px solid var(--rule2);overflow:hidden;margin:18px 0;}
+.map-bar{background:var(--g4);padding:10px 18px;border-bottom:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;}
+.map-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ink4);}
+.map-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:600;color:var(--ink2);}
+
+/* ── SCORE IMPACT TAGS ─────────────── */
+.score-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.stag{font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:2px 9px;border:1px solid;}
+.st-va{border-color:var(--camdr);color:var(--cam2);background:var(--cambg);}
+.st-vb{border-color:var(--vbdr);color:var(--vb2);background:var(--vbbg);}
+.st-ok{border-color:rgba(74,136,64,0.3);color:var(--ok2);background:rgba(74,136,64,0.06);}
+.st-warn{border-color:rgba(144,112,32,0.3);color:var(--warn2);background:rgba(144,112,32,0.06);}
+.st-bad{border-color:rgba(136,64,48,0.3);color:var(--bad2);background:rgba(136,64,48,0.06);}
+
+/* ── FOOT ──────────────────────────── */
+.foot{padding:20px 60px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.foot span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);}
+
+/* ── DIVIDER ───────────────────────── */
+.hr{height:1px;background:var(--rule);margin:22px 0;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════ COVER ═══════════════════════ -->
+<div class="cover">
+  <div class="cv-top">
+    <span class="cv-brand">KENOMA · Phase Design · <em>CHR-PHA-001</em></span>
+    <span class="cv-brand" style="text-align:right">Camel · Lion · Child · Deep Analysis + Redesign</span>
+  </div>
+  <div class="cv-body">
+    <span class="cv-pre">Phase Design Document</span>
+    <div class="cv-title">
+      <span class="sub">The Archive of Two Truths</span>
+      Three Phases,<br>Three Truths
+    </div>
+    <div class="cv-tagline">
+      The Scholar does not move through three acts. The Scholar moves through three states of being — and the Vanguards' recognition of who the Scholar is growing into is what transforms each state into the next.
+    </div>
+  </div>
+  <div class="phase-bar">
+    <div class="pb-phase pb-cam">
+      <span class="pb-label">Act I · The Camel</span>
+      <span class="pb-name">Warmth & Recognition</span>
+      <span class="pb-desc">The Scholar gives everything. Both Vanguards accumulate evidence. The warmth is real. The observation is also real. Neither cancels the other.</span>
+    </div>
+    <div class="pb-phase pb-lio">
+      <span class="pb-label">Act II · The Lion</span>
+      <span class="pb-name">Routes & Decisions</span>
+      <span class="pb-desc">The Scholar's path through the Archive is a strategy. Both Vanguards read it and decide — continuously, not once — whether to hunt or wait. Both decisions are valid. Both have consequences.</span>
+    </div>
+    <div class="pb-phase pb-chi">
+      <span class="pb-label">Act III · The Child</span>
+      <span class="pb-name">Aftermath & Becoming</span>
+      <span class="pb-desc">The Nietzschean Child does not mourn. She straightens her tunic and begins. What she begins — and what tone it carries — is the spectrum of ten outcomes, each earned.</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ §0 DEEP ANALYSIS ═══════════ -->
+<div class="phase-div pd-analysis">
+  <span class="pd-eye">§ 00 · Before Design</span>
+  <div class="pd-title">Deep Analysis — What the Current Design Gets Wrong</div>
+  <span class="pd-sub">The problems that must be solved before any redesign is possible</span>
+</div>
+
+<div class="sh"><span class="sh-n">0.1</span><span class="sh-t">The Five Structural Problems</span><span class="sh-aside">Problems first. Solutions after. In that order.</span></div>
+<div class="body">
+
+  <div class="ps-grid">
+    <div class="ps-card ps-problem">
+      <span class="ps-lbl">Problem 1 · Camel Phase</span>
+      <span class="ps-title">Warmth is scenic, not mechanical</span>
+      <div class="ps-body">The three emotional resonance moments (Recognition, Flask, Admission of Hope) are well-designed as scenes. But they are scenes the player witnesses — not mechanics the player participates in producing. The warmth arrives on a schedule regardless of what the Scholar has actually done. <strong>Warmth that is guaranteed regardless of behavior is not warmth — it is atmosphere.</strong> The player has no reason to invest in it because it does not respond to them. The Vanguards' care for the Scholar needs to be something the Scholar actively generates through choices, not something the game delivers at timed intervals.</div>
+    </div>
+    <div class="ps-card ps-solution">
+      <span class="ps-lbl">Solution 1 · Camel Phase</span>
+      <span class="ps-title">Warmth as accumulated evidence of the Scholar's character</span>
+      <div class="ps-body">Each Vanguard must respond to <em>specific observable behaviors</em> — not to time passing. The Scholar who deep-reads a tablet in front of Vanguard A gets a different response than the Scholar who skims it. The Scholar who donates oil to Vanguard B's cold-light tube without being asked gets a different response than the Scholar who waits to be prompted. <strong>The warmth is the Vanguards' accurate reading of the Scholar's character, expressed as trust extended in graduated steps.</strong> It is not a plot beat. It is an AI behavioral consequence.</div>
+    </div>
+    <div class="ps-card ps-problem">
+      <span class="ps-lbl">Problem 2 · Camel Phase</span>
+      <span class="ps-title">Traversal skill recognition has no visible stages</span>
+      <div class="ps-body">The Vanguards are supposed to be building a behavioral model of the Scholar's traversal capability — how they cross, how they manage debt, which world they favor, how they react to the Boundary. But currently this happens entirely offscreen. The player never sees the model accumulating. The recognition of the Scholar's traverse skill is implied as backstory rather than demonstrated as ongoing process. <strong>If the player can't see the model being built, they cannot feel the dread of knowing it is complete.</strong></div>
+    </div>
+    <div class="ps-card ps-solution">
+      <span class="ps-lbl">Solution 2 · Camel Phase</span>
+      <span class="ps-title">Five visible recognition stages with specific behavioral shifts</span>
+      <div class="ps-body">Each Vanguard moves through five stages of Scholar assessment, each with observable behavioral changes: what she says, where she positions, what she tracks, what she stops asking. Stage 1: she asks the Scholar questions because she needs information. Stage 5: she stops asking because she already knows the answers. The player who understands the stages can watch the model complete itself. <strong>Stage 5 in the Camel Phase is the most frightening moment in the game, because it happens while the Scholar is still safe — and the player, watching, understands why it matters.</strong></div>
+    </div>
+    <div class="ps-card ps-problem">
+      <span class="ps-lbl">Problem 3 · Lion Phase</span>
+      <span class="ps-title">Hunt / spare is a single trigger, not a continuous decision</span>
+      <div class="ps-body">Currently the Act I→II turn is a fixed narrative beat: the resonance instrument delivers a position report, the Scholar picks up the crossbow, Act II begins. This is clean but it removes the most interesting design space — the moment when each Vanguard independently decides the Scholar's usefulness has ended. <strong>Neither Vanguard's decision should be simultaneous or synchronous with the other's.</strong> The Scholar should be able to influence whether one Vanguard is still in a "wait" state while the other has moved to "execute." The gap between their decisions is a playable strategic window.</div>
+    </div>
+    <div class="ps-card ps-solution">
+      <span class="ps-lbl">Solution 3 · Lion Phase</span>
+      <span class="ps-title">Continuous recalibration — each Vanguard has independent thresholds</span>
+      <div class="ps-body">Each Vanguard maintains a <em>Utility Score</em> for the Scholar — their assessment of whether the Scholar is still worth protecting. When the Utility Score drops below threshold, she moves from passive observation to active execution. <strong>The Scholar can keep one Vanguard in "wait" mode by continuing to produce valuable work, while the other has already decided to execute.</strong> The gap between their decisions — which may be minutes, may be an hour of gameplay — is the Lion Phase's core strategic tension.</div>
+    </div>
+    <div class="ps-card ps-problem">
+      <span class="ps-lbl">Problem 4 · Lion Phase</span>
+      <span class="ps-title">Scholar routes don't create strategic consequences</span>
+      <div class="ps-body">The Scholar can traverse any room in any order and the Vanguards respond to their presence, not to the <em>pattern</em> of their movement. The Archive is a map — but the Scholar's route through it isn't a strategy, it's navigation. The rooms the Scholar clears, the traps they set, the translations they complete in a particular order should all be readable by the Vanguards as a strategy, and the Vanguards should respond strategically in return.</div>
+    </div>
+    <div class="ps-card ps-solution">
+      <span class="ps-lbl">Solution 4 · Lion Phase</span>
+      <span class="ps-title">Routes as strategic signatures — Vanguards read and counter</span>
+      <div class="ps-body">The Archive is divided into zones of influence. Each room the Scholar completes changes which rooms are "Scholar-controlled" (Scholar knows the terrain, traps set, resources staged) versus "Vanguard-controlled" (she has pre-positioned, cleared Scholar traps, established patrol patterns). <strong>The Scholar's route through the Archive in Act II is a negotiation of terrain — advancing Scholar control while the Vanguards work to extend their own.</strong> The Scholar who moves methodically is predictable. The Scholar who moves irregularly is harder to anticipate but spends more resources on improvisation.</div>
+    </div>
+    <div class="ps-card ps-problem">
+      <span class="ps-lbl">Problem 5 · Child Phase</span>
+      <span class="ps-title">Ten score buckets aren't dramatically distinct scenarios</span>
+      <div class="ps-body">The current 0–100 scoring system produces 10 ending states that differ in "how capable is the Vanguard?" This is mechanically interesting but dramatically thin. A score of 45 versus 55 produces endings that feel adjacent rather than genuinely different. <strong>The Child Phase needs five or six dramatically distinct scenarios — each with its own genre register, its own emotional key, its own version of the final line — rather than ten versions of the same scene on a capability spectrum.</strong></div>
+    </div>
+    <div class="ps-card ps-solution">
+      <span class="ps-lbl">Solution 5 · Child Phase</span>
+      <span class="ps-title">Five scenario archetypes, each a different kind of aftermath</span>
+      <div class="ps-body">Each scenario archetype covers a score range and has its own <em>dramatic identity</em>: the aftermath of what kind of relationship the Scholar and Vanguard built, expressed as a distinct scene structure. Not "Vanguard is 40% capable vs 80% capable." But: "this is an ending about grief / about respect / about what was owed / about completion / about transcendence." <strong>A player who replays at a different score bracket should feel like they played a genuinely different story, not the same story with different difficulty.</strong></div>
+    </div>
+  </div>
+
+  <div class="call cn">
+    <span class="c-lbl">The Master Design Principle — Before Everything Else</span>
+    <strong>Both Vanguards are not tracking the Scholar to eliminate them. They are tracking the Scholar to understand them.</strong> Elimination is the consequence of understanding, not the goal. A Vanguard who understands the Scholar completely is a Vanguard who knows exactly when the Scholar's work is done and can execute with perfect precision. The more the Scholar invests, the more completely they are understood. The more completely they are understood, the more formidable the execution. <em>Understanding is the weapon. Warmth is not incompatible with it. Both are the same thing viewed from two different angles.</em>
+  </div>
+</div>
+
+
+<!-- ═══════ ACT I — CAMEL PHASE ══════════ -->
+<div class="phase-div pd-cam" data-glyph="I">
+  <span class="pd-eye">Act I · The Camel Phase</span>
+  <div class="pd-title">Warmth, Recognition, and the Model That Builds Itself</div>
+  <span class="pd-sub">The Scholar says yes to every burden. The Vanguards watch every yes and understand what it means.</span>
+</div>
+
+<div class="sh"><span class="sh-n">1.1</span><span class="sh-t">The Warmth System — Mechanical Architecture</span></div>
+<div class="body">
+
+  <p>Warmth between the Scholar and each Vanguard is not a narrative preset. It is the accumulated residue of specific behaviors observed and correctly interpreted. Each Vanguard has a Warmth Register — not a UI bar, never visible to the player, but legible through behavioral changes. The Register fills through Scholar actions and depletes only through deliberate withholding or concealment.</p>
+
+  <!-- WARMTH ARCHITECTURE DIAGRAM -->
+  <div class="map-wrap">
+    <div class="map-bar">
+      <span class="map-lbl">Camel Phase · Warmth Architecture</span>
+      <span class="map-title">How Both Vanguards Build Trust — Different Inputs, Same Truth</span>
+    </div>
+    <svg viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#0b0c10;">
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <polygon points="0,0 6,3 0,6" fill="rgba(200,144,32,0.4)"/>
+        </marker>
+        <marker id="arrb" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <polygon points="0,0 6,3 0,6" fill="rgba(88,152,224,0.4)"/>
+        </marker>
+      </defs>
+      <!-- Scholar center column -->
+      <rect x="410" y="20" width="160" height="260" rx="4" fill="rgba(192,160,104,0.07)" stroke="rgba(192,160,104,0.2)" stroke-width="1.5"/>
+      <text x="490" y="46" fill="rgba(192,160,104,0.5)" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="3" text-anchor="middle">SCHOLAR</text>
+      <text x="490" y="62" fill="rgba(228,192,144,0.4)" font-family="Cinzel,serif" font-size="13" font-weight="700" text-anchor="middle">Observable</text>
+      <text x="490" y="76" fill="rgba(228,192,144,0.35)" font-family="Cinzel,serif" font-size="13" font-weight="700" text-anchor="middle">Behaviors</text>
+      <!-- Scholar behaviors list -->
+      <text x="420" y="102" fill="rgba(192,160,104,0.35)" font-family="JetBrains Mono,monospace" font-size="8.5">· Deep reads tablets</text>
+      <text x="420" y="116" fill="rgba(192,160,104,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">· Shares translations</text>
+      <text x="420" y="130" fill="rgba(192,160,104,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">· Donates resources</text>
+      <text x="420" y="144" fill="rgba(192,160,104,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">· Crosses voluntarily</text>
+      <text x="420" y="158" fill="rgba(192,160,104,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">· Names creatures</text>
+      <text x="420" y="172" fill="rgba(192,160,104,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">· Works off-schedule</text>
+      <text x="420" y="186" fill="rgba(192,160,104,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">· Asks questions</text>
+      <text x="420" y="200" fill="rgba(192,160,104,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">· Returns to same rooms</text>
+      <text x="420" y="214" fill="rgba(192,160,104,0.3)" font-family="JetBrains Mono,monospace" font-size="8.5">· Hesitates before crossing</text>
+      <text x="420" y="228" fill="rgba(192,160,104,0.28)" font-family="JetBrains Mono,monospace" font-size="8.5">· Reads creature origins</text>
+      <text x="420" y="250" fill="rgba(192,160,104,0.5)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">↓ All behaviors observed</text>
+      <text x="490" y="268" fill="rgba(192,160,104,0.35)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">by both Vanguards</text>
+
+      <!-- VA column -->
+      <rect x="60" y="20" width="310" height="260" rx="4" fill="rgba(200,144,32,0.06)" stroke="rgba(200,144,32,0.2)" stroke-width="1.5"/>
+      <text x="215" y="46" fill="rgba(200,144,32,0.45)" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="3" text-anchor="middle">VANGUARD A · SACRED FIRE</text>
+      <text x="215" y="62" fill="rgba(232,170,56,0.35)" font-family="Cinzel,serif" font-size="12" font-weight="700" text-anchor="middle">Military Model — Efficiency Metrics</text>
+      <line x1="70" y1="70" x2="360" y2="70" stroke="rgba(200,144,32,0.1)" stroke-width="1"/>
+      <text x="70" y="90" fill="rgba(200,144,32,0.28)" font-family="JetBrains Mono,monospace" font-size="8">WARMTH SOURCE → TRUST EXPRESSION</text>
+      <text x="70" y="108" fill="rgba(200,144,32,0.35)" font-family="JetBrains Mono,monospace" font-size="8.5">Deep-read speed → "Faster than I thought"</text>
+      <text x="70" y="122" fill="rgba(200,144,32,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Shares method → Stops asking methodology</text>
+      <text x="70" y="136" fill="rgba(200,144,32,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Correct Naming → Grants alcove access</text>
+      <text x="70" y="150" fill="rgba(200,144,32,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Crosses fast → Allows unsupervised TFP use</text>
+      <text x="70" y="164" fill="rgba(200,144,32,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Consistent routes → Prepares those routes</text>
+      <text x="70" y="178" fill="rgba(200,144,32,0.3)" font-family="JetBrains Mono,monospace" font-size="8.5">Returns on time → Pre-stages resource points</text>
+      <text x="70" y="192" fill="rgba(200,144,32,0.3)" font-family="JetBrains Mono,monospace" font-size="8.5">Handles emergencies → Reduces patrol overlap</text>
+      <text x="70" y="210" fill="rgba(200,144,32,0.22)" font-family="JetBrains Mono,monospace" font-size="8.5" font-style="italic">Trust = demonstrated reliability</text>
+      <text x="70" y="224" fill="rgba(200,144,32,0.22)" font-family="JetBrains Mono,monospace" font-size="8.5" font-style="italic">Warmth = professional respect made visible</text>
+      <!-- Warmth bar VA -->
+      <text x="70" y="245" fill="rgba(200,144,32,0.35)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WARMTH REGISTER (INVISIBLE)</text>
+      <rect x="70" y="250" width="290" height="6" rx="3" fill="rgba(200,144,32,0.1)" stroke="rgba(200,144,32,0.2)" stroke-width="0.8"/>
+      <rect x="70" y="250" width="200" height="6" rx="3" fill="rgba(200,144,32,0.45)"/>
+      <text x="365" y="257" fill="rgba(200,144,32,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">grows</text>
+      <text x="365" y="268" fill="rgba(200,144,32,0.2)" font-family="JetBrains Mono,monospace" font-size="7.5" text-anchor="end">with Scholar</text>
+      <text x="365" y="278" fill="rgba(200,144,32,0.2)" font-family="JetBrains Mono,monospace" font-size="7.5" text-anchor="end">competence</text>
+
+      <!-- VB column -->
+      <rect x="610" y="20" width="310" height="260" rx="4" fill="rgba(56,104,176,0.07)" stroke="rgba(56,104,176,0.2)" stroke-width="1.5"/>
+      <text x="765" y="46" fill="rgba(56,104,176,0.45)" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="3" text-anchor="middle">VANGUARD B · THE HOLLOW</text>
+      <text x="765" y="62" fill="rgba(88,152,224,0.35)" font-family="Cinzel,serif" font-size="12" font-weight="700" text-anchor="middle">Philosophical Model — Depth Metrics</text>
+      <line x1="620" y1="70" x2="910" y2="70" stroke="rgba(56,104,176,0.1)" stroke-width="1"/>
+      <text x="620" y="90" fill="rgba(56,104,176,0.28)" font-family="JetBrains Mono,monospace" font-size="8">WARMTH SOURCE → TRUST EXPRESSION</text>
+      <text x="620" y="108" fill="rgba(56,104,176,0.35)" font-family="JetBrains Mono,monospace" font-size="8.5">Reads aloud → "Your translation is better"</text>
+      <text x="620" y="122" fill="rgba(56,104,176,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Asks about the Hollow → Longer answers</text>
+      <text x="620" y="136" fill="rgba(56,104,176,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Donates oil unprompted → Reveals WB shortcuts</text>
+      <text x="620" y="150" fill="rgba(56,104,176,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Stays in WB after work → Allows proximity</text>
+      <text x="620" y="164" fill="rgba(56,104,176,0.32)" font-family="JetBrains Mono,monospace" font-size="8.5">Reads her annotations → Writes more of them</text>
+      <text x="620" y="178" fill="rgba(56,104,176,0.3)" font-family="JetBrains Mono,monospace" font-size="8.5">Handles Loop-Walker → Adjusts her patrol</text>
+      <text x="620" y="192" fill="rgba(56,104,176,0.3)" font-family="JetBrains Mono,monospace" font-size="8.5">Works alone in WB → Speaks more freely</text>
+      <text x="620" y="210" fill="rgba(56,104,176,0.22)" font-family="JetBrains Mono,monospace" font-size="8.5" font-style="italic">Trust = demonstrated depth of attention</text>
+      <text x="620" y="224" fill="rgba(56,104,176,0.22)" font-family="JetBrains Mono,monospace" font-size="8.5" font-style="italic">Warmth = intellectual intimacy extended</text>
+      <!-- Warmth bar VB -->
+      <text x="620" y="245" fill="rgba(56,104,176,0.35)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="2">WARMTH REGISTER (INVISIBLE)</text>
+      <rect x="620" y="250" width="290" height="6" rx="3" fill="rgba(56,104,176,0.1)" stroke="rgba(56,104,176,0.2)" stroke-width="0.8"/>
+      <rect x="620" y="250" width="170" height="6" rx="3" fill="rgba(56,104,176,0.45)"/>
+      <text x="912" y="257" fill="rgba(56,104,176,0.3)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="end">grows with</text>
+      <text x="912" y="268" fill="rgba(56,104,176,0.2)" font-family="JetBrains Mono,monospace" font-size="7.5" text-anchor="end">Scholar depth</text>
+
+      <!-- Arrows: Scholar → both Vanguards -->
+      <line x1="410" y1="150" x2="375" y2="150" stroke="rgba(192,160,104,0.25)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="570" y1="150" x2="605" y2="150" stroke="rgba(192,160,104,0.25)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="380" y="145" fill="rgba(192,160,104,0.2)" font-family="JetBrains Mono,monospace" font-size="7">observed</text>
+      <text x="580" y="145" fill="rgba(192,160,104,0.2)" font-family="JetBrains Mono,monospace" font-size="7">observed</text>
+    </svg>
+  </div>
+</div>
+
+<div class="sh"><span class="sh-n">1.2</span><span class="sh-t">The Five Recognition Stages — Both Vanguards</span><span class="sh-aside">Visible through behavior · Not announced</span></div>
+<div class="body">
+
+  <p>Each Vanguard progresses through five stages of Scholar assessment. The stages are driven by accumulated behavioral evidence across the Camel Phase's three chapters. A Scholar who deep-reads every tablet and shares every result will reach Stage 5 in both Vanguards by the end of Act I. A Scholar who works conservatively may remain at Stage 3 when the turn fires.</p>
+  <p><strong>The player can read the Vanguard's stage from her behavior alone — no UI.</strong> Stage 1: she asks. Stage 5: she already knows. The transition from Stage 4 to Stage 5 is the single most important moment in Act I, because Stage 5 means the model is complete. And a complete model is a Vanguard prepared.</p>
+
+  <h3>Vanguard A Recognition Stages — Sacred Fire Assessment</h3>
+  <div class="stages">
+    <div class="stage st-va active">
+      <span class="stage-n">Stage 1 · Week 1</span>
+      <span class="stage-title">The Evaluator</span>
+      <div class="stage-body">She asks questions about methodology. Times the Scholar's translations. Requests demonstrations under observation. No warmth yet — she is processing intake data. She asks every question exactly once.</div>
+    </div>
+    <div class="stage st-va active">
+      <span class="stage-n">Stage 2 · Week 2</span>
+      <span class="stage-title">The Collaborator</span>
+      <div class="stage-body">She stops asking methodology questions — she knows the Scholar's methods. She begins providing context: patrol schedule adjustments, alcove locations, creature positions. She's contributing to efficiency.</div>
+    </div>
+    <div class="stage st-va active">
+      <span class="stage-n">Stage 3 · Week 3</span>
+      <span class="stage-title">The Anticipator</span>
+      <div class="stage-body">She pre-stages resources on the Scholar's observed routes. If the Scholar always enters the Treasury from the south, a full oil flask will be placed there before they arrive. She does not announce this. The player just notices it.</div>
+    </div>
+    <div class="stage st-va active">
+      <span class="stage-n">Stage 4 · Week 4</span>
+      <span class="stage-title">The Predictor</span>
+      <div class="stage-body">She answers the Scholar's questions before the Scholar finishes asking them — she has already modeled what the Scholar will need to know in each zone before they reach it. Warmth is most visible here. She is beginning to trust her own model.</div>
+    </div>
+    <div class="stage st-va active">
+      <span class="stage-n">Stage 5 · Late Camel</span>
+      <span class="stage-title">The Archive</span>
+      <div class="stage-body">She no longer offers information. She is observing. When the Scholar speaks to her, her replies are shorter and more precise. She knows. The model is complete. She is verifying, not learning. <em>This is the most dangerous stage.</em></div>
+    </div>
+  </div>
+
+  <h3>Vanguard B Recognition Stages — Hollow Assessment</h3>
+  <div class="stages">
+    <div class="stage st-vb active">
+      <span class="stage-n">Stage 1 · Week 1</span>
+      <span class="stage-title">The Distant Observer</span>
+      <div class="stage-body">She speaks only when addressed. She watches the Scholar work from far alcoves. She is assessing whether the Scholar's presence is sustainable in the Hollow before investing any attention.</div>
+    </div>
+    <div class="stage st-vb active">
+      <span class="stage-n">Stage 2 · Week 2</span>
+      <span class="stage-title">The Commenter</span>
+      <div class="stage-body">She begins annotating the Scholar's translations — not correcting, supplementing. If the Scholar leaves a tablet on the reading stand, she will add a notation to it in smaller characters beneath. She still doesn't speak first.</div>
+    </div>
+    <div class="stage st-vb active">
+      <span class="stage-n">Stage 3 · Week 3</span>
+      <span class="stage-title">The Intellect</span>
+      <div class="stage-body">She begins discussing ideas rather than just information. She references the Scholar's earlier translations to support an argument about a current one. She has been thinking about what the Scholar said three days ago. The attention is mutual now.</div>
+    </div>
+    <div class="stage st-vb active">
+      <span class="stage-n">Stage 4 · Week 4</span>
+      <span class="stage-title">The Confessor</span>
+      <div class="stage-body">She begins revealing private knowledge — things she has never told anyone, because there was no one to tell. The 250-year-old philosophical text she wrote herself. The orbital calculations she ran for 60 years. She is choosing to be known.</div>
+    </div>
+    <div class="stage st-vb active">
+      <span class="stage-n">Stage 5 · Late Camel</span>
+      <span class="stage-title">The Complete Model</span>
+      <div class="stage-body">She is quieter than in Stage 4 — the intimacy has passed its peak. She is integrating what she knows. When she speaks, she anticipates the Scholar's next thought. She has a complete map of how the Scholar thinks. <em>The model is done.</em></div>
+    </div>
+  </div>
+
+  <div class="call cc">
+    <span class="c-lbl">Why Stage 5 in Both Vanguards Before the Turn Is the Ideal</span>
+    A Scholar who reaches Stage 5 in both Vanguards before Act II fires faces the most formidable possible opponent — because both have complete models. But they also receive the most warmth the game can deliver: Stage 5 warmth is the Vanguard fully trusting her own model of the Scholar, which means fully trusting the Scholar. <strong>The most invested Scholar gets the most warmth and the most dangerous adversary simultaneously. Both are the same thing.</strong>
+  </div>
+</div>
+
+<div class="sh"><span class="sh-n">1.3</span><span class="sh-t">The Camel Phase's Three Chapters — Structured Warmth Escalation</span></div>
+<div class="body">
+
+  <div class="warmth-grid">
+    <div class="wm-card wm-va">
+      <span class="wm-lbl">Chapter 1 · Weeks 1–2 · Establishment</span>
+      <span class="wm-title">Vanguard A — The Professional Introduction</span>
+      <div class="wm-body">
+        <p>VA enters every interaction as a military evaluation. She is not cold — she is precise. Her gestures toward warmth in this chapter are entirely professional: she corrects the Scholar's approach to a WA mechanism before they break it. She places a field lamp in a room the Scholar has been working without adequate light. She does not say she placed it.</p>
+        <p><strong>The Scholar's first opportunity:</strong> A WA-003 document the Scholar translates contains an error in the previous Scholar's notation — an error VA has known about for 150 years. If the Scholar catches it: VA says "I've been waiting for someone to catch that." She was. She didn't know she was waiting until the Scholar caught it.</p>
+        <div class="score-tags">
+          <span class="stag st-va">+3 VA · error caught</span>
+          <span class="stag st-warn">0 VA · error missed</span>
+          <span class="stag st-bad">−2 VA · error propagated into Scholar's work</span>
+        </div>
+      </div>
+    </div>
+    <div class="wm-card wm-vb">
+      <span class="wm-lbl">Chapter 1 · Weeks 1–2 · Establishment</span>
+      <span class="wm-title">Vanguard B — The Careful Approach</span>
+      <div class="wm-body">
+        <p>VB's early warmth is visible as access rather than conversation. A shortcut through the Hollow that she reveals only after the Scholar has demonstrated they can handle the second crossing. An annotation left in a tablet the Scholar was already reading — not a correction, a supplement, placed where it would be found next.</p>
+        <p><strong>The Scholar's first opportunity:</strong> The Scholar finds VB's 250-year-old philosophical text. If they read it carefully and reference it when speaking with VB, she pauses before replying — the pause of someone hearing something private spoken back to them accurately. She does not thank the Scholar. She provides the name of a more obscure text that builds on the same idea. This is how she says "I am paying attention."</p>
+        <div class="score-tags">
+          <span class="stag st-vb">+4 VB · referenced text with understanding</span>
+          <span class="stag st-warn">0 VB · mentioned text without depth</span>
+          <span class="stag st-bad">−1 VB · misread the text's argument</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wm-card wm-va">
+      <span class="wm-lbl">Chapter 2 · Weeks 3–4 · Deepening</span>
+      <span class="wm-title">Vanguard A — The Three Resonance Moments Land Here</span>
+      <div class="wm-body">
+        <p>The Recognition (Week 3): Scholar translates the Eastern Zhou text. Her response — "I had a translation. Yours is better." — only lands this way if the Scholar has demonstrated genuine depth in the preceding two weeks. If the Scholar has been skimming, her response is: "I had a translation." Identical sentence minus the comparison. The warmth is conditional on what was built before it.</p>
+        <p>The Flask (Week 4): The Scholar returns from a difficult Hollow crossing with the fire vessel critically low. VA assesses them in half a second and places an oil measure in their hands. <strong>The exact amount is calculated to restore combat capacity without expending more than the Scholar's demonstrated consumption rate requires.</strong> She has been tracking consumption since Day One. The gesture is care. The data behind it is three weeks of behavioral logging.</p>
+        <div class="score-tags">
+          <span class="stag st-va">+5 VA · full resonance moment landed</span>
+          <span class="stag st-warn">+2 VA · partial — Scholar had insufficient depth</span>
+        </div>
+      </div>
+    </div>
+    <div class="wm-card wm-vb">
+      <span class="wm-lbl">Chapter 2 · Weeks 3–4 · Deepening</span>
+      <span class="wm-title">Vanguard B — She Begins to Speak in Longer Sentences</span>
+      <div class="wm-body">
+        <p>The Admission of Hope (Week 4): The Scholar finds the key passage in the Third Record. VB has been in the same room, working at her own tablet — not helping, not leaving. Her response ("I thought that was what it would say") is not available at Stage 1 or 2. It requires Stage 3 or above. Below that, she simply nods without speaking — a confirmation, not a confession.</p>
+        <p>The Grief Tablet: If the Scholar reaches the northwest alcove of WB-004 (Stage 3+ access only — VB will not show this room at lower stages), they find the twelve funeral records. Reading all twelve aloud — there is a prompt to read them aloud — triggers VB's response: "I was 70 hours late. I have been thinking about that for 300 years." This scene is locked behind genuine relationship depth.</p>
+        <div class="score-tags">
+          <span class="stag st-vb">+6 VB · funeral records read aloud</span>
+          <span class="stag st-vb">+4 VB · Admission of Hope received at Stage 3+</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wm-card" style="grid-column:span 2;border-top:2px solid var(--cam);">
+      <span class="wm-lbl">Chapter 3 · Weeks 5–6 · The Third Record and the Final Warmth</span>
+      <span class="wm-title" style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--ink);display:block;margin-bottom:8px;">Both Vanguards at WB-∞ — The Convergence Scene</span>
+      <div class="wm-body">
+        <p>Both Vanguards arrive at WB-∞ as the Scholar completes the Third Record translation. This is the only moment in the Camel Phase where both are simultaneously present. The warmth of this scene is entirely earned by the preceding five weeks — its weight is proportional to both Vanguards' current stage.</p>
+        <p>If VA is at Stage 4–5 and VB is at Stage 4–5: VA tells the Scholar what Clause 18 means in the clearest possible terms and then walks away to execute it. This is the warmest the game will ever be toward the Scholar — she tells them the truth because she trusts that the Scholar, having demonstrated who they are, can receive it honestly. It is the final gift of the Camel Phase and the opening move of Act II simultaneously.</p>
+        <p>If either Vanguard is at Stage 1–2: The scene is shorter. VA does not make the Clause 18 statement. VB does not have the Admission of Hope. The Scholar leaves WB-∞ without the clearest possible warning. The Lion Phase begins cold.</p>
+        <div class="score-tags">
+          <span class="stag st-va">+4 VA · Clause 18 declared at Stage 4+</span>
+          <span class="stag st-vb">+4 VB · present and responsive at Stage 4+</span>
+          <span class="stag st-bad">+0 both · Stage 1–2 — scene is functionally incomplete</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ ACT II — LION PHASE ══════════ -->
+<div class="phase-div pd-lio" data-glyph="II">
+  <span class="pd-eye">Act II · The Lion Phase</span>
+  <div class="pd-title">Routes, Utility, and the Decision That Is Never Made Once</div>
+  <span class="pd-sub">The Scholar says "I will." Both Vanguards are already three moves ahead — but the Scholar's route through the Archive is still the variable neither fully predicted.</span>
+</div>
+
+<div class="sh"><span class="sh-n">2.1</span><span class="sh-t">The Utility Score — How Each Vanguard Decides When to Act</span></div>
+<div class="body">
+
+  <p>The Lion Phase does not begin with a single trigger. It begins when one Vanguard's <strong>Utility Score</strong> for the Scholar drops below her personal threshold. The Utility Score is a real-time assessment of whether the Scholar is still producing more value than risk. It depletes through Scholar combat activity, through trap discovery by either Vanguard, through completed Archive sections (fewer translations remain = lower utility), and through Scholar behaviors that deviate from the Camel Phase model.</p>
+
+  <div class="warmth-grid">
+    <div class="wm-card wm-va">
+      <span class="wm-lbl">Vanguard A · Utility Logic</span>
+      <span class="wm-title">Military Threshold — Efficiency and Completion</span>
+      <div class="wm-body">
+        <p>VA calculates utility with a military completion model: how much Archive work remains versus how much risk the Scholar's continued presence generates. Her threshold is objective and reviewable. She is not emotional about it. When the Archive is 85% complete and the Scholar's continued presence requires more active management than the remaining 15% is worth, the threshold is crossed.</p>
+        <p><strong>Her default threshold: 80% Archive completion.</strong> This is her professional assessment. A Scholar who completes work faster raises the threshold trigger earlier. A Scholar who takes longer produces more translations but also more opportunities for VA to recalibrate her model. She will wait if waiting produces better data. She will not wait past the point of diminishing returns.</p>
+        <p><strong>The player can delay VA's execution threshold</strong> by continuously producing new translations that advance the Archive's completion to her satisfaction while generating new strategic value — Scholar actions that give VA things she wants from the Archive that she cannot produce without the Scholar. The Scholar who keeps finding new high-value translation targets buys time.</p>
+      </div>
+    </div>
+    <div class="wm-card wm-vb">
+      <span class="wm-lbl">Vanguard B · Utility Logic</span>
+      <span class="wm-title">Philosophical Threshold — Depth and Meaning</span>
+      <div class="wm-body">
+        <p>VB's utility calculation is not efficiency-based. She measures whether the Scholar is still <em>growing</em> — still producing insights she could not have predicted from the behavioral model. A Scholar who begins repeating known strategies, taking expected routes, and producing translations without intellectual novelty drops in VB's utility assessment faster than a Scholar who still surprises her.</p>
+        <p><strong>Her default threshold: when the Scholar stops surprising her.</strong> This is harder to game than VA's completion model — it requires the Scholar to be genuinely unpredictable, not just strategically varied. VB has watched the Scholar's intellectual development for six weeks. She knows what "surprising" looks like for this specific Scholar.</p>
+        <p><strong>The player can delay VB's execution threshold</strong> by doing something in the Dark Archive that VB's behavioral model did not predict — entering an unexamined region, attempting a previously-skipped deep translation, or choosing the unexpected option in an interference puzzle. VB will recalibrate. A Scholar who generates new data buys time.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="call cl">
+    <span class="c-lbl">The Critical Asymmetry — This Is the Lion Phase's Core Design</span>
+    VA and VB have different thresholds and will cross them at different moments. <strong>The Scholar can be in a state where VA has decided to execute and VB has not — or vice versa.</strong> The gap between their decisions is the most strategically rich window in the game. If the Scholar can keep VB in "extended utility" mode while operating against VA, VB becomes a passive non-hostile observer of events rather than an active combatant. This is not guaranteed — VB will eventually assess what the Scholar is doing against VA as a threat to the Archive and adjust her position. But the window is real and playable.
+  </div>
+</div>
+
+<div class="sh"><span class="sh-n">2.2</span><span class="sh-t">Scholar Routes — The Archive as Strategic Terrain</span></div>
+<div class="body">
+
+  <p>The Archive's rooms are divided into three influence states in the Lion Phase: Scholar-controlled, Contested, and Vanguard-controlled. The Scholar's route through the Archive — which rooms they enter, in which order, through which approaches — determines the terrain configuration both Vanguards must work within.</p>
+
+  <div class="map-wrap">
+    <div class="map-bar">
+      <span class="map-lbl">Lion Phase · Terrain Control Model</span>
+      <span class="map-title">Scholar Routes Create the Strategic Map Both Vanguards Must Navigate</span>
+    </div>
+    <svg viewBox="0 0 980 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#101318;">
+      <defs>
+        <pattern id="rg" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+          <line x1="16" y1="0" x2="16" y2="16" stroke="rgba(180,104,40,0.05)" stroke-width="0.5"/>
+          <line x1="0" y1="16" x2="16" y2="16" stroke="rgba(180,104,40,0.05)" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="980" height="280" fill="url(#rg)"/>
+      <!-- Legend top -->
+      <rect x="40" y="10" width="16" height="16" rx="2" fill="rgba(192,160,104,0.35)" stroke="rgba(192,160,104,0.5)" stroke-width="1"/>
+      <text x="62" y="22" fill="rgba(192,160,104,0.5)" font-family="JetBrains Mono,monospace" font-size="9">Scholar-Controlled</text>
+      <rect x="200" y="10" width="16" height="16" rx="2" fill="rgba(120,104,72,0.35)" stroke="rgba(150,130,90,0.5)" stroke-width="1"/>
+      <text x="222" y="22" fill="rgba(150,130,90,0.4)" font-family="JetBrains Mono,monospace" font-size="9">Contested</text>
+      <rect x="320" y="10" width="16" height="16" rx="2" fill="rgba(200,144,32,0.35)" stroke="rgba(200,144,32,0.5)" stroke-width="1"/>
+      <text x="342" y="22" fill="rgba(200,144,32,0.45)" font-family="JetBrains Mono,monospace" font-size="9">VA-Controlled (WA)</text>
+      <rect x="480" y="10" width="16" height="16" rx="2" fill="rgba(56,104,176,0.35)" stroke="rgba(56,104,176,0.5)" stroke-width="1"/>
+      <text x="502" y="22" fill="rgba(56,104,176,0.45)" font-family="JetBrains Mono,monospace" font-size="9">VB-Controlled (WB)</text>
+      <rect x="640" y="10" width="16" height="16" rx="2" fill="rgba(136,64,48,0.35)" stroke="rgba(184,80,50,0.5)" stroke-width="1"/>
+      <text x="662" y="22" fill="rgba(184,80,50,0.45)" font-family="JetBrains Mono,monospace" font-size="9">Both-Controlled (Dangerous)</text>
+
+      <!-- Map grid World A (upper half) -->
+      <text x="50" y="56" fill="rgba(200,144,32,0.28)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">WORLD A · ACT II TERRAIN</text>
+      <!-- Rooms WA - varying control states -->
+      <!-- WA-001 Gate — Scholar controlled (traps set) -->
+      <rect x="40" y="62" width="100" height="44" rx="2" fill="rgba(192,160,104,0.3)" stroke="rgba(192,160,104,0.5)" stroke-width="1.2"/>
+      <text x="90" y="81" fill="rgba(228,192,144,0.7)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WA-001</text>
+      <text x="90" y="93" fill="rgba(192,160,104,0.45)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Gate · Scholar</text>
+      <!-- WA-002 Hypostyle — contested -->
+      <rect x="150" y="62" width="140" height="44" rx="2" fill="rgba(120,104,72,0.3)" stroke="rgba(150,130,90,0.4)" stroke-width="1.2"/>
+      <text x="220" y="81" fill="rgba(200,180,120,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WA-002</text>
+      <text x="220" y="93" fill="rgba(150,130,90,0.4)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Hypostyle · Contested</text>
+      <!-- WA-003 Treasury — Scholar controlled -->
+      <rect x="300" y="62" width="120" height="44" rx="2" fill="rgba(192,160,104,0.3)" stroke="rgba(192,160,104,0.5)" stroke-width="1.2"/>
+      <text x="360" y="81" fill="rgba(228,192,144,0.7)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WA-003</text>
+      <text x="360" y="93" fill="rgba(192,160,104,0.45)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Treasury · Scholar</text>
+      <!-- WA-004/005 Processional — VA controlled -->
+      <rect x="430" y="62" width="160" height="44" rx="2" fill="rgba(200,144,32,0.28)" stroke="rgba(200,144,32,0.45)" stroke-width="1.5"/>
+      <text x="510" y="81" fill="rgba(232,170,56,0.65)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WA-004/005</text>
+      <text x="510" y="93" fill="rgba(200,144,32,0.4)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Processional · VA Zone</text>
+      <!-- WA-007 Armillary — both contested, critical -->
+      <rect x="600" y="62" width="160" height="44" rx="2" fill="rgba(136,64,48,0.28)" stroke="rgba(184,80,50,0.5)" stroke-width="2"/>
+      <text x="680" y="78" fill="rgba(220,100,70,0.7)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WA-007</text>
+      <text x="680" y="90" fill="rgba(184,80,50,0.5)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Grand Armillary · OBJECTIVE</text>
+      <text x="680" y="101" fill="rgba(184,80,50,0.4)" font-family="JetBrains Mono,monospace" font-size="6.5" text-anchor="middle">Both Vanguards converge here</text>
+      <!-- Observatory — Scholar base -->
+      <rect x="770" y="62" width="140" height="44" rx="2" fill="rgba(192,160,104,0.2)" stroke="rgba(192,160,104,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="840" y="81" fill="rgba(192,160,104,0.55)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">Observatory</text>
+      <text x="840" y="93" fill="rgba(192,160,104,0.35)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Base · Corrupting</text>
+
+      <!-- Map grid World B (lower half) -->
+      <text x="50" y="140" fill="rgba(56,104,176,0.28)" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="3">WORLD B · ACT II TERRAIN</text>
+      <!-- WB-001 Inverted Gate -->
+      <rect x="40" y="148" width="100" height="44" rx="2" fill="rgba(192,160,104,0.28)" stroke="rgba(192,160,104,0.45)" stroke-width="1.2"/>
+      <text x="90" y="167" fill="rgba(228,192,144,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WB-001</text>
+      <text x="90" y="179" fill="rgba(192,160,104,0.4)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Inv. Gate</text>
+      <!-- WB-002 Hollow Hypostyle -->
+      <rect x="150" y="148" width="140" height="44" rx="2" fill="rgba(56,104,176,0.28)" stroke="rgba(56,104,176,0.42)" stroke-width="1.5"/>
+      <text x="220" y="167" fill="rgba(88,152,224,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WB-002</text>
+      <text x="220" y="179" fill="rgba(56,104,176,0.4)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Hollow Hypostyle · VB</text>
+      <!-- WB-004 Dark Library -->
+      <rect x="300" y="148" width="120" height="44" rx="2" fill="rgba(192,160,104,0.28)" stroke="rgba(192,160,104,0.45)" stroke-width="1.2"/>
+      <text x="360" y="167" fill="rgba(228,192,144,0.6)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WB-004</text>
+      <text x="360" y="179" fill="rgba(192,160,104,0.4)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Dark Library · Scholar</text>
+      <!-- WB-005/006 Contested -->
+      <rect x="430" y="148" width="160" height="44" rx="2" fill="rgba(120,104,72,0.28)" stroke="rgba(150,130,90,0.35)" stroke-width="1.2"/>
+      <text x="510" y="167" fill="rgba(200,180,120,0.55)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WB-005/006</text>
+      <text x="510" y="179" fill="rgba(150,130,90,0.35)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Deep Hollow · Contested</text>
+      <!-- WB-∞ -->
+      <rect x="600" y="148" width="160" height="44" rx="2" fill="rgba(136,64,48,0.28)" stroke="rgba(184,80,50,0.5)" stroke-width="2"/>
+      <text x="680" y="164" fill="rgba(220,100,70,0.7)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">WB-∞</text>
+      <text x="680" y="176" fill="rgba(184,80,50,0.5)" font-family="JetBrains Mono,monospace" font-size="7" text-anchor="middle">Convergence · OBJECTIVE</text>
+      <text x="680" y="187" fill="rgba(184,80,50,0.35)" font-family="JetBrains Mono,monospace" font-size="6.5" text-anchor="middle">Third Record · VB final position</text>
+
+      <!-- Scholar route arrow (example) -->
+      <path d="M 140,84 Q 200,50 295,84" fill="none" stroke="rgba(192,160,104,0.22)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <path d="M 420,84 Q 480,50 595,84" fill="none" stroke="rgba(192,160,104,0.18)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="230" y="50" fill="rgba(192,160,104,0.2)" font-family="JetBrains Mono,monospace" font-size="8">Scholar approach route</text>
+
+      <!-- VA counter-route -->
+      <path d="M 590,84 Q 650,114 596,148" fill="none" stroke="rgba(200,144,32,0.2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="630" y="122" fill="rgba(200,144,32,0.2)" font-family="JetBrains Mono,monospace" font-size="7.5">VA moves</text>
+      <text x="630" y="132" fill="rgba(200,144,32,0.18)" font-family="JetBrains Mono,monospace" font-size="7.5">to intercept</text>
+
+      <!-- Scale note -->
+      <text x="490" y="258" fill="rgba(100,98,110,0.2)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">Scholar-controlled rooms: Scholar's traps active, resources staged, approach angles known</text>
+      <text x="490" y="270" fill="rgba(100,98,110,0.16)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">Vanguard-controlled rooms: Scholar traps removed or overridden, Vanguard positions optimized, exits pre-secured</text>
+    </svg>
+  </div>
+
+  <h3>Scholar Route Consequences — Four Route Archetypes</h3>
+  <table class="route-table">
+    <tr>
+      <th>Route Archetype</th>
+      <th>What the Scholar Does</th>
+      <th>VA's Reading</th>
+      <th>VB's Reading</th>
+      <th>Strategic Consequence</th>
+    </tr>
+    <tr>
+      <td>The Deep Push</td>
+      <td>Scholar drives toward WA-007 immediately — shortest path to the Armillary objective, minimal detours.</td>
+      <td>Reads as urgency. VA identifies Scholar's objective early and pre-positions at WA-007 approaches. Clock starts at her threshold earlier.</td>
+      <td>Notes Scholar is neglecting the Dark Archive. Utility score drops (Scholar is not producing WB translations). May stay in wait mode longer since Scholar is not a Hollow threat.</td>
+      <td>Fast route to objective, but VA is waiting at WA-007. Player must fight through prepared terrain. VB likely neutral-passive during WA combat. Fastest completion, hardest final approach.</td>
+    </tr>
+    <tr>
+      <td>The Lateral Grid</td>
+      <td>Scholar clears rooms systematically — full row by row, both worlds, equal coverage.</td>
+      <td>Predictable pattern. VA can extrapolate the Scholar's next three rooms at any given moment. She pre-clears Scholar traps in projected rooms before Scholar arrives.</td>
+      <td>Respects the depth — Scholar is visiting all WB rooms. Utility stays high for longest duration. VB may stay in wait mode until very late Act II.</td>
+      <td>Maximum control of terrain, maximum time. But VA has predicted every approach. VB's late-stage utility drop creates a compressed window at the end where both move simultaneously. The methodical Scholar's worst nightmare: the sprint finish.</td>
+    </tr>
+    <tr>
+      <td>The Irregular</td>
+      <td>Scholar backtracks, doubles, visits rooms in unexpected sequence. Revisits completed rooms on different days.</td>
+      <td>VA cannot model the route. Her trap-countermeasures are misplaced. Her pre-positioning is wrong 30–40% of the time. She relies more heavily on real-time reaction than pre-planned interception.</td>
+      <td>Revises utility score upward — Scholar still generating surprising data. VB's threshold extends. She is still learning. <em>She is always more patient with a Scholar who hasn't become predictable yet.</em></td>
+      <td>Hardest for both Vanguards to counter tactically. But: irregular routes burn more resources (oil, bolts) through improvisation. The Scholar who can't be predicted also can't predict themselves efficiently. A tradeoff, not a win.</td>
+    </tr>
+    <tr>
+      <td>The Hollow-First</td>
+      <td>Scholar prioritizes WB content — spends most of Act II in the Dark Archive, using WA sparingly.</td>
+      <td>VA's utility assessment stalls — Scholar is not threatening her domain. She may hold execution if the Scholar is producing WA-adjacent translations from WB sources. Waits to see if Scholar returns to WA with useful data.</td>
+      <td>VB's utility assessment spikes — Scholar is in her domain. Her threshold reaches "sufficient evidence" faster. She makes her execution decision first, ahead of VA. The Scholar may face VB while VA is still in wait mode — the opposite of the usual assumption.</td>
+      <td>Highest risk of VB executing first — the strategic assumption that VB will wait longer than VA is false on this route. VB's depth threshold is satisfied faster in her own domain. Scholar faces World B's execution while World A is quiet. Unusual and dangerous.</td>
+    </tr>
+  </table>
+</div>
+
+<div class="sh"><span class="sh-n">2.3</span><span class="sh-t">The AI Decision Tree — Hunt, Wait, Spare</span></div>
+<div class="body">
+
+  <p>Neither Vanguard makes a single binary hunt decision. Each maintains a three-state position — Wait, Observe-and-Close, Execute — that can transition in either direction based on incoming Scholar data. The Scholar can push a Vanguard from Execute back to Observe-and-Close by producing high-value work. The Scholar cannot push a Vanguard from Execute back to Wait — that stage is permanently closed once crossed.</p>
+
+  <div class="ai-tree">
+    <span class="ai-tree-title">Vanguard A · AI State Transitions During Act II</span>
+    <div class="ai-node ai-va">
+      <div class="ai-cond">Scholar completes new high-value WA translation</div>
+      <div class="ai-response"><strong>State impact: Execute → Observe-and-Close.</strong> VA recalibrates. The work is still producing utility above her threshold. She continues monitoring. Her pre-positioning pauses. If Scholar produces another high-value translation within 20 minutes of game time: she holds again. This is the Scholar's primary tool for managing VA's timeline.</div>
+      <span class="ai-score sc-ok">VA deferred</span>
+    </div>
+    <div class="ai-node ai-va">
+      <div class="ai-cond">Scholar sets a trap VA has not observed</div>
+      <div class="ai-response"><strong>State impact: Utility score −5.</strong> VA cannot account for unobserved traps in her interception model. She must slow her approach to account for unknowns, or accept higher risk. She will systematically clear sections she hasn't scouted before closing distance. The Scholar who sets traps outside VA's observed routes has created genuine friction in her plan.</div>
+      <span class="ai-score sc-warn">VA slowed</span>
+    </div>
+    <div class="ai-node ai-va">
+      <div class="ai-cond">Scholar fires crossbow and misses</div>
+      <div class="ai-response"><strong>State impact: Utility score −3, but model refined.</strong> VA notes the miss: distance, angle, environment. She won't miss that data point. The Scholar who reveals their crossbow range under pressure — even in a failed shot — has given VA a measurement. She adjusts her approach to stay just outside that range. Every missed shot is an unintentional gift.</div>
+      <span class="ai-score sc-warn">VA learns</span>
+    </div>
+    <div class="ai-node ai-va">
+      <div class="ai-cond">Scholar Names a creature VA had not Named in 300 years</div>
+      <div class="ai-response"><strong>State impact: Execute → Observe-and-Close + utility spike.</strong> Naming a creature VA couldn't Name reveals Scholar capability she hadn't measured. VA pauses. She needs to integrate this. The creature is now permanently non-hostile — a resource removed from her available tools. But the Scholar who demonstrates an unfamiliar capability during Act II extends their own utility window because VA must recalibrate her model.</div>
+      <span class="ai-score sc-ok">VA paused · model revised</span>
+    </div>
+    <div class="ai-node ai-va">
+      <div class="ai-cond">Scholar has been in the same room for 12+ minutes without producing output</div>
+      <div class="ai-response"><strong>State impact: Utility score −8.</strong> VA interprets prolonged stillness as either incapacity or deliberate delay — neither increases utility. She begins to close. If Scholar produces no output within 5 more minutes, she enters Execute. The Scholar who hides is telling VA the game is moving to its final phase.</div>
+      <span class="ai-score sc-bad">VA closes</span>
+    </div>
+  </div>
+
+  <div class="ai-tree">
+    <span class="ai-tree-title">Vanguard B · AI State Transitions During Act II</span>
+    <div class="ai-node ai-vb">
+      <div class="ai-cond">Scholar enters a WB room not yet visited in Act II</div>
+      <div class="ai-response"><strong>State impact: Utility spike.</strong> VB's threshold resets partially — new data. The Scholar who explores new Hollow territory during Act II continuously generates the "still surprising" quality VB requires to hold her position. VB follows from distance, not to intercept, but to observe. She is still learning. As long as VB is learning, she is not executing.</div>
+      <span class="ai-score sc-ok">VB deferred</span>
+    </div>
+    <div class="ai-node ai-vb">
+      <div class="ai-cond">Scholar reads a WB tablet VB has annotated</div>
+      <div class="ai-response"><strong>State impact: Mixed.</strong> VB tracks whether the Scholar incorporates her annotations. If Scholar reads the annotation and acts on it — uses the information it contains — utility increases (Scholar values her contribution). If Scholar reads the annotation and ignores it, utility drops. She can tell the difference. The Scholar who uses her work to navigate the Hollow extends their useful life in her assessment.</div>
+      <span class="ai-score sc-warn">VB observing</span>
+    </div>
+    <div class="ai-node ai-vb">
+      <div class="ai-cond">Scholar attempts to manipulate VB using Camel Phase warmth</div>
+      <div class="ai-response"><strong>State impact: Utility score −10 immediately.</strong> VB is not manipulable with warmth once Act II has begun. She already knows the Scholar has understood the situation — VA's position report made that clear. A Scholar who attempts to rebuild emotional connection after the turn is, in VB's assessment, attempting to exploit the relationship. She expected better strategic thinking from the Scholar. Her response is colder than her Execute state.</div>
+      <span class="ai-score sc-bad">VB accelerates</span>
+    </div>
+    <div class="ai-node ai-vb">
+      <div class="ai-cond">Scholar completes a WB translation VB had worked on for decades without solving</div>
+      <div class="ai-response"><strong>State impact: Execute → Wait (rare, maximum deferred state).</strong> If the Scholar solves something VB has been trying to solve for decades — using knowledge from World A that she couldn't access — the Scholar has demonstrated a capability unique to their position that VB cannot replicate. Her utility assessment spikes to maximum. She waits. She wants to see what else they can do. This window closes the moment the Scholar stops producing cross-world insights.</div>
+      <span class="ai-score sc-ok">VB maximum deferral</span>
+    </div>
+    <div class="ai-node ai-vb">
+      <div class="ai-cond">Scholar eliminates VA (either Vanguard can be acted against first)</div>
+      <div class="ai-response"><strong>State impact: VB enters Execute immediately regardless of current utility score.</strong> VA's elimination changes VB's calculus entirely — the Archive is now fully the Scholar's if they complete it. VB cannot allow completion without both Vanguards' presence. This is not emotional. It is procedural: the Archive requires both keepers for proper closure. The Scholar who eliminates VA first faces VB in her most urgent execution state, regardless of what their relationship has been.</div>
+      <span class="ai-score sc-bad">VB executes immediately</span>
+    </div>
+  </div>
+
+  <div class="call cl">
+    <span class="c-lbl">The Spare Decision — When It Appears and What It Costs</span>
+    Sparing is not a mercy option. It is a strategic reassessment. <strong>Neither Vanguard "spares" the Scholar out of warmth — she spares them because her utility calculation has determined that completion of the Archive with the Scholar alive produces a better outcome than completion without them.</strong> A Scholar who can be spared temporarily is a Scholar who still has work to do. The moment that work is done, the spare decision expires. This means: a Scholar who earns a temporary spare by producing high-value work must immediately produce more high-value work, or the spare evaporates. There is no resting. The Scholar cannot stop being useful.
+  </div>
+</div>
+
+
+<!-- ═══════ ACT III — CHILD PHASE ════════ -->
+<div class="phase-div pd-chi" data-glyph="III">
+  <span class="pd-eye">Act III · The Child Phase</span>
+  <div class="pd-title">Five Scenario Archetypes — Five Different Kinds of Aftermath</div>
+  <span class="pd-sub">The Child creates new values. She does not inherit them, does not mourn them, and does not perform them. She begins. The question is: what does she begin with?</span>
+</div>
+
+<div class="sh"><span class="sh-n">3.1</span><span class="sh-t">The Transition from Lion — How the Shift Fires</span></div>
+<div class="body">
+
+  <p>The Child Phase does not begin with a dramatic cutscene. It begins with <strong>an absence</strong>. The Archive, during Act II, has a specific ambient sound — the Scholar's footsteps, the Scholar's breathing, the Scholar's fire vessel hiss. When the Scholar is gone, all three sounds are gone. The building breathes differently. The Vanguard who survives stands in that new silence for three full seconds before she moves.</p>
+
+  <p>The transition is designed to feel like a genre shift — from survival horror to something that doesn't have a clean genre name. Not mystery. Not tragedy. Something more like the aftermath of a complicated surgical procedure: the patient is gone, the work was done correctly, the surgeon stands in the room afterward and understands that correct and complete are the same thing and neither of them means finished.</p>
+
+  <div class="call cch">
+    <span class="c-lbl">The Three-Second Rule — Non-Negotiable</span>
+    The surviving Vanguard stands still for three seconds in every scenario before she moves. These three seconds are the transition. Not a cutscene. Not a VFX event. Just a person standing in a room that used to have someone in it. In Scenario 1 (lowest score), the three seconds feel like emptiness. In Scenario 5 (highest score), they feel like prayer. <strong>The three-second silence is the same action with completely different weight depending on what was built in Acts I and II.</strong>
+  </div>
+</div>
+
+<div class="sh"><span class="sh-n">3.2</span><span class="sh-t">The Five Scenario Archetypes</span><span class="sh-aside">Each earns its own dramatic identity · Not adjacent difficulty levels</span></div>
+<div class="body">
+
+  <div class="scenario-grid">
+
+    <!-- SCENARIO 1 -->
+    <div class="scenario">
+      <div class="sc-head">
+        <div class="sc-num" style="border-color:rgba(100,90,80,0.3);color:rgba(140,130,120,0.6)">I</div>
+        <div class="sc-info">
+          <span class="sc-range" style="color:rgba(100,90,80,0.45);">Score 0–20 · Both Vanguards below Stage 2 at Act II turn</span>
+          <span class="sc-title">The Incomplete Archive</span>
+          <span class="sc-sub">The Scholar gave very little. The work was not finished. The Vanguard who survives inherits an Archive less complete than the one she managed before the Scholar arrived.</span>
+        </div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-col shift">
+          <span class="sc-col-lbl">The Genre Shift</span>
+          <p>This is the only scenario where the Vanguard's three seconds feel like defeat. She stands in a room that is quieter than when the Scholar arrived — and quieter is not better. The Scholar translated three key sections before the Archive's completion condition triggered. Those sections are now gone, filed, part of the work. But 40% of the Archive is still untranslated. It was untranslated before the Scholar came. <strong>It is more visibly untranslated now</strong>, because the Scholar's brief presence revealed how much there was.</p>
+          <p>The surviving Vanguard walks through three rooms without acting in any of them. This is the only scenario where her first post-Scholar action is not purposeful. She is processing. She is, for the first time in 312 years, genuinely uncertain what comes next.</p>
+        </div>
+        <div class="sc-col vanguard-pos">
+          <span class="sc-col-lbl">The Vanguard's State</span>
+          <p>Her model of the Scholar is incomplete. She acted before Stage 3 — before she had enough data to fully understand who she was dealing with. The execution was clean but the information gathered was insufficient for the Archive's needs. She knows this. She does not express it as regret.</p>
+          <p>The Archive is technically under her full control now. The Boundary is dissolved. Both worlds are accessible. And approximately 40% of the Hollow's deep classification system is still unreadable without a Scholar-level translator. <strong>She has won a victory that created a problem she cannot solve.</strong></p>
+          <p>She files a status report. The "Scholar performance" section is three lines. "Capable. Underutilized. My timing was early." She will not make that error again. She does not know yet that there is no "again."</p>
+        </div>
+        <div class="sc-col last-line-col">
+          <span class="sc-col-lbl">Final Scene & Closing Line</span>
+          <p>She stands at the Gate of All Nations — the same gate the Scholar stood at on Day One. She looks at the inscription. She was here when the Scholar read it for the first time. She timed them then: four minutes. She reads it again herself now. It takes her eleven minutes. She is not as fast as the Scholar was.</p>
+          <p>She turns from the gate and walks back into the Archive. There is work she cannot complete. She will find another way to complete it. She has 312 years of practice finding other ways.</p>
+        </div>
+      </div>
+      <div class="final-line-box">
+        <span class="fl-lbl">Closing Line</span>
+        <span class="fl-text">"The Archive awaits a second Scholar. I will begin preparing the invitation." [She picks up a stylus. She has been here before. She knows what a 17-draft invitation looks like. She writes the first line.]</span>
+      </div>
+    </div>
+
+    <!-- SCENARIO 2 -->
+    <div class="scenario">
+      <div class="sc-head">
+        <div class="sc-num" style="border-color:rgba(160,130,60,0.3);color:rgba(200,160,80,0.5)">II</div>
+        <div class="sc-info">
+          <span class="sc-range" style="color:rgba(160,130,60,0.38);">Score 21–40 · One Vanguard reached Stage 3–4; other below Stage 2</span>
+          <span class="sc-title">The Asymmetric Archive</span>
+          <span class="sc-sub">The Scholar built a strong relationship with one Vanguard and almost none with the other. The Archive is mostly complete. The surviving Vanguard holds a truth that is slightly more than half.</span>
+        </div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-col shift">
+          <span class="sc-col-lbl">The Genre Shift</span>
+          <p>This scenario has the quality of a successful operation with one unanticipated complication. The Archive is functional. The Scholar completed the core translation work. But the Vanguard who survives knows — because she reached Stage 3 or 4 — that the Scholar was capable of more than they produced.</p>
+          <p>The surviving Vanguard can feel the gap between what the Scholar gave her and what the Scholar theoretically had. She has enough of the model to know where it is incomplete. <strong>This is worse than Scenario 1's incompleteness, because she can see the shape of what's missing.</strong></p>
+        </div>
+        <div class="sc-col vanguard-pos">
+          <span class="sc-col-lbl">The Vanguard's State</span>
+          <p>She has the Archive. She has approximately 75% of the Scholar's behavioral model. She can see the 25% that isn't there. She spends Act III's opening exploring rooms she knows the Scholar never entered — not searching for something specific, but closing the gaps in her understanding of the person who was here.</p>
+          <p><em>She finds the map on the Eastern Treasury wall — the 312 years of footprint tracking, now with the Scholar's three weeks added at the bottom in different characters.</em> She studies the Scholar's tracks. She is filling in the model she didn't get to complete. This is Vanguard B's behavior if she survives — she builds the model post-facto. If VA survives: she cross-references the Scholar's departure route against her predicted departure route. Close, but not exact. She files a correction.</p>
+        </div>
+        <div class="sc-col last-line-col">
+          <span class="sc-col-lbl">Final Scene & Closing Line</span>
+          <p>She stands at the Scholar's last work surface — the tablet they were translating when Act II began, abandoned mid-sentence. She reads what they translated. She reads what they didn't finish. She can see — from context — what the unfinished section would have said.</p>
+          <p>She finishes the translation herself. It takes her four hours. The Scholar could have done it in twenty minutes.</p>
+        </div>
+      </div>
+      <div class="final-line-box">
+        <span class="fl-lbl">Closing Line</span>
+        <span class="fl-text">"You were faster than this." [She places the completed tablet in the filing sequence. The handwriting changes mid-tablet. Anyone who reads it later will know two different people wrote it. She considers this acceptable. The work is complete. That is what matters.]</span>
+      </div>
+    </div>
+
+    <!-- SCENARIO 3 -->
+    <div class="scenario">
+      <div class="sc-head">
+        <div class="sc-num" style="border-color:rgba(100,130,160,0.3);color:rgba(130,165,200,0.55)">III</div>
+        <div class="sc-info">
+          <span class="sc-range" style="color:rgba(100,130,160,0.4);">Score 41–60 · Both Vanguards reached Stage 3–4; standard behavioral model</span>
+          <span class="sc-title">The Complete Archive</span>
+          <span class="sc-sub">The Scholar gave enough. The Archive is complete. The Vanguard who survives has everything she came here to have. This is the expected outcome, executed correctly. It is also, somehow, the most quietly devastating scenario.</span>
+        </div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-col shift">
+          <span class="sc-col-lbl">The Genre Shift</span>
+          <p>This is the scenario that most closely resembles the game's thesis in its purest form. The Archive is complete. The Vanguard's plan worked exactly as designed. She has both worlds' knowledge, operational access, the Traversal skill, the full behavioral model of a Scholar she found and deployed successfully. Nothing went wrong. The plan was never supposed to be wrong.</p>
+          <p>The genre shift is: from the urgency of Act II to a kind of professional stillness. The work is done. The building is hers. She moves through it differently now — not patrolling, not managing, but <em>inhabiting</em>. <strong>For the first time in 312 years, she is in the Archive because she chooses to be rather than because she has to be.</strong></p>
+        </div>
+        <div class="sc-col vanguard-pos">
+          <span class="sc-col-lbl">The Vanguard's State</span>
+          <p>She has what she came for. The behavioral model of the Scholar is complete. She knows: she was right about the Scholar. Everything she assessed in year 267 — "this is the one" — has been confirmed by three weeks of live data. Her model was accurate. Her timing was correct.</p>
+          <p>This verification should feel like satisfaction. It does. And it also reveals something she did not plan for: the model was built in order to complete a task. The task is complete. <strong>The model has no further use.</strong> She is carrying a comprehensive portrait of a specific person who no longer exists in the Archive, built through six weeks of sustained attention, and it serves no operational purpose now.</p>
+          <p>She doesn't discard it. She files it. In the same alcove as her twelve soldiers' funeral records.</p>
+        </div>
+        <div class="sc-col last-line-col">
+          <span class="sc-col-lbl">Final Scene & Closing Line</span>
+          <p>She lights the last fire altar — the 72nd, which the Scholar reached last because they came from the east instead of the south. She watches it catch. All 72 are lit now, the way she prepared them, three years ago, for a person who would arrive and light them one by one. The building is warm in a way it hasn't been in 300 years.</p>
+          <p>She stands in the amber light. She does not look sad. She looks like someone who has completed something that took 312 years and is trying to identify what she is supposed to feel now.</p>
+        </div>
+      </div>
+      <div class="final-line-box">
+        <span class="fl-lbl">Closing Line</span>
+        <span class="fl-text">"The Archive is complete." [A pause — the longest she has taken in the entire game, including Act II.] "Past tense is not a judgment. It is a precision." [She turns toward the Archive's eastern passage. She walks.] "North."</span>
+      </div>
+    </div>
+
+    <!-- SCENARIO 4 -->
+    <div class="scenario">
+      <div class="sc-head">
+        <div class="sc-num" style="border-color:rgba(136,152,168,0.35);color:rgba(168,188,208,0.65)">IV</div>
+        <div class="sc-info">
+          <span class="sc-range" style="color:rgba(136,152,168,0.48);">Score 61–80 · Both Vanguards reached Stage 4–5; rich behavioral model</span>
+          <span class="sc-title">The Portrait</span>
+          <span class="sc-sub">The Scholar gave generously. Both Vanguards have deep models. The surviving Vanguard knows more about the Scholar than any person has ever known about another in this Archive. The weight of that knowledge is the scenario.</span>
+        </div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-col shift">
+          <span class="sc-col-lbl">The Genre Shift</span>
+          <p>This scenario shifts toward something resembling an elegy — not a performance of grief, but an honest accounting. The surviving Vanguard begins moving through the Archive with a kind of deliberate memory: she visits rooms in the order the Scholar visited them on their first day. She reads the tablets the Scholar translated. She walks the routes the Scholar walked.</p>
+          <p>This is not mourning. It is <em>verification</em> — she is confirming the model against its source one final time, the way a scholar checks a translation against the original after the translation is complete. <strong>The source is gone. The model is all that remains. She is verifying a portrait against itself.</strong> It is the most intellectually honest thing she has done in 312 years.</p>
+        </div>
+        <div class="sc-col vanguard-pos">
+          <span class="sc-col-lbl">The Vanguard's State</span>
+          <p>She has the Scholar's complete behavioral model and the Archive's complete translation record, and both are better than she planned for. The Scholar gave more than required. The model contains things she didn't ask for — approaches to problems she hadn't posed, solutions to gaps in the Archive she hadn't identified as gaps until the Scholar's work revealed them.</p>
+          <p>She finds the Scholar's private journal — the clay tablet journal they carried. She can read it. She reads all of it. She discovers: <em>the Scholar knew. Day Three. They knew and they stayed and they gave everything anyway.</em> This information changes nothing about what she did. It confirms something about who the Scholar was that she had already measured but could not express precisely until now.</p>
+          <p>She closes the journal. She does not file it. She places it in her officer's carry — the same place she keeps the 12 soldiers' records.</p>
+        </div>
+        <div class="sc-col last-line-col">
+          <span class="sc-col-lbl">Final Scene & Closing Line</span>
+          <p>She writes a formal record of the Scholar — not a report, a document of a different type: part military assessment, part scholarly evaluation, part something that doesn't have a form yet. She spends an hour on it. It is precise and complete and unlike any administrative document in the Archive's 300-year record.</p>
+          <p>She seals it and files it in WA-003's permanent record. Future scholars, if there are any, will find it. They will not understand why a military field commander wrote what is essentially an extended character study of an academic. She does not explain. The document speaks for itself.</p>
+        </div>
+      </div>
+      <div class="final-line-box">
+        <span class="fl-lbl">Closing Line</span>
+        <span class="fl-text">"You were extraordinary." [Not for the Scholar's benefit — the Scholar is gone. She says it the way someone says a fact aloud when they are alone and want to hear it stated correctly, once, before they stop thinking about it.] "That is now part of the record." [She leaves the archive.]</span>
+      </div>
+    </div>
+
+    <!-- SCENARIO 5 -->
+    <div class="scenario">
+      <div class="sc-head">
+        <div class="sc-num" style="border-color:rgba(200,150,32,0.4);color:rgba(232,176,52,0.7)">V</div>
+        <div class="sc-info">
+          <span class="sc-range" style="color:rgba(200,150,32,0.5);">Score 81–100 · Both Vanguards reached Stage 5; maximum behavioral model; both resonance moments received</span>
+          <span class="sc-title">The Architect's Ending — "The Work That Outlasted Them"</span>
+          <span class="sc-sub">The Scholar gave everything. Both Vanguards have complete models. The Archive is not just complete — it is better than the founders designed it. This is the scenario the Archive was built for, in 312 years of waiting.</span>
+        </div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-col shift">
+          <span class="sc-col-lbl">The Genre Shift</span>
+          <p>This scenario does not feel like horror. It does not feel like tragedy in the conventional sense. It feels like <em>completion at the highest possible temperature</em> — the way a mathematical proof feels when the last term resolves and the equation balances and there is nothing left to add. Every piece that was necessary is present. Nothing is missing. Nothing is wrong.</p>
+          <p><strong>The genre shift is into something closer to the sacred.</strong> Not religious — architectural. The building is doing what it was designed to do, by people who are 300 years dead, using a Scholar who will never know the full scope of what they completed, through a Vanguard who has spent 312 years becoming exactly the person required to complete it. The Archive is not a building anymore. It is a realized intention.</p>
+        </div>
+        <div class="sc-col vanguard-pos">
+          <span class="sc-col-lbl">The Vanguard's State</span>
+          <p>She has both behavioral models at Stage 5. She has the complete Archive translation. She has the Traversal skill. She has Clause 18's formal completion record. And she has something she did not plan for: a complete understanding of what the Scholar was that goes beyond operational utility.</p>
+          <p>She understands them. Not as a resource. Not as a tool. As a specific person who existed in this specific building for three weeks and gave everything they had — not despite knowing the structure of the situation, but fully aware of it. The model she built was supposed to end at execution. <strong>Instead it ends at comprehension.</strong> She comprehends the Scholar entirely. That is what Stage 5 produces. It is also the most profoundly isolating thing she has ever experienced, because the person she comprehends is gone, and she is the only one who can hold that comprehension now.</p>
+        </div>
+        <div class="sc-col last-line-col">
+          <span class="sc-col-lbl">Final Scene & Closing Line</span>
+          <p>She stands in WA-007 — the Grand Armillary Gallery, the summit, the night sky through the stone oculus. The same room where the Scholar activated the Armillary and stood in the starlight feeling satisfied for six minutes before Act III began. The fire altars are lit below. The building is warm from the bottom. She has been standing in this room for 312 years of maintenance. This is the first time she has stood in it with nothing left to maintain.</p>
+          <p>She does not look up at the stars. She looks at the spot where the Scholar stood for six minutes. The space they occupied. The space that is just space now, except for what she carries in the model.</p>
+          <p>The Archive is complete. Both truths are held. The birds are gone. The bow is put away. The hound has been — no. She will not finish that aphorism. The Scholar taught it to her. They knew how it ended. They stayed anyway. She will not finish someone else's ending for them.</p>
+        </div>
+      </div>
+      <div class="final-line-box">
+        <span class="fl-lbl">Closing Line</span>
+        <span class="fl-text">[She looks at the space where the Scholar stood. She says nothing. She crosses both arms over her chest — a gesture that is not in any administrative protocol or military manual, a gesture that belongs only to her, in this moment, in this room.] [Then she straightens. She turns toward the eastern passage. She walks. The fire altars stay lit behind her. In WB-∞, later, her final report ends with one word:] "North."</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="call cch">
+    <span class="c-lbl">The Spectrum Principle — Each Scenario Must Feel Like a Different Game's Ending</span>
+    Scenario I should feel like the end of a tragedy where someone failed to act in time. Scenario III should feel like the end of a morally complex film where the correct outcome happened and is still hard to watch. Scenario V should feel like the ending of a book you've been reading for 600 pages, where the last page is worth every page before it. <strong>A player who has seen Scenario II should replay and reach Scenario V and feel they played a different story — not the same story better.</strong> These are five different narratives about what the Scholar and Vanguard were to each other. The score determines which one was true.
+  </div>
+</div>
+
+
+<!-- INTERACTION MAP: How all three phases connect -->
+<div class="sh"><span class="sh-n">§ End</span><span class="sh-t">The Three-Phase Interaction Map — Everything Feeding Everything</span></div>
+<div class="body">
+
+  <div class="map-wrap">
+    <div class="map-bar">
+      <span class="map-lbl">Phase Interaction Architecture</span>
+      <span class="map-title">How Camel Phase Decisions Shape Lion Phase Terrain · How Both Shape Child Phase Scenarios</span>
+    </div>
+    <svg viewBox="0 0 980 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#0b0c10;">
+      <defs>
+        <marker id="fwd" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0,0 7,3.5 0,7" fill="rgba(200,144,32,0.45)"/>
+        </marker>
+        <marker id="fwdb" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0,0 7,3.5 0,7" fill="rgba(56,104,176,0.4)"/>
+        </marker>
+        <marker id="fwdc" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <polygon points="0,0 7,3.5 0,7" fill="rgba(136,152,168,0.5)"/>
+        </marker>
+      </defs>
+      <!-- Phase boxes -->
+      <!-- Camel -->
+      <rect x="20" y="30" width="260" height="280" rx="5" fill="rgba(200,144,32,0.05)" stroke="rgba(200,144,32,0.2)" stroke-width="1.5"/>
+      <line x1="20" y1="30" x2="280" y2="30" stroke="var(--cam,#c89020)" stroke-width="2"/>
+      <text x="150" y="55" fill="rgba(200,144,32,0.45)" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="3" text-anchor="middle">ACT I · CAMEL</text>
+      <text x="150" y="72" fill="rgba(232,170,52,0.35)" font-family="Cinzel,serif" font-size="13" font-weight="700" text-anchor="middle">Inputs to Lion</text>
+      <text x="32" y="94" fill="rgba(200,144,32,0.3)" font-family="JetBrains Mono,monospace" font-size="8">→ VA recognition stage (1–5)</text>
+      <text x="32" y="108" fill="rgba(200,144,32,0.28)" font-family="JetBrains Mono,monospace" font-size="8">→ VB recognition stage (1–5)</text>
+      <text x="32" y="122" fill="rgba(200,144,32,0.28)" font-family="JetBrains Mono,monospace" font-size="8">→ Traps set (location, type)</text>
+      <text x="32" y="136" fill="rgba(200,144,32,0.28)" font-family="JetBrains Mono,monospace" font-size="8">→ Resources saved vs donated</text>
+      <text x="32" y="150" fill="rgba(200,144,32,0.26)" font-family="JetBrains Mono,monospace" font-size="8">→ Routes established (predictable?)</text>
+      <text x="32" y="164" fill="rgba(200,144,32,0.26)" font-family="JetBrains Mono,monospace" font-size="8">→ Archive % complete at turn</text>
+      <text x="32" y="178" fill="rgba(200,144,32,0.26)" font-family="JetBrains Mono,monospace" font-size="8">→ Dark Voice acceptance level</text>
+      <text x="32" y="200" fill="rgba(200,144,32,0.22)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">If Stage 5 both VGs at turn:</text>
+      <text x="32" y="212" fill="rgba(200,144,32,0.22)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">→ VA knows Scholar's crossbow range</text>
+      <text x="32" y="224" fill="rgba(200,144,32,0.22)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">→ VA cleared key traps before turn</text>
+      <text x="32" y="236" fill="rgba(200,144,32,0.22)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">→ VB knows Scholar's WB routes cold</text>
+      <text x="32" y="248" fill="rgba(200,144,32,0.22)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">→ Both start Act II at Execute-ready</text>
+      <text x="150" y="280" fill="rgba(200,144,32,0.18)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">Also inputs to Child Phase scenarios</text>
+      <text x="150" y="294" fill="rgba(200,144,32,0.15)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">(through final behavioral score)</text>
+
+      <!-- Arrows Camel → Lion -->
+      <line x1="282" y1="170" x2="358" y2="170" stroke="rgba(200,144,32,0.3)" stroke-width="1.5" marker-end="url(#fwd)"/>
+      <text x="310" y="163" fill="rgba(200,144,32,0.2)" font-family="JetBrains Mono,monospace" font-size="7">shapes</text>
+
+      <!-- Lion -->
+      <rect x="360" y="30" width="260" height="280" rx="5" fill="rgba(184,104,40,0.05)" stroke="rgba(184,104,40,0.2)" stroke-width="1.5"/>
+      <line x1="360" y1="30" x2="620" y2="30" stroke="var(--lio,#b86828)" stroke-width="2"/>
+      <text x="490" y="55" fill="rgba(184,104,40,0.45)" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="3" text-anchor="middle">ACT II · LION</text>
+      <text x="490" y="72" fill="rgba(224,128,64,0.35)" font-family="Cinzel,serif" font-size="13" font-weight="700" text-anchor="middle">Dynamic During Play</text>
+      <text x="372" y="94" fill="rgba(184,104,40,0.3)" font-family="JetBrains Mono,monospace" font-size="8">→ Scholar route archetype chosen</text>
+      <text x="372" y="108" fill="rgba(184,104,40,0.28)" font-family="JetBrains Mono,monospace" font-size="8">→ VA utility score tracked live</text>
+      <text x="372" y="122" fill="rgba(184,104,40,0.28)" font-family="JetBrains Mono,monospace" font-size="8">→ VB utility score tracked live</text>
+      <text x="372" y="136" fill="rgba(184,104,40,0.26)" font-family="JetBrains Mono,monospace" font-size="8">→ Terrain control shifts by room</text>
+      <text x="372" y="150" fill="rgba(184,104,40,0.26)" font-family="JetBrains Mono,monospace" font-size="8">→ Scholar forces VA/VB decision</text>
+      <text x="372" y="164" fill="rgba(184,104,40,0.24)" font-family="JetBrains Mono,monospace" font-size="8">→ Gap between VA/VB thresholds</text>
+      <text x="372" y="178" fill="rgba(184,104,40,0.24)" font-family="JetBrains Mono,monospace" font-size="8">→ Which Vanguard survived</text>
+      <text x="372" y="196" fill="rgba(184,104,40,0.22)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">3 possible Acts:</text>
+      <text x="372" y="208" fill="rgba(184,104,40,0.2)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">A: Scholar vs VA first</text>
+      <text x="372" y="220" fill="rgba(184,104,40,0.2)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">B: Scholar vs VB first</text>
+      <text x="372" y="232" fill="rgba(184,104,40,0.2)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">C: Both VGs simultaneously</text>
+      <text x="372" y="248" fill="rgba(184,104,40,0.2)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">   (rarest, highest-score scenario)</text>
+      <text x="490" y="280" fill="rgba(184,104,40,0.18)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">Feeds final behavioral score for</text>
+      <text x="490" y="294" fill="rgba(184,104,40,0.15)" font-family="JetBrains Mono,monospace" font-size="8" text-anchor="middle">Child Phase scenario selection</text>
+
+      <!-- Arrows Lion → Child -->
+      <line x1="622" y1="170" x2="698" y2="170" stroke="rgba(136,152,168,0.3)" stroke-width="1.5" marker-end="url(#fwdc)"/>
+      <text x="648" y="163" fill="rgba(136,152,168,0.2)" font-family="JetBrains Mono,monospace" font-size="7">becomes</text>
+
+      <!-- Child -->
+      <rect x="700" y="30" width="260" height="280" rx="5" fill="rgba(136,152,168,0.05)" stroke="rgba(136,152,168,0.2)" stroke-width="1.5"/>
+      <line x1="700" y1="30" x2="960" y2="30" stroke="var(--chi,#8898a8)" stroke-width="2"/>
+      <text x="830" y="55" fill="rgba(136,152,168,0.45)" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="3" text-anchor="middle">ACT III · CHILD</text>
+      <text x="830" y="72" fill="rgba(168,188,208,0.35)" font-family="Cinzel,serif" font-size="13" font-weight="700" text-anchor="middle">Five Scenario Archetypes</text>
+      <text x="712" y="94" fill="rgba(136,152,168,0.3)" font-family="JetBrains Mono,monospace" font-size="8">Score 0–20: Incomplete Archive (I)</text>
+      <text x="712" y="112" fill="rgba(136,152,168,0.28)" font-family="JetBrains Mono,monospace" font-size="8">Score 21–40: Asymmetric (II)</text>
+      <text x="712" y="130" fill="rgba(136,152,168,0.28)" font-family="JetBrains Mono,monospace" font-size="8">Score 41–60: Complete Archive (III)</text>
+      <text x="712" y="148" fill="rgba(136,152,168,0.28)" font-family="JetBrains Mono,monospace" font-size="8">Score 61–80: The Portrait (IV)</text>
+      <text x="712" y="166" fill="rgba(200,152,32,0.45)" font-family="JetBrains Mono,monospace" font-size="8">Score 81–100: Architect's Ending (V)</text>
+      <text x="712" y="188" fill="rgba(136,152,168,0.22)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">Each scenario: distinct genre register</text>
+      <text x="712" y="200" fill="rgba(136,152,168,0.2)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">Each scenario: distinct final line</text>
+      <text x="712" y="212" fill="rgba(136,152,168,0.2)" font-family="JetBrains Mono,monospace" font-size="8" font-style="italic">Each scenario: Vanguard's 3-sec silence</text>
+      <text x="712" y="230" fill="rgba(136,152,168,0.18)" font-family="JetBrains Mono,monospace" font-size="8">Per world also:</text>
+      <text x="712" y="242" fill="rgba(136,152,168,0.16)" font-family="JetBrains Mono,monospace" font-size="8">WA survivor vs WB survivor</text>
+      <text x="712" y="254" fill="rgba(136,152,168,0.16)" font-family="JetBrains Mono,monospace" font-size="8">= 10 total ending variants</text>
+      <text x="712" y="274" fill="rgba(200,152,32,0.2)" font-family="JetBrains Mono,monospace" font-size="8">Scenario V WB = "The birds are gone"</text>
+      <text x="712" y="286" fill="rgba(200,152,32,0.18)" font-family="JetBrains Mono,monospace" font-size="8">Scenario V WA = "North." (sequel seed)</text>
+    </svg>
+  </div>
+</div>
+
+
+<div class="foot">
+  <span>KENOMA · Phase Design Document · CHR-PHA-001</span>
+  <span>Camel · Lion · Child · Deep Analysis + Complete Redesign</span>
+  <span>For Storytelling Bible v9 · GDD v7</span>
+</div>
+
+</div>
+</body>
+</html>
