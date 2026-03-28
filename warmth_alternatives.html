@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA — Warmth Delta Alternatives</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --bg2: #f2f0ec;
+    --bg3: #e8e5df;
+    --text: #1a1916;
+    --text2: #5a5850;
+    --text3: #8a8780;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --purple-bg: #EEEDFE; --purple-mid: #7F77DD; --purple-dark: #3C3489; --purple-deep: #26215C;
+    --teal-bg: #E1F5EE; --teal-mid: #1D9E75; --teal-dark: #085041; --teal-deep: #04342C;
+    --blue-bg: #E6F1FB; --blue-mid: #378ADD; --blue-dark: #0C447C; --blue-deep: #042C53;
+    --coral-bg: #FAECE7; --coral-mid: #D85A30; --coral-dark: #712B13; --coral-deep: #4A1B0C;
+    --amber-bg: #FAEEDA; --amber-mid: #BA7517; --amber-dark: #633806; --amber-deep: #412402;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #18171a; --bg2: #201f22; --bg3: #2a292c;
+      --text: #e8e5df; --text2: #a8a59e; --text3: #6a6760;
+      --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+      --purple-bg: #26215C; --purple-dark: #AFA9EC;
+      --teal-bg: #04342C; --teal-dark: #5DCAA5;
+      --blue-bg: #042C53; --blue-dark: #85B7EB;
+      --coral-bg: #4A1B0C; --coral-dark: #F0997B;
+      --amber-bg: #412402; --amber-dark: #EF9F27;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .page { max-width: 900px; margin: 0 auto; padding: 48px 32px; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: var(--text3); margin-bottom: 8px; }
+  .thesis { font-size: 14px; color: var(--text2); border-left: 2px solid var(--border2); padding-left: 14px; margin: 16px 0 32px; line-height: 1.7; }
+  .eval-box { background: var(--bg2); border-radius: 10px; border: 0.5px solid var(--border); padding: 18px 20px; margin-bottom: 32px; }
+  .eval-box h2 { font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 12px; }
+  .eval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .eval-grid { grid-template-columns: 1fr; } }
+  .eval-item { background: var(--bg); border-radius: 8px; border: 0.5px solid var(--border); padding: 12px 14px; }
+  .eval-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 4px; }
+  .eval-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .verdict { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 12px; margin-top: 8px; }
+  .verdict.pass { background: var(--teal-bg); color: var(--teal-dark); }
+  .verdict.caution { background: var(--amber-bg); color: var(--amber-dark); }
+  .verdict.hold { background: var(--coral-bg); color: var(--coral-dark); }
+  .section-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 0.5px solid var(--border); }
+  .scenario { border-radius: 12px; border: 0.5px solid var(--border2); margin-bottom: 20px; overflow: hidden; }
+  .scenario-header { padding: 16px 20px 12px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .scenario-name { font-size: 15px; font-weight: 500; }
+  .scenario-source { font-size: 11px; color: var(--text3); font-style: italic; }
+  .scenario-body { padding: 0 20px 20px; }
+  .tagline { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 16px; border-left: 2px solid var(--border2); padding-left: 12px; border-radius: 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 580px) { .two-col { grid-template-columns: 1fr; } }
+  .card { background: var(--bg); border-radius: 8px; border: 0.5px solid var(--border); padding: 12px 14px; }
+  .card-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 6px; }
+  .card-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .mech { background: var(--bg2); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+  .mech-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 10px; }
+  .step { display: flex; gap: 8px; margin-bottom: 7px; align-items: flex-start; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .step-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .bms-box { border-radius: 8px; border: 1px dashed; padding: 12px 14px; margin-bottom: 10px; }
+  .bms-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .bms-text { font-size: 13px; line-height: 1.65; font-family: "SF Mono", "Fira Code", monospace; }
+  .impl-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+  .chip { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 10px; border: 0.5px solid; }
+
+  .s-purple .scenario-header { background: var(--purple-bg); }
+  .s-purple .scenario-name { color: var(--purple-deep); }
+  .s-purple .dot { background: var(--purple-mid); }
+  .s-purple .bms-box { border-color: var(--purple-mid); background: var(--purple-bg); }
+  .s-purple .bms-label { color: var(--purple-dark); }
+  .s-purple .bms-text { color: var(--purple-deep); }
+  .s-purple .chip { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple-mid); }
+  @media (prefers-color-scheme: dark) {
+    .s-purple .scenario-name { color: #AFA9EC; }
+    .s-purple .bms-label { color: #AFA9EC; }
+    .s-purple .bms-text { color: #CECBF6; }
+    .s-purple .chip { color: #AFA9EC; border-color: #7F77DD; }
+  }
+
+  .s-teal .scenario-header { background: var(--teal-bg); }
+  .s-teal .scenario-name { color: var(--teal-deep); }
+  .s-teal .dot { background: var(--teal-mid); }
+  .s-teal .bms-box { border-color: var(--teal-mid); background: var(--teal-bg); }
+  .s-teal .bms-label { color: var(--teal-dark); }
+  .s-teal .bms-text { color: var(--teal-deep); }
+  .s-teal .chip { background: var(--teal-bg); color: var(--teal-dark); border-color: var(--teal-mid); }
+  @media (prefers-color-scheme: dark) {
+    .s-teal .scenario-name,.s-teal .bms-label,.s-teal .bms-text,.s-teal .chip { color: var(--teal-dark); }
+    .s-teal .chip { border-color: var(--teal-mid); }
+  }
+
+  .s-blue .scenario-header { background: var(--blue-bg); }
+  .s-blue .scenario-name { color: var(--blue-deep); }
+  .s-blue .dot { background: var(--blue-mid); }
+  .s-blue .bms-box { border-color: var(--blue-mid); background: var(--blue-bg); }
+  .s-blue .bms-label { color: var(--blue-dark); }
+  .s-blue .bms-text { color: var(--blue-deep); }
+  .s-blue .chip { background: var(--blue-bg); color: var(--blue-dark); border-color: var(--blue-mid); }
+  @media (prefers-color-scheme: dark) {
+    .s-blue .scenario-name,.s-blue .bms-label,.s-blue .bms-text,.s-blue .chip { color: var(--blue-dark); }
+    .s-blue .chip { border-color: var(--blue-mid); }
+  }
+
+  .s-coral .scenario-header { background: var(--coral-bg); }
+  .s-coral .scenario-name { color: var(--coral-deep); }
+  .s-coral .dot { background: var(--coral-mid); }
+  .s-coral .bms-box { border-color: var(--coral-mid); background: var(--coral-bg); }
+  .s-coral .bms-label { color: var(--coral-dark); }
+  .s-coral .bms-text { color: var(--coral-deep); }
+  .s-coral .chip { background: var(--coral-bg); color: var(--coral-dark); border-color: var(--coral-mid); }
+  @media (prefers-color-scheme: dark) {
+    .s-coral .scenario-name,.s-coral .bms-label,.s-coral .bms-text,.s-coral .chip { color: var(--coral-dark); }
+    .s-coral .chip { border-color: var(--coral-mid); }
+  }
+
+  .s-amber .scenario-header { background: var(--amber-bg); }
+  .s-amber .scenario-name { color: var(--amber-deep); }
+  .s-amber .dot { background: var(--amber-mid); }
+  .s-amber .bms-box { border-color: var(--amber-mid); background: var(--amber-bg); }
+  .s-amber .bms-label { color: var(--amber-dark); }
+  .s-amber .bms-text { color: var(--amber-deep); }
+  .s-amber .chip { background: var(--amber-bg); color: var(--amber-dark); border-color: var(--amber-mid); }
+  @media (prefers-color-scheme: dark) {
+    .s-amber .scenario-name,.s-amber .bms-label,.s-amber .bms-text,.s-amber .chip { color: var(--amber-dark); }
+    .s-amber .chip { border-color: var(--amber-mid); }
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  th { text-align: left; font-size: 11px; font-weight: 500; color: var(--text3); padding: 8px 10px; border-bottom: 0.5px solid var(--border2); }
+  td { padding: 9px 10px; color: var(--text2); border-bottom: 0.5px solid var(--border); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text3); font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .hybrid-box { background: var(--bg2); border-radius: 10px; border: 1px solid var(--border2); padding: 20px; margin-top: 32px; }
+  .hybrid-box h2 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .hybrid-box p { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+  .layer { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+  .layer-num { width: 24px; height: 24px; border-radius: 50%; background: var(--teal-bg); color: var(--teal-dark); font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .layer-content { flex: 1; }
+  .layer-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .layer-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .do-not { border-radius: 8px; background: var(--coral-bg); border: 0.5px solid var(--coral-mid); padding: 12px 14px; margin-top: 14px; }
+  .do-not-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark); margin-bottom: 8px; }
+  .do-not-item { font-size: 13px; color: var(--coral-dark); margin-bottom: 4px; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text3); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>KENOMA — Warmth delta alternatives</h1>
+  <div class="subtitle">Design/warmth_alternatives.html · research document · 2025</div>
+  <div class="thesis">
+    The warmth delta is a starting point, not a ceiling. Real warmth between intelligent beings doesn't work like a bank balance — it works like geology, tide, crystallization, obligated witness. This document explores five alternative accumulation models and their narrative alignment. Source disciplines: Stendhal's crystallization theory, Levinasian ethics, stratigraphy, tidal dynamics, generative grammar.
+  </div>
+
+  <div class="eval-box">
+    <h2>Self-evaluation of this research</h2>
+    <div class="eval-grid">
+      <div class="eval-item">
+        <div class="eval-label">What worked</div>
+        <div class="eval-text">All five models stay invisible to the player — they produce Vanguard behavior changes, not UI signals. Each maps cleanly to one of the five core ideas. The hybrid recommendation is implementable without touching the existing warmth register.</div>
+        <div class="verdict pass">Narratively aligned</div>
+      </div>
+      <div class="eval-item">
+        <div class="eval-label">What to watch</div>
+        <div class="eval-text">The tide model carries the highest Iron Law III risk — its rhythm is tempting to express as ambient audio or lighting cues, which would make the model visible. The grammar model requires n-gram sequence tracking — real implementation complexity, not prototype complexity.</div>
+        <div class="verdict caution">Iron Law III risk on tide</div>
+      </div>
+      <div class="eval-item">
+        <div class="eval-label">Strongest single finding</div>
+        <div class="eval-text">Witness debt is the only model that fundamentally changes Act III's emotional weight without touching Act I or II mechanics. It costs nothing to add and produces the most important narrative outcome: the Vanguard executes someone she truly saw. That is more frightening than executing someone she measured.</div>
+        <div class="verdict pass">Add to BMS immediately</div>
+      </div>
+      <div class="eval-item">
+        <div class="eval-label">What was over-designed</div>
+        <div class="eval-text">The crystal pressure model. The shattering threshold is elegant in theory but brittle in playtesting — designers will tune it for months. The same narrative effect (sudden categorical shift in Vanguard relationship) is achievable through RSS stage transitions, which already exist.</div>
+        <div class="verdict hold">Do not implement yet</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">The five scenarios</div>
+
+  <div class="scenario s-purple">
+    <div class="scenario-header">
+      <div class="scenario-name">1 — The Stendhal crystal</div>
+      <div class="scenario-source">Stendhal, De l'Amour (1822) · attachment theory</div>
+    </div>
+    <div class="scenario-body">
+      <div class="tagline">The Vanguard doesn't accumulate warmth. She projects a crystal — a specific model of who the Scholar IS — and every event either fits, expands, or pressurizes it. Shattering is never gradual. It is always sudden.</div>
+      <div class="mech">
+        <div class="mech-label">Mechanism</div>
+        <div class="step"><div class="dot"></div><div class="step-text">Events that fit the Crystal: incorporated seamlessly, no warmth delta, model confirmed</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Events that exceed the Crystal: Expansion. Rare, significant warmth. Scholar is more than expected.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Events that contradict: Crystallization Pressure stored as unresolved int. Vanguard explains it away.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Threshold crossed: Crystal shatters. Categorical state change, not warmth loss. Scholar is now fully known.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Post-shattering: warmth becomes unconditional and therefore the most terrifying version.</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card"><div class="card-label">Play feel</div><div class="card-text">Cannot farm warmth. Shattering arrives with no UI warning. The Vanguard who has shattered her crystal is the one who acts with the most clarity.</div></div>
+        <div class="card"><div class="card-label">Core idea</div><div class="card-text">Idea 5 — the ending is not a twist. She does not execute someone she misunderstood. She executes someone she knows completely.</div></div>
+      </div>
+      <div class="bms-box">
+        <div class="bms-label">BMS change</div>
+        <div class="bms-text">wa_crystalPressure:int + wa_expansionCount:int replace wa_warmth. SRS reads ratio for scenario resolution. High expansion, low pressure = Scenario V.</div>
+      </div>
+      <div class="impl-row">
+        <span class="chip">Implementation: High</span>
+        <span class="chip">Law III risk: Medium</span>
+        <span class="chip">Status: Hold</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario s-teal">
+    <div class="scenario-header">
+      <div class="scenario-name">2 — Geological strata</div>
+      <div class="scenario-source">Stratigraphy · early attachment formation</div>
+    </div>
+    <div class="scenario-body">
+      <div class="tagline">Events are not equal by type — they're weighted by WHEN. Early interactions calcify into bedrock that is nearly impossible to shift. Same action, first room vs last room: radically different outcomes.</div>
+      <div class="mech">
+        <div class="mech-label">Mechanism</div>
+        <div class="step"><div class="dot"></div><div class="step-text">Three strata: Bedrock (first 3 rooms, 4× weight), Sediment (mid act, 1×), Surface (late act, 0.5× warmth / high USS impact)</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Bedrock warmth cannot be undone. It compresses everything that follows.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Scenario V requires bedrock warmth above threshold — unreachable through late-game accumulation alone.</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card"><div class="card-label">Play feel</div><div class="card-text">First impressions are permanent. Player who discovers KENOMA's depth at hour 3 cannot recapture hour 1. Rewards re-play, punishes optimization.</div></div>
+        <div class="card"><div class="card-label">Core idea</div><div class="card-text">Idea 1 — Tragedy of Competence. Character expressed under uncertainty matters more than character expressed after understanding.</div></div>
+      </div>
+      <div class="bms-box">
+        <div class="bms-label">BMS change</div>
+        <div class="bms-text">BMSEvent gains stratum:StratumType field from WorldManager.sessionCount at record time. RecordEvent() applies multiplier before clamping. wa_bedrockWarmth (calcified, read-only after act I) + wa_surfaceWarmth (fluid). SRS reads both independently.</div>
+      </div>
+      <div class="impl-row">
+        <span class="chip">Implementation: Low</span>
+        <span class="chip">Law III risk: Low</span>
+        <span class="chip">Status: Recommended — add now</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario s-blue">
+    <div class="scenario-header">
+      <div class="scenario-name">3 — The tide</div>
+      <div class="scenario-source">Tidal dynamics · circadian rhythm biology</div>
+    </div>
+    <div class="scenario-body">
+      <div class="tagline">The Vanguard has interior rhythms the Scholar cannot control — only learn to read. Same action at high tide and low tide produces radically different responses. The Scholar must model the Vanguard's state through observation. Mirror image of what the Vanguard has been doing since day one.</div>
+      <div class="mech">
+        <div class="mech-label">Mechanism</div>
+        <div class="step"><div class="dot"></div><div class="step-text">Vanguard tide oscillates on session-based rhythm (not frame-based, not event-based)</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">High tide: 2× warmth response, forgives deviations, shares unprompted</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Low tide: 0.3× warmth response, observes without responding</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Scholar reads tide only through Vanguard behavior — never UI</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Scholar who learns to read tide: demonstrates logistics intelligence (VA value). Scholar who doesn't notice: demonstrates unselfconscious authenticity (VB value).</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card"><div class="card-label">Play feel</div><div class="card-text">Vanguard feels genuinely alive. Her responsiveness is not a direct mirror of Scholar actions. Some rooms she is open; others unreachable. She is not a system to optimize — she is a being with her own interior life.</div></div>
+        <div class="card"><div class="card-label">Core idea</div><div class="card-text">Idea 2 — warmth and calculation are the same thing. VA's tide is her logistics rhythm. VB's tide is her philosophical rhythm. Scholar reads one as logistics, one as emotional. Both are both.</div></div>
+      </div>
+      <div class="bms-box">
+        <div class="bms-label">BMS change</div>
+        <div class="bms-text">VanguardStateController gains tidePhase:float (0-1, updated per room session by configurable wave function). RecordEvent() queries tidePhase, applies multiplier. Behavioral output varies — patrol rhythm, dialogue initiation, resource staging. Scholar reads tide from those signals only.</div>
+      </div>
+      <div class="impl-row">
+        <span class="chip">Implementation: Medium</span>
+        <span class="chip">Law III risk: HIGH — hold until audio team confirms</span>
+        <span class="chip">Status: Hold</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario s-coral">
+    <div class="scenario-header">
+      <div class="scenario-name">4 — Witness debt</div>
+      <div class="scenario-source">Emmanuel Levinas, Totality and Infinity (1961)</div>
+    </div>
+    <div class="scenario-body">
+      <div class="tagline">There are moments when the Vanguard doesn't collect data — she truly SEES the Scholar. This creates an obligation that is not warmth. It cannot be repaid through actions, only honored or betrayed. The horror of the ending is that it happens to someone she witnessed. She carried the debt and went north anyway.</div>
+      <div class="mech">
+        <div class="mech-label">Mechanism</div>
+        <div class="step"><div class="dot"></div><div class="step-text">Most interactions: data collection, normal BMS warmth events</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Witness moments: Scholar acts against self-interest, demonstrates care without strategic value, shows Vanguard something unanticipated</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Witness debt: categorical flag, not a number. Cannot be cancelled by later Scholar actions.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Does NOT affect warmth register or USS. Affects Act III sequences ONLY.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Zero debt = Scenario I/II (no weight). High debt = available for IV/V. Vanguard carries the witness into her act of the Archive.</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card"><div class="card-label">Play feel</div><div class="card-text">Cannot be farmed — witness moments emerge from actions that look like mistakes or sacrifices. Scholar who optimizes for warmth misses all of them. Highest scenario earned by forgetting you are being watched.</div></div>
+        <div class="card"><div class="card-label">Core idea</div><div class="card-text">Idea 5 — not a betrayal. Scenario I has no weight because the Vanguard carries nothing. Scenario V has unbearable weight because she executes someone she fully saw. That is the thesis made visceral.</div></div>
+      </div>
+      <div class="bms-box">
+        <div class="bms-label">BMS change</div>
+        <div class="bms-text">BMSController gains witnessLog:List&lt;WitnessEvent&gt; — separate from main eventLog. WitnessConditionEvaluator runs on specific BMSEventTypes where Scholar acted against predicted behavior at cost to self. SRS reads witnessLog count independently of warmth totals for Child Phase sequence selection.</div>
+      </div>
+      <div class="impl-row">
+        <span class="chip">Implementation: Low</span>
+        <span class="chip">Law III risk: Low</span>
+        <span class="chip">Status: Recommended — add now</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario s-amber">
+    <div class="scenario-header">
+      <div class="scenario-name">5 — Behavioral grammar</div>
+      <div class="scenario-source">Linguistics · generative grammar · behavioral prediction</div>
+    </div>
+    <div class="scenario-body">
+      <div class="tagline">The Vanguard doesn't track warmth from individual actions. She tracks the Scholar's behavioral grammar — the rules governing how actions follow each other. Warmth comes from deviation. Surprise = warmth. Confirmation = no delta, but USS pressure increases. A Scholar who does what works, every time, closes their own grammar.</div>
+      <div class="mech">
+        <div class="mech-label">Mechanism</div>
+        <div class="step"><div class="dot"></div><div class="step-text">BMS builds grammar from Scholar action sequences (not individual events)</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">After sufficient data: Vanguard can predict next Scholar action with measurable confidence</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Warmth from deviation only. Confirmation = no warmth delta + USS pressure increase.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Predictable Scholar: grammar fills fast, USS drops toward execution threshold faster</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Grammar-breaking Scholar: keeps Vanguard in productive uncertainty. Warmth = delight at being wrong.</div></div>
+        <div class="step"><div class="dot"></div><div class="step-text">Most terrifying state: Scholar's grammar is complete. Warmth has stopped arriving. Scholar doesn't know this.</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card"><div class="card-label">Play feel</div><div class="card-text">The "smart" play is inconsistency. The "human" play is consistency. Optimization is the fastest path to a complete grammar. The player who tries to solve KENOMA is the Scholar in Fan Li's aphorism.</div></div>
+        <div class="card"><div class="card-label">Core idea</div><div class="card-text">Idea 3 — understanding is the weapon. Warmth = delight of an intelligence encountering something it doesn't know. When Scholar stops being surprising, warmth stops. Excellence has a pattern. The pattern completes the model.</div></div>
+      </div>
+      <div class="bms-box">
+        <div class="bms-label">BMS change</div>
+        <div class="bms-text">BMSController gains grammarModel:Dictionary&lt;BMSSequenceKey,float&gt; — prediction confidence map from event log sequences. GrammarEvaluator on each RecordEvent(): if unpredicted, warmth delta fires; if predicted, no delta but USS pressure increases. Implement as USS enhancement, not BMS replacement.</div>
+      </div>
+      <div class="impl-row">
+        <span class="chip">Implementation: High — n-gram sequence tracking</span>
+        <span class="chip">Law III risk: Medium</span>
+        <span class="chip">Status: Consider for USS v2</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:32px">Comparison</div>
+  <table>
+    <thead><tr>
+      <th style="width:18%"></th>
+      <th>Crystal</th><th>Strata</th><th>Tide</th><th>Witness debt</th><th>Grammar</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>What accumulates</td><td>Contradictions &amp; expansions</td><td>Bedrock impressions</td><td>Nothing — intrinsic</td><td>Obligations (permanent)</td><td>Prediction confidence</td></tr>
+      <tr><td>Can it be undone</td><td>No — pressure builds</td><td>Bedrock: never</td><td>Rhythm resets per session</td><td>Debt: never</td><td>Grammar expands, never erases</td></tr>
+      <tr><td>Earns Scenario V</td><td>Expanding without shattering</td><td>Character before understanding</td><td>Reading the Vanguard's state</td><td>Forgetting you're watched</td><td>Remaining surprising</td></tr>
+      <tr><td>Fastest failure</td><td>Too contradictory too fast</td><td>Cold early, warm late</td><td>Acting at low tide</td><td>Self-interest every time</td><td>Doing what works — always</td></tr>
+      <tr><td>Law III risk</td><td>Medium</td><td>Low</td><td>High</td><td>Low</td><td>Medium</td></tr>
+      <tr><td>Impl. complexity</td><td>High</td><td>Low</td><td>Medium</td><td>Low</td><td>High</td></tr>
+    </tbody>
+  </table>
+
+  <div class="hybrid-box">
+    <h2>Recommended hybrid</h2>
+    <p>Three layers operating simultaneously. None visible. All surfacing through Vanguard behavior only.</p>
+    <div class="layer">
+      <div class="layer-num">1</div>
+      <div class="layer-content">
+        <div class="layer-title">Warmth delta (keep as-is)</div>
+        <div class="layer-desc">Raw integer register, clamped ±20. Drives Vanguard recognition stage transitions. Already exists — do not replace.</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">2</div>
+      <div class="layer-content">
+        <div class="layer-title">Geological strata (add now — cheapest)</div>
+        <div class="layer-desc">stratum:StratumType on BMSEvent, multiplier applied at RecordEvent() time. Bedrock 4×, sediment 1×, surface 0.5×. One enum, one lookup. Makes first-room character permanent. Reinforces Core Idea 1.</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">3</div>
+      <div class="layer-content">
+        <div class="layer-title">Witness debt (add now — highest Act III return)</div>
+        <div class="layer-desc">witnessLog:List&lt;WitnessEvent&gt; in BMSController. Populated only by WitnessConditionEvaluator on specific event types. Binary flags, never cancelled. Read only by SRS for Child Phase sequence selection. No warmth or USS impact — pure Act III emotional differentiation.</div>
+      </div>
+    </div>
+    <div class="do-not">
+      <div class="do-not-label">Do not implement yet</div>
+      <div class="do-not-item">Crystal pressure — shattering threshold too fragile for demo; RSS stage transitions achieve the same narrative effect</div>
+      <div class="do-not-item">Tide — hold until audio team confirms no ambient cue leak (Iron Law III)</div>
+      <div class="do-not-item">Grammar — implement as USS v2 enhancement after demo, not as BMS replacement</div>
+    </div>
+  </div>
+
+  <footer>KENOMA design research · warmth_alternatives.html · generated 2025 · do not expose to player</footer>
+</div>
+</body>
+</html>

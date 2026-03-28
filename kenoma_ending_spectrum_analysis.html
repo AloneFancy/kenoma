@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA — Ending Spectrum Design Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Courier+Prime:wght@400;700&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --parchment: #f0ead8;
+    --ash: #8c8070;
+    --ember: #c4622d;
+    --cold: #5b7ea0;
+    --gold: #b8943a;
+    --shadow-blue: #2a3548;
+    --flame-amber: #3d2010;
+    --divider: rgba(140,128,112,0.3);
+    --gutter: clamp(1.5rem, 5vw, 4rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #0f0d0a;
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .4;
+  }
+
+  /* ── HEADER ── */
+  .cover {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 4rem var(--gutter);
+    position: relative;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, #1e140a 0%, #0f0d0a 100%);
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, transparent, #0f0d0a);
+    pointer-events: none;
+  }
+
+  .cover-glyph {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(184,148,58,0.35);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .cover-content { position: relative; z-index: 1; max-width: 720px; }
+
+  .cover-eyebrow {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .cover-title {
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.1;
+    color: var(--parchment);
+    margin-bottom: 0.5rem;
+  }
+
+  .cover-subtitle {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-bottom: 2.5rem;
+  }
+
+  .cover-thesis {
+    font-size: 1.05rem;
+    font-style: italic;
+    color: rgba(240,234,216,0.55);
+    max-width: 520px;
+    margin: 0 auto 3rem;
+    border-left: 1px solid rgba(184,148,58,0.4);
+    padding-left: 1.25rem;
+    text-align: left;
+  }
+
+  .cover-thesis cite {
+    display: block;
+    font-style: normal;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-top: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .scroll-cue {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--ash);
+    opacity: 0.5;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* ── SECTION HEADS ── */
+  .section-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+  }
+
+  h2.section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.2;
+    color: var(--parchment);
+    margin-bottom: 2rem;
+  }
+
+  h3.sub-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--parchment);
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── PROSE ── */
+  .prose { max-width: 680px; }
+  .prose p { margin-bottom: 1.2rem; color: rgba(240,234,216,0.78); }
+  .prose strong { color: var(--parchment); font-weight: 600; }
+  .prose em { font-style: italic; color: rgba(240,234,216,0.9); }
+
+  /* ── DIVIDERS ── */
+  .rule {
+    border: none;
+    border-top: 1px solid var(--divider);
+    margin: 4rem 0;
+  }
+
+  .ornament {
+    text-align: center;
+    color: var(--gold);
+    opacity: 0.3;
+    font-size: 1.5rem;
+    margin: 3rem 0;
+    letter-spacing: 0.5rem;
+  }
+
+  /* ── SECTION BLOCKS ── */
+  .section {
+    padding: 5rem 0;
+  }
+
+  /* ── CALL-OUT BOX ── */
+  .callout {
+    border: 1px solid rgba(184,148,58,0.3);
+    background: rgba(184,148,58,0.04);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    position: relative;
+  }
+
+  .callout::before {
+    content: attr(data-label);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    position: absolute;
+    top: -0.6rem;
+    left: 1rem;
+    background: #0f0d0a;
+    padding: 0 0.5rem;
+  }
+
+  .callout p { color: rgba(240,234,216,0.7); margin: 0; font-size: 0.95rem; }
+
+  /* ── COMPARISON TABLE: OTHER GAMES ── */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5px;
+    background: var(--divider);
+    margin: 2rem 0;
+    border: 1px solid var(--divider);
+  }
+
+  .comp-card {
+    background: #0f0d0a;
+    padding: 1.5rem;
+    transition: background 0.2s;
+  }
+
+  .comp-card:hover { background: #161310; }
+
+  .comp-game {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .comp-mechanic {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .comp-body {
+    font-size: 0.85rem;
+    color: rgba(240,234,216,0.55);
+    line-height: 1.6;
+  }
+
+  .comp-tag {
+    display: inline-block;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid rgba(140,128,112,0.3);
+    color: var(--ash);
+    margin-top: 0.75rem;
+  }
+
+  /* ── BMS MECHANICS DEEP DIVE ── */
+  .mechanics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: var(--divider);
+    margin: 2.5rem 0;
+    border: 1px solid var(--divider);
+  }
+
+  @media (max-width: 700px) {
+    .mechanics-grid { grid-template-columns: 1fr; }
+  }
+
+  .mech-card {
+    background: #0f0d0a;
+    padding: 1.75rem;
+  }
+
+  .mech-tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--ember);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .mech-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 0.6rem;
+  }
+
+  .mech-body {
+    font-size: 0.88rem;
+    color: rgba(240,234,216,0.58);
+    line-height: 1.65;
+  }
+
+  .mech-score {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--divider);
+  }
+
+  .mech-score-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--ash);
+    white-space: nowrap;
+  }
+
+  .mech-score-bar {
+    flex: 1;
+    height: 2px;
+    background: rgba(140,128,112,0.2);
+    position: relative;
+  }
+
+  .mech-score-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--gold);
+  }
+
+  .mech-score-val {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+  }
+
+  /* ── ENDING SPECTRUM ── */
+  .spectrum-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin: 3rem 0;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .spectrum-intro { grid-template-columns: 1fr; }
+  }
+
+  .axis-block {
+    padding: 1.5rem;
+    border: 1px solid var(--divider);
+  }
+
+  .axis-block.flame { border-color: rgba(196,98,45,0.4); background: rgba(61,32,16,0.3); }
+  .axis-block.shadow { border-color: rgba(91,126,160,0.35); background: rgba(42,53,72,0.3); }
+
+  .axis-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .axis-label.flame { color: var(--ember); }
+  .axis-label.shadow { color: var(--cold); }
+
+  .axis-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .axis-desc {
+    font-size: 0.88rem;
+    color: rgba(240,234,216,0.55);
+    line-height: 1.6;
+  }
+
+  /* ── THE 10 ENDINGS ── */
+  .endings-container { margin: 3rem 0; }
+
+  .level-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 1fr;
+    gap: 1.5px;
+    background: var(--divider);
+    margin-bottom: 1.5px;
+  }
+
+  @media (max-width: 800px) {
+    .level-row { grid-template-columns: 1fr; }
+    .level-meta { border-right: none !important; border-bottom: 1px solid var(--divider); }
+  }
+
+  .level-meta {
+    background: #0f0d0a;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-right: 1.5px solid var(--divider);
+  }
+
+  .level-num {
+    font-family: 'Courier Prime', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--gold);
+    opacity: 0.5;
+  }
+
+  .level-band {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-top: 0.25rem;
+  }
+
+  .level-score {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+
+  .ending-card {
+    background: #0f0d0a;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .ending-card:hover { background: #141210; }
+
+  .ending-world {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+
+  .ending-world.flame { color: var(--ember); }
+  .ending-world.shadow { color: var(--cold); }
+
+  .ending-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 0.5rem;
+    line-height: 1.25;
+  }
+
+  .ending-desc {
+    font-size: 0.86rem;
+    color: rgba(240,234,216,0.52);
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── TRADEOFF TAGS ── */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+
+  .tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0;
+    text-transform: uppercase;
+  }
+
+  .tag-dignity { border: 1px solid rgba(184,148,58,0.4); color: var(--gold); }
+  .tag-horror { border: 1px solid rgba(196,98,45,0.4); color: var(--ember); }
+  .tag-emotional { border: 1px solid rgba(91,126,160,0.4); color: var(--cold); }
+  .tag-design-risk { border: 1px solid rgba(140,128,112,0.4); color: var(--ash); }
+
+  /* ── TRADEOFF ANALYSIS SECTION ── */
+  .tradeoff-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5px;
+    background: var(--divider);
+    margin: 2.5rem 0;
+    border: 1px solid var(--divider);
+  }
+
+  @media (max-width: 800px) {
+    .tradeoff-grid { grid-template-columns: 1fr; }
+  }
+
+  .tradeoff-card {
+    background: #0f0d0a;
+    padding: 1.75rem;
+  }
+
+  .tradeoff-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .tradeoff-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.04em;
+  }
+
+  .tradeoff-body {
+    font-size: 0.84rem;
+    color: rgba(240,234,216,0.52);
+    line-height: 1.65;
+  }
+
+  .tradeoff-verdict {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--divider);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+  }
+
+  /* ── BMS → BEHAVIOR CHAIN VISUAL ── */
+  .chain-diagram {
+    margin: 2.5rem 0;
+    padding: 2rem;
+    border: 1px solid var(--divider);
+    background: rgba(15,13,10,0.8);
+  }
+
+  .chain-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .chain-node {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .chain-node::after {
+    content: '→';
+    position: absolute;
+    right: -0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    opacity: 0.5;
+    font-size: 1.2rem;
+  }
+
+  .chain-node:last-child::after { display: none; }
+
+  .chain-node-tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-bottom: 0.3rem;
+  }
+
+  .chain-node-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--parchment);
+    line-height: 1.3;
+  }
+
+  @media (max-width: 700px) {
+    .chain-row { flex-direction: column; }
+    .chain-node::after { content: '↓'; position: static; display: block; margin: 0.25rem auto; }
+  }
+
+  /* ── AFFECTIVE DESIGN TABLE ── */
+  .affect-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.85rem;
+  }
+
+  .affect-table th {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--divider);
+    font-weight: 400;
+  }
+
+  .affect-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(140,128,112,0.1);
+    color: rgba(240,234,216,0.65);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+
+  .affect-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .affect-table td:first-child {
+    color: var(--parchment);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ── RISK MATRIX ── */
+  .risk-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--divider);
+    align-items: baseline;
+  }
+
+  .risk-row:last-child { border-bottom: none; }
+
+  .risk-level {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .risk-level.high { color: var(--ember); border-color: rgba(196,98,45,0.5); }
+  .risk-level.med { color: var(--gold); border-color: rgba(184,148,58,0.4); }
+  .risk-level.low { color: var(--ash); border-color: rgba(140,128,112,0.3); }
+
+  .risk-text { font-size: 0.88rem; color: rgba(240,234,216,0.62); line-height: 1.55; }
+  .risk-text strong { color: var(--parchment); }
+
+  .risk-mitigation {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--cold);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ── RECOMMENDATIONS SECTION ── */
+  .rec-num {
+    font-family: 'Courier Prime', monospace;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--gold);
+    opacity: 0.15;
+    line-height: 1;
+    margin-bottom: -0.5rem;
+  }
+
+  .rec-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 0.6rem;
+  }
+
+  .rec-body {
+    font-size: 0.88rem;
+    color: rgba(240,234,216,0.6);
+    line-height: 1.65;
+    margin-bottom: 0.5rem;
+  }
+
+  .rec-example {
+    border-left: 2px solid rgba(184,148,58,0.35);
+    padding-left: 1rem;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(240,234,216,0.45);
+    margin-top: 0.5rem;
+  }
+
+  .rec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 3rem;
+    margin: 2.5rem 0;
+  }
+
+  @media (max-width: 700px) {
+    .rec-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── CLOSING ── */
+  .closing {
+    padding: 6rem var(--gutter);
+    text-align: center;
+    background: radial-gradient(ellipse 60% 50% at 50% 60%, #1a1007 0%, #0f0d0a 100%);
+    position: relative;
+  }
+
+  .closing-glyph {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(184,148,58,0.2);
+    line-height: 1;
+    margin-bottom: 2rem;
+    display: block;
+    user-select: none;
+  }
+
+  .closing-quote {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: rgba(240,234,216,0.5);
+    max-width: 500px;
+    margin: 0 auto 1rem;
+  }
+
+  .closing-attr {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #0f0d0a; }
+  ::-webkit-scrollbar-thumb { background: rgba(184,148,58,0.3); }
+
+  /* ── STICKY NAV ── */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(15,13,10,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--divider);
+    padding: 0 var(--gutter);
+    display: flex;
+    align-items: center;
+    height: 48px;
+    gap: 2rem;
+  }
+
+  .nav-brand {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.8;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    overflow-x: auto;
+  }
+
+  .nav-links a {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--ash);
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--parchment); }
+
+  main { padding-top: 48px; }
+
+  /* ── SCORE SPECTRUM VISUAL ── */
+  .spectrum-bar {
+    margin: 2rem 0;
+    position: relative;
+  }
+
+  .spectrum-track {
+    height: 6px;
+    background: linear-gradient(
+      to right,
+      #2a1808 0%,
+      #4a2a10 20%,
+      #7a6030 40%,
+      #a08030 60%,
+      #b8943a 80%,
+      #d4aa50 100%
+    );
+    border-radius: 0;
+    position: relative;
+    margin: 0.5rem 0 2.5rem;
+  }
+
+  .spectrum-markers {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    bottom: -2rem;
+    left: 0; right: 0;
+  }
+
+  .spectrum-marker {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: var(--ash);
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  .spectrum-tick {
+    width: 1px;
+    height: 10px;
+    background: var(--divider);
+    position: absolute;
+    bottom: 6px;
+    transform: translateX(-50%);
+  }
+
+  /* ── INSIGHT BLOCKS ── */
+  .insight {
+    background: rgba(184,148,58,0.05);
+    border: 1px solid rgba(184,148,58,0.2);
+    border-left: 3px solid var(--gold);
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .insight-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .insight p { font-size: 0.9rem; color: rgba(240,234,216,0.72); line-height: 1.6; margin: 0; }
+
+  /* ── COMPARISON GAME DEEP DIVE ── */
+  .sh2-analysis {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5px;
+    background: var(--divider);
+    margin: 2rem 0;
+    border: 1px solid var(--divider);
+  }
+
+  @media (max-width: 600px) {
+    .sh2-analysis { grid-template-columns: 1fr; }
+  }
+
+  .sh2-label-col {
+    background: #0f0d0a;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .sh2-content-col {
+    background: #0f0d0a;
+    padding: 1.5rem 1.75rem;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="nav-brand">KENOMA · Design Analysis</a>
+  <ul class="nav-links">
+    <li><a href="#comp">Comparisons</a></li>
+    <li><a href="#bms">BMS Mechanics</a></li>
+    <li><a href="#spectrum">Spectrum</a></li>
+    <li><a href="#endings">10 Endings</a></li>
+    <li><a href="#affect">Affect Design</a></li>
+    <li><a href="#tradeoffs">Trade-offs</a></li>
+    <li><a href="#risks">Risks</a></li>
+    <li><a href="#recs">Recommendations</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ══ COVER ══ -->
+<div class="cover">
+  <div class="cover-glyph">凱諾瑪</div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">KENOMA · Behavioral Design Analysis</div>
+    <h1 class="cover-title">Ending Spectrum<br>Architecture</h1>
+    <div class="cover-subtitle">From BMS Score to Player Feeling · Complete Design Evaluation</div>
+    <blockquote class="cover-thesis">
+      "When the birds are gone, the bow is put away. When the hare is dead, the hunting dog is cooked."
+      <cite>Fan Li · Eastern Zhou Chronicles · KENOMA thesis</cite>
+    </blockquote>
+    <div class="scroll-cue">↓ · SCROLL TO READ · ↓</div>
+  </div>
+</div>
+
+<!-- ══ SECTION 1: CONTEXT ══ -->
+<div class="section page" id="context">
+  <div class="section-label">01 · Context</div>
+  <h2 class="section-title">What This Analysis Covers</h2>
+  <div class="prose">
+    <p>KENOMA uses a dual hidden score system — the <strong>EndingSpectrumCalculator</strong>, fed by the <strong>Behavioral Model System (BMS)</strong> — to resolve one of ten distinct endings without ever showing the player a meter, gauge, or progress indicator. Two independent scores (0–100 per world) accumulate across 6–9 hours of play. At the Child Phase trigger, they are evaluated and the correct ending loads.</p>
+    <p>This document analyzes: how the calculation system <em>works</em> mechanically; how comparable games have approached multi-ending architecture; the trade-offs embedded in each point of the 10-scenario spectrum; and what the system must do beyond scoring to produce genuine emotional impact rather than mere branching conclusions.</p>
+    <p>The central design question this document addresses: <strong>How do you make the same numerical threshold feel categorically different to different players?</strong></p>
+  </div>
+
+  <div class="callout" data-label="Design Constraint">
+    <p>No ending in KENOMA involves the Scholar surviving. The spectrum is not about survival chances — it is about the quality of the Vanguard's ascension and the dignity of the Scholar's end. Scoring to endings must therefore be evaluated on axes of <em>character completeness</em>, <em>emotional register</em>, and <em>player recognition</em>, not on win/lose mechanics.</p>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 2: COMPARABLE GAMES ══ -->
+<div class="section page" id="comp">
+  <div class="section-label">02 · Comparative Analysis</div>
+  <h2 class="section-title">How Other Games Have Solved This</h2>
+  <div class="prose">
+    <p>KENOMA's design DNA explicitly cites Silent Hill 2 as the structural load-bearer for its invisible tracking approach. But the problem space — multi-ending systems that don't feel like scoring — has been explored across several distinct traditions worth examining closely.</p>
+  </div>
+
+  <div class="comp-grid">
+    <div class="comp-card">
+      <div class="comp-game">Silent Hill 2 · 2001</div>
+      <div class="comp-mechanic">Invisible Care Tracking → 4 Endings</div>
+      <div class="comp-body">The system tracks how often you look at Mary's letter, how many health items you use, how much time you spend near Maria. Players do not know they are being measured. The endings land because the game retrospectively frames every prior action as evidence of James's psychology — <em>the measurement was always a mirror.</em> The most critical lesson: the evaluation reveals the player's behavior back to them, making the ending feel earned rather than assigned.</div>
+      <div class="tag-row"><span class="tag tag-dignity">Retroactive Revelation</span><span class="tag tag-emotional">Mirror Architecture</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-game">Disco Elysium · 2019</div>
+      <div class="comp-mechanic">Ideology Accumulation → Political Character</div>
+      <div class="comp-body">No numeric ideology score is shown. Instead, each choice consolidates Harry's political character — fascist, communist, moralist, ultraliberal — and NPCs respond to the emergent worldview rather than individual choices. The ending isn't selected; it is arrived at organically from who Harry became. The lesson: <em>endings should feel inhabited, not awarded.</em> A player who reaches the moralist ending should feel like a moralist, not someone who scored enough moralist points.</div>
+      <div class="tag-row"><span class="tag tag-dignity">Identity Emergence</span><span class="tag tag-emotional">Inhabited Worldview</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-game">Planescape: Torment · 1999</div>
+      <div class="comp-mechanic">Memory Accumulation → Self-Recognition</div>
+      <div class="comp-body">What Can Change the Nature of a Man? The game's ending is only meaningful if the player has genuinely engaged with the question — not answered it correctly, but <em>lived in it</em>. TNO's alignment at the end is inseparable from the depth of engagement with prior content. The key design truth: in systems like this, <em>depth of engagement is the scoring variable</em>, not content of choice.</div>
+      <div class="tag-row"><span class="tag tag-dignity">Depth Scoring</span><span class="tag tag-design-risk">Engagement Required</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-game">Nier: Automata · 2017</div>
+      <div class="comp-mechanic">Sequential Revelation → 26 Endings</div>
+      <div class="comp-body">The A→B→C routing recontextualizes every prior scene without altering game content — the same world becomes fundamentally different through accumulated understanding. The 26 endings range from joke to devastating, but the devastation is only accessible to players who accumulated enough context. <em>Context is the scoring variable</em>. Critically: endings A/B feel complete until C reveals they were incomplete all along.</div>
+      <div class="tag-row"><span class="tag tag-horror">Recontextualization</span><span class="tag tag-emotional">Earned Devastation</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-game">Spec Ops: The Line · 2012</div>
+      <div class="comp-mechanic">Agency Illusion Collapse → 4 Endings</div>
+      <div class="comp-body">The "endings" are constituted by the game making the player's prior belief in their own agency visible as an illusion. The most powerful ending is the one where the player keeps shooting — the complicity model made explicit. The lesson: <em>the worst possible ending for the character can be the most powerful for the player</em> if it forces recognition. Low-score endings in KENOMA face this challenge: how do you make the Scholar's degradation feel revealing rather than punishing?</div>
+      <div class="tag-row"><span class="tag tag-horror">Agency Collapse</span><span class="tag tag-design-risk">Risk: Feeling Punished</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-game">Undertale · 2015</div>
+      <div class="comp-mechanic">Kill Count → Genocide Route Transformation</div>
+      <div class="comp-body">The tracking is transparent enough to feel discoverable, but the <em>weight</em> of what each kill meant only becomes legible at the ending. Players who do the Genocide route report feeling genuinely implicated — not because the game told them they were wrong, but because the routing required sustained engagement with acts that produced visible distress in the world. The kill count is the score; the world's reaction is the mirror. Design note for KENOMA's Lv.1 endings: the Vanguard's degradation must feel like a consequence of <em>Scholar choices</em>, not random bad luck.</div>
+      <div class="tag-row"><span class="tag tag-horror">Visible World Consequence</span><span class="tag tag-emotional">Complicity Model</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-game">Doki Doki Literature Club · 2017</div>
+      <div class="comp-mechanic">Poem Affinity Score → Route Selection → Meta-Ending</div>
+      <div class="comp-body">The surface mechanic (which poems get you which route) masks the real ending driver: whether the player noticed the horror accumulating in ordinary-seeming moments. The "good" ending requires the player to have paid attention in a specific way. Design lesson: <em>the scoring variable can be attentiveness itself</em>. KENOMA's Overheard Vanguard scenes (missable, +4 score) operate on this logic — the reward is not for making the right choice but for <em>noticing</em>.</div>
+      <div class="tag-row"><span class="tag tag-dignity">Attentiveness Rewarded</span><span class="tag tag-horror">Dread Accumulation</span></div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-game">Dragon Age: Origins · 2009</div>
+      <div class="comp-mechanic">Approval System → Companion Attitudes</div>
+      <div class="comp-body">The approval meter is visible — a deliberate transparency choice that makes KENOMA's invisibility approach more philosophically distinctive. BioWare's lesson: <em>visible meters optimize player behavior</em>. Players chase approval numbers rather than acting authentically. KENOMA's invisible tracking is a direct refusal of this optimization loop. The risk is that players feel arbitrarily assigned an ending. The mitigation is that the Vanguard's behavioral changes must serve as an implicit meter — legible through observation, not UI.</div>
+      <div class="tag-row"><span class="tag tag-design-risk">Anti-Pattern: Visible Meter</span><span class="tag tag-emotional">Optimization vs. Authenticity</span></div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">Cross-Game Synthesis</div>
+    <p>The most emotionally impactful multi-ending games share one property: <strong>the ending makes prior behavior retroactively visible</strong>. The player does not feel scored — they feel <em>seen</em>. For KENOMA, this means the Vanguard's Child Phase behavior must function as a mirror of the Scholar's entire Camel Phase arc. What she has become, how she moves through the room, whether she hesitates — all of it must feel like a reading of who the Scholar was, not a reward/punishment binary.</p>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 3: BMS MECHANICS ══ -->
+<div class="section page" id="bms">
+  <div class="section-label">03 · BMS Score Architecture</div>
+  <h2 class="section-title">What Actually Moves the Scores</h2>
+  <div class="prose">
+    <p>The EndingSpectrumCalculator maintains two independent 0–100 registers — one per world — fed by BMS events dispatched from 12 event types. Understanding the weight distribution reveals the game's implicit philosophy about what the Scholar's character means.</p>
+  </div>
+
+  <div class="chain-diagram">
+    <div class="chain-row">
+      <div class="chain-node">
+        <div class="chain-node-tag">Scholar Action</div>
+        <div class="chain-node-title">Completed<br>behavior in world</div>
+      </div>
+      <div class="chain-node">
+        <div class="chain-node-tag">BMS Event</div>
+        <div class="chain-node-title">RecordEvent() dispatched<br>synchronously</div>
+      </div>
+      <div class="chain-node">
+        <div class="chain-node-tag">Warmth Register</div>
+        <div class="chain-node-title">wa_warmth /<br>vb_warmth updated</div>
+      </div>
+      <div class="chain-node">
+        <div class="chain-node-tag">VanguardState</div>
+        <div class="chain-node-title">OnBMSUpdate()<br>called → behavior shift</div>
+      </div>
+      <div class="chain-node">
+        <div class="chain-node-tag">RSS Stage</div>
+        <div class="chain-node-title">Recognition threshold<br>crossed → observable change</div>
+      </div>
+      <div class="chain-node">
+        <div class="chain-node-tag">Child Phase</div>
+        <div class="chain-node-title">SRS reads log →<br>ending selected</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mechanics-grid">
+    <div class="mech-card">
+      <div class="mech-tag">Highest Single Value</div>
+      <div class="mech-title">Donating the Spring-Pistol</div>
+      <div class="mech-body">+12 WA / +5 WB. The highest single-action score contribution in the game. But the trade-off is catastrophic: in the Lion Phase, the Vanguard will use it against the Scholar. She will have wound it fully. She will not miss at 6 meters. This is KENOMA's most distilled expression of the dual-truth thesis — care and calculation in the same gesture, with the Scholar on both sides of it.</div>
+      <div class="mech-score">
+        <span class="mech-score-label">WA Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:100%"></div></div>
+        <span class="mech-score-val">+12</span>
+      </div>
+      <div class="mech-score">
+        <span class="mech-score-label">WB Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:41%"></div></div>
+        <span class="mech-score-val">+5</span>
+      </div>
+    </div>
+
+    <div class="mech-card">
+      <div class="mech-tag">Depth Engagement</div>
+      <div class="mech-title">Full Deep-Read (per document)</div>
+      <div class="mech-body">+6 WA / +6 WB per deep-read. The most balanced score source, available in both worlds. The 60% Guardian spawn probability during the 25–40s read window creates genuine risk. This is the game's purest "depth rewarded" mechanic — players who read carefully are simultaneously building toward Colorful endings and exposing themselves to the Archive's most dangerous inhabitant. The scores reward what the Scholar is supposed to <em>be</em>.</div>
+      <div class="mech-score">
+        <span class="mech-score-label">WA Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:50%"></div></div>
+        <span class="mech-score-val">+6</span>
+      </div>
+      <div class="mech-score">
+        <span class="mech-score-label">WB Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:50%"></div></div>
+        <span class="mech-score-val">+6</span>
+      </div>
+    </div>
+
+    <div class="mech-card">
+      <div class="mech-tag">Attentiveness Reward</div>
+      <div class="mech-title">Overheard Vanguard Interactions</div>
+      <div class="mech-body">+4 WA / +4 WB each, fully missable. These are the game's DDLC-inspired "noticing" rewards — the score moves not because the Scholar made a strategic choice, but because the player was paying attention to the world at all. Functionally, this means exploratory players trend toward Colorful endings independent of their donation/combat choices. The game rewards curiosity as a character trait, not just as a navigational strategy.</div>
+      <div class="mech-score">
+        <span class="mech-score-label">WA Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:33%"></div></div>
+        <span class="mech-score-val">+4</span>
+      </div>
+      <div class="mech-score">
+        <span class="mech-score-label">WB Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:33%"></div></div>
+        <span class="mech-score-val">+4</span>
+      </div>
+    </div>
+
+    <div class="mech-card">
+      <div class="mech-tag">Negative Signal</div>
+      <div class="mech-title">Following the Dark Voice</div>
+      <div class="mech-body">−4 WA / −4 WB per session followed. The Dark Voice is the Scholar's own strategic intelligence — Sun Tzu, Fan Li, self-preservation. Following it is mechanically rational (unlocks early sabotage) but philosophically a betrayal of the 士 archetype. The scoring encodes the game's thesis directly: the Scholar who listened to Fan Li's warning and acted on it was the Scholar who stopped being a Scholar. The bow was not put away — it ran.</div>
+      <div class="mech-score">
+        <span class="mech-score-label">WA Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:33%; background: var(--ember);"></div></div>
+        <span class="mech-score-val" style="color:var(--ember)">−4</span>
+      </div>
+      <div class="mech-score">
+        <span class="mech-score-label">WB Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:33%; background: var(--ember);"></div></div>
+        <span class="mech-score-val" style="color:var(--ember)">−4</span>
+      </div>
+    </div>
+
+    <div class="mech-card">
+      <div class="mech-tag">Implicit Behavior</div>
+      <div class="mech-title">High Health Maintenance</div>
+      <div class="mech-body">−3 WA / −3 WB per checkpoint if avg. health above 80%. Borrowed directly from SH2's hoarding-aversion logic. Players who never take risks, never spend resources, always maintain safety margins are coded as withdrawing from the Archive's demands. It's a subtle negative modifier that emerges from passive behavior rather than active choices — and it captures something real about the Scholar's character: a 士 who hoards is not a 士 who serves.</div>
+      <div class="mech-score">
+        <span class="mech-score-label">WA Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:25%; background: var(--ember);"></div></div>
+        <span class="mech-score-val" style="color:var(--ember)">−3</span>
+      </div>
+      <div class="mech-score">
+        <span class="mech-score-label">WB Score</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:25%; background: var(--ember);"></div></div>
+        <span class="mech-score-val" style="color:var(--ember)">−3</span>
+      </div>
+    </div>
+
+    <div class="mech-card">
+      <div class="mech-tag">World-Asymmetric Signal</div>
+      <div class="mech-title">Resource Donation (Type-Weighted)</div>
+      <div class="mech-body">Oil donation: +2 WA / +4 WB. Pellets: +5 WA / +2 WB. The asymmetry is philosophically precise: oil matters most to WB combat (shadow-class creatures); pellets matter most to WA (mechanoids). Donating what matters <em>where it matters</em> reflects genuine generosity rather than optimized charity. A player who donates oil without knowing it's most valuable in WB is still contributing meaningfully — the system rewards intuition and strategy equally.</div>
+      <div class="mech-score">
+        <span class="mech-score-label">Oil → WB</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:33%"></div></div>
+        <span class="mech-score-val">+4</span>
+      </div>
+      <div class="mech-score">
+        <span class="mech-score-label">Pellets → WA</span>
+        <div class="mech-score-bar"><div class="mech-score-fill" style="width:41%"></div></div>
+        <span class="mech-score-val">+5</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">Scoring Philosophy</div>
+    <p>The score distribution encodes a clear character argument: <strong>scholars who read deeply, notice details, share resources, and remain present in the Archive</strong> trend toward Colorful. <strong>Scholars who hoard, follow self-preservation instincts, and disengage</strong> trend toward Poor. Neither is wrong — the spectrum is a reflection system, not a judgment system. But the game has a thesis, and the thesis produces a scoring gradient.</p>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 4: SPECTRUM OVERVIEW ══ -->
+<div class="section page" id="spectrum">
+  <div class="section-label">04 · The Dual-Axis Spectrum</div>
+  <h2 class="section-title">Two Worlds, Five Levels, Ten Endings</h2>
+
+  <div class="spectrum-intro">
+    <div class="axis-block flame">
+      <div class="axis-label flame">★ World A · Flame</div>
+      <div class="axis-title">Systemic Mind</div>
+      <div class="axis-desc">Vanguard A survived. Her spectrum runs from <em>The Shell-Shocked Conscript</em> — a fractured intelligence overwhelmed by the Traversal Skill — to <em>The Architect of Clean Architecture</em>, operating at absolute strategic optimization. The WA axis tracks the Scholar's engagement with systemic, architectural thinking: how thoroughly they understood the Archive as a machine.</div>
+    </div>
+    <div class="axis-block shadow">
+      <div class="axis-label shadow">◈ World B · Shadow</div>
+      <div class="axis-title">Mythic Mind</div>
+      <div class="axis-desc">Vanguard B survived. Her spectrum runs from <em>The Drowning Victim</em> — the Sunken Archive's folklore collapsing inward without a foundation — to <em>The Author of the Fable</em>, narrating the Scholar's end as the completion of a text she began three centuries ago. The WB axis tracks depth of engagement with the Archive's inner life: its creatures, lore, ceremonies, and private history.</div>
+    </div>
+  </div>
+
+  <div class="spectrum-bar">
+    <div class="spectrum-track"></div>
+    <div class="spectrum-markers">
+      <div class="spectrum-marker" style="left:10%"><div class="spectrum-tick"></div>0–20<br>Absolute<br>Poor</div>
+      <div class="spectrum-marker" style="left:30%"><div class="spectrum-tick"></div>21–40<br>Poor-<br>Leaning</div>
+      <div class="spectrum-marker" style="left:50%"><div class="spectrum-tick"></div>41–60<br>Neutral</div>
+      <div class="spectrum-marker" style="left:70%"><div class="spectrum-tick"></div>61–80<br>Colorful-<br>Leaning</div>
+      <div class="spectrum-marker" style="left:90%"><div class="spectrum-tick"></div>81–100<br>Absolute<br>Colorful</div>
+    </div>
+  </div>
+  <br><br><br>
+
+  <div class="callout" data-label="Critical Architecture Note">
+    <p>The two world scores are <em>independent</em>. A Scholar with WA 85 / WB 12 gets a completely different pair of endings than WA 12 / WB 85. The game does not average them. The split-score possibility allows for surprising, specific character portraits that averaged systems cannot produce — the scholar who was brilliant in the material world but never looked inward; the scholar who understood the Archive's soul but never its mechanisms.</p>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 5: THE 10 ENDINGS ══ -->
+<div class="section page" id="endings">
+  <div class="section-label">05 · The Ten Scenarios</div>
+  <h2 class="section-title">Score to Feeling: Each Ending Evaluated</h2>
+  <div class="prose">
+    <p>Below: all ten scenarios, with analysis of what each ending <em>communicates</em> beyond its surface description — the emotional register, the design risks, and what the player must have done to reach it.</p>
+  </div>
+
+  <div class="endings-container">
+
+    <!-- LV 1 -->
+    <div class="level-row">
+      <div class="level-meta">
+        <div class="level-num">01</div>
+        <div class="level-band">Absolute Poor</div>
+        <div class="level-score">0 – 20</div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world flame">★ World A Survives</div>
+        <div class="ending-name">The Shell-Shocked Conscript</div>
+        <div class="ending-desc">The Traversal Skill overloads a starved mind. Vanguard A fractures rather than transcends — hunched, hyperventilating, operating on feral survival instinct. She drags the Scholar into the nearest corridor. The fight is ugly, clumsy, and deeply sad. She barely understands what she has become.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Pity and horror simultaneously. The Vanguard's degradation does not feel like justice — it feels like waste. The Scholar who reached this ending was not present enough in the Archive to give the Vanguard material to become something complete. Both characters are diminished. The question this ending leaves: <em>was the Scholar even here?</em></p>
+        <div class="tag-row"><span class="tag tag-horror">Tragic Waste</span><span class="tag tag-design-risk">Risk: Feels Punitive</span><span class="tag tag-emotional">Pity Register</span></div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world shadow">◈ World B Survives</div>
+        <div class="ending-name">The Drowning Victim</div>
+        <div class="ending-desc">The Sunken Archive's folklore collapses inward — too much weight, no foundation built to receive it. She moves erratically, weeping, clothing soaked. She grabs the Scholar's ankles and drags them into stagnant water. No grandeur. No ceremony. Two people destroyed by the same system.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Desolation without catharsis. Vanguard B's philosophical architecture required the Scholar's engagement to be inhabited — without it, she has three centuries of depth and nothing to stand on. The Scholar left her with tools she cannot lift. This ending communicates absence: the Scholar was the only bridge, and the bridge was never built.</p>
+        <div class="tag-row"><span class="tag tag-horror">Structural Collapse</span><span class="tag tag-emotional">Absence Register</span><span class="tag tag-design-risk">Risk: Nihilistic</span></div>
+      </div>
+    </div>
+
+    <!-- LV 2 -->
+    <div class="level-row">
+      <div class="level-meta">
+        <div class="level-num">02</div>
+        <div class="level-band">Poor-Leaning</div>
+        <div class="level-score">21 – 40</div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world flame">★ World A Survives</div>
+        <div class="ending-name">The Attrition Commander</div>
+        <div class="ending-desc">Tactical awareness without systemic depth. She wins through brutal logistics — destroying cover, bleeding resources dry. Her face carries exhausted determination. She looks like a general fighting a war she can't stop fighting. The strangulation takes longer than it should. She is not enjoying this.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Grim competence. The Scholar gave enough to make the Vanguard capable but not enough to make her complete. The fight drags because she is working with insufficient material. There is something honest about this ending — she wins the way wars are actually won, through grinding, not elegance. The dignity is low; the credibility is high.</p>
+        <div class="tag-row"><span class="tag tag-horror">Grinding Inevitability</span><span class="tag tag-emotional">Grim Competence</span></div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world shadow">◈ World B Survives</div>
+        <div class="ending-name">The Paranoid Villager</div>
+        <div class="ending-desc">The folklore has made her superstitious. She moves in eerie pauses, hides from shadows she's created, leaves psychological traps to herd the Scholar. A very human desperation inside her, protecting territory she believes is cursed. The final strike is a desperate, frightened act from a dark corner.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Creeping dread with a melancholic undertow. Vanguard B at partial development is not a philosopher — she is a frightened 300-year-old creature who has been alone too long and given just enough knowledge to be dangerous but not enough to be stable. The Scholar's incomplete engagement created something genuinely unwell.</p>
+        <div class="tag-row"><span class="tag tag-horror">Psychological Dread</span><span class="tag tag-emotional">Melancholic Creature</span></div>
+      </div>
+    </div>
+
+    <!-- LV 3 -->
+    <div class="level-row">
+      <div class="level-meta">
+        <div class="level-num">03</div>
+        <div class="level-band">Neutral</div>
+        <div class="level-score">41 – 60</div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world flame">★ World A Survives</div>
+        <div class="ending-name">The Eastern Zhou Strategist</div>
+        <div class="ending-desc">Military clarity achieved. She stands completely still when she enters, reads the room in under a second, fights without a single unnecessary movement. Emotionless. She removes the Scholar from the board the way a general removes an obsolete piece from a war table. No malice. No ceremony.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Cold precision — the most tonally "correct" ending in terms of the game's stated aesthetic. This is the 將 archetype made complete. The design risk here is that it lands as "satisfying" in a horror-genre sense — the efficient villain getting her win. It must read as <em>tragedy of sufficiency</em>, not triumph. The Scholar gave the Vanguard exactly what was needed, and exactly what was needed was enough.</p>
+        <div class="tag-row"><span class="tag tag-dignity">Archetype Completion</span><span class="tag tag-design-risk">Risk: Feels Like Villain Win</span><span class="tag tag-emotional">Cold Precision</span></div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world shadow">◈ World B Survives</div>
+        <div class="ending-name">The Mourning Widow</div>
+        <div class="ending-desc">Cold gothic patience weaponized as inevitability. Dark cloth, measured pace, always ten steps behind. She does not pursue — she follows. The psychological weight of her relentless following forces the Scholar into a dead end they chose themselves. She draws her blade slowly. Almost tender.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Gothic inevitability with unexpected tenderness. The "mourning" is for the relationship that could have been deeper. The Scholar gave her enough to feel the loss of what wasn't completed. This is the spectrum's most <em>romantic</em> ending in the classical tragedy sense — not love story, but a recognition of two people who almost reached each other.</p>
+        <div class="tag-row"><span class="tag tag-dignity">Gothic Inevitability</span><span class="tag tag-emotional">Tragic Near-Miss</span></div>
+      </div>
+    </div>
+
+    <!-- LV 4 -->
+    <div class="level-row">
+      <div class="level-meta">
+        <div class="level-num">04</div>
+        <div class="level-band">Colorful-Leaning</div>
+        <div class="level-score">61 – 80</div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world flame">★ World A Survives</div>
+        <div class="ending-name">The Digital Twin</div>
+        <div class="ending-desc">She has built a perfect behavioral model of the Scholar. When they aim, she has already moved. When they approach a trap she never triggered, she stops one inch from the pressure plate and looks them in the eye. She has simulated their complete decision tree. She waits for them to exhaust its branches. Then she steps forward.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Recognition horror at its most precise. The player who reaches this ending has given the Vanguard enough material that her perfect prediction feels <em>intimate</em>, not mechanical. She knows which trap the Scholar won't step on. She knows where they reload. This is the most devastating expression of Core Idea 3 — Understanding Is the Weapon. The weapon she built from the Scholar is the Scholar.</p>
+        <div class="tag-row"><span class="tag tag-horror">Intimate Recognition</span><span class="tag tag-dignity">Culmination Ending</span><span class="tag tag-emotional">Horror of Being Known</span></div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world shadow">◈ World B Survives</div>
+        <div class="ending-name">The Cult Matriarch</div>
+        <div class="ending-desc">She smiles warmly when she steps through the tear. Her voice is calm, soothing, paralyzing. She extinguishes Archive lanterns one by one using Traversal, explaining the Scholar's fate in the gathering dark with patient composure. She delivers the final strike in complete darkness. The Scholar hears it before they feel it.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Ritualistic dread. The warmth in her voice is real — she is completing something she has been building toward for three centuries, and she is genuinely grateful the Scholar was the one to help her finish it. The ceremony structure creates a deeply uncomfortable intimacy. This is the ending where the Scholar should feel most like a beloved collaborator — and most like a sacrificial offering. Both simultaneously true.</p>
+        <div class="tag-row"><span class="tag tag-horror">Ritualistic Intimacy</span><span class="tag tag-emotional">Warmth as Dread</span><span class="tag tag-dignity">Ceremonial Completion</span></div>
+      </div>
+    </div>
+
+    <!-- LV 5 -->
+    <div class="level-row">
+      <div class="level-meta">
+        <div class="level-num">05</div>
+        <div class="level-band">Absolute Colorful</div>
+        <div class="level-score">81 – 100</div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world flame">★ World A Survives</div>
+        <div class="ending-name">The Architect of Clean Architecture</div>
+        <div class="ending-desc">She walks slowly toward the Scholar, heels clicking on stone, entirely unhurried. She uses Traversal to sever the room's architecture piece by piece — the bridge, the portcullis, the exit. She identifies the one structural weakness in the Scholar's position and resolves it with a single surgical thrust. The room is hers. It was always going to be hers.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Overwhelming, earned tragedy. This is the Übermensch form — she is everything the Scholar helped her become, expressed as clean, total efficiency. The Scholar who reaches this ending gave her everything: combat data, behavioral patterns, puzzle methodologies, resource knowledge. She uses all of it. The tragedy is not that she kills them — it is that this is the best possible version of what she could become, and they built it.</p>
+        <div class="tag-row"><span class="tag tag-dignity">Peak Übermensch</span><span class="tag tag-horror">Ultimate Horror</span><span class="tag tag-emotional">Earned Devastation</span></div>
+      </div>
+      <div class="ending-card">
+        <div class="ending-world shadow">◈ World B Survives</div>
+        <div class="ending-name">The Author of the Fable</div>
+        <div class="ending-desc">She places a chair in the center of the room, sits, and watches the Scholar exhaust themselves against doors and traps she has rearranged. She narrates — not to the Scholar, but to the Archive itself — writing the closing passage of a text that began when the Scholar first opened the gate. The Archive's lights extinguish in sequence. The story is complete.</div>
+        <p style="font-size:0.83rem;color:rgba(240,234,216,0.45);line-height:1.6;"><strong style="color:rgba(240,234,216,0.7);">Emotional register:</strong> Transcendence, grief, and a deeply unsettling satisfaction. The Scholar is credited as source material — not a victim, not a tool, but the foundational text from which she wrote something that will outlast them both. This is the most philosophically complete ending: the Scholar became, in their elimination, what they were always trying to be. The bow didn't put itself away — it became the text that explains why bows exist.</p>
+        <div class="tag-row"><span class="tag tag-dignity">Transcendence</span><span class="tag tag-emotional">Grief + Completion</span><span class="tag tag-horror">Authorial Erasure</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 6: AFFECTIVE DESIGN ══ -->
+<div class="section page" id="affect">
+  <div class="section-label">06 · Affective Design</div>
+  <h2 class="section-title">Beyond Scoring: What Makes Players <em>Feel</em> the Endings</h2>
+  <div class="prose">
+    <p>A scoring system only produces emotions if the player's behavior is made visible to them at the right moment. The following analysis examines the specific mechanisms through which KENOMA's endings can transcend their numerical origins and land as genuine emotional experiences.</p>
+  </div>
+
+  <table class="affect-table">
+    <thead>
+      <tr>
+        <th>Mechanism</th>
+        <th>How It Works in KENOMA</th>
+        <th>Target Emotion</th>
+        <th>Risk if Fails</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Retroactive Revelation</td>
+        <td>The Vanguard's Child Phase behavior recasts every prior Camel Phase scene. The oil flask that seemed like generosity now reads as data collection. The Stage 3 moment where she completed a puzzle independently, which felt like pride, now reads as capability assessment. The endings do not add new information — they reframe existing information.</td>
+        <td>Recognition, complicity</td>
+        <td>Endings feel arbitrary if Camel Phase didn't seed enough material to reframe</td>
+      </tr>
+      <tr>
+        <td>The Mirror Test</td>
+        <td>Each ending's specific behaviors must feel like a reading of <em>this player's specific Scholar</em>, not a generic Vanguard mode. The Digital Twin stopping one inch from the player's own unset trap is only devastating if that trap was placed during gameplay. The behavioral model is only a mirror if it reflects actual behavior.</td>
+        <td>Intimate horror of being known</td>
+        <td>Endings feel generic if VanguardBehaviorModel doesn't reference actual player data</td>
+      </tr>
+      <tr>
+        <td>Observatory as Physical Score</td>
+        <td>The Child Phase arena is the Observatory — its corruption state is the visible, physical expression of the behavioral score. A scholar with Lv.1 scores enters a heavily corrupted room; a Lv.5 scholar enters a space that still feels like theirs. The ending's <em>starting conditions</em> encode the ending's meaning before a word is spoken or a blow struck.</td>
+        <td>Setting dread / earned dignity</td>
+        <td>Physical score legibility fails if corruption states aren't visually distinct enough</td>
+      </tr>
+      <tr>
+        <td>The Compass Silence</td>
+        <td>The compass goes silent at the Child Phase — for the first time in the entire game. Six to nine hours of continuous static warning, then nothing. The silence communicates more than any UI element could: there is nothing left to warn against. The Scholar is past warning. This affective payload requires the compass to have been consistently present throughout play.</td>
+        <td>Finality, inevitability</td>
+        <td>Falls flat if players tuned out compass static as audio clutter</td>
+      </tr>
+      <tr>
+        <td>The False Victory Architecture</td>
+        <td>The 25-second False Victory sequence conditions the player to relax — achievement pop, breathing normalization, save prompt — before the tear opens. The emotional impact of the ending is amplified by how completely the player believed, for those 25 seconds, that they had won. This works only if the T+6s save prompt is accepted; many players will save, recording their own relief in the moment before the ending begins.</td>
+        <td>Betrayal of relaxation, retrospective dread</td>
+        <td>Fails completely if players expect the tear. Cannot be spoiled.</td>
+      </tr>
+      <tr>
+        <td>The Fan Li Inversion</td>
+        <td>The opening cinematic has the Scholar quote Fan Li's aphorism as proof that they understand it — and immediately misapply it. "He meant it as a warning. I am not a bow." By Lv.4–5 endings, the player understands that the Scholar was the bow, spoke the aphorism that named their own fate, and misread it. The ending lands hardest on second playthrough when the player hears the opening VO with full retrospective knowledge.</td>
+        <td>Tragic irony, self-recognition</td>
+        <td>Requires players to remember the opening VO; auditory callback needs to be placed in Child Phase</td>
+      </tr>
+      <tr>
+        <td>Vanguard's Three-Second Silence (Child Phase Scenarios per GDD v4 KENOMA Core)</td>
+        <td>In the five Child Phase scenarios described in the KENOMA Core skill, the Vanguard moves through rooms the Scholar worked in, with a three-second silence appearing in every scenario. Its weight changes with each scenario — administrative in Scenario I, prayerlike in Scenario V. This structural gesture must be present in all ten endings as an affective anchor: the Vanguard standing still in the Scholar's last room is the emotional center of every resolution.</td>
+        <td>Grief, completion, dignity</td>
+        <td>Fails if the silence is unearned — requires the room to carry visible evidence of Scholar activity</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <div class="insight-label">The Core Affective Requirement</div>
+    <p>None of the above mechanisms work if the player does not have a <strong>genuine relationship with the Vanguard</strong> before the Child Phase. The Camel Phase must build attachment — to the Archive, to the Vanguard, to the Scholar's work — that the Lion Phase strains and the Child Phase resolves. An ending that is scored correctly but built on an unattached Camel Phase will land as spectacle, not tragedy. The affective architecture is load-bearing.</p>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 7: TRADE-OFF ANALYSIS ══ -->
+<div class="section page" id="tradeoffs">
+  <div class="section-label">07 · Trade-off Analysis</div>
+  <h2 class="section-title">Design Costs at Each Level of the Spectrum</h2>
+
+  <div class="tradeoff-grid">
+    <div class="tradeoff-card">
+      <span class="tradeoff-icon">🔻</span>
+      <div class="tradeoff-title">Lv.1–2 (Poor Range)<br>The Cost of Being Punishing</div>
+      <div class="tradeoff-body">These endings serve the game's thesis (absent engagement produces diminished results) but risk feeling like punishment for casual players. If a first-time player reaches The Shell-Shocked Conscript, they may attribute the outcome to difficulty rather than behavioral failure — missing the game's point entirely. The "ugliest outcome for both characters" framing must be careful: ugly can read as the game being unkind, not as the game being honest.</div>
+      <div class="tradeoff-verdict">TRADE-OFF: Thesis fidelity vs. first-playthrough reception</div>
+    </div>
+
+    <div class="tradeoff-card">
+      <span class="tradeoff-icon">⚖️</span>
+      <div class="tradeoff-title">Lv.3 (Neutral)<br>The Cost of Genre Satisfaction</div>
+      <div class="tradeoff-body">The Eastern Zhou Strategist is tonally the most "correct" ending — efficient, precise, emotionless. But it risks reading as genre-satisfying in a way that blunts the tragedy. Horror players who have been seeking the competent villain will feel vindicated rather than implicated. Lv.3 is also the most likely outcome for a normal playthrough, which means it is the ending most players will carry away. Its emotional payload must be carefully calibrated.</div>
+      <div class="tradeoff-verdict">TRADE-OFF: Genre coherence vs. emotional impact depth</div>
+    </div>
+
+    <div class="tradeoff-card">
+      <span class="tradeoff-icon">🔑</span>
+      <div class="tradeoff-title">Lv.4–5 (Colorful)<br>The Cost of Requiring Depth</div>
+      <div class="tradeoff-body">The Digital Twin and The Architect of Clean Architecture are the most emotionally complete endings — but they require a level of engagement that most first-playthrough players will not achieve. GDD targets: no more than 15% of first-run players reach Colorful endings. This means the game's best content is structurally inaccessible on first play. This is philosophically correct (the endings reward the kind of scholarly engagement the Scholar embodies) but commercially risky.</div>
+      <div class="tradeoff-verdict">TRADE-OFF: Earned reward vs. content accessibility</div>
+    </div>
+
+    <div class="tradeoff-card">
+      <span class="tradeoff-icon">🪞</span>
+      <div class="tradeoff-title">Invisible Tracking<br>The Cost of No Feedback</div>
+      <div class="tradeoff-body">The BMS invisibility is the game's most philosophically important architectural decision. It is also the system most likely to produce player frustration on endings that feel arbitrary. Players who don't notice the Vanguard's behavioral changes (the only implicit feedback channel) will have no way to course-correct. The design commits to this as a feature: the game is not teaching the player to optimize, it is making the player's character visible to them. But "feature" and "frustration" coexist in this choice.</div>
+      <div class="tradeoff-verdict">TRADE-OFF: Authenticity vs. legibility</div>
+    </div>
+
+    <div class="tradeoff-card">
+      <span class="tradeoff-icon">🔀</span>
+      <div class="tradeoff-title">Independent World Scores<br>The Cost of Asymmetric Outcomes</div>
+      <div class="tradeoff-body">WA 85 / WB 15 produces a radically different experience than WA 50 / WB 50, even though both represent "similar total engagement." The split-score system is philosophically rich (specialists exist; the Scholar who understood the material world but not the spiritual one is a real character) but complicates the narrative coherence of any given run. Both Vanguards must feel like plausible outcomes of the same Scholar. Lv.5 WA with Lv.1 WB creates a Scholar who gave everything to one axis — is that legible as a character?</div>
+      <div class="tradeoff-verdict">TRADE-OFF: Specificity vs. narrative coherence</div>
+    </div>
+
+    <div class="tradeoff-card">
+      <span class="tradeoff-icon">⏳</span>
+      <div class="tradeoff-title">False Victory Timing<br>The Highest-Variance Risk</div>
+      <div class="tradeoff-body">The 25-second False Victory sequence is the most precisely-tuned element in the entire game. Too short: players don't relax. Too long: players become suspicious. The save prompt at T+6s is the fulcrum — players who save are recording their own relief, making the subsequent devastation more personal. But some players will not save, and some will immediately reload the save if the next content feels like it "broke" the game. The sequence cannot be patched post-launch without fundamentally altering the emotional architecture.</div>
+      <div class="tradeoff-verdict">TRADE-OFF: Peak emotional impact vs. irreducible variance</div>
+    </div>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 8: RISK REGISTER ══ -->
+<div class="section page" id="risks">
+  <div class="section-label">08 · Risk Register</div>
+  <h2 class="section-title">What Could Break the Spectrum</h2>
+
+  <div style="border: 1px solid var(--divider); margin: 2rem 0;">
+    <div class="risk-row">
+      <div class="risk-level high">HIGH</div>
+      <div class="risk-text"><strong>BMS events not surfacing through behavior.</strong> The most catastrophic failure mode: the scoring is running correctly, but the Vanguard's behavioral changes are too subtle for players to register. If playtesters describe only their own actions ("I chose path X") and not the Vanguard's response, the feedback loop is broken. The ending will feel assigned, not earned.</div>
+      <div class="risk-mitigation">→ demo-check gate</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-level high">HIGH</div>
+      <div class="risk-text"><strong>Lv.1 endings read as punishment, not reflection.</strong> Players who receive Shell-Shocked Conscript or Drowning Victim may attribute the outcome to "the game was too hard" rather than "I was not present enough." The framing must make the Scholar's absence the subject — not the player's skill failure.</div>
+      <div class="risk-mitigation">→ narrative-guardian review</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-level high">HIGH</div>
+      <div class="risk-text"><strong>False Victory spoiled.</strong> The entire affective architecture of the Child Phase depends on the T+9s tear arriving as a surprise. A single prominent review, playthrough video, or social media spoiler eliminates this for every player who encounters it afterward. The sequence has no fallback once spoiled.</div>
+      <div class="risk-mitigation">→ embargo + press briefing</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-level med">MED</div>
+      <div class="risk-text"><strong>Score distribution produces inaccessible spectrum bands.</strong> If the natural play of a careful first-run player produces Lv.2-3 outcomes regardless of engagement depth, the Colorful endings become effectively inaccessible without external guidance — undermining the replay promise. QA must verify all five bands are reachable via deliberate play.</div>
+      <div class="risk-mitigation">→ QA spectrum validation</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-level med">MED</div>
+      <div class="risk-text"><strong>Dark Voice Follow path scores too negative.</strong> If following the Dark Voice produces a Lv.1 ending for players who otherwise engaged deeply, the sabotage branch feels punitive rather than philosophically coherent. The −4/session penalty needs to be tuned against the actual depth of engagement in a typical Follow playthrough.</div>
+      <div class="risk-mitigation">→ playtest branch analysis</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-level med">MED</div>
+      <div class="risk-text"><strong>Asymmetric world scores break narrative coherence.</strong> A Scholar with WA 85 / WB 15 needs both a credible WA ending and a credible WB ending — but they represent opposite character portraits of the same Scholar. The Lv.5 WA / Lv.1 WB combination must be playtested specifically to confirm both endpoints feel like possible descriptions of the same person.</div>
+      <div class="risk-mitigation">→ narrative-guardian review</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-level low">LOW</div>
+      <div class="risk-text"><strong>Health hoarding penalty invisible to players.</strong> The −3/checkpoint for high health maintenance is the most subtle negative modifier in the system. Players who are simply cautious (not disengaged) may be penalized without understanding why. The signal must be legible through Vanguard behavior: a scholar who never takes damage should produce a slightly colder Vanguard in the Camel Phase.</div>
+      <div class="risk-mitigation">→ bms-architect tuning</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-level low">LOW</div>
+      <div class="risk-text"><strong>Child Phase BMS scenarios vs. GDD 10-scenario spec misalignment.</strong> The KENOMA Core skill describes five Child Phase scenarios (Emptiness through Transcendence) using a different taxonomy than the GDD's 10-scenario ending spectrum. Both reference different structural elements. These must be reconciled before content production begins — the five scenarios and the ten endings may represent different systems operating in sequence.</div>
+      <div class="risk-mitigation">→ narrative-guardian alignment</div>
+    </div>
+  </div>
+
+  <div class="callout" data-label="Structural Note on Taxonomy Conflict">
+    <p>The KENOMA Core skill's five Child Phase scenarios (Emptiness → Grief → Respect → Completion → Transcendence) appear to describe <em>what the surviving Vanguard does after the Scholar is gone</em> — an epilogue sequence. The GDD v5's ten endings describe <em>the Child Phase arena encounter itself</em>. These may be complementary systems: the arena encounter (one of ten) followed by the epilogue (one of five). If so, the epilogue scenario may be driven by a combined score of both world registers, producing a separate resolution layer. This needs explicit architectural confirmation.</p>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ SECTION 9: RECOMMENDATIONS ══ -->
+<div class="section page" id="recs">
+  <div class="section-label">09 · Recommendations</div>
+  <h2 class="section-title">What the Ending Architecture Needs to Succeed</h2>
+
+  <div class="rec-grid">
+    <div>
+      <div class="rec-num">01</div>
+      <div class="rec-title">Reconcile the Two Ending Taxonomies</div>
+      <div class="rec-body">The GDD v5 and KENOMA Core skill describe different ending systems. Before content production, establish definitively: are the five epilogue scenarios a separate system from the ten arena encounters? If yes, does the epilogue scenario selection use both world scores combined, or just the surviving world's score? This architectural question determines how much ending content needs to be produced.</div>
+      <div class="rec-example">Suggested architecture: 10 arena encounters (WA×5 or WB×5) + 5 epilogue scenarios = up to 50 combinations, but with most combinations using proximity scoring. Document the combination matrix.</div>
+    </div>
+
+    <div>
+      <div class="rec-num">02</div>
+      <div class="rec-title">Add Implicit Score Feedback Through Vanguard Stage Changes</div>
+      <div class="rec-body">The score is invisible but the Vanguard's stage transitions are not — they just need to be detectable. The transition from S2 to S3 (she begins anticipating rather than asking) is the game's primary implicit score indicator. This moment must be unmissable in playtesting. If players don't notice it, they have no feedback channel. Consider adding a camera composition that subtly highlights her behavioral shift at the key transition.</div>
+      <div class="rec-example">The moment she completes a puzzle subset independently while the Scholar works on the main sequence (Act I beat, late Camel) is the correct signal delivery point. This scene should be designed as the game's most carefully composed camera moment.</div>
+    </div>
+
+    <div>
+      <div class="rec-num">03</div>
+      <div class="rec-title">Design Lv.1–2 Endings for Recognition, Not Punishment</div>
+      <div class="rec-body">The Shell-Shocked Conscript and Drowning Victim are emotionally devastating in the right direction only if players understand that what they produced is a consequence of their absence, not the game being unfair. The framing must foreground the Vanguard's degradation as loss, not threat. She should look diminished in a way that produces pity — and that pity should redirect toward the Scholar. "What did I not give her?"</div>
+      <div class="rec-example">Consider: in Lv.1 endings, the Vanguard pauses for a longer-than-expected moment before beginning the arena encounter. Not hesitation — confusion. She doesn't quite know what she has become. This communicates the failure of the Scholar's presence without a word of dialogue.</div>
+    </div>
+
+    <div>
+      <div class="rec-num">04</div>
+      <div class="rec-title">Build the Fan Li Callback Into Every Ending</div>
+      <div class="rec-body">The opening VO has the Scholar misquote Fan Li's warning. Every ending should contain one auditory or visual callback to that misreading — not as an explicit callback ("you were wrong"), but as the correct interpretation made visible. The bow being put away. The hunting dog cooked. The specific image from the aphorism should be physically present in the arena in some form appropriate to the ending's register.</div>
+      <div class="rec-example">Lv.5 WA: The Architect physically picks up the Scholar's spring-pistol before the final strike. The bow is put away — in her hands. Lv.5 WB: The Author writes the final passage. The text of the aphorism appears, completed, in the closing image.</div>
+    </div>
+
+    <div>
+      <div class="rec-num">05</div>
+      <div class="rec-title">Treat the VanguardBehaviorModel as the True Ending Generator</div>
+      <div class="rec-body">The most emotionally impactful aspect of any ending is not the scripted sequence — it is the Vanguard's use of the player's actual behavioral data. The Digital Twin stopping one inch from the player's own unset trap is only devastating if the trap was actually there. Invest in the VanguardBehaviorModel referencing real session data in the Child Phase. Scripted behavior plus behavioral model creates endings that feel authored and personal simultaneously.</div>
+      <div class="rec-example">Each ending script should have [BEHAVIOR_MODEL_INSERT] tags at specific moments — points where the Vanguard references a specific observed behavior from the player's actual run. These inserts must be designed in advance as a library of "observed" behaviors that the scripted sequences can accommodate.</div>
+    </div>
+
+    <div>
+      <div class="rec-num">06</div>
+      <div class="rec-title">Make the Compass Silence a Designed Experience, Not a Consequence</div>
+      <div class="rec-body">The compass going silent at the Child Phase is listed as a consequence of the Guardian having no function. It should be designed as a deliberate, composed moment: the Scholar notices the silence before the tear opens. The game pauses for a beat — long enough for the player to register that something is missing. This silence should feel like a bell that has stopped, not a system that turned off. It should precede the tear, not coincide with it.</div>
+      <div class="rec-example">Suggested timing: compass silence at T+24s (per current spec). Add Scholar animation: they reach for the compass, look at it. It is still. They put it away. This takes 3 seconds. The tear opens at T+9s before this — the silence confirms what the tear began.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="rule" style="margin: 0;">
+
+<!-- ══ CLOSING ══ -->
+<div class="closing">
+  <span class="closing-glyph">孩童</span>
+  <p class="closing-quote">The ending is not a twist. It is a completion. The player who reaches the highest scenario built the thing that eliminated them.</p>
+  <div class="closing-attr">KENOMA Core Principle · Iron Law V (Design Truth)</div>
+  <br><br>
+  <p style="font-family:'Courier Prime',monospace;font-size:0.6rem;letter-spacing:0.2em;color:rgba(140,128,112,0.4);text-transform:uppercase;">
+    KENOMA · Behavioral Design Analysis · Ending Spectrum Architecture<br>
+    Studio Confidential · For Internal Production Use
+  </p>
+</div>
+
+</main>
+</body>
+</html>
