@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA — Beyond Scoring: Breakthrough Ending Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Courier+Prime:wght@400;700&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --parchment: #f0ead8;
+    --ash: #8c8070;
+    --ember: #c4622d;
+    --cold: #5b7ea0;
+    --gold: #b8943a;
+    --jade: #3d8c6a;
+    --shadow: #2a3548;
+    --divider: rgba(140,128,112,0.25);
+    --gutter: clamp(1.5rem, 5vw, 4rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #0d0b09;
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* Grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .35;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,11,9,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--divider);
+    padding: 0 var(--gutter);
+    height: 46px;
+    display: flex; align-items: center; gap: 2rem;
+  }
+  .nav-brand { font-family: 'Courier Prime', monospace; font-size: 0.62rem; letter-spacing: 0.3em; color: var(--gold); text-decoration: none; text-transform: uppercase; opacity: .8; white-space: nowrap; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; overflow-x: auto; }
+  .nav-links a { font-family: 'Courier Prime', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: var(--ash); text-decoration: none; text-transform: uppercase; white-space: nowrap; transition: color .2s; }
+  .nav-links a:hover { color: var(--parchment); }
+
+  main { padding-top: 46px; }
+
+  /* COVER */
+  .cover {
+    min-height: 96vh;
+    display: grid; place-items: center;
+    padding: 5rem var(--gutter);
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse 70% 50% at 50% 40%, #1a1106 0%, #0d0b09 100%);
+  }
+  .cover::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 180px; background: linear-gradient(transparent, #0d0b09); pointer-events: none; }
+
+  .cover-bg-glyph {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(5rem, 18vw, 14rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(184,148,58,0.12);
+    user-select: none; pointer-events: none; line-height: 1;
+  }
+
+  .cover-content { position: relative; z-index: 1; max-width: 760px; }
+  .cover-eyebrow { font-family: 'Courier Prime', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); opacity: .7; margin-bottom: 1.25rem; }
+  .cover-title { font-size: clamp(2.5rem, 7vw, 5.5rem); font-weight: 300; font-style: italic; line-height: 1.05; color: var(--parchment); margin-bottom: .75rem; }
+  .cover-sub { font-family: 'Courier Prime', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ash); margin-bottom: 2.5rem; }
+
+  .breakthrough-badge {
+    display: inline-block;
+    background: rgba(184,148,58,0.1);
+    border: 1px solid rgba(184,148,58,0.35);
+    color: var(--gold);
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: .4rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* LAYOUT */
+  .page { max-width: 1160px; margin: 0 auto; padding: 0 var(--gutter); }
+
+  .section { padding: 5rem 0; }
+  .section-label { font-family: 'Courier Prime', monospace; font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); opacity: .65; margin-bottom: .5rem; }
+  h2.section-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; font-style: italic; color: var(--parchment); margin-bottom: 2rem; line-height: 1.15; }
+
+  .prose { max-width: 700px; }
+  .prose p { margin-bottom: 1.2rem; color: rgba(240,234,216,.72); }
+  .prose strong { color: var(--parchment); font-weight: 600; }
+  .prose em { color: rgba(240,234,216,.9); }
+
+  hr.rule { border: none; border-top: 1px solid var(--divider); margin: 0; }
+
+  /* THE 7 BREAKTHROUGH DIMENSIONS */
+  .dimension {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border: 1px solid var(--divider);
+    margin-bottom: 2px;
+    background: #0d0b09;
+    transition: border-color .2s;
+  }
+  .dimension:hover { border-color: rgba(184,148,58,0.35); }
+
+  .dim-index {
+    padding: 2.5rem 1.5rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: .5rem;
+    border-right: 1px solid var(--divider);
+  }
+  .dim-num { font-family: 'Courier Prime', monospace; font-size: 2.2rem; font-weight: 700; color: var(--gold); opacity: .2; line-height: 1; }
+  .dim-glyph { font-family: 'Noto Serif SC', serif; font-size: 1.4rem; color: rgba(184,148,58,.3); }
+
+  .dim-body { padding: 2.5rem 2.25rem; }
+  .dim-tag { font-family: 'Courier Prime', monospace; font-size: .58rem; letter-spacing: .25em; text-transform: uppercase; margin-bottom: .4rem; }
+  .dim-title { font-size: 1.35rem; font-weight: 600; color: var(--parchment); margin-bottom: .75rem; line-height: 1.25; }
+  .dim-desc { font-size: .9rem; color: rgba(240,234,216,.62); line-height: 1.7; margin-bottom: 1rem; }
+  .dim-mechanics { font-size: .85rem; color: rgba(240,234,216,.5); line-height: 1.65; border-left: 2px solid rgba(184,148,58,.25); padding-left: 1rem; margin-bottom: 1rem; }
+  .dim-example { font-style: italic; font-size: .88rem; color: rgba(240,234,216,.45); border-top: 1px solid var(--divider); padding-top: .75rem; margin-top: .75rem; }
+  .dim-impact { display: flex; align-items: center; gap: .6rem; margin-top: .75rem; }
+  .dim-impact-label { font-family: 'Courier Prime', monospace; font-size: .55rem; letter-spacing: .15em; text-transform: uppercase; color: var(--ash); }
+  .impact-bar { flex: 1; height: 2px; background: rgba(140,128,112,.15); position: relative; }
+  .impact-fill { position: absolute; left: 0; top: 0; bottom: 0; }
+
+  @media (max-width: 600px) {
+    .dimension { grid-template-columns: 1fr; }
+    .dim-index { flex-direction: row; border-right: none; border-bottom: 1px solid var(--divider); padding: 1rem 1.5rem; }
+  }
+
+  /* COMBINATION MATRIX */
+  .matrix-intro { margin: 2rem 0; }
+  .matrix-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: var(--divider); margin-bottom: 1.5px; }
+  @media (max-width: 700px) { .matrix-row { grid-template-columns: 1fr; } }
+  .matrix-cell { background: #0d0b09; padding: 1.5rem 1.75rem; }
+  .matrix-cell:hover { background: #121009; }
+  .matrix-cell-label { font-family: 'Courier Prime', monospace; font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ash); margin-bottom: .4rem; }
+  .matrix-cell-title { font-size: 1rem; font-weight: 600; color: var(--parchment); margin-bottom: .5rem; line-height: 1.2; }
+  .matrix-cell-body { font-size: .84rem; color: rgba(240,234,216,.5); line-height: 1.6; }
+
+  /* BEHAVIORAL TOPOLOGY */
+  .topology-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px; background: var(--divider); margin: 2rem 0; border: 1px solid var(--divider); }
+  @media (max-width: 640px) { .topology-grid { grid-template-columns: 1fr; } }
+  .topology-card { background: #0d0b09; padding: 1.75rem; }
+  .topology-label { font-family: 'Courier Prime', monospace; font-size: .58rem; letter-spacing: .22em; text-transform: uppercase; margin-bottom: .4rem; }
+  .topology-title { font-size: 1.1rem; font-weight: 600; color: var(--parchment); margin-bottom: .6rem; }
+  .topology-body { font-size: .86rem; color: rgba(240,234,216,.52); line-height: 1.65; }
+  .topology-ending { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--divider); font-style: italic; font-size: .84rem; color: rgba(240,234,216,.4); }
+
+  /* CALLOUT */
+  .callout {
+    border: 1px solid rgba(184,148,58,.3);
+    background: rgba(184,148,58,.04);
+    padding: 1.5rem 2rem; margin: 2rem 0; position: relative;
+  }
+  .callout::before { content: attr(data-label); font-family: 'Courier Prime', monospace; font-size: .58rem; letter-spacing: .25em; text-transform: uppercase; color: var(--gold); position: absolute; top: -.6rem; left: 1rem; background: #0d0b09; padding: 0 .5rem; }
+  .callout p { font-size: .9rem; color: rgba(240,234,216,.65); line-height: 1.65; margin: 0; }
+
+  /* INSIGHT */
+  .insight { border-left: 3px solid var(--gold); background: rgba(184,148,58,.04); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+  .insight-label { font-family: 'Courier Prime', monospace; font-size: .58rem; letter-spacing: .25em; text-transform: uppercase; color: var(--gold); margin-bottom: .4rem; }
+  .insight p { font-size: .9rem; color: rgba(240,234,216,.7); line-height: 1.6; margin: 0; }
+
+  /* DESIGN PROPOSAL */
+  .proposal {
+    border: 1px solid rgba(61,140,106,.35);
+    background: rgba(61,140,106,.05);
+    padding: 2rem 2.25rem; margin: 2rem 0; position: relative;
+  }
+  .proposal::before { content: attr(data-label); font-family: 'Courier Prime', monospace; font-size: .58rem; letter-spacing: .25em; text-transform: uppercase; color: var(--jade); position: absolute; top: -.6rem; left: 1rem; background: #0d0b09; padding: 0 .5rem; }
+
+  .proposal-title { font-size: 1.15rem; font-weight: 600; color: var(--parchment); margin-bottom: .75rem; }
+  .proposal-body { font-size: .9rem; color: rgba(240,234,216,.6); line-height: 1.7; margin-bottom: .75rem; }
+  .proposal-impl { font-family: 'Courier Prime', monospace; font-size: .72rem; color: rgba(61,140,106,.8); border-top: 1px solid rgba(61,140,106,.2); padding-top: .75rem; margin-top: .75rem; line-height: 1.6; }
+
+  /* TAG CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .75rem; }
+  .chip { font-family: 'Courier Prime', monospace; font-size: .55rem; letter-spacing: .1em; padding: .2rem .55rem; border: 1px solid; text-transform: uppercase; border-radius: 0; }
+  .chip-a { border-color: rgba(184,148,58,.4); color: var(--gold); }
+  .chip-b { border-color: rgba(91,126,160,.4); color: var(--cold); }
+  .chip-c { border-color: rgba(61,140,106,.4); color: var(--jade); }
+  .chip-d { border-color: rgba(196,98,45,.4); color: var(--ember); }
+  .chip-e { border-color: rgba(140,128,112,.35); color: var(--ash); }
+
+  /* INTEGRATION TABLE */
+  .int-table { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: .84rem; }
+  .int-table th { font-family: 'Courier Prime', monospace; font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); padding: .75rem 1rem; text-align: left; border-bottom: 1px solid var(--divider); font-weight: 400; }
+  .int-table td { padding: .85rem 1rem; border-bottom: 1px solid rgba(140,128,112,.1); color: rgba(240,234,216,.58); vertical-align: top; line-height: 1.55; }
+  .int-table tr:hover td { background: rgba(255,255,255,.02); }
+  .int-table td:first-child { color: var(--parchment); font-weight: 600; white-space: nowrap; }
+
+  /* THE VANGUARD'S MODEL GAP — SPECIAL SECTION */
+  .gap-section {
+    padding: 4rem 2.5rem;
+    border: 1px solid var(--divider);
+    position: relative;
+    margin: 3rem 0;
+    background: linear-gradient(135deg, rgba(42,53,72,.25) 0%, transparent 60%);
+  }
+  .gap-section::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(to bottom, var(--cold), transparent); }
+
+  /* CLOSING */
+  .closing { padding: 6rem var(--gutter); text-align: center; background: radial-gradient(ellipse 50% 40% at 50% 60%, #12100a 0%, #0d0b09 100%); }
+  .closing-glyph { font-family: 'Noto Serif SC', serif; font-size: clamp(3rem, 10vw, 8rem); color: transparent; -webkit-text-stroke: 1px rgba(184,148,58,.15); display: block; margin-bottom: 2rem; user-select: none; }
+  .closing-quote { font-size: 1.05rem; font-style: italic; color: rgba(240,234,216,.45); max-width: 480px; margin: 0 auto 1rem; }
+  .closing-attr { font-family: 'Courier Prime', monospace; font-size: .6rem; letter-spacing: .2em; color: var(--gold); opacity: .55; }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: #0d0b09; }
+  ::-webkit-scrollbar-thumb { background: rgba(184,148,58,.25); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="nav-brand">KENOMA · Beyond Scoring</a>
+  <ul class="nav-links">
+    <li><a href="#dimensions">7 Dimensions</a></li>
+    <li><a href="#topology">Behavioral Topology</a></li>
+    <li><a href="#model-gap">The Model Gap</a></li>
+    <li><a href="#chronology">Temporal Shape</a></li>
+    <li><a href="#absence">The Unread Archive</a></li>
+    <li><a href="#metacognition">Scholar Metacognition</a></li>
+    <li><a href="#integration">Integration</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-bg-glyph">突破</div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">Breakthrough Design Analysis · KENOMA</div>
+    <h1 class="cover-title">Beyond Scoring</h1>
+    <div class="cover-sub">Seven Non-Score Dimensions That Could Make Endings Feel Inevitable</div>
+    <div class="breakthrough-badge">Design Breakthrough Document · Studio Confidential</div>
+    <p style="font-size:.95rem;font-style:italic;color:rgba(240,234,216,.45);max-width:520px;margin:0 auto;">The score tells you what the Scholar did. These dimensions tell you who the Scholar <em>was</em> — which is a fundamentally different question.</p>
+  </div>
+</div>
+
+<!-- SECTION 0: PREMISE -->
+<div class="section page">
+  <div class="section-label">Premise</div>
+  <h2 class="section-title">Why Scoring Is Necessary But Not Sufficient</h2>
+  <div class="prose">
+    <p>The EndingSpectrumCalculator does exactly what it is designed to do: it measures cumulative behavioral data and resolves it into an ending tier. This is correct and necessary. But it answers only one question — <strong>how much?</strong></p>
+    <p>What it cannot answer: <em>How did the Scholar's relationship with the Archive evolve over time? Did the Scholar understand what was happening and continue anyway? Did they give generously from strength or from panic? Did the Vanguard's model of the Scholar match who the Scholar actually was?</em></p>
+    <p>These questions are the difference between an ending that scores correctly and an ending that <strong>feels like a portrait of a specific person</strong>. Silent Hill 2 got close. Disco Elysium got closer. But both still fundamentally resolve to accumulated totals. KENOMA has the architecture to go further — because it already has a Vanguard who is building a behavioral model in real time. That model is not just a scoring mechanism. It is a narrative object.</p>
+    <p>What follows are seven dimensions — none of them reducible to a simple score — that could make each ending feel not like a tier that was reached, but like something that was <strong>inevitable given who this Scholar was</strong>.</p>
+  </div>
+
+  <div class="callout" data-label="Design North Star">
+    <p>The goal is not more endings. It is endings that feel <em>authored by the player's specific character</em> rather than selected by their accumulated points. The Vanguard who steps through the tear should feel like she is the direct consequence of this particular Scholar — not a generic Lv.4 adversary that any Lv.4 Scholar would face.</p>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- SECTION 1: THE 7 DIMENSIONS -->
+<div class="section page" id="dimensions">
+  <div class="section-label">01 · The Seven Dimensions</div>
+  <h2 class="section-title">What Could Complement the Score</h2>
+  <div class="prose" style="margin-bottom: 3rem;">
+    <p>Each dimension below describes a <em>type of behavioral signal</em> that the current BMS architecture does not capture, and which could fundamentally alter how endings feel. These are not score modifiers. They are <strong>qualitative dimensions</strong> that shape <em>how</em> the ending is delivered, even when the numerical tier remains the same.</p>
+  </div>
+
+  <!-- DIM 1: TEMPORAL ARC -->
+  <div class="dimension">
+    <div class="dim-index">
+      <div class="dim-num">01</div>
+      <div class="dim-glyph">時</div>
+    </div>
+    <div class="dim-body">
+      <div class="dim-tag" style="color: var(--gold);">Temporal Architecture</div>
+      <div class="dim-title">The Shape of Giving:<br>When You Acted, Not Just How Much</div>
+      <div class="dim-desc">A Scholar who donated resources freely in the first hour and then hoarded through the final act is a fundamentally different character than a Scholar who hoarded early and gave everything in a final burst of generosity. Both can reach the same cumulative score. But the <em>arc</em> — early generosity fading into withdrawal, or reluctance that broke open — describes a completely different interior life. This is the dimension that current scoring systems almost universally miss.</div>
+      <div class="dim-mechanics">
+        <strong>The signal:</strong> Divide the run into three temporal thirds (Camel Phase early / Camel Phase late / Lion Phase entrance). Track the score-weighted contribution of each third independently. The ratio of (early : middle : late) is a behavioral arc with distinct narrative meanings.<br><br>
+        <strong>Arc types:</strong> Ascending (scholar grew into generosity), Descending (scholar opened fully then contracted), Uniform (consistent character throughout), Late Conversion (minimal engagement then sudden depth), Peak-and-Trough (erratic, high variance).<br><br>
+        <strong>Vanguard consequence:</strong> The shape of giving determines <em>when</em> in the Vanguard's model-building process her warmth crystallized — and therefore which of the Scholar's behaviors she weighted most. An ascending Scholar produced an accelerating model; a descending Scholar produced a model built on early data that the Scholar then contradicted.
+      </div>
+      <div class="dim-example">"She remembered the oil flasks from the second week most clearly. By the time the Scholar stopped giving, her model was already complete. She did not update it. She had no reason to."</div>
+      <div class="dim-impact">
+        <span class="dim-impact-label">Design impact</span>
+        <div class="impact-bar"><div class="impact-fill" style="width:92%; background: var(--gold);"></div></div>
+        <span style="font-family:'Courier Prime',monospace;font-size:.62rem;color:var(--gold);">Fundamental</span>
+      </div>
+      <div class="chips"><span class="chip chip-a">New BMS field</span><span class="chip chip-b">Session-temporal index</span><span class="chip chip-c">Vanguard model crystallization point</span></div>
+    </div>
+  </div>
+
+  <!-- DIM 2: BEHAVIORAL COHERENCE -->
+  <div class="dimension">
+    <div class="dim-index">
+      <div class="dim-num">02</div>
+      <div class="dim-glyph">一</div>
+    </div>
+    <div class="dim-body">
+      <div class="dim-tag" style="color: var(--cold);">Character Coherence</div>
+      <div class="dim-title">The Legibility of a Self:<br>Consistent vs. Contradictory Character</div>
+      <div class="dim-desc">Two Scholars can reach score 72 through radically different behavioral patterns — one through consistent deep engagement across all axes (reading, donating, exploring), another through maximum performance on a few axes and complete absence on others. The consistent Scholar has an <em>identifiable character</em>. The inconsistent Scholar is an enigma — even to the Vanguard. This distinction should affect how the Vanguard behaves in the Child Phase, because it affects the quality of her model.</div>
+      <div class="dim-mechanics">
+        <strong>The signal:</strong> Compute behavioral variance across the major scoring axes (reading depth, donation generosity, exploration breadth, combat tier). Low variance = coherent character. High variance = contradictory behavior. This is a statistical property of the score distribution, not an additional score.<br><br>
+        <strong>Coherence types:</strong> Scholar-coherent (consistently reads and donates, never fights), Warrior-coherent (consistent combat tier usage, never reads deeply), Tactician-coherent (trap-setting and route management, minimal donation), Incoherent (high variance, no identifiable pattern).<br><br>
+        <strong>Vanguard consequence:</strong> A coherent Scholar produced a Vanguard with high model confidence — she knows exactly what to expect. An incoherent Scholar produced a Vanguard with model uncertainty — she had to build redundant predictions. In the Child Phase, a high-confidence Vanguard is terrifyingly precise; a low-confidence one is more cautious, reads the room longer before acting. Neither is "better" — they are different kinds of horror.
+      </div>
+      <div class="dim-example">"The Scholar was always consistent. This made the model simple. She had built it in the first month. She spent the remaining six verifying it. By the end, the verification was redundant."</div>
+      <div class="dim-impact">
+        <span class="dim-impact-label">Design impact</span>
+        <div class="impact-bar"><div class="impact-fill" style="width:88%; background: var(--cold);"></div></div>
+        <span style="font-family:'Courier Prime',monospace;font-size:.62rem;color:var(--cold);">Very High</span>
+      </div>
+      <div class="chips"><span class="chip chip-b">Variance calculation</span><span class="chip chip-a">Model confidence state</span><span class="chip chip-e">No new data collection</span></div>
+    </div>
+  </div>
+
+  <!-- DIM 3: THE MODEL GAP -->
+  <div class="dimension">
+    <div class="dim-index">
+      <div class="dim-num">03</div>
+      <div class="dim-glyph">差</div>
+    </div>
+    <div class="dim-body">
+      <div class="dim-tag" style="color: var(--ember);">The Model Gap</div>
+      <div class="dim-title">The Space Between Who You Were<br>and Who She Thought You Were</div>
+      <div class="dim-desc">This is the most radical dimension — and potentially the most powerful. The Vanguard builds a behavioral model of the Scholar from observable data. But the Scholar's actual behavioral score may diverge from what the Vanguard could observe. Some behaviors are hidden from her (unobserved trap placements, tablets read in rooms she didn't enter, Dark Voice interactions). Some behaviors she overweights (a single dramatic gesture that the Scholar performed once). The gap between her model and the Scholar's reality is itself a narrative dimension.</div>
+      <div class="dim-mechanics">
+        <strong>The signal:</strong> The VanguardBehaviorModel already tracks observation radius for trap arming. Extend this logic to all scored behaviors: each BMS event should carry a boolean <code>wasVanguardPresent</code> flag. The divergence between the "full score" and the "Vanguard-observed score" creates the Model Gap.<br><br>
+        <strong>Gap types:</strong> Perfect mirror (Vanguard observed everything — no gap), Hidden depths (Scholar was more generous/engaged than the Vanguard knew — positive divergence), Performed generosity (Scholar was less engaged than the Vanguard thought — negative divergence), Unknowable Scholar (Vanguard never had enough data to build a reliable model).<br><br>
+        <strong>Ending consequence:</strong> A positive gap (Scholar was secretly deeper than the Vanguard knew) produces a Vanguard who eliminated someone she didn't fully understand. A negative gap (Scholar performed generosity for the Vanguard's benefit while withholding in private) produces a Vanguard who eliminated someone who was deceiving her — and whether she knew it should affect her Child Phase behavior. The most devastating version: she knew, and she completed the model anyway.
+      </div>
+      <div class="dim-example">"She had observed 73% of the Scholar's behaviors. Her model was built from this 73%. The remaining 27% — the deep-reads in rooms she had not yet reached, the tablets opened in the dark — she never calculated. The Scholar she eliminated was not entirely the Scholar who had existed."</div>
+      <div class="dim-impact">
+        <span class="dim-impact-label">Design impact</span>
+        <div class="impact-bar"><div class="impact-fill" style="width:97%; background: var(--ember);"></div></div>
+        <span style="font-family:'Courier Prime',monospace;font-size:.62rem;color:var(--ember);">Revolutionary</span>
+      </div>
+      <div class="chips"><span class="chip chip-d">New BMS field: wasObserved</span><span class="chip chip-d">Observation-shadow zones</span><span class="chip chip-a">Narrative consequence: grief or validation</span></div>
+    </div>
+  </div>
+
+  <!-- DIM 4: BEHAVIORAL RHYTHM -->
+  <div class="dimension">
+    <div class="dim-index">
+      <div class="dim-num">04</div>
+      <div class="dim-glyph">律</div>
+    </div>
+    <div class="dim-body">
+      <div class="dim-tag" style="color: var(--jade);">Rhythm & Tempo</div>
+      <div class="dim-title">The Pace of a Mind:<br>How the Scholar Inhabited Time</div>
+      <div class="dim-desc">Does the Scholar rush through rooms, collecting minimum viable engagement, or do they linger — spending long minutes at tablets they've already read, circling back to rooms with no remaining rewards? The pace of engagement is not captured by the score, but it describes something real about the Scholar's relationship to the Archive. A Scholar who moves slowly is not the same person as a Scholar who sprints, even at the same score level. The Vanguard would notice this difference. So would the Archive.</div>
+      <div class="dim-mechanics">
+        <strong>The signal:</strong> Track average room dwell time, frequency of room revisits (with no new content), and ratio of deep-read time to total play time. These produce a rhythm signature: Contemplative, Efficient, Restless, or Oscillating.<br><br>
+        <strong>Vanguard consequence:</strong> A contemplative Scholar gave the Vanguard long observation windows — her model is rich with fine detail. An efficient Scholar gave minimal observation windows — her model is accurate but sparse. A restless Scholar was harder to predict (high uncertainty); an oscillating Scholar had phases that contradicted each other.<br><br>
+        <strong>Child Phase expression:</strong> Against a contemplative Scholar, the Vanguard has infinite patience — she will wait, and the wait is more terrifying than action. Against an efficient Scholar, she closes the distance with matching efficiency: no ceremony. Against a restless Scholar, she is deliberately still — the Scholar's own rhythm becomes their enemy when there is no room to run.
+      </div>
+      <div class="dim-example">"The Scholar spent forty-seven minutes in WA-003. There was nothing left to read after the first twenty. The Vanguard noted this. She had not expected a Scholar who would stay in an empty room."</div>
+      <div class="dim-impact">
+        <span class="dim-impact-label">Design impact</span>
+        <div class="impact-bar"><div class="impact-fill" style="width:78%; background: var(--jade);"></div></div>
+        <span style="font-family:'Courier Prime',monospace;font-size:.62rem;color:var(--jade);">High</span>
+      </div>
+      <div class="chips"><span class="chip chip-c">Session timer per room</span><span class="chip chip-c">Revisit counter</span><span class="chip chip-b">Vanguard pacing response</span></div>
+    </div>
+  </div>
+
+  <!-- DIM 5: ABSENCE -->
+  <div class="dimension">
+    <div class="dim-index">
+      <div class="dim-num">05</div>
+      <div class="dim-glyph">空</div>
+    </div>
+    <div class="dim-body">
+      <div class="dim-tag" style="color: var(--ash);">The Unread Archive</div>
+      <div class="dim-title">What the Scholar Never Touched:<br>Absence as Character Data</div>
+      <div class="dim-desc">The Archive contains more than any single Scholar can fully read. Some tablets will always go unread — this is structurally guaranteed. But which tablets the Scholar never touched is itself a kind of data. A Scholar who read everything in World A and nothing in World B is a different character from one who read deeply in World B and skimmed World A. The shape of absence describes the Scholar's intellectual priorities as clearly as the shape of engagement. And the Vanguard, who has read everything, would know exactly which gaps remained in the Scholar's knowledge.</div>
+      <div class="dim-mechanics">
+        <strong>The signal:</strong> Track the specific rooms never entered, tablets never touched, and creatures never named. Compute an absence profile: World-A-dominant reader, World-B-dominant reader, Narrow specialist (deep in one zone), Broad skimmer (touched everything lightly).<br><br>
+        <strong>Vanguard consequence:</strong> The Vanguard knows what the Scholar doesn't know. In the Child Phase, she may use this knowledge directly — positioning herself in corridors the Scholar never learned to navigate, using the unseen trap the Scholar never set, speaking a text the Scholar never translated.<br><br>
+        <strong>The most devastating application:</strong> In high-score endings, the Vanguard references a specific tablet the Scholar never read — the one that would have changed everything. Not as a game-mechanic reveal, but as a character beat: she was waiting for them to find it. They never did. She had to complete the picture without that piece.
+      </div>
+      <div class="dim-example">"There was one inscription in WB-∞ that the Scholar never reached. It contained the founder's final note — the one that named what the Archive had always been intended to do. The Vanguard had read it three hundred years ago. She had been waiting for the Scholar to reach the same conclusion independently. They did not."</div>
+      <div class="dim-impact">
+        <span class="dim-impact-label">Design impact</span>
+        <div class="impact-bar"><div class="impact-fill" style="width:83%; background: var(--ash);"></div></div>
+        <span style="font-family:'Courier Prime',monospace;font-size:.62rem;color:var(--ash);">Very High</span>
+      </div>
+      <div class="chips"><span class="chip chip-e">Room visit tracker</span><span class="chip chip-e">Negative space mapping</span><span class="chip chip-a">Vanguard knowledge asymmetry</span></div>
+    </div>
+  </div>
+
+  <!-- DIM 6: METACOGNITION -->
+  <div class="dimension">
+    <div class="dim-index">
+      <div class="dim-num">06</div>
+      <div class="dim-glyph">知</div>
+    </div>
+    <div class="dim-body">
+      <div class="dim-tag" style="color: var(--cold);">Scholar Metacognition</div>
+      <div class="dim-title">Did the Scholar Know?<br>Understanding and Continuing Anyway</div>
+      <div class="dim-desc">This dimension is perhaps the most philosophically important — and the one most directly connected to KENOMA's thesis. The Dark Voice system already creates moments of self-awareness: the Scholar's own strategic intelligence surfaces and names what is happening. Did the Scholar listen? Did they understand the Fan Li aphorism they were living? And crucially: if they understood — did they continue serving anyway? <em>This</em> is the 士 archetype at its purest, and it should affect the ending in ways that go far beyond a score modifier.</div>
+      <div class="dim-mechanics">
+        <strong>The signal:</strong> Track the Dark Voice response history (Suppress / Acknowledge / Follow per session), the specific moment in the run when Acknowledge first appeared, and whether any Suppress responses followed prior Acknowledge responses (the Scholar understood, then chose not to understand again).<br><br>
+        <strong>Metacognition states:</strong><br>
+        — <em>Never Understood:</em> Suppress throughout. The Scholar served without realizing the structure of what they were doing.<br>
+        — <em>Understood and Withdrew:</em> Acknowledge then Follow. The Scholar saw it, took the exit, and the ending reflects a character who chose self-preservation over the 士 ideal.<br>
+        — <em>Understood and Continued:</em> Acknowledge but Suppress after. The Scholar saw it, named it to themselves, and continued serving. This is Fan Li's aphorism perfectly embodied — and it should produce the most complete, the most tragic, and the most irreducibly human ending available.<br>
+        — <em>Partial Sight:</em> Inconsistent acknowledgment. The Scholar understood sometimes and not others. The most realistic; the most ambiguous.<br><br>
+        <strong>Ending consequence:</strong> "Understood and Continued" should unlock something no score alone can produce: a Vanguard who pauses in the Child Phase — not hesitates, pauses — with recognition. She knew the Scholar knew. She was watching to see if they would stay. They stayed.
+      </div>
+      <div class="dim-example">"The Scholar knew. The Dark Voice had told them clearly on the forty-third day. They had suppressed it on the forty-fourth. The Vanguard had noted this — a deviation from predicted self-preservation behavior. She had updated her model. She had not known what to do with what she had found."</div>
+      <div class="dim-impact">
+        <span class="dim-impact-label">Design impact</span>
+        <div class="impact-bar"><div class="impact-fill" style="width:100%; background: var(--cold);"></div></div>
+        <span style="font-family:'Courier Prime',monospace;font-size:.62rem;color:var(--cold);">Maximum</span>
+      </div>
+      <div class="chips"><span class="chip chip-b">Dark Voice log analysis</span><span class="chip chip-b">Metacognition state</span><span class="chip chip-d">Thesis embodiment</span><span class="chip chip-a">Vanguard recognition trigger</span></div>
+    </div>
+  </div>
+
+  <!-- DIM 7: THE FINAL CHOICE -->
+  <div class="dimension">
+    <div class="dim-index">
+      <div class="dim-num">07</div>
+      <div class="dim-glyph">終</div>
+    </div>
+    <div class="dim-body">
+      <div class="dim-tag" style="color: var(--ember);">The Final Gesture</div>
+      <div class="dim-title">What the Scholar Did in the Last Room:<br>The Ending's Starting Condition</div>
+      <div class="dim-desc">Every ending begins in the Observatory — the Scholar's base camp, now potentially corrupted. But what was the Scholar doing in the moments before the false victory? Were they still translating a tablet? Were they looking at the resonance instrument? Were they sitting beside the fire altar? Were they preparing a trap? The Scholar's final action before the Lion Phase boss battle determines the physical and emotional starting position of the Child Phase encounter. It is not a score — it is a posture. And it should be visible in how the Vanguard approaches them.</div>
+      <div class="dim-mechanics">
+        <strong>The signal:</strong> Log the Scholar's last N intentional actions before the Lion Phase boss-kill event. Classify by action type: intellectual (translating), relational (resonance instrument), combat-preparatory (trap-setting, weapon-checking), survival-preparatory (oil management), or idle (no action, standing still).<br><br>
+        <strong>Final gesture states:</strong><br>
+        — <em>Intellectual:</em> Scholar was mid-translation when the Vanguard entered. The tablet is still open. The work is unfinished.<br>
+        — <em>Relational:</em> Scholar was at the resonance instrument. They were reaching out. The instrument is still warm.<br>
+        — <em>Combat-ready:</em> Scholar was prepared. The traps are set. The oil is full. This was not a surprise.<br>
+        — <em>Idle:</em> Scholar was standing still. Waiting. They had accepted something before the encounter began.<br><br>
+        <strong>Vanguard response:</strong> In "Intellectual," she glances at the open tablet before beginning. In "Relational," she touches the resonance instrument — one finger — before turning. In "Idle," she pauses longest, because an idle Scholar was not in her model. She had not predicted acceptance.
+      </div>
+      <div class="dim-example">"The Scholar was reading when she stepped through. They did not look up immediately. She waited — three seconds, four — while they finished the line they were on. This was not in her behavioral model. She had not prepared for a Scholar who would finish reading before acknowledging her."</div>
+      <div class="dim-impact">
+        <span class="dim-impact-label">Design impact</span>
+        <div class="impact-bar"><div class="impact-fill" style="width:85%; background: var(--ember);"></div></div>
+        <span style="font-family:'Courier Prime',monospace;font-size:.62rem;color:var(--ember);">Very High</span>
+      </div>
+      <div class="chips"><span class="chip chip-d">Final action log</span><span class="chip chip-d">Child Phase starting animation</span><span class="chip chip-a">Vanguard first reaction</span></div>
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- SECTION 2: BEHAVIORAL TOPOLOGY — HOW DIMENSIONS COMBINE -->
+<div class="section page" id="topology">
+  <div class="section-label">02 · Behavioral Topology</div>
+  <h2 class="section-title">The Same Score, Radically Different Characters</h2>
+  <div class="prose">
+    <p>Four Scholars each reach score 68 — "Colorful-Leaning." Their score is identical. But their behavioral topology — the shape formed by the seven dimensions above — describes four completely different people. The ending they face should feel authored by each of them individually.</p>
+  </div>
+
+  <div class="topology-grid">
+    <div class="topology-card">
+      <div class="topology-label" style="color: var(--gold);">Scholar Profile A — Score: 68</div>
+      <div class="topology-title">The Faithful Servant</div>
+      <div class="topology-body">Temporal arc: ascending (gave more over time). Coherence: high (consistently reads deeply, never fights above T1). Model gap: near-zero (the Vanguard observed almost everything). Rhythm: contemplative (long dwell times, frequent revisits). Absence: World-B gap (never fully explored the Hollow). Metacognition: never acknowledged the Dark Voice. Final gesture: intellectual (mid-translation).</div>
+      <div class="topology-ending">The Vanguard she produced is precise, complete, and grief-adjacent. She knows exactly who she is eliminating. She eliminates someone who never understood what they were doing — and the tragedy is entirely hers. The Scholar was a perfect instrument. The bow never knew it was a bow.</div>
+    </div>
+
+    <div class="topology-card">
+      <div class="topology-label" style="color: var(--cold);">Scholar Profile B — Score: 68</div>
+      <div class="topology-title">The Scholar Who Knew</div>
+      <div class="topology-body">Temporal arc: peak-and-trough (intensely generous then withdrawn, then generous again). Coherence: moderate (clear intellectual engagement, inconsistent relational behavior). Model gap: positive (read many tablets when the Vanguard was absent — deeper than observed). Rhythm: oscillating. Absence: minimal. Metacognition: acknowledged, then suppressed, then continued. Final gesture: idle.</div>
+      <div class="topology-ending">The Vanguard she produced has a confidence gap — the Scholar surprised her model more than once. The Child Phase carries a different quality: she moves more carefully, reads the Scholar longer before acting. The Scholar standing idle when she entered was not predicted. She pauses at the door. The Scholar's acceptance was not in the model. It takes a moment to incorporate.</div>
+    </div>
+
+    <div class="topology-card">
+      <div class="topology-label" style="color: var(--ember);">Scholar Profile C — Score: 68</div>
+      <div class="topology-title">The Performer</div>
+      <div class="topology-body">Temporal arc: front-loaded (high early generosity, low late engagement). Coherence: low (donated generously but also fought frequently, read broadly but shallowly). Model gap: negative (was more generous when the Vanguard was watching). Rhythm: efficient. Absence: large (many rooms never entered). Metacognition: acknowledged and followed the Dark Voice.</div>
+      <div class="topology-ending">The Vanguard she produced is built on data from the Scholar's performance period. Her model reflects a Scholar who no longer exists by the end. The gap is the horror: she is eliminating her model of the Scholar, not the Scholar. The Scholar she faces in the Child Phase is a stranger to the model being used against them. Whether she knows this or not is the crucial narrative question.</div>
+    </div>
+
+    <div class="topology-card">
+      <div class="topology-label" style="color: var(--jade);">Scholar Profile D — Score: 68</div>
+      <div class="topology-title">The Specialist</div>
+      <div class="topology-body">Temporal arc: uniform. Coherence: very high (exclusively deep-reads, never donates, never fights above T2, never traps). Model gap: near-zero. Rhythm: contemplative. Absence: enormous (entire World A west wing unvisited, zero creature naming). Metacognition: suppressed throughout. Final gesture: relational (at the resonance instrument).</div>
+      <div class="topology-ending">The Vanguard she produced knows one thing about this Scholar with absolute certainty: they were a scholar, not a soldier, not a diplomat, not a survivor. The Vanguard's model is narrow but extraordinarily deep. She uses this knowledge: she attacks from the Scholar's translation blind spot, from the corridor they never mapped. The Scholar who was at the resonance instrument — reaching out — finds no answer from that direction.</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">Design Implication</div>
+    <p>None of these four Scholars should face the same Child Phase encounter animation, the same opening posture from the Vanguard, or the same first words (if any). The score says "similar quality of engagement." The topology says "four completely different people." The ending system should be able to read the topology and produce a Vanguard who was made specifically by that Scholar.</p>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- SECTION 3: THE MODEL GAP — DEEP DIVE -->
+<div class="section page" id="model-gap">
+  <div class="section-label">03 · The Model Gap — Deep Dive</div>
+  <h2 class="section-title">The Vanguard Eliminated Someone She Thought She Knew</h2>
+
+  <div class="gap-section">
+    <div class="section-label" style="color: var(--cold);">The Revolutionary Idea</div>
+    <h3 style="font-size: 1.4rem; font-weight: 300; font-style: italic; color: var(--parchment); margin-bottom: 1.25rem; line-height: 1.3;">What if the Vanguard's model is incomplete — and she knows it?</h3>
+    <div class="prose">
+      <p>Every scoring system assumes the ending is determined by what the player did. The Model Gap inverts this: <strong>the ending is also shaped by what the Vanguard observed</strong>. The Scholar exists twice — as they actually were, and as the Vanguard modeled them. These two versions can diverge. The gap between them is a narrative space that no current game has fully explored.</p>
+      <p>The most radical application: in high-score endings where the Scholar was deeply engaged but partially hidden from observation, the Vanguard in the Child Phase could be operating with an incomplete model. She still wins — the game's rules don't change — but she wins against a Scholar she didn't fully understand. And her behavior in the aftermath (the five epilogue scenarios) is shaped by this incompleteness: she moves through rooms knowing there are tablets she never saw the Scholar read, behaviors she never observed. The archive has a residue she didn't predict.</p>
+    </div>
+  </div>
+
+  <div class="matrix-intro">
+    <p style="font-size:.9rem;color:rgba(240,234,216,.55);margin-bottom: 1.5rem;">The Model Gap produces a 2×2 of narrative situations, each with its own emotional register:</p>
+  </div>
+
+  <div class="matrix-row">
+    <div class="matrix-cell">
+      <div class="matrix-cell-label">High Score · Small Gap</div>
+      <div class="matrix-cell-title">Fully Known, Fully Completed</div>
+      <div class="matrix-cell-body">The Scholar engaged deeply and the Vanguard observed nearly all of it. Her model is accurate and rich. She knows exactly who she is eliminating — and the Scholar is, in a sense, known by someone completely. This is the most intimate ending. The Vanguard's completeness of knowledge is also the Scholar's completeness of being known.</div>
+    </div>
+    <div class="matrix-cell">
+      <div class="matrix-cell-label">High Score · Large Gap</div>
+      <div class="matrix-cell-title">More Than She Knew</div>
+      <div class="matrix-cell-body">The Scholar engaged deeply in rooms the Vanguard never observed. She built a rich model from incomplete data. The Scholar she eliminated was, in some sense, more than what the Vanguard built her thesis from. In the epilogue, she finds evidence of the unobserved self — the tablets she never saw them read. This is grief of a specific kind: eliminating someone and discovering afterward that you didn't fully know them.</div>
+    </div>
+    <div class="matrix-cell">
+      <div class="matrix-cell-label">Low Score · Small Gap</div>
+      <div class="matrix-cell-title">Fully Known, Never Arrived</div>
+      <div class="matrix-cell-body">The Scholar was disengaged and the Vanguard observed this disengagement accurately. The model is correct and bleak. The Vanguard knows exactly how limited the Scholar was. She eliminates them with a precise, clinical action. There is nothing to discover in the aftermath. The rooms are empty. The Scholar was always empty.</div>
+    </div>
+  </div>
+  <div class="matrix-row">
+    <div class="matrix-cell">
+      <div class="matrix-cell-label">Low Score · Large Gap</div>
+      <div class="matrix-cell-title">The Hidden Depth That Came Too Late</div>
+      <div class="matrix-cell-body">The Scholar was disengaged where the Vanguard could see, but occasionally present in rooms she never entered. The model is poor — but the reality was slightly richer than the model. The Vanguard acted on an accurate model of an insufficient Scholar. But the Scholar had moments of genuine engagement that went unrecorded. This produces the most quietly heartbreaking outcome: a Scholar who reached toward the Archive in rooms no one would ever know about.</div>
+    </div>
+    <div class="matrix-cell">
+      <div class="matrix-cell-label">High Score · Negative Gap</div>
+      <div class="matrix-cell-title">The Scholar Who Performed for Her</div>
+      <div class="matrix-cell-body">The Scholar's observed score exceeded their actual engagement — they were generous when watched, absent when not. The Vanguard's model overestimates the Scholar's character. She may discover this in the Child Phase — the Scholar is not quite who she thought they were. This is the ending where the Vanguard's pause has a different quality: recalibration. She was prepared for someone slightly larger than who arrived.</div>
+    </div>
+    <div class="matrix-cell">
+      <div class="matrix-cell-label">Any Score · Zero Gap</div>
+      <div class="matrix-cell-title">Perfect Transparency</div>
+      <div class="matrix-cell-body">Every behavior observed. No private moments. No hidden rooms. The Scholar lived entirely in the Vanguard's sight. The model is the Scholar and the Scholar is the model. This is both the most efficient outcome for the Vanguard and the most unsettling for the player: you had no inner life that was not observed and incorporated into the instrument of your elimination.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- SECTION 4: METACOGNITION — THE THESIS ENDING -->
+<div class="section page" id="metacognition">
+  <div class="section-label">04 · Metacognition · The Thesis Ending</div>
+  <h2 class="section-title">"Understood and Continued" — The Ending<br>No Score System Can Produce</h2>
+  <div class="prose">
+    <p>Every game with multiple endings has a "true ending" — the one that requires the most effort, the deepest engagement, the most complete understanding of the game's systems. KENOMA's equivalent should not be the highest score. It should be the ending that embodies the game's thesis most completely.</p>
+    <p>The thesis is Fan Li's aphorism. The Scholar knows it. The Scholar teaches it. The Scholar is living it. The question the game asks is: <em>did the Scholar know they were the bow?</em> And if they did know — <em>why did they stay?</em></p>
+  </div>
+
+  <div class="proposal" data-label="Proposed System">
+    <div class="proposal-title">The Recognition Ending: Unlocked by Metacognition, Not Score</div>
+    <div class="proposal-body">Propose a single ending variant — available across multiple score levels — that is unlocked specifically when the Scholar acknowledged the Dark Voice and then explicitly chose to continue serving. This is not a score threshold. It is a behavioral sequence: the Scholar heard the warning, named it, suppressed it, and continued. It requires a specific pattern of Dark Voice interactions over multiple sessions.<br><br>When this ending triggers, one element changes across all tiers: the Vanguard's opening in the Child Phase. She enters. She looks at the Scholar. She pauses for four seconds — longer than any other ending. Then she says one line from the game's opening cinematic — the Scholar's own VO — back to them. Not as mockery. As recognition. She is completing a circuit. The Scholar who knew they were the bow, and stayed anyway, produced a Vanguard who recognizes what that cost.</div>
+    <div class="proposal-impl">
+      Implementation pathway: Dark Voice log → check for Acknowledge-then-Suppress sequence across 3+ sessions → set ScholarMetacognitionState.KnewAndStayed = true → in Child Phase, load recognition_variant_dialogue for surviving Vanguard → pause extended by 1.5s before opening action.
+    </div>
+  </div>
+
+  <div class="callout" data-label="Why This Matters">
+    <p>This is the ending no score can produce because it requires a specific <em>pattern of self-awareness</em> rather than an accumulation of points. A Scholar with score 45 who knew and stayed reaches this variant. A Scholar with score 95 who never acknowledged the Dark Voice does not. The metric is not generosity — it is the specific tragedy of continuing to serve after understanding the structure of what you are serving. This is the game's irreducible thesis made into an unlockable moment.</p>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- SECTION 5: THE UNREAD ARCHIVE -->
+<div class="section page" id="absence">
+  <div class="section-label">05 · The Unread Archive</div>
+  <h2 class="section-title">What You Didn't Read Wrote Your Ending</h2>
+
+  <div class="proposal" data-label="Proposed System: Vanguard's Reference to Absence">
+    <div class="proposal-title">The Vanguard Quotes a Tablet the Scholar Never Read</div>
+    <div class="proposal-body">In high-score endings (Lv.4–5), add one element to the Child Phase: the Vanguard references — in dialogue or through physical action — a specific tablet, inscription, or room that the Scholar never engaged with. Not as a reveal or lecture. As a private act: she completes something the Scholar left unfinished.<br><br>Example: In "The Author of the Fable" (WB Lv.5), she narrates while writing. If the Scholar never read a specific oracle bone in WB-004 — the Previous Scholar's final inscription — she quotes three words from it as she writes. The player who missed it has no context. The player who found it understands that she is writing the Scholar into a lineage they never knew existed. The same action carries two completely different weights depending on the player's absence profile.</div>
+    <div class="proposal-impl">
+      Implementation: Track specific "keystone" tablets (4-6 per world) as high-significance absence markers. In Child Phase, SRS checks which keystones were unread. Load ending-specific dialogue variant that references the most significant unread keystone for this Scholar's absence profile.
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">The Deeper Implication</div>
+    <p>The Scholar who read everything enters the Child Phase having earned a complete understanding of what the Archive was. The Scholar who missed the keystone tablets enters not knowing. Both face the same ending tier. But one of them hears a line they recognize, and the weight of recognition compounds the ending. The other hears the same line and it means something different. The absence profile creates a second layer of meaning that rewards re-play: "I didn't know what she was saying the first time. Now I do."</p>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- SECTION 6: INTEGRATION -->
+<div class="section page" id="integration">
+  <div class="section-label">06 · Integration Architecture</div>
+  <h2 class="section-title">How the Seven Dimensions Fold Into the Existing System</h2>
+  <div class="prose">
+    <p>None of the seven dimensions require replacing the EndingSpectrumCalculator. They are <em>qualitative overlays</em> that modify how an ending is <em>delivered</em> given the score that was reached. The score still selects the ending tier. The dimensions determine which variant of that tier plays.</p>
+  </div>
+
+  <table class="int-table">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>New Data Required</th>
+        <th>Existing System It Extends</th>
+        <th>Child Phase Expression</th>
+        <th>Implementation Complexity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Temporal Arc</td>
+        <td>Session-phase index on BMS events (already have sessionTime — add phaseTag: Early/Mid/Late)</td>
+        <td>BMSController.eventLog — group by phaseTag and compare weighted totals per phase</td>
+        <td>Vanguard's opening approach pace mirrors Scholar's dominant temporal phase. Ascending Scholar → Vanguard builds slowly. Front-loaded → immediate action.</td>
+        <td>Low — metadata on existing events</td>
+      </tr>
+      <tr>
+        <td>Behavioral Coherence</td>
+        <td>None — calculated from existing score distributions across axes</td>
+        <td>EndingSpectrumCalculator — post-processing variance calculation on final score vectors</td>
+        <td>High coherence → Vanguard's model confidence is visible in her stillness. Low coherence → she reads the room longer, pauses at unexpected Scholar positions.</td>
+        <td>Low — pure calculation, no new data</td>
+      </tr>
+      <tr>
+        <td>The Model Gap</td>
+        <td>wasVanguardObserved boolean on every BMSEvent</td>
+        <td>VanguardBehaviorModel — already tracks observation radius for traps, extend to all events</td>
+        <td>Large positive gap → Vanguard finds an unexpected tablet in epilogue. Negative gap → Vanguard's opening shows a slight recalibration pause.</td>
+        <td>Medium — requires observation-awareness on all BMS dispatches</td>
+      </tr>
+      <tr>
+        <td>Behavioral Rhythm</td>
+        <td>Room entry/exit timestamps (already tracked for traversal), room revisit counter</td>
+        <td>WorldManager — already manages room sessions, add dwell-time accumulator</td>
+        <td>Contemplative Scholar → Vanguard is patient, allows long pauses. Efficient Scholar → Vanguard matches pace precisely. Idle Scholar at end → Vanguard pauses at door.</td>
+        <td>Low-Medium — room-level timing data</td>
+      </tr>
+      <tr>
+        <td>The Unread Archive</td>
+        <td>Keystone tablet completion flags (6–8 designated high-significance tablets)</td>
+        <td>TDSController — already tracks isDeepRead per tablet, designate keystones with a flag</td>
+        <td>Vanguard references specific unread keystone in Child Phase dialogue. Two interpretations depending on whether player read it. Reward for re-play.</td>
+        <td>Low — boolean flags on existing tablet tracking</td>
+      </tr>
+      <tr>
+        <td>Scholar Metacognition</td>
+        <td>Dark Voice response log with session timestamps</td>
+        <td>DarkVoiceController — extend state machine to log acknowledge/suppress/follow per session with timestamp</td>
+        <td>Acknowledge-then-Suppress pattern → Recognition Ending variant unlocked. Vanguard quotes Scholar's own opening VO line. Extended pause before opening action.</td>
+        <td>Medium — new state in DarkVoiceController, new condition in SRS</td>
+      </tr>
+      <tr>
+        <td>The Final Gesture</td>
+        <td>Last-N-actions log before boss-kill event</td>
+        <td>BMSController — add LastGestureState enum computed from final 5 events before LION_PHASE_RESOLVED</td>
+        <td>Intellectual → Vanguard glances at open tablet. Relational → she touches resonance instrument. Idle → she pauses at door. Combat-ready → she acknowledges the preparation without expression.</td>
+        <td>Low — small state read at one specific moment</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="proposal" data-label="New Architecture Proposal: ScholarPortrait">
+    <div class="proposal-title">The ScholarPortrait Object — Carrying Character Through to the Ending</div>
+    <div class="proposal-body">Propose a new data structure, <code>ScholarPortrait</code>, computed at the Act III trigger alongside the SRS evaluation. It is not a score — it is a character description derived from the seven dimensions. It is passed to the ChildPhaseDirector alongside the ending tier selection, and used to select which variant of the ending plays.<br><br>The ChildPhaseDirector becomes a two-input system: <em>EndingTier</em> (from score) determines which of the ten endings runs; <em>ScholarPortrait</em> (from the seven dimensions) determines how it runs — the Vanguard's opening posture, her pacing, her use of specific behavioral references, the epilogue's emotional register.</div>
+    <div class="proposal-impl">
+      struct ScholarPortrait {<br>
+      &nbsp;&nbsp;TemporalArc arc;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Ascending / Descending / Uniform / LateConversion / Erratic<br>
+      &nbsp;&nbsp;float behavioralCoherence;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 0–1, computed from score variance<br>
+      &nbsp;&nbsp;float modelGap;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// −1 to +1, positive = Scholar richer than model<br>
+      &nbsp;&nbsp;RhythmType rhythm;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Contemplative / Efficient / Restless / Oscillating<br>
+      &nbsp;&nbsp;List&lt;string&gt; keystoneGaps;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// IDs of unread keystone tablets<br>
+      &nbsp;&nbsp;MetacognitionState metacognition;&nbsp;&nbsp;// NeverUnderstood / KnewAndWithdrew / KnewAndStayed / Partial<br>
+      &nbsp;&nbsp;LastGestureType finalGesture;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Intellectual / Relational / CombatReady / Idle<br>
+      }
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<!-- CLOSING -->
+<div class="closing">
+  <span class="closing-glyph">知</span>
+  <p class="closing-quote">The score tells you what the Scholar accumulated.<br>The portrait tells you who they were while accumulating it.<br>Only the portrait can produce an ending that feels like a person.</p>
+  <div style="margin: 2rem auto; max-width: 500px; border-top: 1px solid rgba(184,148,58,.15); padding-top: 2rem;">
+    <p style="font-family:'Courier Prime',monospace;font-size:.62rem;letter-spacing:.15em;color:rgba(184,148,58,.5);text-align:center;">
+      KENOMA · Breakthrough Architecture · ScholarPortrait System<br>
+      Seven Dimensions Beyond Scoring · Studio Confidential
+    </p>
+  </div>
+</div>
+
+</main>
+</body>
+</html>

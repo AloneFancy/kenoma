@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbital Topics — Search & Interaction Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0a0908;
+  --bg2:     #111009;
+  --bg3:     #191610;
+  --bg4:     #201d14;
+  --border:  #2c2820;
+  --border2: #3e3828;
+
+  /* Five orbit colours */
+  --o1: #c47c30; /* Affordance — amber */
+  --o2: #6a9cc8; /* Diegesis — steel */
+  --o3: #7a9e5a; /* Pre-attentive — green */
+  --o4: #b05860; /* Accessibility — rose */
+  --o5: #8870c0; /* Change blindness — violet */
+
+  --o1d: #5c3a14;
+  --o2d: #2a4460;
+  --o3d: #304518;
+  --o4d: #4a1e22;
+  --o5d: #3a2860;
+
+  --text:  #c8bfaa;
+  --text2: #88806a;
+  --text3: #504838;
+  --hi:    #e8dcc8;
+
+  --mono:    'DM Mono', monospace;
+  --sans:    'DM Sans', sans-serif;
+  --display: 'DM Serif Display', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.78; }
+
+/* ── Orbital orrery ── */
+.orrery-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 56px;
+  padding-bottom: 40px;
+  overflow: hidden;
+}
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+
+/* ── Progress ── */
+#prog { position: fixed; top: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--o1), var(--o2), var(--o3), var(--o4), var(--o5)); width: 0; z-index: 200; }
+
+/* ── Nav ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,9,8,.93);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 0;
+  padding: 0 32px;
+  overflow-x: auto; scrollbar-width: none;
+}
+nav::-webkit-scrollbar { display: none; }
+.nav-brand { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; color: var(--text3); padding: 14px 20px 14px 0; border-right: 1px solid var(--border); margin-right: 16px; flex-shrink: 0; white-space: nowrap; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+.nav-link { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; color: var(--text3); text-decoration: none; padding: 14px 14px; white-space: nowrap; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; display: flex; align-items: center; flex-shrink: 0; }
+.nav-link:hover { color: var(--text); }
+
+/* ── Wrap ── */
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px 120px; }
+
+/* ── Hero ── */
+header { padding: 72px 0 52px; border-bottom: 1px solid var(--border2); margin-bottom: 60px; }
+.eyebrow { font-family: var(--mono); font-size: 9px; letter-spacing: .2em; color: var(--text3); text-transform: uppercase; margin-bottom: 22px; }
+header h1 { font-family: var(--display); font-size: clamp(30px, 5vw, 54px); color: var(--hi); line-height: 1.14; margin-bottom: 18px; }
+header h1 em { font-style: italic; }
+.lead { font-size: 16px; color: var(--text2); max-width: 680px; line-height: 1.75; }
+.orbit-index {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-top: 32px;
+}
+.oi-chip {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .08em; color: var(--text3);
+  background: var(--bg3); border: 1px solid var(--border);
+  padding: 6px 12px; border-radius: 2px;
+  text-decoration: none; transition: color .15s, border-color .15s;
+}
+.oi-chip:hover { color: var(--text); border-color: var(--border2); }
+.oi-pip { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Section heading ── */
+.sh { display: flex; align-items: center; gap: 18px; margin: 72px 0 40px; scroll-margin-top: 54px; }
+.sh::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.sh-num { font-family: var(--display); font-size: 36px; color: var(--text3); line-height: 1; font-style: italic; }
+.sh-text h2 { font-family: var(--display); font-size: 22px; color: var(--hi); margin-bottom: 2px; }
+.sh-text h2 em { font-style: italic; }
+.sh-sub { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .12em; }
+
+/* ── Orbit card ── */
+.orbit-card { border-radius: 4px; overflow: hidden; background: var(--bg2); border: 1px solid var(--border); margin-bottom: 16px; }
+.oc-banner { height: 3px; }
+.oc-inner { display: grid; grid-template-columns: 1fr 300px; }
+@media(max-width: 720px) { .oc-inner { grid-template-columns: 1fr; } }
+.oc-main { padding: 28px 32px; border-right: 1px solid var(--border); }
+.oc-side { padding: 24px 24px; background: var(--bg3); }
+
+/* prose */
+.oc-main h3 { font-family: var(--display); font-size: 19px; color: var(--hi); font-weight: 400; margin-bottom: 4px; }
+.oc-main h3 em { font-style: italic; }
+.oc-source { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .1em; margin-bottom: 18px; }
+.oc-main p { font-size: 14px; line-height: 1.78; margin-bottom: 14px; color: var(--text); }
+.oc-main p:last-child { margin-bottom: 0; }
+.oc-main strong { color: var(--hi); font-weight: 500; }
+.oc-main em.key { font-style: italic; color: var(--text2); }
+
+/* value/greatness/limits */
+.vgl { display: flex; flex-direction: column; gap: 14px; }
+.vgl-item { }
+.vgl-label { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+.vgl-label::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.vgl-label.value { color: #8aaa68; }
+.vgl-label.value::before { background: #5a8448; }
+.vgl-label.great { color: var(--o1); }
+.vgl-label.great::before { background: var(--o1); }
+.vgl-label.limit { color: #c07878; }
+.vgl-label.limit::before { background: #904848; }
+.vgl-text { font-size: 12px; line-height: 1.65; color: var(--text2); padding-left: 12px; }
+
+/* connection to prev response */
+.conn-block {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.conn-label { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--text3); margin-bottom: 8px; }
+.conn-text { font-size: 12px; line-height: 1.65; color: var(--text2); }
+.conn-text strong { color: var(--text); font-weight: 500; }
+
+/* verdict chips */
+.verdict-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.vchip { font-family: var(--mono); font-size: 9px; letter-spacing: .06em; padding: 3px 8px; border-radius: 2px; border: 1px solid; }
+.vchip.apply { border-color: #4a7838; color: #8aaa68; background: rgba(74,120,56,.1); }
+.vchip.caution { border-color: var(--o1d); color: var(--o1); background: rgba(196,124,48,.08); }
+.vchip.challenge { border-color: #703838; color: #c07878; background: rgba(112,56,56,.1); }
+.vchip.research { border-color: var(--border2); color: var(--text3); background: transparent; }
+
+/* ── tension block ── */
+.tension {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 36px;
+  margin-top: 56px;
+}
+.tension h3 { font-family: var(--display); font-size: 22px; color: var(--hi); margin-bottom: 20px; font-style: italic; }
+.tension p { font-size: 15px; line-height: 1.8; margin-bottom: 16px; color: var(--text); }
+.tension p:last-child { margin-bottom: 0; }
+.tension strong { color: var(--hi); }
+.tension em { font-style: italic; color: var(--text2); }
+
+.tension-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 24px 0; }
+@media(max-width: 620px) { .tension-matrix { grid-template-columns: 1fr; } }
+.tm-cell { background: var(--bg3); border: 1px solid var(--border); border-radius: 3px; padding: 16px 18px; }
+.tm-head { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--text3); margin-bottom: 8px; text-transform: uppercase; }
+.tm-body { font-size: 13px; line-height: 1.65; color: var(--text2); }
+.tm-body strong { color: var(--text); }
+
+/* ── Synthesis ── */
+.synthesis { margin-top: 48px; }
+.syn-row { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.syn-row:last-child { border-bottom: none; margin-bottom: 0; }
+.syn-pip { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.syn-body { font-size: 14px; line-height: 1.75; color: var(--text); }
+.syn-body strong { color: var(--hi); }
+.syn-body em { font-style: italic; color: var(--text2); }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+  margin-top: 60px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+  font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .1em;
+}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.orbit-card { animation: fadeUp .35s ease both; }
+.orbit-card:nth-child(1) { animation-delay: .05s; }
+.orbit-card:nth-child(2) { animation-delay: .10s; }
+.orbit-card:nth-child(3) { animation-delay: .15s; }
+.orbit-card:nth-child(4) { animation-delay: .20s; }
+.orbit-card:nth-child(5) { animation-delay: .25s; }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <span class="nav-brand">KENOMA · ORBITAL TOPICS</span>
+  <a class="nav-link" href="#o1"><span class="nav-dot" style="background:var(--o1)"></span>Affordance</a>
+  <a class="nav-link" href="#o2"><span class="nav-dot" style="background:var(--o2)"></span>Diegesis</a>
+  <a class="nav-link" href="#o3"><span class="nav-dot" style="background:var(--o3)"></span>Pre-attentive</a>
+  <a class="nav-link" href="#o4"><span class="nav-dot" style="background:var(--o4)"></span>Accessibility</a>
+  <a class="nav-link" href="#o5"><span class="nav-dot" style="background:var(--o5)"></span>Change blindness</a>
+  <a class="nav-link" href="#tensions">Tensions</a>
+  <a class="nav-link" href="#synthesis">Synthesis</a>
+</nav>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">KENOMA · DOC-ORB-001 · Orbital Research — Open-Mind Evaluation</p>
+  <h1>Five Disciplines<br>That <em>Orbit</em> the Interaction Analysis</h1>
+  <p class="lead">The previous analysis of search mechanics across horror games rests on a foundation it never examined. These five fields supply the underlying theory, the challenge, and the complications — some of which require revising conclusions already reached.</p>
+  <div class="orbit-index">
+    <a class="oi-chip" href="#o1"><span class="oi-pip" style="background:var(--o1)"></span>Gibson's Affordance Theory</a>
+    <a class="oi-chip" href="#o2"><span class="oi-pip" style="background:var(--o2)"></span>Diegesis Theory</a>
+    <a class="oi-chip" href="#o3"><span class="oi-pip" style="background:var(--o3)"></span>Pre-attentive Visual Processing</a>
+    <a class="oi-chip" href="#o4"><span class="oi-pip" style="background:var(--o4)"></span>Accessibility & Inclusive Design</a>
+    <a class="oi-chip" href="#o5"><span class="oi-pip" style="background:var(--o5)"></span>Change & Inattentional Blindness</a>
+  </div>
+</header>
+
+<!-- ── ORBIT 1: AFFORDANCE ── -->
+<div class="sh" id="o1">
+  <div class="sh-num">01</div>
+  <div class="sh-text">
+    <h2>Gibson's <em>Affordance</em> Theory</h2>
+    <div class="sh-sub">Ecological Psychology · 1977–1979 · James J. Gibson</div>
+  </div>
+</div>
+
+<div class="orbit-card">
+  <div class="oc-banner" style="background:var(--o1)"></div>
+  <div class="oc-inner">
+    <div class="oc-main">
+      <h3>Perception as Direct Action-Possibility</h3>
+      <p class="oc-source">SOURCE — Gibson, J.J. (1979). The Ecological Approach to Visual Perception. Erlbaum. / Norman, D. (1988). The Design of Everyday Things.</p>
+      <p>James Gibson's core claim is that perception is not a passive process of interpreting visual inputs — organisms directly perceive what they can do with objects in the environment. Affordances are what the environment offers the animal: what it provides or furnishes, either for good or ill. A door handle affords pulling. A ledge affords stepping up. Crucially, these possibilities are perceived directly — before conscious analysis.</p>
+      <p>William Gaver (1991) expanded this into three categories critical for design: <strong>perceptible affordances</strong> (visible action possibilities), <strong>hidden affordances</strong> (real but not perceivable — requiring discovery), and <strong>false affordances</strong> (apparent but non-functional). Donald Norman's influential adaptation distinguished real affordances from <em>perceived</em> affordances, arguing that what users believe they can do is as important as what they can actually do.</p>
+      <p>The schism between Gibson and Norman is consequential. Gibson was arguing that affordances exist in the relationship between organism and environment — they are ecological facts, not mental constructions. Norman adapted the concept for industrial design by prioritising the <em>signifier</em>: the visual cue that communicates an affordance whether or not the affordance is real. A push plate on a door is a signifier for the affordance "push here." Gibson would say the affordance is the door's pushability; Norman says the design problem is that the signifier doesn't communicate it clearly.</p>
+      <p>For game design, the Norman version is the operationally useful one: <strong>the question is not whether an interactable object affords interaction (it does, by definition) but whether the player perceives that affordance before they have moved on.</strong> Every indicator system in the previous analysis — head-turn, flame sympathy, camera composition — is fundamentally a signifier system in Norman's sense. They communicate hidden affordances that the player cannot directly perceive by looking at the object alone.</p>
+    </div>
+    <div class="oc-side">
+      <div class="vgl">
+        <div class="vgl-item">
+          <div class="vgl-label value">Value</div>
+          <div class="vgl-text">Gives the previous analysis a theoretical foundation it lacked. Every debate about "diegetic vs. non-diegetic indicators" is actually a debate about signifier design — which is Gibson/Norman's territory, not filmmaking theory.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label great">Greatness</div>
+          <div class="vgl-text">The distinction between perceptible, hidden, and false affordances is immediately applicable to every puzzle room in KENOMA. A sealed drawer has a hidden affordance. An inscribed tablet has a perceptible one. A corrupted mechanism may have a false one (looks usable; is not).</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label limit">Limits</div>
+          <div class="vgl-text">Gibson's original theory assumed direct perception — no intermediary cognition required. But video games are entirely mediated: the player is not in the environment, they observe a representation of it. The ecological grounding dissolves. Norman's adaptation applies; Gibson's does not, fully.</div>
+        </div>
+      </div>
+      <div class="conn-block">
+        <div class="conn-label">→ CONNECTS TO PREVIOUS</div>
+        <div class="conn-text">The "Diegesis Hierarchy" ranked systems by immersion. It should have ranked them by <strong>signifier legibility</strong> — how clearly the system communicates the hidden affordance. The SH2 head-turn is great not because it's diegetic, but because it is an unmissable, high-salience signifier that costs nothing.</div>
+      </div>
+      <div class="verdict-row">
+        <span class="vchip apply">Apply: signifier legibility as ranking criterion</span>
+        <span class="vchip apply">Apply: hidden/perceptible/false affordance taxonomy to all KENOMA objects</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ORBIT 2: DIEGESIS ── -->
+<div class="sh" id="o2">
+  <div class="sh-num">02</div>
+  <div class="sh-text">
+    <h2><em>Diegesis</em> Theory — The Concept Under Examination</h2>
+    <div class="sh-sub">Narrative Theory · Aristotle → Genette (1972) → Film Theory → Game Studies</div>
+  </div>
+</div>
+
+<div class="orbit-card">
+  <div class="oc-banner" style="background:var(--o2)"></div>
+  <div class="oc-inner">
+    <div class="oc-main">
+      <h3>What "Diegetic" Actually Means — and Its Game-Studies Distortion</h3>
+      <p class="oc-source">SOURCE — Genette, G. (1972). Narrative Discourse. / Souriau, É. (1950). "La structure de l'univers filmique." / Jørgensen, K. (2010). "Time for New Terminology? Diegetic and Non-Diegetic Sounds in Computer Games Revisited."</p>
+      <p>The word "diegesis" has a complicated history. Its origins are in Aristotle and Plato, where it distinguished a type of narration that "tells" from mimesis which "shows." A misinterpretation of Aristotle by French filmologues around 1950 gave rise to the modern meaning — "storyworld, or even simply story." The misapprehension by which the ancient and modern terminologies are deemed to have arisen independently originates in the influential work of narratologist Gérard Genette.</p>
+      <p>Gérard Genette distinguishes three diegetic levels: the extradiegetic level (the level of the narrative's telling), the diegetic or intradiegetic level (the level of the characters, their thoughts and actions), and the metadiegetic or hypodiegetic level (a story within a story). In game studies, this framework was imported and simplified: <strong>diegetic = exists inside the game world (characters can perceive it); non-diegetic = exists outside the game world (UI elements characters cannot perceive).</strong></p>
+      <p>A 2010 paper by Kristine Jørgensen argues that the standard diegetic/non-diegetic terminology borrowed from film is insufficient for computer games, proposing that "transdiegeticity" — elements that operate across diegetic levels simultaneously — better describes much game audio and UI. A model building on affordance theory and IEZA-framework could structure computer game audio more accurately than the binary diegetic/non-diegetic classification.</p>
+      <p>This is more than academic fussing. The previous analysis used "diegetic purity" as a central ranking metric. But the concept has two serious problems when applied to fixed-camera horror games specifically: (1) The camera itself is already non-diegetic — it is the author's narrating eye, not a camera the characters know exists. <em>Every image in AitD is already non-diegetic at the framing level.</em> (2) The Scholar's compass, the astrolabe, the jade lamp — all of these are "diegetic" objects that serve <em>non-diegetic functions</em> (communicating systemic information to the player that the character is not "learning" in real time). They are transdiegetic in Jørgensen's sense.</p>
+      <p>What this means practically: <strong>the binary of "diegetic good / non-diegetic bad" should be replaced with a more honest metric — how far does this element break the player's belief in the world as a real place?</strong> A very subtle UI prompt may break that belief less than a diegetic object that behaves mechanically rather than naturally.</p>
+    </div>
+    <div class="oc-side">
+      <div class="vgl">
+        <div class="vgl-item">
+          <div class="vgl-label value">Value</div>
+          <div class="vgl-text">Exposes that the previous analysis's "diegetic hierarchy" is built on an unstable foundation. The binary is borrowed from film theory without examining whether it transfers cleanly to interactive, fixed-camera games.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label great">Greatness</div>
+          <div class="vgl-text">Transdiegesis is the most useful concept. The jade lamp, the compass, the astrolabe — these are not simply "diegetic." They are simultaneously in-world objects AND game-state communicators. Accepting this opens better design questions: how do we make the game-state function feel like natural world behavior?</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label limit">Limits</div>
+          <div class="vgl-text">Academic diegesis theory was never designed to generate practical design decisions. It is a taxonomic tool. Practitioners who study it often emerge with precise vocabulary and the same practical problem they started with.</div>
+        </div>
+      </div>
+      <div class="conn-block">
+        <div class="conn-label">→ REVISES PREVIOUS</div>
+        <div class="conn-text">The "Diegesis Hierarchy" should be retitled <strong>"World-Belief Preservation Hierarchy"</strong> and its metric changed from "diegetic purity" to "immersion rupture risk." The SH2 head-turn scores high not because it's diegetic but because it causes zero rupture. A badly executed diegetic element causes more rupture than a well-designed subtle UI prompt.</div>
+      </div>
+      <div class="verdict-row">
+        <span class="vchip challenge">Challenges: previous hierarchy's "diegetic = good" axiom</span>
+        <span class="vchip apply">Apply: transdiegetic framing for lamp/compass/astrolabe design</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ORBIT 3: PRE-ATTENTIVE ── -->
+<div class="sh" id="o3">
+  <div class="sh-num">03</div>
+  <div class="sh-text">
+    <h2><em>Pre-Attentive</em> Visual Processing</h2>
+    <div class="sh-sub">Cognitive Neuroscience · Colin Ware (1994) · Anne Treisman (1980)</div>
+  </div>
+</div>
+
+<div class="orbit-card">
+  <div class="oc-banner" style="background:var(--o3)"></div>
+  <div class="oc-inner">
+    <div class="oc-main">
+      <h3>What the Brain Sees Before It Looks</h3>
+      <p class="oc-source">SOURCE — Ware, C. (1994). Information Visualization: Perception for Design. / Treisman, A. & Gelade, G. (1980). "A feature-integration theory of attention." Cognitive Psychology.</p>
+      <p>Preattentive processing takes place in sensory memory — it requires no conscious effort from the user to complete, and takes less than 500 milliseconds. This can be very useful in design because it allows the designer to grab the attention of the user without their input or effort. There are four primary preattentive attributes: <strong>color</strong>, <strong>form</strong>, <strong>movement</strong>, and <strong>spatial position</strong>.</p>
+      <p>Research by Bartram et al. showed that applying motion to a static glyph was significantly easier to recognise compared to changing the glyph's color or shape. This held both when the glyph was near the center of focus and when it was located on the periphery of the viewer's gaze. Motion, specifically, is the most powerful preattentive signal — it activates threat-detection circuits that evolved for predator awareness, not UX.</p>
+      <p>A glanceable interface communicates its key message in one to two seconds, the time it takes to glance at a dashboard or watch. The goal is to offload cognitive effort onto perceptual intuition. Good design operates on two levels: <strong>fast cognition</strong> — signals meaning instantly through color, shape, or position — and <strong>slow cognition</strong> — offers deeper context once the user focuses attention.</p>
+      <p>The critical insight for KENOMA's indicator designs: <strong>Design 01 (Scholar's Gaze) and Design 02 (Fire Vessel Sympathy) are preattentive if correctly implemented — Design 03 (Astrolabe Resonance) is attentive (requires directed listening).</strong> The Scholar's head-turn triggers peripheral vision motion detection — one of the fastest and most reliable preattentive channels. The flame lean is a subtle direction change — also preattentive but at lower salience. Audio requires the player to be listening: it is definitively attentive, not preattentive.</p>
+      <p>Stimulus overuse creates habituation. Overuse of any stimulus causes people to habituate to it, diminishing its ability to attract attention. If a game designer overuses motion or distinctive color, the user will eventually ignore it — and it will have been all for nothing. Use of these elements should be well thought out and purposeful. This directly constrains the flame sympathy design: if the flame leans directionally too often (toward mundane objects as well as significant ones), the signal habituates and stops conveying information.</p>
+    </div>
+    <div class="oc-side">
+      <div class="vgl">
+        <div class="vgl-item">
+          <div class="vgl-label value">Value</div>
+          <div class="vgl-text">Provides a neurological basis for ranking the five KENOMA indicator designs by channel reliability. Preattentive signals (motion, peripheral form change) are more reliable than attentive ones (audio, subtle brightness) and should be used for the most critical objects.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label great">Greatness</div>
+          <div class="vgl-text">The SH2 head-turn works so well precisely because it exploits two preattentive channels simultaneously: peripheral motion (the head rotating) and social gaze-following (we are hardwired to look where others look). It is the most neurologically sound indicator design in the genre.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label limit">Limits</div>
+          <div class="vgl-text">Pre-attentive processing research was done in controlled lab conditions with 2D static stimuli. Real-time 3D game environments are full of competing motion signals — creatures moving, environment animating, particles — which can mask or drown the preattentive signal the designer intended.</div>
+        </div>
+      </div>
+      <div class="conn-block">
+        <div class="conn-label">→ REFINES PREVIOUS</div>
+        <div class="conn-text">Design 01 (Scholar's Gaze) should be classified as <strong>preattentive-reliable</strong>. Design 02 (Fire Sympathy) as <strong>preattentive-low-salience</strong>. Designs 03 and 04 as <strong>attentive — supplementary only</strong>. The stack ranking changes: Design 05 (Camera) and Design 01 are the preattentive foundation; everything else is optional.</div>
+      </div>
+      <div class="verdict-row">
+        <span class="vchip apply">Apply: preattentive/attentive stack re-ranking</span>
+        <span class="vchip caution">Caution: habituation risk — flame sympathy must be scope-restricted</span>
+        <span class="vchip caution">Caution: competing motion signals in dynamic rooms</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ORBIT 4: ACCESSIBILITY ── -->
+<div class="sh" id="o4">
+  <div class="sh-num">04</div>
+  <div class="sh-text">
+    <h2><em>Accessibility</em> & The Zero-HUD Assumption</h2>
+    <div class="sh-sub">Game Accessibility Guidelines · 2012-present · AbleGamers · IGDA · Naughty Dog inclusive design</div>
+  </div>
+</div>
+
+<div class="orbit-card">
+  <div class="oc-banner" style="background:var(--o4)"></div>
+  <div class="oc-inner">
+    <div class="oc-main">
+      <h3>The Blind Spot in Every "Diegetic Purity" Argument</h3>
+      <p class="oc-source">SOURCE — Game Accessibility Guidelines (gameaccessibilityguidelines.com) · AbleGamers Foundation · NAUGHTY DOG inclusive design methodology</p>
+      <p>The previous analysis celebrated zero-HUD design as an atmospheric achievement. The prevailing design philosophy in game development has prioritized aesthetic appeal and optimized efficiency. These objectives, however, frequently establish substantial impediments for players with disabilities. Zero-HUD and fully diegetic systems, taken to their logical extreme, are among the most exclusionary design decisions a horror game can make.</p>
+      <p>The five indicator designs proposed for KENOMA fail a significant portion of potential players:</p>
+      <p><strong>Design 01 (Scholar's Gaze):</strong> Fails players with visual processing differences (prosopagnosia, certain autism spectrum conditions) who do not automatically follow character gaze cues. Fails players with low vision who cannot distinguish subtle head-turn animations at small display sizes or from a distance.</p>
+      <p><strong>Design 02 (Fire Vessel Sympathy):</strong> Fails colourblind players if the flame's directional lean is communicated primarily through warm-colour shift. Fails players with photosensitive epilepsy if the flame VFX is incorrectly tuned. The system entirely fails deaf players — wait, this is visual, not audio. But it fails blind players entirely.</p>
+      <p><strong>Design 03 (Astrolabe Resonance):</strong> Completely fails deaf or hard-of-hearing players. The binaural spatial system (Behind/Beside/Ahead) is meaningless without headphones and two functional ears. Diegetic UI inevitably means more assets, more potential accessibility issues, and cognitive overload. While a fantastic tool for immersion, one should not underestimate the potential negative impact it can have on the experience.</p>
+      <p>Video game accessibility ensures players with visual, auditory, motor, or cognitive differences can perceive, understand, and interact with games. When accessibility is treated as a core design principle, it reframes decisions across UI, audio, input, and pacing, turning accessibility into an ongoing design conversation that enhances clarity for a wider audience.</p>
+      <p>The accessible resolution is not to abandon diegetic design — it is to implement diegetic systems as the <em>default experience</em> while providing a parallel accessibility layer. A subtitle-style overlay of the Scholar's murmur (for deaf players), a high-contrast mode that makes interactable objects more visually distinct without breaking atmosphere, controller haptic feedback as an alternative to the astrolabe audio signal. None of these need to appear in the base experience. All of them must be available.</p>
+    </div>
+    <div class="oc-side">
+      <div class="vgl">
+        <div class="vgl-item">
+          <div class="vgl-label value">Value</div>
+          <div class="vgl-text">Identifies the previous analysis's most significant omission. A design document that discusses five indicator systems and never mentions disability is incomplete in a way that matters — not just ethically but commercially. ~15-20% of players have some form of disability.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label great">Greatness</div>
+          <div class="vgl-text">The Naughty Dog methodology is the applicable benchmark: design the accessible version simultaneously with the base version, not afterward. Last of Us Part II's accessibility settings did not compromise its atmosphere; they extended its reach.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label limit">Limits</div>
+          <div class="vgl-text">Accessibility guidelines were largely developed for mainstream action/adventure games. Fixed-camera survival horror with zero-HUD requirements has unique constraint intersections that the guidelines don't address specifically. Requires bespoke accessibility design, not template application.</div>
+        </div>
+      </div>
+      <div class="conn-block">
+        <div class="conn-label">→ CHALLENGES PREVIOUS</div>
+        <div class="conn-text">Iron Law III ("No HUD elements during gameplay") must be reconciled with legal and ethical accessibility requirements. The law should be amended: <strong>"No HUD elements during gameplay for the default experience. All systems must have parallel accessibility pathways."</strong> This is not a compromise — it is a better law.</div>
+      </div>
+      <div class="verdict-row">
+        <span class="vchip challenge">Challenges: Iron Law III as absolute</span>
+        <span class="vchip apply">Apply: parallel accessibility layer alongside every diegetic design</span>
+        <span class="vchip research">Research: fixed-camera horror accessibility — no existing literature found</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ORBIT 5: CHANGE BLINDNESS ── -->
+<div class="sh" id="o5">
+  <div class="sh-num">05</div>
+  <div class="sh-text">
+    <h2><em>Change Blindness</em> & Inattentional Blindness</h2>
+    <div class="sh-sub">Cognitive Psychology · Simons & Chabris (1999) · Rensink (1997) · The Gorilla Experiment</div>
+  </div>
+</div>
+
+<div class="orbit-card">
+  <div class="oc-banner" style="background:var(--o5)"></div>
+  <div class="oc-inner">
+    <div class="oc-main">
+      <h3>Why Players Don't See What Is Plainly In Front of Them</h3>
+      <p class="oc-source">SOURCE — Simons, D.J. & Chabris, C.F. (1999). "Gorillas in our midst: Sustained inattentional blindness for dynamic events." Perception. / Rensink, R. et al. (1997). "To See or Not to See: The Need for Attention to Perceive Changes in Scenes."</p>
+      <p>Change blindness is a psychological phenomenon where we fail to notice large visual changes in our environment when those changes occur during a brief disruption, such as a blink, a camera cut, or a shift in gaze. Our visual experience isn't a live video feed — it's a mental construction. We see what our brain expects to see.</p>
+      <p>This is the scientific basis for why AitD's "camera composition does the work" approach has a hard limit. <strong>Fixed-camera games cut between camera angles constantly. Each cut is a visual disruption — exactly the condition under which change blindness is maximally active.</strong> A tablet that is compositionally centered in a camera angle may be completely missed if the player's gaze was elsewhere at the moment of the cut, or if they were managing a threat at the time of entry.</p>
+      <p>Inattentional blindness happens because we don't have enough brainpower to pay attention to everything in our view. We can only look at a small part of any scene, and everything else actually gets fuzzy. Papers, Please is inattentional blindness elevated to a game mechanic: focus solely on city of origin and you may miss that the work permit is not signed. And then the gorilla will waltz right through your checkpoint.</p>
+      <p>In survival horror specifically, the creature threat creates a powerful inattentional blindness effect: a player actively tracking an enemy's approach via compass static is devoting significant attentional resources to threat management. An interactable object placed in the same room may be present, compositionally visible, and completely unperceived — because the player's attention architecture has been consumed. <strong>This is the exact scenario where Design 03 (Astrolabe Resonance) most needs to function — and where it is most likely to be missed, because the creature mode is drowning it.</strong></p>
+      <p>Change blindness in game design means players often overlook changes in design. It can affect information in menus or game features. Players can completely miss out on features entirely. Change blindness is encouraged by visual interruptions such as screen transitions, and the speed of the change increases risk. Every camera transition in KENOMA is a blindness-inducing disruption. This means the indicator system must redundantly signal across camera cuts — not relying on the pre-cut state being remembered.</p>
+      <p>The positive inversion: <em>horror games can deliberately weaponise change blindness.</em> The Vanguard's private behavioral evolution (Stage 1 → 2 → 3) works precisely because players are inattentionally blind to behavioral change while task-focused on puzzles. The horror of the Lion Phase is retrospective change-blindness awareness: "She was always doing this and I couldn't see it." AitD's most powerful atmospheric moments exploit the same principle: the object in the background that moved between shots. Change blindness is a tool, not only a failure mode.</p>
+    </div>
+    <div class="oc-side">
+      <div class="vgl">
+        <div class="vgl-item">
+          <div class="vgl-label value">Value</div>
+          <div class="vgl-text">Explains empirically why the "camera does the work" principle from AitD 1 fails at scale — and why KENOMA needs the full indicator stack, not just camera composition. The psychology of missed objects is not a player failure; it is predictable perceptual architecture.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label great">Greatness</div>
+          <div class="vgl-text">The conceptual inversion is the most generative insight: change blindness as a horror design tool. The Vanguard's invisible behavioral evolution, the Archive's environmental changes between visits, the Scholar's own accumulated decisions becoming visible retroactively — all of these exploit change blindness deliberately. The game's thesis depends on it.</div>
+        </div>
+        <div class="vgl-item">
+          <div class="vgl-label limit">Limits</div>
+          <div class="vgl-text">Most change blindness research used 2D static images with abrupt transitions. Continuity of a 3D navigable space between camera cuts is a different cognitive condition — closer to real-world change blindness, which is less studied. The lab-to-game transfer is imprecise.</div>
+        </div>
+      </div>
+      <div class="conn-block">
+        <div class="conn-label">→ EXTENDS PREVIOUS</div>
+        <div class="conn-text">Adds a design requirement the previous analysis missed: <strong>indicator signals must persist or re-trigger after camera cuts, not rely on the player's memory of the pre-cut state.</strong> The Scholar's gaze must re-orient if the camera cuts away and back. The flame must re-lean. The astrolabe must continue. Indicators are not one-shot events — they are states.</div>
+      </div>
+      <div class="verdict-row">
+        <span class="vchip apply">Apply: indicators as persistent states, not one-shot triggers</span>
+        <span class="vchip apply">Apply: weaponised change blindness in Vanguard behavioral arc</span>
+        <span class="vchip caution">Caution: creature-threat inattentional blindness drowns Design 03</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TENSIONS ── -->
+<div class="sh" id="tensions"><h2 style="font-family:var(--display); font-size:20px; color:var(--hi);">Where the Fields Are in Tension</h2></div>
+
+<div class="tension">
+  <h3>What These Five Fields Disagree About</h3>
+  <p>These are not five fields that agree with each other, and holding all five simultaneously creates genuine design contradictions that cannot be resolved by adopting any single field's framework. An open-minded evaluation requires naming the contradictions directly.</p>
+
+  <div class="tension-matrix">
+    <div class="tm-cell">
+      <div class="tm-head">Affordance vs. Accessibility</div>
+      <div class="tm-body">Gibson argues that affordances are perceived directly by the organism relative to its capabilities. But disability creates organisms with different perceptual capabilities — the head-turn that affords "there is something here" for a neurotypical player does not afford this for a player with prosopagnosia. <strong>The affordance is not universal. The ecological relationship changes with the perceiver.</strong> This is Gibson's own theory being used against the design assumptions of the previous analysis.</div>
+    </div>
+    <div class="tm-cell">
+      <div class="tm-head">Pre-attentive vs. Diegesis</div>
+      <div class="tm-body">The most preattentively powerful signal is motion. But arbitrary motion added to a diegetic environment for player guidance — a tablet that flickers to attract attention — ruptures the world-belief that diegetic design exists to preserve. <strong>The highest-salience indicator is the one most likely to break immersion.</strong> Yellow paint is preattentively reliable precisely because it violates the environment's rules. This is the genre's central paradox, unresolved by either field.</div>
+    </div>
+    <div class="tm-cell">
+      <div class="tm-head">Change Blindness vs. Diegesis</div>
+      <div class="tm-body">Diegetic theory says: keep indicators inside the world. Change blindness research says: players predictably miss in-world objects after camera cuts, particularly when task-loaded. The solution (repetitive re-triggering of signals) is in tension with diegetic naturalism — a character doesn't keep turning their head toward the same object every time the camera cuts back. <strong>Diegetic realism and perceptual reliability are opposed.</strong></div>
+    </div>
+    <div class="tm-cell">
+      <div class="tm-head">Pre-attentive vs. Change Blindness</div>
+      <div class="tm-body">Pre-attentive research says motion is the highest-salience signal. Change blindness research says that signals missed during a disruption (like a camera cut) are precisely the ones that fail to register even when preattentively powerful. <strong>A preattentive signal that fires at the wrong moment — during a camera cut, during a blink — is as invisible as no signal at all.</strong> Timing of preattentive triggers matters more than their intrinsic salience.</div>
+    </div>
+  </div>
+
+  <p>There is no framework that resolves all four of these tensions simultaneously. The honest position is: KENOMA's indicator designs must be tested against all four failure modes explicitly — not trusted to work by theoretical argument — and the accessibility layer must be designed to compensate for the failures of the diegetic system when the diegetic system, by its nature, cannot compensate for them.</p>
+</div>
+
+<!-- ── SYNTHESIS ── -->
+<div class="sh" id="synthesis"><h2 style="font-family:var(--display); font-size:20px; color:var(--hi);">Synthesis — What Changes, What Holds</h2></div>
+
+<div class="synthesis">
+  <div class="syn-row">
+    <div class="syn-pip" style="background:var(--o1)"></div>
+    <div class="syn-body"><strong>From Affordance Theory:</strong> Rename the design problem. The question is not "is this indicator diegetic?" but "does this indicator communicate the hidden affordance of interactability before the player moves past the object?" Every design should be evaluated on signifier legibility — how clearly and quickly it communicates the action-possibility to the specific player perceiving it.</div>
+  </div>
+  <div class="syn-row">
+    <div class="syn-pip" style="background:var(--o2)"></div>
+    <div class="syn-body"><strong>From Diegesis Theory:</strong> Replace the binary "diegetic / non-diegetic" with the more honest question: "does this element rupture world-belief?" A subtle UI prompt that fits the visual aesthetic may rupture less than a diegetic object that behaves mechanically. Iron Law III should be reframed as: <em>"No element that ruptures the player's belief in the Archive as a real place during gameplay — accessibility layer excepted."</em></div>
+  </div>
+  <div class="syn-row">
+    <div class="syn-pip" style="background:var(--o3)"></div>
+    <div class="syn-body"><strong>From Pre-attentive Processing:</strong> Re-rank the five designs by neurological reliability: Design 05 (Camera) and Design 01 (Scholar's Gaze) are preattentive-reliable and mandatory. Design 02 (Fire Sympathy) is preattentive but low-salience and scope-must-be-restricted. Designs 03 and 04 are attentive supplements. The habituation risk for Design 02 requires strict triggering criteria — it fires only for Archive-significant objects, or it stops being a signal.</div>
+  </div>
+  <div class="syn-row">
+    <div class="syn-pip" style="background:var(--o4)"></div>
+    <div class="syn-body"><strong>From Accessibility Research:</strong> A sixth design must be added to the stack — the Accessibility Overlay Layer. This is a separate settings-menu option that enables: high-contrast mode (interactable objects slightly cooler-lit in World A, slightly warmer in World B), subtitle track for Scholar murmurs, and alternative haptic patterns for all audio-channel indicators. Designed simultaneously, not retrofitted. This is not a compromise of KENOMA's vision; it is its completion.</div>
+  </div>
+  <div class="syn-row">
+    <div class="syn-pip" style="background:var(--o5)"></div>
+    <div class="syn-body"><strong>From Change Blindness Research:</strong> Two design amendments. (1) All indicators are persistent states, not trigger events — they re-activate after camera cuts and persist until the Scholar leaves the object's radius. (2) Change blindness is a tool as well as a failure mode: KENOMA's most powerful emotional effects depend on players not perceiving the Vanguard's behavioral changes in real time. The Sympathy Engine (PZ-WA-014), the Vanguard's Stage 1→2→3 evolution, and the Observatory's progressive corruption all rely on inattentional blindness to land correctly. Design for the blindness deliberately — not as a flaw to fix, but as the mechanism of horror.</div>
+  </div>
+</div>
+
+<footer>
+  <span>KENOMA · DOC-ORB-001 · Orbital Research — Open-Mind Evaluation</span>
+  <span>Five fields. Four tensions. No single resolution.</span>
+</footer>
+
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  document.getElementById('prog').style.width = (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+});
+
+const sections = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.nav-link');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-25% 0px -65% 0px' });
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

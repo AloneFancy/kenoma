@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENOMA · Search & Interaction Systems — Comparative Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0e0d0b;
+  --bg2:     #141310;
+  --bg3:     #1c1a17;
+  --bg4:     #232018;
+  --border:  #2a2620;
+  --border2: #3d3830;
+  --wa:      #c8893c;   /* Sacred Fire amber */
+  --wa-dim:  #6b4a1c;
+  --wb:      #4b83ab;   /* The Hollow steel */
+  --wb-dim:  #253f56;
+  --accent:  #8a6fb0;   /* dual-world purple */
+  --text:    #c5bba8;
+  --text2:   #8a8070;
+  --text3:   #514d45;
+  --hi:      #e8dcc8;
+  --danger:  #963030;
+  --warn:    #8a6820;
+  --ok:      #3a6838;
+  --mono:    'IBM Plex Mono', monospace;
+  --serif:   'Source Serif 4', Georgia, serif;
+  --display: 'Playfair Display', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.78;
+}
+
+/* ── progress bar ── */
+#prog { position: fixed; top: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--wa), var(--wb)); width: 0; z-index: 200; transition: width .08s linear; }
+
+/* ── sticky nav ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(14,13,11,.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 0;
+  padding: 0 32px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+nav::-webkit-scrollbar { display: none; }
+.nav-brand {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .18em;
+  color: var(--text3);
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 14px 20px 14px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+.nav-link {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  color: var(--text3);
+  text-decoration: none;
+  padding: 14px 14px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  flex-shrink: 0;
+}
+.nav-link:hover { color: var(--text); border-bottom-color: var(--border2); }
+.nav-link.active { color: var(--wa); border-bottom-color: var(--wa); }
+
+/* ── layout ── */
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px 100px; }
+
+/* ── hero ── */
+header {
+  padding: 72px 0 52px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 64px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .2em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+header h1 {
+  font-family: var(--display);
+  font-size: clamp(30px, 5vw, 52px);
+  font-weight: 400;
+  color: var(--hi);
+  line-height: 1.18;
+  margin-bottom: 18px;
+}
+header h1 em { font-style: italic; color: var(--wa); }
+.header-lead {
+  font-size: 17px;
+  color: var(--text2);
+  max-width: 680px;
+  line-height: 1.7;
+}
+.header-meta {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  margin-top: 28px;
+}
+.hm-chip {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  color: var(--text3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+/* ── section heading ── */
+.sh {
+  display: flex; align-items: center; gap: 18px;
+  margin: 72px 0 36px;
+  scroll-margin-top: 52px;
+}
+.sh::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.sh h2 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  color: var(--text3);
+  text-transform: uppercase;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* ── game analysis cards ── */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 16px;
+}
+.game-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.gc-head {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.gc-era {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .1em;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.gc-title {
+  font-family: var(--display);
+  font-size: 17px;
+  color: var(--hi);
+  margin-bottom: 2px;
+  font-weight: 400;
+}
+.gc-sub { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+.gc-body { padding: 20px 24px; }
+.gc-body p { font-size: 14px; line-height: 1.7; margin-bottom: 12px; color: var(--text); }
+.gc-body p:last-child { margin-bottom: 0; }
+.gc-body strong { color: var(--hi); font-weight: 600; font-style: normal; }
+.gc-body em { color: var(--wa); font-style: italic; }
+
+/* mechanic bars */
+.mech-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.mech-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .08em; width: 100px; flex-shrink: 0; }
+.mech-bar { flex: 1; height: 5px; background: var(--bg4); border-radius: 3px; position: relative; }
+.mech-fill { height: 100%; border-radius: 3px; position: absolute; left: 0; top: 0; }
+.mech-fill.diegetic { background: var(--wa); }
+.mech-fill.clarity  { background: var(--wb); }
+.mech-fill.atmos    { background: var(--accent); }
+.mech-val { font-family: var(--mono); font-size: 9px; color: var(--text3); width: 24px; text-align: right; flex-shrink: 0; }
+
+/* mechanic tags */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .07em;
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.tag.green { border-color: var(--ok); color: #6aaa68; background: rgba(58,104,56,.1); }
+.tag.red   { border-color: var(--danger); color: #c07070; background: rgba(150,48,48,.1); }
+.tag.amber { border-color: var(--warn); color: #c0a050; background: rgba(138,104,32,.1); }
+.tag.blue  { border-color: var(--wb-dim); color: var(--wb); background: rgba(75,131,171,.08); }
+.tag.grey  { border-color: var(--border2); color: var(--text3); background: transparent; }
+
+/* ── comparison matrix ── */
+.matrix-wrap { overflow-x: auto; }
+table.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 700px;
+}
+table.matrix th {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  color: var(--text3);
+  text-transform: uppercase;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border2);
+  white-space: nowrap;
+  background: var(--bg3);
+}
+table.matrix td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  line-height: 1.5;
+}
+table.matrix tr:last-child td { border-bottom: none; }
+table.matrix tr:hover td { background: var(--bg3); }
+table.matrix .game-col { font-family: var(--display); font-size: 13px; color: var(--hi); white-space: nowrap; }
+table.matrix .sub      { font-family: var(--mono); font-size: 9px; color: var(--text3); display: block; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.dot.full { background: var(--wa); }
+.dot.half { background: var(--wa-dim); }
+.dot.none { background: var(--bg4); border: 1px solid var(--border2); }
+.dots { display: flex; gap: 3px; }
+
+/* ── adaptive designs ── */
+.design-list { display: flex; flex-direction: column; gap: 24px; }
+.design {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.design-head {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--border);
+}
+.d-num {
+  font-family: var(--display);
+  font-size: 36px;
+  color: var(--text3);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.d-name { font-family: var(--display); font-size: 20px; color: var(--hi); font-weight: 400; margin-bottom: 2px; }
+.d-sub  { font-size: 13px; color: var(--text2); font-style: italic; }
+.d-ref  { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .1em; background: var(--bg3); border: 1px solid var(--border); padding: 4px 10px; border-radius: 2px; white-space: nowrap; text-align: right; }
+
+.design-body { display: grid; grid-template-columns: 1fr 340px; gap: 0; }
+@media(max-width: 760px) { .design-body { grid-template-columns: 1fr; } }
+.d-main { padding: 24px 28px; border-right: 1px solid var(--border); }
+.d-main p { font-size: 14px; line-height: 1.75; margin-bottom: 14px; color: var(--text); }
+.d-main p:last-child { margin-bottom: 0; }
+.d-main strong { color: var(--hi); }
+.d-main em { color: var(--wa); font-style: italic; }
+
+.d-side { padding: 24px 24px; background: var(--bg3); }
+.d-side-label { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; color: var(--text3); text-transform: uppercase; margin-bottom: 14px; }
+.tradeoff { margin-bottom: 16px; }
+.to-label { font-family: var(--mono); font-size: 9px; letter-spacing: .06em; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+.to-label.pro { color: #6aaa68; }
+.to-label.con { color: #c07070; }
+.to-label::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.to-label.pro::before { background: var(--ok); }
+.to-label.con::before { background: var(--danger); }
+.to-text { font-size: 12px; color: var(--text2); line-height: 1.6; padding-left: 12px; }
+
+.d-spec {
+  margin-top: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  line-height: 1.9;
+}
+.d-spec .k { color: var(--text3); }
+.d-spec .v { color: var(--text2); }
+.d-spec .hi { color: var(--wa); }
+
+/* ── law check ── */
+.law-check {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 2;
+  margin-top: 20px;
+}
+.lc-pass { color: #6aaa68; }
+.lc-na   { color: var(--text3); }
+.lc-fail { color: #c07070; }
+.lc-warn { color: #c0a050; }
+
+/* ── conclusion ── */
+.conclusion {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 36px;
+  margin-top: 48px;
+}
+.conclusion h3 {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--hi);
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+.conclusion p { font-size: 15px; line-height: 1.8; margin-bottom: 16px; color: var(--text); }
+.conclusion p:last-child { margin-bottom: 0; }
+.conclusion strong { color: var(--hi); }
+.conclusion em { font-style: italic; color: var(--wa); }
+
+/* ── hierarchy viz ── */
+.hierarchy {
+  display: flex; flex-direction: column; gap: 2px;
+  margin: 24px 0;
+}
+.hier-row {
+  display: flex; align-items: stretch; gap: 2px;
+}
+.hier-cell {
+  flex: 1;
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  border-radius: 2px;
+  line-height: 1.5;
+}
+.hc-label { font-size: 9px; color: var(--text3); display: block; margin-bottom: 2px; }
+.hc-era { color: var(--text2); font-weight: 400; }
+.hier-cell.lvl1 { background: rgba(200,137,60,.12); border: 1px solid rgba(200,137,60,.3); }
+.hier-cell.lvl2 { background: rgba(75,131,171,.1); border: 1px solid rgba(75,131,171,.25); }
+.hier-cell.lvl3 { background: rgba(138,111,176,.1); border: 1px solid rgba(138,111,176,.25); }
+.hier-cell.lvl4 { background: var(--bg3); border: 1px solid var(--border); }
+.hier-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+/* ── recommended bar ── */
+.rec-bar {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin: 20px 0;
+}
+.rb-item {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  padding: 5px 12px;
+  border-radius: 2px;
+  border: 1px solid;
+  cursor: default;
+}
+.rb-item.primary { border-color: var(--wa-dim); color: var(--wa); background: rgba(200,137,60,.08); }
+.rb-item.secondary { border-color: var(--wb-dim); color: var(--wb); background: rgba(75,131,171,.06); }
+.rb-item.tertiary { border-color: var(--border2); color: var(--text3); background: transparent; }
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+  margin-top: 60px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .1em;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.game-card, .design { animation: fadeIn .3s ease both; }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <span class="nav-brand">KENOMA · DOC-UX-001</span>
+  <a class="nav-link active" href="#games">Game Analysis</a>
+  <a class="nav-link" href="#matrix">Comparison Matrix</a>
+  <a class="nav-link" href="#hierarchy">Diegesis Hierarchy</a>
+  <a class="nav-link" href="#designs">Adaptive Designs</a>
+  <a class="nav-link" href="#verdict">Verdict</a>
+</nav>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<header>
+  <p class="eyebrow">KENOMA · DOC-UX-001 · Search & Interaction Systems · Comparative Analysis</p>
+  <h1>How Horror Games Tell You<br><em>Something Is Here</em></h1>
+  <p class="header-lead">A structural analysis of search and object-interaction mechanics across eight survival horror titles — from AitD's 1992 action menu to SH2's diegetic head-turn — concluding in five adaptive designs for KENOMA's zero-HUD requirement.</p>
+  <div class="header-meta">
+    <span class="hm-chip">AitD 1 &amp; 3 · New Nightmare · SH1–2 · RE · Tormented Souls · Amnesia · Metro</span>
+    <span class="hm-chip">5 adaptive KENOMA designs</span>
+    <span class="hm-chip">Iron Law III compliance checked</span>
+  </div>
+</header>
+
+<!-- GAME ANALYSIS -->
+<div class="sh" id="games"><h2>Game Analysis</h2></div>
+
+<div class="game-grid">
+
+  <!-- AitD 1 -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Alone in the Dark (1992)</div>
+        <div class="gc-sub">Infogrames · DOS · the original</div>
+      </div>
+      <span class="gc-era">1992</span>
+    </div>
+    <div class="gc-body">
+      <p>Interaction is mediated through an <strong>action mode menu</strong> opened by the Enter key. The player selects a verb — Fight, Search/Open, Close, Push, Jump (late-game only) — then presses <strong>Spacebar</strong> while positioned close to the target. No highlight. No indicator. No prompt of any kind.</p>
+      <p>The player discovers interactable objects through <em>proximity trial-and-error</em> and prior world knowledge (is this desk the kind of thing someone would hide something in?). Objects picked up by walking over them. The weight-based inventory gives a secondary signal: if picking something up is refused, the inventory is full, not that the object is non-interactive.</p>
+      <p>The radical consequence: <strong>the camera is the indicator.</strong> Every fixed camera angle in AitD is authored to show the relevant interactive object in frame. The room designer and the camera designer are the same intention — the player is always looking at what they need to find. The system trusts compositional cinema to do the job UI would normally do.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:90%"></div></div>
+        <span class="mech-val">90</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:30%"></div></div>
+        <span class="mech-val">30</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:85%"></div></div>
+        <span class="mech-val">85</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">zero UI intrusion</span>
+        <span class="tag green">camera does the work</span>
+        <span class="tag amber">mode-select friction</span>
+        <span class="tag red">opaque discoverability</span>
+        <span class="tag red">exact-position dependency</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AitD 3 -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Alone in the Dark 3 (1995)</div>
+        <div class="gc-sub">Infogrames · DOS · same engine, wider world</div>
+      </div>
+      <span class="gc-era">1995</span>
+    </div>
+    <div class="gc-body">
+      <p>The same engine and action-menu system as AitD 1 — Fight, Open/Examine, Push, Jump — with Spacebar as the universal action trigger. <strong>No changes to the interaction model.</strong> The open-world ghost town (Slaughter Gulch) spreads interactable objects across a larger space, making the trial-and-error discovery system more taxing than in the confined manor of AitD 1.</p>
+      <p>AitD 3 introduces a structural refinement the interaction system did not need: more of the game is <em>action-combat-gated</em> than puzzle-gated. Two invincible gunslingers block most paths, forcing a specific exploration order. The "Search" action therefore encounters objects that are contextually useful only at a specific time — the player is more often searching a room they cannot yet solve than in AitD 1.</p>
+      <p>The search mechanic's <strong>cognitive load increases</strong> when the space is larger but the indicator system is identical. A game that trusts composition to signal importance needs tight, authored spaces. Slaughter Gulch reveals this limit.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:90%"></div></div>
+        <span class="mech-val">90</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:22%"></div></div>
+        <span class="mech-val">22</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:70%"></div></div>
+        <span class="mech-val">70</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">identical purity to AitD 1</span>
+        <span class="tag amber">larger world breaks camera-as-indicator</span>
+        <span class="tag red">no evolution from 1992</span>
+        <span class="tag red">worst discoverability of the trilogy</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AitD: New Nightmare -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Alone in the Dark: The New Nightmare (2001)</div>
+        <div class="gc-sub">Darkworks · PS1/DC/PC · the flashlight pivot</div>
+      </div>
+      <span class="gc-era">2001</span>
+    </div>
+    <div class="gc-body">
+      <p>The interaction paradigm shifts from menu-verb to <strong>light-as-query</strong>. Carnby and Aline each carry a flashlight controlled independently via the right analogue stick. When the beam hits an interactable surface or item, the object visually reveals itself — materials catch and reflect the light differently. The player scans the environment with the flashlight; the environment responds to where they look.</p>
+      <p>This is a genuine design breakthrough. The flashlight serves three simultaneous functions: <em>navigation tool</em>, <em>combat weapon</em> (light damages shadow creatures and holds plant-enemies at bay), and <em>interaction indicator</em>. Every beam movement is gameplay. The indicator cost is zero because the player is already using the light for survival.</p>
+      <p>The execution has a known failure: <strong>exact positioning is still required to trigger interactions</strong>, even after the flashlight reveals them. The reveal moment and the pickup moment are decoupled — sometimes significantly. A player who sees the object in their beam must then manoeuvre to a specific 1×1m interaction zone. The gap between "I can see it" and "I can reach it" is the system's critical friction point.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:80%"></div></div>
+        <span class="mech-val">80</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:72%"></div></div>
+        <span class="mech-val">72</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:88%"></div></div>
+        <span class="mech-val">88</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">triple-function light beam</span>
+        <span class="tag green">indicator cost is zero — already scanning</span>
+        <span class="tag green">atmosphere-first design</span>
+        <span class="tag amber">exact position still required after reveal</span>
+        <span class="tag red">reveal ≠ interaction — cognitive gap</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Silent Hill 2 -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Silent Hill 1 &amp; 2 (1999 / 2001)</div>
+        <div class="gc-sub">Team Silent · PS1/PS2 · the head-turn paradigm</div>
+      </div>
+      <span class="gc-era">1999–2001</span>
+    </div>
+    <div class="gc-body">
+      <p>Silent Hill 1 uses a third-person free camera — interactable objects are visually distinguishable but the system relies on proximity and a contextual "Check" prompt that appears on screen when close enough. The radio static system (louder = closer creature) is a separate channel but establishes the principle: <em>the character's body communicates what the UI does not.</em></p>
+      <p>Silent Hill 2 refines this into the <strong>head-turn mechanic</strong>. James Sunderland's head rotates toward interactable objects when he approaches them — automatically, diegetically, without any UI element. The player following James's gaze finds the interactable. Two forces make this work: (1) tank controls require the player to monitor the character's facing direction constantly; (2) people instinctively look where other people look. The filmmaking principle of eyeline-match is transplanted into real-time 3D navigation.</p>
+      <p>No other game in the genre has matched the elegance of this system for fixed-character-facing control schemes. <em>It is free.</em> No UI, no prompt, no indicator layer — only an animation state the player must have been watching anyway to navigate.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:100%"></div></div>
+        <span class="mech-val">100</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:75%"></div></div>
+        <span class="mech-val">75</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:100%"></div></div>
+        <span class="mech-val">100</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">100% diegetic — zero UI cost</span>
+        <span class="tag green">works because player already watches character</span>
+        <span class="tag green">filmmaking principle applied to real-time</span>
+        <span class="tag amber">only works with tank / character-relative controls</span>
+        <span class="tag amber">requires careful animation budget</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resident Evil -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Resident Evil (1996–2002, REmake)</div>
+        <div class="gc-sub">Capcom · pre-rendered + 3D · two-layer system</div>
+      </div>
+      <span class="gc-era">1996–2002</span>
+    </div>
+    <div class="gc-body">
+      <p>Pre-rendered RE uses a <strong>two-layer system</strong>: artistic and systemic. The artistic layer: items are visually distinct within the pre-rendered background — brighter, slightly out-of-place, or compositionally centred. The background artist signals importance through visual design. The systemic layer: a context-sensitive "Check" or "Examine" verb appears on screen when the player enters the interaction radius of an object.</p>
+      <p>The REmake (2002) codifies this: <strong>yellow-highlighted surfaces</strong> for graspable environmental elements (ledges, windowsills), and a proximity prompt (▲ Examine) for collectibles. The yellow paint approach trades atmosphere for clarity. It is the first appearance of what would become the dominant modern convention — coloured surface marking as affordance indicator.</p>
+      <p>The examine system, present since RE1, allows objects in inventory to be rotated in 3D to find hidden items (keys inside books, jewels inside statuettes). This is a rare moment where examination itself is the mechanic, not merely the preamble to pickup.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:45%"></div></div>
+        <span class="mech-val">45</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:82%"></div></div>
+        <span class="mech-val">82</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:65%"></div></div>
+        <span class="mech-val">65</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">3D inventory examination = mechanic, not just UI</span>
+        <span class="tag amber">background art carries indicator burden</span>
+        <span class="tag amber">proximity prompt breaks immersion slightly</span>
+        <span class="tag red">yellow paint (REmake) becomes genre cliché</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tormented Souls -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Tormented Souls (2021)</div>
+        <div class="gc-sub">Dual Effect · modern fixed-cam · cursor highlight + FP examine</div>
+      </div>
+      <span class="gc-era">2021</span>
+    </div>
+    <div class="gc-body">
+      <p>Tormented Souls takes a pragmatic modern approach: an <strong>on-screen cursor highlights interactable points of interest</strong> as the player approaches. The highlight is subtle — not a glowing outline, closer to a visual callout — but it is definitively non-diegetic. The cursor is a concession to discoverability.</p>
+      <p>The system's genuine innovation is the <strong>first-person perspective shift on interaction</strong>. When examining an object, the camera cuts to a first-person close-up view. The player can rotate items, examine surfaces in detail, and combine items from the same screen without menu-switching. The inventory is also accessible directly from this view. The moment of examination is immersive even though the indicator leading up to it is not.</p>
+      <p>This split — <em>non-diegetic to find, diegetic to examine</em> — is honest about the genre's fundamental tension: classic horror games are better atmospherically, but worse at showing players where to look. Tormented Souls picks both, at the cost of a slight tonal inconsistency.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:38%"></div></div>
+        <span class="mech-val">38</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:85%"></div></div>
+        <span class="mech-val">85</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:62%"></div></div>
+        <span class="mech-val">62</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">FP examine is genuinely atmospheric</span>
+        <span class="tag green">inventory accessible inside examine mode</span>
+        <span class="tag amber">cursor highlight = non-diegetic concession</span>
+        <span class="tag amber">tonal split between find and examine</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Amnesia -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Amnesia / SOMA / Frictional Games (2010–2015)</div>
+        <div class="gc-sub">Frictional · first-person physics · the "just try it" doctrine</div>
+      </div>
+      <span class="gc-era">2010–2015</span>
+    </div>
+    <div class="gc-body">
+      <p>Frictional's interaction philosophy is <strong>physics-first, indicator-never</strong>. In Amnesia and SOMA, no highlight, no prompt, no verb menu. The player clicks and drags objects directly — doors pulled open by dragging backward, drawers pulled by clicking and pulling, lids lifted by arc-motion. The spatial logic of the real world is the affordance. If it looks like something you could grab, grab it.</p>
+      <p>The cursor changes to a hand icon when hovering over an interactable — a minimal concession. Otherwise: <em>the game trusts the player to try things</em>. The cost is that unprepared players miss significant objects entirely. The benefit is that a player discovering a working drawer by pulling it feels like discovering a real drawer. The action is the same. No abstraction between intent and execution.</p>
+      <p>This system only works in first-person, free-mouse environments. Fixed cameras make physics-drag interaction geometrically unreliable — the screen-space drag direction does not map to a consistent world-space direction as cameras cut.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:95%"></div></div>
+        <span class="mech-val">95</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:40%"></div></div>
+        <span class="mech-val">40</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:92%"></div></div>
+        <span class="mech-val">92</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">physics action = highest immersion</span>
+        <span class="tag green">no abstraction between intent and execution</span>
+        <span class="tag red">requires first-person free camera</span>
+        <span class="tag red">breaks completely with fixed camera cuts</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metro -->
+  <div class="game-card">
+    <div class="gc-head">
+      <div>
+        <div class="gc-title">Metro 2033 / Last Light / Exodus (2010–2019)</div>
+        <div class="gc-sub">4A Games · total physicalization · the wristwatch model</div>
+      </div>
+      <span class="gc-era">2010–2019</span>
+    </div>
+    <div class="gc-body">
+      <p>Metro's interaction philosophy is <strong>total physicalization of all status information</strong> — the system relevant to KENOMA. Every game-state indicator lives in a physical object the character carries: wristwatch (timer, radiation count), backpack (open physically to access map), lighter fluid gauge (visible on lighter), gas mask filters (visually degrade, physically changed). The world is the HUD.</p>
+      <p>Interactable objects are discovered through <em>environmental design priority</em>: important items are placed in visually prominent positions — on desks, at eye level, lit differently by ambient sources. The game never highlights them explicitly. In Exodus, the backpack-opening animation (character physically reaches behind and brings out the pack) is a masterclass in diegetic UI design.</p>
+      <p>The failure mode: <strong>discoverability depends entirely on level design quality</strong>. When an object is placed poorly — in a dark corner, below natural sightlines — players miss it with no recourse. Metro solves this with tight level design; a game with wider, more open spaces would need a supplementary layer.</p>
+
+      <div class="mech-row" style="margin-top:16px">
+        <span class="mech-label">diegetic purity</span>
+        <div class="mech-bar"><div class="mech-fill diegetic" style="width:88%"></div></div>
+        <span class="mech-val">88</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">discoverability</span>
+        <div class="mech-bar"><div class="mech-fill clarity" style="width:55%"></div></div>
+        <span class="mech-val">55</span>
+      </div>
+      <div class="mech-row">
+        <span class="mech-label">atmosphere fit</span>
+        <div class="mech-bar"><div class="mech-fill atmos" style="width:94%"></div></div>
+        <span class="mech-val">94</span>
+      </div>
+
+      <div class="tags">
+        <span class="tag green">total physicalization — the KENOMA model</span>
+        <span class="tag green">world is the HUD</span>
+        <span class="tag amber">discoverability depends on level design quality</span>
+        <span class="tag amber">fails in wide/open spaces</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- COMPARISON MATRIX -->
+<div class="sh" id="matrix"><h2>Comparison Matrix</h2></div>
+
+<div class="matrix-wrap">
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>Game</th>
+      <th>Primary signal</th>
+      <th>Secondary signal</th>
+      <th>Diegetic?</th>
+      <th>Discoverability</th>
+      <th>Works with fixed cam?</th>
+      <th>KENOMA risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="game-col">AitD 1 &amp; 3<span class="sub">1992 / 1995</span></span></td>
+      <td>Camera composition</td>
+      <td>Action mode menu</td>
+      <td><span class="tag green" style="font-size:8px">Full</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot none"></span><span class="dot none"></span><span class="dot none"></span><span class="dot none"></span></div></td>
+      <td><span class="tag green" style="font-size:8px">Native</span></td>
+      <td>Mode-select menu breaks zero-HUD</td>
+    </tr>
+    <tr>
+      <td><span class="game-col">AitD New Nightmare<span class="sub">2001</span></span></td>
+      <td>Flashlight beam reaction</td>
+      <td>Body position proximity</td>
+      <td><span class="tag green" style="font-size:8px">Full</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot full"></span><span class="dot full"></span><span class="dot half"></span><span class="dot none"></span></div></td>
+      <td><span class="tag green" style="font-size:8px">Native</span></td>
+      <td>Exact-position gap after reveal</td>
+    </tr>
+    <tr>
+      <td><span class="game-col">Silent Hill 1<span class="sub">1999</span></span></td>
+      <td>Proximity prompt (minimal)</td>
+      <td>Radio static (creatures)</td>
+      <td><span class="tag amber" style="font-size:8px">Partial</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot full"></span><span class="dot full"></span><span class="dot none"></span><span class="dot none"></span></div></td>
+      <td><span class="tag amber" style="font-size:8px">Works</span></td>
+      <td>Prompt text = HUD violation</td>
+    </tr>
+    <tr>
+      <td><span class="game-col">Silent Hill 2<span class="sub">2001</span></span></td>
+      <td>Character head-turn</td>
+      <td>None</td>
+      <td><span class="tag green" style="font-size:8px">Full</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot full"></span><span class="dot full"></span><span class="dot half"></span><span class="dot none"></span></div></td>
+      <td><span class="tag amber" style="font-size:8px">Partial</span></td>
+      <td>Fixed cam may obscure head from some angles</td>
+    </tr>
+    <tr>
+      <td><span class="game-col">Resident Evil (classic)<span class="sub">1996–2002</span></span></td>
+      <td>Background art signal</td>
+      <td>Proximity "Check" prompt</td>
+      <td><span class="tag amber" style="font-size:8px">Partial</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot full"></span><span class="dot full"></span><span class="dot full"></span><span class="dot none"></span></div></td>
+      <td><span class="tag green" style="font-size:8px">Native</span></td>
+      <td>Yellow paint / UI prompt = HUD violation</td>
+    </tr>
+    <tr>
+      <td><span class="game-col">Tormented Souls<span class="sub">2021</span></span></td>
+      <td>Cursor highlight</td>
+      <td>FP examine mode</td>
+      <td><span class="tag red" style="font-size:8px">Non-diegetic</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot full"></span><span class="dot full"></span><span class="dot full"></span><span class="dot half"></span></div></td>
+      <td><span class="tag green" style="font-size:8px">Native</span></td>
+      <td>Cursor highlight violates Iron Law III</td>
+    </tr>
+    <tr>
+      <td><span class="game-col">Amnesia / SOMA<span class="sub">2010–2015</span></span></td>
+      <td>Physics drag / world logic</td>
+      <td>Cursor hand icon (minimal)</td>
+      <td><span class="tag green" style="font-size:8px">Full</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot full"></span><span class="dot none"></span><span class="dot none"></span><span class="dot none"></span></div></td>
+      <td><span class="tag red" style="font-size:8px">Incompatible</span></td>
+      <td>Physics drag breaks with camera cuts</td>
+    </tr>
+    <tr>
+      <td><span class="game-col">Metro Exodus<span class="sub">2010–2019</span></span></td>
+      <td>Environmental placement</td>
+      <td>Physical object carry animation</td>
+      <td><span class="tag green" style="font-size:8px">Full</span></td>
+      <td><div class="dots"><span class="dot full"></span><span class="dot full"></span><span class="dot half"></span><span class="dot none"></span><span class="dot none"></span></div></td>
+      <td><span class="tag amber" style="font-size:8px">Partial</span></td>
+      <td>Discoverability too low without tight level design</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- HIERARCHY -->
+<div class="sh" id="hierarchy"><h2>Diegesis Hierarchy for Fixed-Camera Horror</h2></div>
+
+<p style="font-size:14px; color:var(--text2); margin-bottom:28px; max-width:660px;">Ordered from most to least immersion-preserving. KENOMA's zero-HUD requirement (Iron Law III) means anything below Level 3 violates the design contract.</p>
+
+<div class="hierarchy">
+  <div class="hier-row">
+    <div class="hier-cell lvl1">
+      <span class="hc-label">LEVEL 1 — Compositional</span>
+      <span class="hc-era">Camera angle IS the indicator. The photographer chose what you see. AitD 1, Metro (partially).</span>
+    </div>
+  </div>
+  <div class="hier-arrow">↓</div>
+  <div class="hier-row">
+    <div class="hier-cell lvl2" style="flex:1.4">
+      <span class="hc-label">LEVEL 2A — Character Body</span>
+      <span class="hc-era">Head turn, posture shift, gaze direction. Silent Hill 2. Zero cost if animation budget exists.</span>
+    </div>
+    <div style="width:12px; flex-shrink:0"></div>
+    <div class="hier-cell lvl2" style="flex:1">
+      <span class="hc-label">LEVEL 2B — Diegetic Light</span>
+      <span class="hc-era">Flashlight/fire vessel reaction to interactive surfaces. AitD: New Nightmare. Dual-function.</span>
+    </div>
+  </div>
+  <div class="hier-arrow">↓</div>
+  <div class="hier-row">
+    <div class="hier-cell lvl3" style="flex:1.2">
+      <span class="hc-label">LEVEL 3A — Diegetic Audio</span>
+      <span class="hc-era">Sound emanating from or near the object (resonance, murmur, vibration). Atmospheric, missable.</span>
+    </div>
+    <div style="width:12px; flex-shrink:0"></div>
+    <div class="hier-cell lvl3" style="flex:1">
+      <span class="hc-label">LEVEL 3B — Environmental Design</span>
+      <span class="hc-era">Object placement by art + level design team. Metro, classic RE. Depends on execution quality.</span>
+    </div>
+  </div>
+  <div class="hier-arrow">↓ — Iron Law III threshold ↓</div>
+  <div class="hier-row">
+    <div class="hier-cell lvl4">
+      <span class="hc-label">LEVEL 4 — Minimal UI (thin violation)</span>
+      <span class="hc-era">Cursor change, subtle glow, proximity icon. Tormented Souls. Breaks immersion but aids players.</span>
+    </div>
+  </div>
+  <div class="hier-arrow">↓</div>
+  <div class="hier-row">
+    <div class="hier-cell" style="background:rgba(150,48,48,.08); border:1px solid rgba(150,48,48,.3); border-radius:2px; padding:10px 14px; font-family:var(--mono); font-size:10px;">
+      <span class="hc-label" style="color:var(--danger)">LEVEL 5 — Full UI Prompt (violation)</span>
+      <span class="hc-era">Button prompt with text label, highlighted outlines, waypoints. Modern RE/Hitman. Immersion-breaking.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ADAPTIVE DESIGNS -->
+<div class="sh" id="designs"><h2>Adaptive Designs for KENOMA</h2></div>
+
+<p style="font-size:14px; color:var(--text2); margin-bottom:36px; max-width:680px;">Five designs for KENOMA's specific constraints: fixed cameras, tank controls, zero HUD (Iron Law III), jade lamp as primary light source, astrolabe as creature-proximity instrument, Scholar as the only mobile intelligence in the Archive.</p>
+
+<div class="design-list">
+
+<!-- Design 1 -->
+<div class="design">
+  <div class="design-head">
+    <div class="d-num">01</div>
+    <div>
+      <div class="d-name">Scholar's Gaze Architecture</div>
+      <div class="d-sub">The SH2 head-turn — adapted for fixed camera realities</div>
+    </div>
+    <div class="d-ref">ORIGIN · Silent Hill 2<br>TIER · Level 2A</div>
+  </div>
+  <div class="design-body">
+    <div class="d-main">
+      <p>The Scholar's head and upper body orient toward an interactable object when entering a defined proximity radius. The rotation is subtle — not a snap, a slow draw of attention. The player, navigating with tank controls, is already watching the Scholar's facing direction to navigate; the head-turn communicates without cost.</p>
+      <p><strong>Fixed-camera adaptation:</strong> The primary failure mode of the head-turn in fixed-camera games is that certain camera angles show only the Scholar's back, making head direction unreadable. The solution: KENOMA's camera authoring rules (every camera frames Scholar + Vanguard + key object simultaneously) must also guarantee the Scholar's face is readable in the frame when near a critical interactive object. The camera selection algorithm includes a boolean: <em>does this angle make the Scholar's head direction legible?</em> If not, the camera transitions to an angle that does, at the same moment the head-turn fires.</p>
+      <p>For objects the Scholar approaches from behind (inscriptions on far walls, sealed drawers), the body-lean system supplements head-turn: the Scholar's torso inclines forward at a rate proportional to distance. This is readable from any camera angle that shows the Scholar's silhouette.</p>
+      <p>The posture signal also differentiates object types: head-turn for text/tablet interactions, body-lean for physical/mechanism interactions, hands-extended for inventory-use interactions. Three distinct postures, each communicating the category of interaction before the player commits.</p>
+
+      <div class="law-check">
+        <div><span class="lc-pass">III (BMS never shown) </span> PASS — no warmth or BMS data surfaces; body animation is physical state only</div>
+        <div><span class="lc-pass">HUD                  </span> PASS — pure animation, zero UI elements</div>
+        <div><span class="lc-warn">Camera dependency    </span> WARN — requires camera authoring to always show Scholar face when near interactables</div>
+      </div>
+    </div>
+    <div class="d-side">
+      <div class="d-side-label">Trade-off Analysis</div>
+      <div class="tradeoff">
+        <div class="to-label pro">Full diegetic purity</div>
+        <div class="to-text">No UI element of any kind. The animation IS the system. Zero cost to immersion budget.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Differentiates object type</div>
+        <div class="to-text">Three posture states tell the player what kind of interaction is coming before they commit.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Scales naturally</div>
+        <div class="to-text">Works at any distance — begins as mild lean at range, intensifies as Scholar approaches.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Animation budget</div>
+        <div class="to-text">Requires distinct, readable head-turn and body-lean animations. Not a small rig investment.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Camera coupling</div>
+        <div class="to-text">Authoring constraint: every camera must show Scholar face when near critical interactables. Hard constraint on level design freedom.</div>
+      </div>
+      <div class="d-spec">
+        <div><span class="k">radius_head_turn</span>  <span class="v">2.5m</span></div>
+        <div><span class="k">radius_body_lean</span>  <span class="v">1.2m</span></div>
+        <div><span class="k">turn_speed       </span>  <span class="v">slow — 1.8s to full</span></div>
+        <div><span class="k">posture_tablet   </span>  <span class="hi">head-turn + slight bow</span></div>
+        <div><span class="k">posture_mechanism</span>  <span class="hi">body-lean, hands open</span></div>
+        <div><span class="k">posture_inventory</span>  <span class="hi">hands extend forward</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Design 2 -->
+<div class="design">
+  <div class="design-head">
+    <div class="d-num">02</div>
+    <div>
+      <div class="d-name">Fire Vessel Sympathy</div>
+      <div class="d-sub">The jade lamp responds to interactable resonance — AitD:TNN adapted for an always-carried light source</div>
+    </div>
+    <div class="d-ref">ORIGIN · AitD: New Nightmare<br>TIER · Level 2B</div>
+  </div>
+  <div class="design-body">
+    <div class="d-main">
+      <p>The Scholar's jade lamp — already the primary status display (flame height = oil level) and a combat tool — develops a third behavior: the flame brightens and orients directionally toward interactable objects in proximity, like a compass needle responding to magnetic north.</p>
+      <p>This is diegetic within KENOMA's established world logic: the Archive's objects are resonant with the flame of the Sacred Fire (World A) or receptive to warmth after centuries of cold (World B). The flame responding to an inscribed tablet or a sealed mechanism is a world-logic extension, not an arbitrary UI choice.</p>
+      <p><strong>The orientation trick:</strong> Rather than brightening the whole flame uniformly, the flame leans toward the interactable — the direction of lean tells the player where to look. In World B, where the fire vessel is the Scholar's only warmth anchor and everything else is cold, the lean becomes particularly readable: the flame reaching toward a tablet in darkness is a visible event even in low-light conditions.</p>
+      <p>Critical design constraint: <em>the sympathy response must be clearly distinct from the oil-depletion response</em>. Depletion = flame shrinks centrally and sputters. Sympathy = flame maintains size, shifts directionally, slightly brightens at the edge facing the object. These are visually distinct behaviours but require careful VFX authoring to ensure they remain unambiguous under pressure.</p>
+      <p>The system only works for objects with physical presence and Archive significance. It does not fire for enemy proximity (astrolabe handles that), it does not fire for mundane furniture. The Scholar's fire responds to the Archive — a reading-intelligence distinction, not a proximity-sphere.</p>
+
+      <div class="law-check">
+        <div><span class="lc-pass">III (BMS never shown) </span> PASS — flame orientation contains no warmth register data</div>
+        <div><span class="lc-pass">HUD                  </span> PASS — VFX only, no overlay</div>
+        <div><span class="lc-warn">Visual clarity        </span> WARN — oil-depletion vs. sympathy must be visually unambiguous under stress</div>
+        <div><span class="lc-warn">Scope                </span> WARN — only meaningful for Archive-significant objects; mundane env. objects excluded</div>
+      </div>
+    </div>
+    <div class="d-side">
+      <div class="d-side-label">Trade-off Analysis</div>
+      <div class="tradeoff">
+        <div class="to-label pro">Zero additional UI cost</div>
+        <div class="to-text">Extends a system already visible and already watched. No new cognitive load.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Direction information</div>
+        <div class="to-text">Flame lean tells the player WHERE to look — not just that something is nearby. Better than proximity-only signals.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">World B amplification</div>
+        <div class="to-text">In World B's near-darkness, a flame leaning into the black toward a tablet is a striking and navigable event.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Visual overloading risk</div>
+        <div class="to-text">The fire vessel already communicates oil level. Adding directional sympathy risks confusion with depletion sputter.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Scope limitation</div>
+        <div class="to-text">Only Archive-significant objects trigger sympathy. Players must learn which objects qualify — silent learning curve.</div>
+      </div>
+      <div class="d-spec">
+        <div><span class="k">trigger_radius    </span>  <span class="v">3.0m</span></div>
+        <div><span class="k">lean_max_angle    </span>  <span class="v">22 degrees from vertical</span></div>
+        <div><span class="k">brightness_boost  </span>  <span class="v">+15% on facing edge</span></div>
+        <div><span class="k">distinct_from_depletion</span> <span class="hi">central shrink vs. directional lean</span></div>
+        <div><span class="k">world_B_intensity </span>  <span class="hi">lean amplified in darkness</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Design 3 -->
+<div class="design">
+  <div class="design-head">
+    <div class="d-num">03</div>
+    <div>
+      <div class="d-name">Astrolabe Resonance Differentiation</div>
+      <div class="d-sub">The creature-proximity instrument gains a second vibration mode for interactable objects</div>
+    </div>
+    <div class="d-ref">ORIGIN · SH1 Radio Static (logic) · AitD (astrolabe)<br>TIER · Level 3A</div>
+  </div>
+  <div class="design-body">
+    <div class="d-main">
+      <p>The Scholar's astrolabe already vibrates at increasing frequency as creatures approach — a direct analogue to Silent Hill's radio static. The design question: can a single instrument communicate two distinct types of proximity without creating confusion?</p>
+      <p>The answer is frequency and quality rather than volume. Creature proximity: the astrolabe rings emit a rapid, irregular, slightly discordant vibration — the sound of something living and wrong approaching. Interactable object proximity: a slow, even, harmonic vibration — the sound of something old and precise awaiting recognition.</p>
+      <p><strong>The distinction is the same one the game makes conceptually:</strong> creatures are threats; Archive objects are knowledge. The scholar's instrument responds to both, but differently in character. A player who has learned the creature signal will feel the interactable signal as its tonal opposite — not alarming, but attentive.</p>
+      <p>The system combines with the flame sympathy (Design 02) most effectively: the astrolabe tells the Scholar something significant is nearby; the flame's directional lean tells them where. Together they provide proximity detection and direction without any UI element, and without requiring the player to be looking at the Scholar at the specific moment of detection.</p>
+      <p>Critical failure mode: <strong>dual-signal confusion in rooms containing both creatures and interactable objects simultaneously.</strong> In these rooms, the astrolabe must produce both signals layered rather than blended — the creature signal running over the interactable signal as a separate frequency layer. FMOD's spatial audio layering makes this achievable but requires careful mix work.</p>
+
+      <div class="law-check">
+        <div><span class="lc-pass">III (BMS never shown) </span> PASS — vibration pattern contains no BMS data</div>
+        <div><span class="lc-pass">HUD                  </span> PASS — audio/haptic only</div>
+        <div><span class="lc-warn">Dual-signal clarity   </span> WARN — creature + object in same room creates layered signal — requires FMOD precision</div>
+        <div><span class="lc-warn">Player learning curve </span> WARN — two vibration modes must be learned before they aid navigation</div>
+      </div>
+    </div>
+    <div class="d-side">
+      <div class="d-side-label">Trade-off Analysis</div>
+      <div class="tradeoff">
+        <div class="to-label pro">No new instrument required</div>
+        <div class="to-text">Extends existing diegetic object. Players already watch the astrolabe for creature proximity.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Works independent of camera</div>
+        <div class="to-text">Audio/haptic signal doesn't depend on what angle the camera is at. Works in all lighting conditions.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Conceptual resonance</div>
+        <div class="to-text">Creature signal = irregular/discordant. Object signal = harmonic/even. The distinction maps to the game's themes.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">No direction information</div>
+        <div class="to-text">Vibration intensity gives proximity; it does not give direction. Must pair with Design 02 for full utility.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Learning requirement</div>
+        <div class="to-text">Two distinct vibration modes must be learned. Risk: players conflate the harmonic mode with "something bad is nearby."</div>
+      </div>
+      <div class="d-spec">
+        <div><span class="k">creature_mode   </span>  <span class="hi">irregular, discordant — rising</span></div>
+        <div><span class="k">object_mode     </span>  <span class="hi">harmonic, even — constant</span></div>
+        <div><span class="k">dual_signal     </span>  <span class="v">layered, not blended</span></div>
+        <div><span class="k">range           </span>  <span class="v">creature 15m / object 4m</span></div>
+        <div><span class="k">haptic_support  </span>  <span class="v">DualSense — distinct rumble patterns</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Design 4 -->
+<div class="design">
+  <div class="design-head">
+    <div class="d-num">04</div>
+    <div>
+      <div class="d-name">Scholar's Murmur System</div>
+      <div class="d-sub">The Scholar's academic instinct surfaces as near-inaudible Avestan recognition — text objects only</div>
+    </div>
+    <div class="d-ref">ORIGIN · TDS deep-read VO (extended) · no direct game precedent<br>TIER · Level 3A</div>
+  </div>
+  <div class="design-body">
+    <div class="d-main">
+      <p>KENOMA already has a Scholar murmur system for deep-reading: the TDS Controller fires VO lines as the Scholar translates at depth. This design extends murmur earlier — into the approach and recognition phase before interaction is initiated.</p>
+      <p>When the Scholar enters proximity of a text-bearing object (tablet, frieze, inscription), they murmur a single word or short phrase in Avestan under their breath. Not the translation — the <em>recognition</em>. "Old Elamite." "Founding script." "Her hand." These are the Scholar's academic classification instincts firing automatically, in the Scholar's private analytical voice, barely audible.</p>
+      <p>This system is exclusive to text objects — the most important interactable category in KENOMA. Mechanisms, sealed doors, and physical objects do not produce murmur signals (they produce flame sympathy or head-turn instead). The Scholar is a scholar. Their first response to an inscription is always recognition. This is character behaviour, not a game mechanic.</p>
+      <p>The Dark Voice is already implemented as a binaural spatial audio system (Behind / Beside / Ahead). The murmur system uses the same infrastructure but fires from a different point: directly from the Scholar's mouth position, no spatial processing. The distinction: the Dark Voice speaks from inside the skull; the murmur comes from the mouth. Players with headphones should feel the difference physically — one voice is behind them, one is in front of them.</p>
+      <p><strong>The critical limitation:</strong> this system only works for players with audio on at audible levels, and only for text objects. It supplements Designs 01 and 02 for the most important KENOMA objects but cannot stand alone as a complete solution.</p>
+
+      <div class="law-check">
+        <div><span class="lc-pass">III (BMS never shown) </span> PASS — murmur is academic classification, not behavioral tracking data</div>
+        <div><span class="lc-pass">HUD                  </span> PASS — audio only, zero visual UI</div>
+        <div><span class="lc-warn">Scope                </span> WARN — text objects only; cannot replace full interaction indicator system</div>
+        <div><span class="lc-warn">Audio dependency      </span> WARN — inaudible to players with low volume or poor speakers; must supplement not replace</div>
+      </div>
+    </div>
+    <div class="d-side">
+      <div class="d-side-label">Trade-off Analysis</div>
+      <div class="tradeoff">
+        <div class="to-label pro">Character expression</div>
+        <div class="to-text">Every murmur is also world-building — the Scholar's academic vocabulary, their instincts, their private analytical language surfaces as ambient texture.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Prioritises most important objects</div>
+        <div class="to-text">Only text objects fire murmur — which are the BMS-significant objects in KENOMA. Naturally draws attention to what matters for the ending.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Reuses Dark Voice infrastructure</div>
+        <div class="to-text">FMOD binaural system already built for the Dark Voice. Murmur is a new audio source, not a new technical system.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Audio-dependent</div>
+        <div class="to-text">Completely useless without sound. Cannot be the primary indicator for any object type.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">VO budget</div>
+        <div class="to-text">Requires extensive recording of short, varied murmur lines. Risk of repetition fatigue if players hear the same murmur for multiple different objects.</div>
+      </div>
+      <div class="d-spec">
+        <div><span class="k">trigger           </span>  <span class="v">text-bearing objects only</span></div>
+        <div><span class="k">content           </span>  <span class="hi">Avestan classification words</span></div>
+        <div><span class="k">volume            </span>  <span class="v">-18dB relative to dialogue — barely audible</span></div>
+        <div><span class="k">spatial_source    </span>  <span class="v">Scholar mouth position — no HRTF</span></div>
+        <div><span class="k">vs_dark_voice     </span>  <span class="hi">dark voice = behind skull; murmur = in front</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Design 5 -->
+<div class="design">
+  <div class="design-head">
+    <div class="d-num">05</div>
+    <div>
+      <div class="d-name">Composed Camera-Object Priority</div>
+      <div class="d-sub">The AitD 1 origin principle — elevated to an explicit authoring rule for KENOMA's fixed camera system</div>
+    </div>
+    <div class="d-ref">ORIGIN · AitD 1 (foundational) · Metro (environmental)<br>TIER · Level 1 — Compositional</div>
+  </div>
+  <div class="design-body">
+    <div class="d-main">
+      <p>Every fixed camera in AitD 1 was composed so that the most important interactive object in the room was visible in frame when the player entered. This was not an accident — it was the designer's substitute for an indicator system. KENOMA must elevate this from implicit convention to <strong>explicit authoring law</strong>.</p>
+      <p>The rule: <em>every camera in a room where a critical interactable exists must show the Scholar, the interactable, and at minimum the Vanguard's position simultaneously.</em> The KENOMA scene review checklist already contains this requirement (Scene Review §08). This design codifies its interaction-indicator function.</p>
+      <p>The implementation requires a <strong>camera suitability check</strong> at review time for every room: Does camera position X show the Scholar near the critical tablet? Yes → approved. Does it show only the Scholar walking toward a wall? No → flag for revision. This is not a runtime system — it is a production pipeline constraint.</p>
+      <p>The secondary tool: <strong>lighting composition</strong>. In World A, fire altars are placed so that their warmth falls on critical objects, slightly illuminating them relative to their surroundings. Not a spotlight — a slight, ambient directional preference. The lighting designer is told: this tablet must be warmer than the surrounding stone in the primary camera angle. In World B, the Scholar's fire vessel naturally illuminates their immediate surroundings; positioning interactable objects within the fire vessel's ambient radius — visible but not obviously spotlighted — is the compositional tool.</p>
+      <p>This design is the <strong>foundation layer</strong> beneath all others. Designs 01–04 supplement this; they cannot replace it. A room with excellent body posture signaling (Design 01) but poor camera composition will still leave players confused. A room with excellent camera composition and no supplementary signal is playable — as AitD 1 demonstrated in 1992.</p>
+
+      <div class="law-check">
+        <div><span class="lc-pass">III (BMS never shown) </span> PASS — composition contains no systemic data, only spatial emphasis</div>
+        <div><span class="lc-pass">HUD                  </span> PASS — pure camera and lighting design, zero UI</div>
+        <div><span class="lc-pass">IV (puzzle has author) </span> PASS — camera composition should reflect the authored person's relationship to the object</div>
+        <div><span class="lc-warn">Production cost       </span> WARN — requires every camera angle to be reviewed against interaction suitability; can slow authoring pipeline</div>
+      </div>
+    </div>
+    <div class="d-side">
+      <div class="d-side-label">Trade-off Analysis</div>
+      <div class="tradeoff">
+        <div class="to-label pro">Maximum atmosphere preservation</div>
+        <div class="to-text">Zero runtime UI. The game looks exactly the same to a player who noticed the object and one who didn't. No immersion cost of any kind.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Always-available foundation</div>
+        <div class="to-text">Works in all lighting, all control states, all distances. Cannot be disabled or masked. The baseline beneath all other designs.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label pro">Proven at genre level</div>
+        <div class="to-text">AitD 1 shipped this as its only indicator system in 1992 and is now a genre classic. The method works for an authored, authored space.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Pipeline constraint</div>
+        <div class="to-text">Every camera angle requires suitability review. Increases iteration cost for level and camera artists.</div>
+      </div>
+      <div class="tradeoff">
+        <div class="to-label con">Does not give direction</div>
+        <div class="to-text">Shows the object; does not guide the player toward it if they look away. Supplementary designs needed for active-exploration moments.</div>
+      </div>
+      <div class="d-spec">
+        <div><span class="k">camera_rule       </span>  <span class="hi">scholar + interactable + vanguard in frame</span></div>
+        <div><span class="k">lighting_WA       </span>  <span class="v">fire altar warmth falls on critical objects</span></div>
+        <div><span class="k">lighting_WB       </span>  <span class="v">objects within fire vessel ambient radius</span></div>
+        <div><span class="k">review_checkpoint </span>  <span class="v">/scene-review checklist · per camera per room</span></div>
+        <div><span class="k">applies_to        </span>  <span class="v">all interactable types, all rooms</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /design-list -->
+
+<!-- VERDICT -->
+<div class="sh" id="verdict"><h2>Verdict &amp; Recommended Stack</h2></div>
+
+<div class="conclusion">
+  <h3>The Indicator Stack for KENOMA</h3>
+
+  <p>No single mechanism solves all cases. The correct approach is a <strong>layered stack</strong> where each design handles a different detection scenario, and all five reinforce each other without redundancy. The stack is ordered by priority: failure at layer 1 is never compensated by layer 5.</p>
+
+  <div class="rec-bar">
+    <span class="rb-item primary">01 · Scholar's Gaze — always-on foundation for characters</span>
+    <span class="rb-item primary">05 · Camera Composition — always-on foundation for rooms</span>
+    <span class="rb-item secondary">02 · Fire Vessel Sympathy — directional aid in all lighting</span>
+    <span class="rb-item secondary">03 · Astrolabe Resonance — proximity audio layer</span>
+    <span class="rb-item tertiary">04 · Scholar Murmur — text-object character layer</span>
+  </div>
+
+  <p><strong>Designs 01 and 05 are mandatory.</strong> The Scholar's gaze architecture and camera composition are the structural substrate — they must be implemented first, reviewed at every scene-review checkpoint, and never compromised for other production reasons. These are not optional enhancements; they are the iron floor of KENOMA's zero-HUD interaction contract.</p>
+
+  <p><strong>Design 02 is mandatory for World B.</strong> In World B's near-darkness, the flame sympathy becomes the primary spatial navigation tool. A flame leaning into darkness toward a cold tablet that has not been touched in 300 years is one of the most characteristically KENOMA moments the game can produce — an intimate communication between the Scholar's warmth and the Archive's silence. This should be implemented alongside the lighting design for World B from day one.</p>
+
+  <p><strong>Designs 03 and 04 are enhancement layers.</strong> The astrolabe resonance mode adds a second channel for players who are listening carefully and have learned the system. The scholar murmur adds character texture and world-building to the most important interactable type. Both are zero-HUD compliant and both reward attentive players — but neither is needed for the base interaction contract to function.</p>
+
+  <p>The critical divergence from <em>Alone in the Dark</em>'s original model: AitD 1 used camera composition as its only indicator and trusted that <em>the player would try things</em>. KENOMA cannot rely on that trust alone because its BMS-significant objects are specifically those that require deep-reading — a 25-second commitment. A player who misses a tablet doesn't get an alternative path to the same BMS consequence. The murmur system and flame sympathy exist precisely to catch the player who would otherwise walk past the most important objects in the room without knowing they were important.</p>
+
+  <p><em>The AitD: New Nightmare flashlight insight remains the most elegant single mechanic in the genre for this problem</em> — a light source that already exists, already serves combat and navigation, and whose orientation toward an object carries information for free. Design 02 is KENOMA's direct descendant of that insight, adapted for an always-carried ambient light rather than a player-aimed beam. The Scholar does not aim the fire vessel. The fire vessel responds to the Archive. That distinction is the game's thesis expressed as a UX decision.</p>
+</div>
+
+<footer>
+  <span>KENOMA · DOC-UX-001 · Search &amp; Interaction Systems — Comparative Analysis</span>
+  <span>No UI element that a player could observe directly — Iron Law III</span>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+});
+
+// Active nav link
+const sections = document.querySelectorAll('[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
